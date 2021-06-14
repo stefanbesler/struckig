@@ -44,6 +44,7 @@ This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) t
     - [ ] velocity-step2.cpp
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Manual testing
+- [ ] Initial commit
 - [ ] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
     - [ ] otg-test.cpp - for string this should be sufficient
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
