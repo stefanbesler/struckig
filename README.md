@@ -3,15 +3,14 @@
 This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to TwinCAT
 
 
-- [ ] Initial port of source code
+- [ ] Crude initial port of source code
   - [ ] include/ruckig
-    - [ ] block.hpp
-    - [ ] brake.hpp
-    - [ ] input_parameters.hpp
-    - [ ] output_parameters.hpp
+    - [x] block.hpp
+    - [x] brake.hpp
+    - [x] input_parameters.hpp
+    - [x] output_parameters.hpp
     - [ ] position.hpp
-    - [ ] profile.hpp      
-    - [ ] (reflexxes_comparision.hpp) - no need
+    - [x] profile.hpp      
     - [ ] roots.hpp
     - [ ] ruckig.hpp
     - [ ] trajectory.hpp
@@ -30,7 +29,7 @@ This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) t
     - [ ] input_parameters.hpp
     - [ ] output_parameters.hpp
     - [ ] position.hpp
-    - [ ] profile.hpp      
+    - [ ] profile.hpp
     - [ ] (reflexxes_comparision.hpp) - no need
     - [ ] roots.hpp
     - [ ] ruckig.hpp
@@ -43,6 +42,7 @@ This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) t
     - [ ] (python.cpp) - no need
     - [ ] velocity-step1.cpp
     - [ ] velocity-step2.cpp
+- [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Manual testing
 - [ ] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
     - [ ] otg-test.cpp - for string this should be sufficient
