@@ -16,10 +16,9 @@ This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) t
     - [ ] trajectory.hpp
     - [ ] velocity.hpp
   - [ ] src
-    - [ ] brake.cpp
+    - [x] brake.cpp
     - [ ] position-step1.cpp
     - [ ] position-step2.cpp
-    - [ ] (python.cpp) - no need
     - [ ] velocity-step1.cpp
     - [ ] velocity-step2.cpp
 - [ ] Check source code for obvious copy & paste errors that may have occured during the port
