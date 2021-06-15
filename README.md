@@ -9,16 +9,16 @@ This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) t
     - [x] brake.hpp
     - [x] input_parameters.hpp
     - [x] output_parameters.hpp
-    - [ ] position.hpp
+    - [x] position.hpp
     - [x] profile.hpp      
-    - [ ] roots.hpp
+    - [x] roots.hpp
     - [ ] ruckig.hpp
     - [ ] trajectory.hpp
     - [ ] velocity.hpp
   - [ ] src
     - [x] brake.cpp
-    - [ ] position-step1.cpp
-    - [ ] position-step2.cpp
+    - [x] position-step1.cpp
+    - [x] position-step2.cpp
     - [ ] velocity-step1.cpp
     - [ ] velocity-step2.cpp
 - [ ] Check source code for obvious copy & paste errors that may have occured during the port
