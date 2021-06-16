@@ -13,8 +13,8 @@ of the original C++ code for the following reasons.
 - the codesys compiler , in contrast to C++ compilers, does not come with a lot of compile time optimizations. Even simple loop unwrapping optimizations are not performed - probably to make debugging easier (?)
 - while some optimizations could be done by hand, I would rather have the port as close to the original as possible, only changing the architecture where it is required, because of limitiations of the programming language of the port.
 
-If you are looking for best possible performance of Ruckig, I suggest you look into making pantor/ruckig a TwinCAT C++ Module. Howver,
-if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you at.
+If you are looking for best possible performance of Ruckig, I suggest you look into making pantor/ruckig a TwinCAT C++ module. However,
+if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
 
 ## Progress report
 *update 2021/06/16: the port is not nearly finished yet. While most of the code has already been "translated" to structured text, the process was ... intense - It took me like 10 hours in one sitting... it was a lot of code that I had to "translate" manually and I wasnt always as concentrated as I should have been so... there are a lot of mistakes that will cause exceptions. And there is one specific "general protection fault" I do not understand at the moment. Also, some passages still require work. For instance, during "translating" I did not feel like implementing a quicksort algo used in the original code.*
