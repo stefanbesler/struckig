@@ -1,6 +1,6 @@
-#ruckig TwinCAT port
+#struckig
 
-This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to TwinCAT
+This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text (TwinCAT)
 
 
 - [x] Crude initial port of source code
