@@ -512,43 +512,5 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="Roots">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.cbrt">
-      <LineId Id="3" Count="9" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.polyDeri">
-      <LineId Id="3" Count="2" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.polyEval">
-      <LineId Id="3" Count="15" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.polyMonicDeri">
-      <LineId Id="3" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.Power">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.shrinkInterval">
-      <LineId Id="3" Count="55" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.solveCub">
-      <LineId Id="3" Count="99" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.solveQuartMonic">
-      <LineId Id="3" Count="119" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Roots.solveResolvent">
-      <LineId Id="3" Count="42" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

@@ -177,30 +177,5 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="Brake">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.accelerationBrake">
-      <LineId Id="3" Count="19" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.get_position_brake_trajectory">
-      <LineId Id="3" Count="17" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.get_velocity_brake_trajectory">
-      <LineId Id="3" Count="12" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.v_at_a_zero">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.v_at_t">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Brake.velocityBrake">
-      <LineId Id="3" Count="14" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

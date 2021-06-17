@@ -1156,52 +1156,5 @@ DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="PositionStep2">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.checkAll">
-      <LineId Id="3" Count="6" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.get">
-      <LineId Id="3" Count="8" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.set">
-      <LineId Id="3" Count="40" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc0">
-      <LineId Id="3" Count="16" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc0_acc1">
-      <LineId Id="3" Count="32" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc0_acc1_vel">
-      <LineId Id="3" Count="31" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc0_vel">
-      <LineId Id="3" Count="81" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc1">
-      <LineId Id="3" Count="41" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_acc1_vel">
-      <LineId Id="3" Count="74" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_none">
-      <LineId Id="3" Count="397" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="PositionStep2.time_vel">
-      <LineId Id="3" Count="208" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

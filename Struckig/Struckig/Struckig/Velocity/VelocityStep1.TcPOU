@@ -290,40 +290,5 @@ END_IF
     ]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="VelocityStep1">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.addInterval">
-      <LineId Id="3" Count="10" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.addProfile">
-      <LineId Id="3" Count="2" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.calculateBlock">
-      <LineId Id="3" Count="71" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.get">
-      <LineId Id="3" Count="12" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.removeProfile">
-      <LineId Id="3" Count="5" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.set">
-      <LineId Id="3" Count="6" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.time_acc0">
-      <LineId Id="3" Count="23" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="VelocityStep1.time_none">
-      <LineId Id="3" Count="27" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

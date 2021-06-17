@@ -436,47 +436,5 @@ af := af_new;
 vf := vf_new;]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="Profile">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.check">
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.checkAcc">
-      <LineId Id="3" Count="68" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.checkPositionExtremum">
-      <LineId Id="3" Count="13" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.checkStepForPositionExtremum">
-      <LineId Id="3" Count="26" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.checkTime">
-      <LineId Id="3" Count="0" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.checkVel">
-      <LineId Id="3" Count="102" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.integrate">
-      <LineId Id="3" Count="1" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.positionExtrema">
-      <LineId Id="3" Count="35" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.setBoundaryPosition">
-      <LineId Id="3" Count="4" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
-    <LineIds Name="Profile.setBoundaryVelocity">
-      <LineId Id="3" Count="3" />
-      <LineId Id="2" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
