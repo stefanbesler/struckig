@@ -24,31 +24,15 @@ if you would like to use a library that is implemented in a IEC 61131-3 conform 
 *update 2021/06/16: the port is not nearly finished yet. While most of the code has already been "translated" to structured text, the process was ... intense - It took me like 10 hours in one sitting... it was a lot of code that I had to "translate" manually and I wasnt always as concentrated as I should have been so... there are a lot of mistakes that will cause exceptions. And there is one specific "general protection fault" I do not understand at the moment. Also, some passages still require work. For instance, during "translating" I did not feel like implementing a quicksort algo used in the original code.*
 
 - [x] Crude initial port of source code
-  - [x] include/ruckig
-    - [x] block.hpp
-    - [x] brake.hpp
-    - [x] input_parameters.hpp
-    - [x] output_parameters.hpp
-    - [x] position.hpp
-    - [x] profile.hpp      
-    - [x] roots.hpp
-    - [x] ruckig.hpp
-    - [x] trajectory.hpp
-    - [x] velocity.hpp
-  - [x] src
-    - [x] brake.cpp
-    - [x] position-step1.cpp
-    - [x] position-step2.cpp
-    - [x] velocity-step1.cpp
-    - [x] velocity-step2.cpp
 - [ ] Check source code for obvious copy & paste errors that may have occured during the port
 - [ ] Manual testing
-- [ ] Initial commit
+- [x] Initial commit
 - [ ] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
     - [ ] otg-test.cpp - this should be sufficient
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
     - [ ] run unit tests to find more issues that sneaked in while porting
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
+- [ ] Refactor (coding conventions)
 - [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler :-(
 - [ ] examples
   - [ ] position.cpp
