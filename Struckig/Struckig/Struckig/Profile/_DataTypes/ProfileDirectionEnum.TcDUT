@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="ProfileDirectionEnum" Id="{2ff73edb-5bff-447c-9ade-9d123b5bb840}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ProfileDirectionEnum :
+(
+	up,
+  down
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

@@ -1,0 +1,860 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="PositionStep1" Id="{59242074-56b3-4cce-98f4-96108527bef2}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PositionStep1
+VAR
+  p0_, v0_, a0_ : LREAL;
+  pf_, vf_, af_ : LREAL;
+  vMax_, vMin_, aMax_, aMin_, jMax_ : LREAL;
+
+  // Pre-calculated expressions
+  pd_ : LREAL;
+  v0_v0, vf_vf : LREAL;
+  a0_a0, a0_p3, a0_p4, a0_p5, a0_p6 : LREAL;
+  af_af, af_p3, af_p4, af_p5, af_p6 : LREAL;
+  jMax_jMax : LREAL;
+  
+  // runtime  calculated expressions
+  polynom : ARRAY[0..4] OF LREAL;
+  orig : LREAL;
+  deriv : LREAL;
+  t : LREAL;
+  i : INT;
+  h0, h1, h2 : LREAL;
+  
+  
+  
+  has_up_vel, has_down_vel : BOOL;
+  validProfiles : ARRAY[0..5] OF Profile; // Max 5 valid profiles + 1 spare for numerical issues
+  validProfileCounter : INT := -1;
+  
+  root : Roots; 
+  left_duration, right_duration : LREAL;   
+END_VAR
+VAR CONSTANT
+  DBL_EPSILON : LREAL := 1E-9;
+  eps : LREAL := 1E-8;  
+  infinity : LREAL := 1.7976931348623157E+308;  
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="addInterval" Id="{f04cf183-f22e-4a08-854f-8d9fd235e3cd}">
+      <Declaration><![CDATA[METHOD addInterval
+VAR_INPUT
+  interval : REFERENCE TO BlockIntervalStruct;
+  left : REFERENCE TO Profile;
+  right : REFERENCE TO Profile;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[left_duration := left.t_sum[6] + left.t_brake;
+right_duration := right.t_sum[6] + right.t_brake;
+IF (left_duration < right_duration)
+THEN
+  interval.left := left_duration;
+  interval.right := right_duration;
+  interval.profile := right;
+ELSE
+  interval.left := right_duration;
+  interval.right := left_duration;
+  interval.profile := left;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="addProfile" Id="{443ac9a1-c2c8-4422-873c-d80f090e8e87}">
+      <Declaration><![CDATA[METHOD addProfile
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[profile.direction := SEL((jMax > 0), ProfileDirectionEnum.down, ProfileDirectionEnum.up);
+
+IF (profile.limits = ProfileLimitsEnum.acc0_acc1_vel OR_ELSE profile.limits = ProfileLimitsEnum.acc0_vel 
+    OR_ELSE profile.limits = ProfileLimitsEnum.acc1_vel OR_ELSE profile.limits = ProfileLimitsEnum.vel)
+THEN
+    CASE (profile.direction)
+    OF
+      ProfileDirectionEnum.up: has_up_vel := TRUE;
+      ProfileDirectionEnum.down: has_down_vel := TRUE;
+    END_CASE        
+END_IF
+
+validProfileCounter := validProfileCounter + 1;
+validProfiles[validProfileCounter] := profile;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="calculateBlock" Id="{50e177a8-dca6-48ec-aabe-f9c22fb4f02a}">
+      <Declaration><![CDATA[METHOD calculateBlock : BOOL
+VAR_INPUT
+  block : REFERENCE TO BlockStruct;
+END_VAR
+VAR
+  i, j : INT;
+  t_min : LREAL;
+  idx_min : INT;
+  idx_else_1, idx_else_2, idx_else_3, idx_else_4 : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (validProfileCounter = 0) OR_ELSE (validProfileCounter = 1 AND_THEN ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*eps)
+THEN
+  block.p_min := validProfiles[0];
+  block.t_min := block.p_min.t_sum[6] + block.p_min.t_brake;  
+  calculateBlock := TRUE;
+
+// Only happens due to numerical issues
+ELSIF (validProfileCounter = 3) 
+THEN
+  // Find "identical" profiles
+  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 16*eps OR_ELSE validProfiles[0].direction <> validProfiles[1].direction)
+  THEN
+    removeProfile(1);
+  ELSIF (ABS(validProfiles[2].t_sum[6] - validProfiles[3].t_sum[6]) < 16*eps  OR_ELSE validProfiles[2].direction <> validProfiles[3].direction)
+  THEN
+    removeProfile(3);
+  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[3].t_sum[6]) < 256*eps OR_ELSE validProfiles[0].direction <> validProfiles[3].direction)
+  THEN
+    removeProfile(3);
+  ELSE
+    RETURN;
+  END_IF
+
+ELSIF ((validProfileCounter+1) MOD 2 = 0)
+THEN
+  RETURN;
+END_IF
+
+// Find index of fastest profile
+t_min := validProfiles[0].infinity; // todo: fix, this is ugly
+FOR i:=0 TO validProfileCounter
+DO
+  FOR j:=0 TO validProfileCounter
+  DO
+    IF validProfiles[i].t_sum[6] + validProfiles[i].t_brake < validProfiles[j].t_sum[6] + validProfiles[j].t_brake AND_THEN
+       validProfiles[i].t_sum[6] + validProfiles[i].t_brake < t_min
+    THEN
+      t_min := validProfiles[i].t_sum[6] + validProfiles[i].t_brake;
+      idx_min := i;
+		END_IF
+  END_FOR
+END_FOR
+
+block.p_min := validProfiles[idx_min];
+block.t_min := block.p_min.t_sum[6] + block.p_min.t_brake;  
+
+IF (validProfileCounter = 2)
+THEN
+  idx_else_1 := (idx_min + 1) MOD 3;
+  idx_else_2 := (idx_min + 2) MOD 3;
+  
+  addInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+  calculateBlock := TRUE;
+  RETURN;
+
+ ELSIF (validProfileCounter = 4)
+ THEN
+  idx_else_1 := (idx_min + 1) MOD 5;
+  idx_else_2 := (idx_min + 2) MOD 5;
+  idx_else_3 := (idx_min + 3) MOD 5;
+  idx_else_4 := (idx_min + 4) MOD 5;
+  
+  IF (validProfiles[idx_else_1].direction = validProfiles[idx_else_2].direction)
+  THEN
+    addInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+    addInterval(block.b, validProfiles[idx_else_3], validProfiles[idx_else_4]);
+  ELSE 
+    addInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_4]);
+    addInterval(block.b, validProfiles[idx_else_2], validProfiles[idx_else_3]);
+  END_IF
+  
+  calculateBlock := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="get" Id="{1c1bdad0-f955-4d7e-82c0-f0b69b7c5251}">
+      <Declaration><![CDATA[METHOD get : BOOL
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  block : REFERENCE TO BlockStruct; 
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[profile.setBoundaryPosition(p0_, v0_, a0_, pf_, vf_, af_);
+validProfileCounter := -1;
+
+IF (ABS(pf_ - p0_) < DBL_EPSILON AND_THEN ABS(v0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+THEN 
+  IF (pf_ >= p0_)
+  THEN
+    time_none(profile, vMax_, aMax_, aMin_, jMax_);
+  ELSE
+    time_none(profile, vMin_, aMin_, aMax_, -jMax_);        
+  END_IF
+
+ELSE 
+  time_acc0_acc1_vel(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc0_acc1_vel(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_acc1_vel(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc1_vel(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_acc0_vel(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc0_vel(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_vel(profile, vMax_, aMax_, aMin_, jMax_);
+  time_vel(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_none(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc0(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc1(profile, vMax_, aMax_, aMin_, jMax_);
+  time_acc0_acc1(profile, vMax_, aMax_, aMin_, jMax_);
+  time_none(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_acc0(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_acc1(profile, vMin_, aMin_, aMax_, -jMax_);
+  time_acc0_acc1(profile, vMin_, aMin_, aMax_, -jMax_);  
+
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
+  THEN
+    time_none_two_step(profile, vMax_, aMax_, aMin_, jMax_);        
+  END_IF
+    
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
+  THEN
+    time_none_two_step(profile, vMin_, aMin_, aMax_, -jMax_);
+  END_IF 
+    
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
+  THEN
+    time_acc0_two_step(profile, vMax_, aMax_, aMin_, jMax_);
+  END_IF 
+  
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1) 
+  THEN
+    time_acc0_two_step(profile, vMin_, aMin_, aMax_, -jMax_);        
+  END_IF
+  
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1) 
+  THEN
+    time_vel_two_step(profile, vMax_, aMax_, aMin_, jMax_);        
+  END_IF
+  
+  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
+  THEN
+    time_vel_two_step(profile, vMin_, aMin_, aMax_, -jMax_);
+  END_IF 
+END_IF
+
+get := calculateBlock(block);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="removeProfile" Id="{bd3a75f9-6643-430d-baa6-3b74a1498442}">
+      <Declaration><![CDATA[METHOD PRIVATE removeProfile : BOOL
+VAR_INPUT
+  index : INT;
+END_VAR
+VAR
+  i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// todo, this is pretty slow in twincat
+FOR i:=index TO validProfileCounter-2
+DO
+  validProfiles[i] := validProfiles[i + 1];
+END_FOR
+
+validProfileCounter := validProfileCounter - 1;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="set" Id="{ce744db4-d360-45a6-a3e4-2c7d816397cb}">
+      <Declaration><![CDATA[METHOD set
+VAR_INPUT
+  p0, v0, a0 : LREAL;
+  pf, vf, af : LREAL;
+  vMax, vMin : LREAL;
+  aMax, aMin : LREAL;
+  jMax : LREAL;  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[p0_ := p0;
+v0_ := v0;
+a0_ := a0;
+pf_ := pf;
+vf_ := vf;
+af_ := af;
+vMax_ := vMax;
+vMin_ := vMin;
+aMax_ := aMax;
+aMin_ := aMin;
+jMax_ := jMax;
+
+pd_ := pf - p0;
+
+v0_v0 := v0 * v0;
+vf_vf := vf * vf;
+
+a0_a0 := a0 * a0;
+af_af := af * af;
+
+a0_p3 := a0 * a0_a0;
+a0_p4 := a0_a0 * a0_a0;
+a0_p5 := a0_p3 * a0_a0;
+a0_p6 := a0_p4 * a0_a0;
+af_p3 := af * af_af;
+af_p4 := af_af * af_af;
+af_p5 := af_p3 * af_af;
+af_p6 := af_p4 * af_af;
+
+// max values needs to be invariant to plus minus sign change
+jMax_jMax := jMax * jMax;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0" Id="{5ee3df37-2f62-4540-8c35-85e55810ddc3}">
+      <Declaration><![CDATA[METHOD time_acc0
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Combined UDDU and UDUD
+// UDUD Strategy t7 == 0 => is equal to UDDU
+polynom[0] := 1.0;
+polynom[1] := (-2*aMax)/jMax;
+polynom[2] := (-af_af + aMax*aMax + 2*jMax*vf_)/jMax_jMax;
+polynom[3] := 0;
+polynom[4] := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*vf_) + 12*jMax*(jMax*(vf_vf - v0_v0 - 2*aMax*pd_) - aMax*aMax*(vf_ - v0_)))/(12*jMax_jMax*jMax_jMax);
+
+root.solveQuartMonic(ADR(polynom[1]), 4);
+FOR i:=0 TO root.rootCount
+DO
+  t := root.roots[i];
+  IF t < 0.0
+  THEN
+    CONTINUE;
+	END_IF
+
+  // Single Newton step (regarding pd)
+  orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf_)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0_ - vf_) + jMax*(jMax*t*t*(jMax*t*t + 2*vf_) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
+  deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf_)))/aMax;
+
+  t := t - orig / deriv;
+
+  profile.t[0] := (-a0_ + aMax)/jMax;
+  profile.t[1] := (a0_a0 - af_af + 2*jMax*((-2*aMax + jMax*t)*t + vf_ - v0_))/(2*aMax*jMax);
+  profile.t[2] := t;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := (af_ - aMax)/jMax + t;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);        
+  END_IF
+END_FOR   ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0_acc1" Id="{e5212c06-396a-492c-bc44-27957c4ab5ed}">
+      <Declaration><![CDATA[METHOD time_acc0_acc1
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR
+VAR
+  temp : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h0 := (aMax - aMin)*(3*af_p4*aMax - 3*a0_p4*aMin + 8*a0_p3*aMax*aMin - 8*af_p3*aMax*aMin - 24*a0_*aMax*aMin*jMax*v0_ - 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0_) + 24*af_*aMax*aMin*jMax*vf_ + 6*af_af*aMax*(aMin*aMin - 2*jMax*vf_) + 3*(root.Power(aMax,3)*aMin*aMin - 4*aMin*jMax*jMax*v0_*v0_ - aMax*aMax*(root.Power(aMin,3) - 4*aMin*jMax*v0_) + 4*aMax*jMax*(2*aMin*jMax*(p0_ - pf_) - aMin*aMin*vf_ + jMax*vf_*vf_)));
+IF (h0 >= 0) // check if h1 isNan
+THEN
+  h1 := SQRT(3)*SQRT(h0)*ABS(jMax)/(3*(aMax - aMin)*jMax);
+
+  // UDDU: Solution 2
+  profile.t[0] := (-a0_ + aMax)/jMax;
+  profile.t[1] := (a0_a0 + aMax*aMin - 2*(aMax*aMax + jMax*v0_) - h1)/(2*aMax*jMax);
+  profile.t[2] := aMax/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := -aMin/jMax;
+  profile.t[5] := -(af_af + aMax*aMin - 2*(aMin*aMin + jMax*vf_) - h1)/(2*aMin*jMax);
+  profile.t[6] := profile.t[4] + af_/jMax;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);            
+  END_IF
+  
+  // UDDU: Solution 1  
+  profile.t[0] := (-a0_ + aMax)/jMax;
+  profile.t[1] := (a0_a0 + aMax*aMin - 2*(aMax*aMax + jMax*v0_) + h1)/(2*aMax*jMax);
+  profile.t[2] := aMax/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := -aMin/jMax;
+  profile.t[5] := -(af_af + aMax*aMin - 2*(aMin*aMin + jMax*vf_) + h1)/(2*aMin*jMax);
+  profile.t[6] := profile.t[4] + af_/jMax;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);              
+  END_IF
+END_IF
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0_acc1_vel" Id="{0932514e-6750-4a1f-b673-619a59e1903e}">
+      <Declaration><![CDATA[METHOD time_acc0_acc1_vel
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[profile.t[0] := (-a0_ + aMax)/jMax;
+profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0_ - vMax))/(aMax*jMax);
+profile.t[2] := aMax/jMax;
+profile.t[3] := (3*a0_p4*aMin - 3*af_p4*aMax + 8*(af_p3 - a0_p3)*aMax*aMin + 24*aMax*aMin*jMax*(a0_*v0_ - af_*vf_) + 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0_) - 6*af_af*aMax*(aMin*aMin - 2*jMax*vf_) - 12*jMax*(aMax*aMax*aMin*(v0_ + vMax) + aMin*jMax*(vMax*vMax - v0_v0) - aMax*(2*aMin*jMax*pd_ + aMin*aMin*(vf_ + vMax) + jMax*(vMax*vMax - vf_vf))))/(24*aMax*aMin*jMax_jMax*vMax);
+profile.t[4] := -aMin/jMax;
+profile.t[5] := -(af_af*0.5 - aMin*aMin - jMax*(vf_ - vMax))/(aMin*jMax);
+profile.t[6] := profile.t[4] + af_/jMax;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);    
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0_two_step" Id="{bb72dd1e-fc6d-4110-a222-a9ef280818c2}">
+      <Declaration><![CDATA[METHOD time_acc0_two_step
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h0 := 3*(af_af - a0_a0 + 2*jMax*(v0_ + vf_));
+h1 := SQRT(2*jMax_jMax*(2*root.Power(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af,2) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0)))));
+
+ // Two step
+profile.t[0] := 0;
+profile.t[1] := (af_af - a0_a0 + 2*jMax*(vf_ - v0_))/(2*a0_*jMax);
+profile.t[2] := (a0_ - af_)/jMax;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+THEN
+    addProfile(profile, jMax);
+    return;
+END_IF
+
+// Three step
+profile.t[0] := (2*a0_p3*jMax - 6*a0_*af_af*jMax + 4*af_p3*jMax + 12*jMax_jMax*jMax*pd_ + 12*(af_ - a0_)*jMax_jMax*vf_ + h1)/(2*jMax_jMax*h0);
+profile.t[1] := -h1/(jMax_jMax*h0);
+profile.t[2] := (-4*a0_p3*jMax + 6*a0_a0*af_*jMax - 2*af_p3*jMax + 12*jMax_jMax*jMax*pd_ - 12*(af_ - a0_)*jMax_jMax*v0_ + h1)/(2*jMax_jMax*h0);
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);
+  RETURN;     
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0_vel" Id="{d92ea80d-f7d7-4e3b-b992-468587be1c31}">
+      <Declaration><![CDATA[METHOD time_acc0_vel
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel)) 
+THEN
+  RETURN;    
+END_IF
+
+h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
+
+profile.t[0] := (-a0_ + aMax)/jMax;
+profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0_ - vMax))/(aMax*jMax);
+profile.t[2] := aMax/jMax;
+profile.t[3] := (3*a0_p4 + 8*(af_p3 - a0_p3)*aMax + 24*aMax*jMax*(a0_*v0_ - af_*vf_) + 6*a0_a0*(aMax*aMax - 2*jMax*v0_) - 12*jMax*(-2*aMax*jMax*pd_ + aMax*aMax*(v0_ + vMax) + jMax*(vMax*vMax - v0_v0) + (2*(vf_ + vMax)*jMax - af_af)*aMax*h1))/(24*aMax*jMax_jMax*vMax);
+profile.t[4] := h1;
+profile.t[5] := 0;
+profile.t[6] := profile.t[4] + af_/jMax;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_vel, jMax, vMax, aMax, aMin)) 
+THEN
+  addProfile(profile, jMax);    
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc1" Id="{6fa9f1fb-2a10-4190-9e2d-428719e15794}">
+      <Declaration><![CDATA[METHOD time_acc1
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[polynom[0] := 1.0;
+polynom[1] := (2*(2*a0_ - aMin))/jMax;
+polynom[2] := (5*a0_a0 - 6*a0_*aMin + aMin*aMin + 2*jMax*v0_)/jMax_jMax;
+polynom[3] := (2*(a0_ - aMin)*(a0_a0 - a0_*aMin + 2*jMax*v0_))/(jMax_jMax*jMax);
+polynom[4] := (3*(a0_p4 - af_p4) - 8*(a0_p3 - af_p3)*aMin - 24*aMin*jMax*(a0_*v0_ + af_*vf_) + 6*a0_a0*(aMin*aMin + 2*jMax*v0_) - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(2*aMin*jMax*pd_ + aMin*aMin*(v0_ + vf_) + jMax*(v0_v0 - vf_vf)))/(12*jMax_jMax*jMax_jMax);
+
+root.solveQuartMonic(ADR(polynom[1]), 4);
+FOR i:=0 TO root.rootCount
+DO
+  t := root.roots[i];
+  IF t < 0.0
+  THEN
+    CONTINUE;
+	END_IF
+
+
+  // Double Newton step (regarding pd)
+  h1 := jMax*t*t + v0_;
+  orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
+  deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
+  
+  t := t - orig / deriv;
+  
+  h1 := jMax*t*t + v0_;
+  orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
+  IF (ABS(orig) > 1E-9)
+  THEN
+    deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
+    t := t - orig / deriv;    
+  END_IF
+      
+  profile.t[0] := t;
+  profile.t[1] := 0;
+  profile.t[2] := (a0_ - aMin)/jMax + t;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := -((a0_a0 + af_af)*0.5 - aMin*aMin + jMax*t*(2*a0_ + jMax*t) - jMax*(vf_ - v0_))/(aMin*jMax);
+  profile.t[6] := (af_ - aMin)/jMax;
+  
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);
+  END_IF
+END_FOR   ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc1_vel" Id="{c1122915-aa0d-4d5a-bc39-3dab8f1068c3}">
+      <Declaration><![CDATA[METHOD time_acc1_vel
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel)) 
+THEN
+  RETURN;    
+END_IF
+
+h1 := SQRT(a0_a0*0.5 + jMax*(vMax - v0_))/ABS(jMax);
+profile.t[0] := -a0_/jMax + h1;
+profile.t[1] := 0;
+profile.t[2] := h1;
+profile.t[3] := -(3*af_p4 - 8*aMin*(af_p3 - a0_p3) - 24*aMin*jMax*(a0_*v0_ - af_*vf_) + 6*af_af*(aMin*aMin - 2*jMax*vf_) - 12*jMax*(2*aMin*jMax*pd_ + aMin*aMin*(vf_ + vMax) + jMax*(vMax*vMax - vf_vf) + aMin*h1*(a0_a0 - 2*jMax*(v0_ + vMax))))/(24*aMin*jMax_jMax*vMax);
+profile.t[4] := -aMin/jMax;
+profile.t[5] := -(af_af*0.5 - aMin*aMin + jMax*(vMax - vf_))/(aMin*jMax);
+profile.t[6] := profile.t[4] + af_/jMax;
+
+IF (ABS(profile.t[0]) < DBL_EPSILON AND_THEN profile.t[0] < 0.0) 
+THEN
+  profile.t[0] := 0;    
+END_IF
+    
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1_vel, jMax, vMax, aMax, aMin)) 
+THEN
+  addProfile(profile, jMax);    
+END_IF
+    ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_none" Id="{8dc73406-0d3d-47dc-bb3e-7f48cc7640c3}">
+      <Declaration><![CDATA[METHOD time_none
+VAR_INPUT
+  profile : REFERENCE TO Profile;  
+  vMax : LREAL;
+  aMax : LREAL;
+  aMin : LREAL;
+  jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// UDDU
+IF (ABS(v0_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+THEN
+  profile.t[0] := root.cbrt(0.5 * pd_/jMax);
+  profile.t[1] := 0;
+  profile.t[2] := 2*profile.t[0];
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := profile.t[0];
+  
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);            
+  END_IF
+  
+  RETURN;        
+END_IF
+
+        
+IF (ABS(a0_ - af_) < DBL_EPSILON AND_THEN ABS(v0_ + vf_) < DBL_EPSILON AND_THEN ABS(p0_ - pf_) < DBL_EPSILON) 
+THEN
+  h1 := SQRT(a0_a0 - 2*jMax*v0_);
+
+  // Solution 3
+  profile.t[0] := -(a0_ + h1)/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := profile.t[0];
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);                
+  END_IF
+        
+  // Solution 4
+  profile.t[0] := -(a0_ - h1)/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := profile.t[0];
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);                
+  END_IF
+        
+  RETURN;        
+END_IF
+  
+
+// UDDU / UDUD modern, this one is in particular prone to numerical issues
+// UDUD Strategy: t7 == 0 (equals UDDU)
+polynom[0] := 1.0;
+polynom[1] := 0.0;
+polynom[2] := (-2*(a0_a0 + af_af - 2*jMax*(v0_ + vf_)))/jMax_jMax;
+polynom[3] := (4*(a0_p3 - af_p3 + 3*jMax*(af_*vf_ - a0_*v0_ - jMax*pd_)))/(3*jMax*jMax_jMax);
+polynom[4] := -root.Power(a0_a0 - af_af + 2*jMax*(vf_ - v0_), 2)/(4*jMax_jMax*jMax_jMax);
+root.solveQuartMonic(ADR(polynom[1]), 4);
+FOR i:=0 TO root.rootCount
+DO
+  t := root.roots[i];
+  IF t < 0.0
+  THEN
+    CONTINUE;
+	END_IF
+            
+  // Single Newton-step (regarding pd)
+  h1 := (a0_a0 - af_af)/(2*jMax) + (vf_ - v0_);
+  orig := (-h1*h1 + 4*h1*t*(af_ + jMax*t))/(4*jMax*t) + (4*a0_p3 + 2*af_p3 - 6*a0_a0*(af_ + 2*jMax*t) + 12*(af_ - a0_)*jMax*v0_ + 3*jMax_jMax*(-4*pd_ + jMax*t*t*t + 8*t*v0_))/(12*jMax_jMax);
+  deriv := h1 + 2*v0_ - a0_a0/jMax + h1*h1/(4*jMax*t*t) + (3*jMax*t*t)/4;
+  t := t - orig / deriv;
+            
+
+  h0 := ((a0_a0 - af_af)/jMax + 2*(vf_ - v0_))/(4*jMax*t);
+  profile.t[0] := h0 + t*0.5 - a0_/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := t;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := -h0 + t*0.5 + af_/jMax;
+
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin)) 
+  THEN
+    addProfile(profile, jMax);            
+  END_IF
+  
+END_FOR
+        
+    ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_none_two_step" Id="{55118d55-e9ff-42b6-aef9-5bdac8d765e4}">
+      <Declaration><![CDATA[METHOD time_none_two_step
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h0 := SQRT((a0_a0 + af_af)*0.5 + jMax*(vf_ - v0_)) * ABS(jMax) / jMax;
+
+// Single step
+profile.t[0] := (af_ - a0_)/jMax;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsENum.none, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);
+  RETURN;        
+END_IF
+
+// Two step
+profile.t[0] := (h0 - a0_)/jMax;
+profile.t[1] := 0;
+profile.t[2] := (h0 - af_)/jMax;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);        
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_vel" Id="{25fee1d9-95b1-4ca4-a757-3e8d197e37fa}">
+      <Declaration><![CDATA[METHOD time_vel
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
+h2 := SQRT(a0_a0*0.5 + jMax*(vMax - v0_))/ABS(jMax);
+
+IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel))
+THEN
+  RETURN;
+END_IF
+
+// Solution 3/4
+profile.t[0] := h2 - a0_/jMax;
+profile.t[1] := 0;
+profile.t[2] := h2;
+profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0_*v0_ - af_*vf_ + (af_af*h1 + a0_a0*h2)*0.5)/(jMax*vMax) - (v0_/vMax + 1.0)*h2 - (vf_/vMax + 1.0)*h1 + pd_/vMax;
+profile.t[4] := h1;
+profile.t[5] := 0;
+profile.t[6] := h1 + af_/jMax;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_vel_two_step" Id="{78d50b14-2a01-494d-b78f-ace6c4afe469}">
+      <Declaration><![CDATA[METHOD time_vel_two_step
+VAR_INPUT
+  profile : REFERENCE TO Profile;
+  vMax, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
+
+// Four step        
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := a0_/jMax;
+profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0_*v0_ - af_*vf_ + (af_af*h1 + a0_p3/jMax)*0.5)/(jMax*vMax) - (v0_/vMax + 1.0)*a0_/jMax - (vf_/vMax + 1.0)*h1 + pd_/vMax;
+profile.t[4] := h1;
+profile.t[5] := 0;
+profile.t[6] := h1 + af_/jMax;
+
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, aMax, aMin))
+THEN
+  addProfile(profile, jMax);        
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="PositionStep1">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.addInterval">
+      <LineId Id="3" Count="10" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.addProfile">
+      <LineId Id="3" Count="12" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.calculateBlock">
+      <LineId Id="3" Count="71" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.get">
+      <LineId Id="3" Count="60" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.removeProfile">
+      <LineId Id="3" Count="5" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.set">
+      <LineId Id="3" Count="29" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc0">
+      <LineId Id="3" Count="34" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc0_acc1">
+      <LineId Id="3" Count="36" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc0_acc1_vel">
+      <LineId Id="3" Count="10" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc0_two_step">
+      <LineId Id="3" Count="30" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc0_vel">
+      <LineId Id="3" Count="18" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc1">
+      <LineId Id="3" Count="42" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_acc1_vel">
+      <LineId Id="3" Count="22" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_none">
+      <LineId Id="3" Count="94" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_none_two_step">
+      <LineId Id="3" Count="29" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_vel">
+      <LineId Id="3" Count="19" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="PositionStep1.time_vel_two_step">
+      <LineId Id="3" Count="13" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

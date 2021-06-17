@@ -1,0 +1,518 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Trajectory" Id="{6ae710e9-e92b-4222-9a89-21e6ad9f95fa}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Trajectory
+VAR_INPUT
+  profiles : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF Profile;
+  independentMinDurations : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  brake : Brake;
+  positionStep1 : PositionStep1;
+  positionStep2 : PositionStep2;
+  velocityStep1 : VelocityStep1;
+  velocityStep2 : VelocityStep2;
+  duration : LREAL;  
+END_VAR
+VAR_OUTPUT
+  hasError : BOOL;
+  errorId : INT;
+  errorDetail : STRING(255);
+END_VAR
+VAR CONSTANT
+  eps : LREAL := 1E-8;
+  epsColinear : LREAL := 1E-7;
+  infinity : LREAL := 1.7976931348623157E+308;  
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="atTime" Id="{1913c8bc-27d7-47aa-98f9-aab5db9d25eb}">
+      <Declaration><![CDATA[METHOD atTime
+VAR_INPUT
+  t : LREAL;
+  dofs : INT;
+  new_position : POINTER TO LREAL;
+  new_velocity : POINTER TO LREAL;
+  new_acceleration : POINTER TO LREAL;
+END_VAR
+VAR
+  dof : INT;
+  p : REFERENCE TO Profile;
+  t_diff : LREAL;
+  index : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (t >= duration) THEN
+    {// Keep constant acceleration}
+    FOR dof:=0 TO dofs-1 DO
+      profiles[0].integrate(t - duration, profiles[dof].pf, profiles[dof].vf, profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    END_FOR
+    RETURN;
+END_IF
+
+FOR dof:=0 TO dofs-1 DO
+  p REF= profiles[dof];
+
+  t_diff := t;
+  IF (p.t_brake > 0) THEN
+    IF (t_diff < p.t_brake) THEN
+      index := SEL(t_diff < p.t_brakes[0], 1, 0);
+      IF (index > 0) THEN
+        t_diff := t_diff - p.t_brakes[index - 1];
+      END_IF
+
+      profiles[0].integrate(t_diff, p.p_brakes[index], p.v_brakes[index], p.a_brakes[index], p.j_brakes[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+      CONTINUE;
+    ELSE
+      t_diff := t_diff - p.t_brake;
+    END_IF
+  END_IF
+
+  // Non-time synchronization
+  IF (t_diff >= p.t_sum[6]) THEN
+    // Keep constant acceleration
+    profiles[0].integrate(t_diff - p.t_sum[6], p.pf, p.vf, p.af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    continue;
+  END_IF
+
+  FOR index:=0 TO 6 DO
+    IF p.t_sum[index] > t_diff
+    THEN
+      EXIT;
+    END_IF
+	END_FOR
+  
+  IF (index > 0) THEN
+    t_diff := t_diff - p.t_sum[index - 1];
+  END_IF
+
+  p.integrate(t_diff, p.p[index], p.v[index], p.a[index], p.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="calculate" Id="{24c01bf2-a8ac-457d-aca5-3adf95d3ce92}">
+      <Declaration><![CDATA[METHOD calculate : ErrorCodeEnum
+VAR_INPUT
+  inp : REFERENCE TO InputParameterStruct;
+  deltaTime : LREAL;
+END_VAR
+VAR_INST
+  i, dof : INT;
+  blocks : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF BlockStruct;
+  blockCount : INT;
+  p0s, v0s, a0s : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  inp_min_velocity, inp_min_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  p : REFERENCE TO Profile;
+  found_profile : BOOL;
+  limiting_dof : INT := -1; // The DoF that doesn't need step 2
+  discrete_duration, found_synchronization, found_time_synchronization : BOOL;
+  new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  t_profile : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR dof:=0 TO inp.dofs-1
+DO
+  p REF=profiles[dof];
+  
+  p.pf := inp.current_position[dof];
+  p.vf := inp.current_velocity[dof];
+  p.af := inp.current_acceleration[dof];
+  
+  IF NOT inp.enabled[dof]
+  THEN
+    p.t_sum[6] := 0.0;
+    CONTINUE;
+	END_IF
+  
+  inp_min_velocity[dof] := SEL(inp.min_velocity[dof] = 0, inp.min_velocity[dof], -inp.max_velocity[dof]);
+  inp_min_acceleration[dof] := SEL(inp.min_acceleration[dof] = 0, inp.min_acceleration[dof], -inp.max_acceleration[dof]);
+  
+  CASE inp.interfaceType
+  OF
+    InterfaceTypeEnum.position:
+      brake.get_position_brake_trajectory(inp.current_velocity[dof], inp.current_acceleration[dof], inp.max_velocity[dof], inp_min_velocity[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof], p.t_brakes, p.j_brakes);
+      
+    InterfaceTypeEnum.velocity:
+      brake.get_velocity_brake_trajectory(inp.current_velocity[dof], inp.current_acceleration[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof], p.t_brakes, p.j_brakes);
+	END_CASE
+  
+  p.t_brake := p.t_brakes[0] + p.t_brakes[1];
+  p0s[dof] := inp.current_position[dof];
+  v0s[dof] := inp.current_velocity[dof];
+  a0s[dof] := inp.current_acceleration[dof];  
+  
+  // Integrate brake pre-trajectory
+  FOR i := 0 TO 1
+  DO
+    IF p.t_brakes[i] <= 0
+    THEN
+      EXIT;
+    END_IF
+    
+    p.p_brakes[i] := p0s[dof];
+    p.v_brakes[i] := v0s[dof];
+    p.a_brakes[i] := a0s[dof];
+    p.integrate(p.t_brakes[i], p0s[dof], v0s[dof], a0s[dof], p.j_brakes[i], p:=p0s[dof], v:=v0s[dof], a:=a0s[dof]);
+  
+	END_FOR
+
+  // TODO:
+  CASE inp.interfaceType
+  OF
+    InterfaceTypeEnum.position:
+      positionStep1.set(p0s[dof], v0s[dof], a0s[dof], inp.target_position[dof], inp.target_velocity[dof], inp.target_acceleration[dof], inp.max_velocity[dof], inp_min_velocity[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof]);
+      found_profile := positionStep1.get(p, blocks[dof]);
+    InterfaceTypeEnum.velocity:
+      velocityStep1.set(p0s[dof], v0s[dof], a0s[dof], inp.target_velocity[dof], inp.target_acceleration[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof]);
+      found_profile := velocityStep1.get(p, blocks[dof]);
+	END_CASE
+
+  IF NOT found_profile
+  THEN
+    hasError := TRUE;
+    errorDetail := 'error in calculate step 1';
+	END_IF
+
+  independentMinDurations[dof] := blocks[dof].t_min;
+END_FOR
+
+
+discrete_duration := (inp.discretizationType = DiscretizationTypeEnum.discrete);
+found_synchronization := synchronize(inp.dofs, discrete_duration, deltaTime, ADR(blocks), ADR(profiles), blockCount, inp.minDuration, duration, limiting_dof);
+IF NOT found_synchronization THEN
+  //if constexpr (throw_error) {
+  //    throw std::runtime_error("[ruckig] error in time synchronization: " + std::to_string(duration));
+  //}
+  calculate := ErrorCodeEnum.synchronizationCalculation;
+  RETURN;
+END_IF
+
+(*
+if constexpr (return_error_at_maximal_duration) {
+    if (duration > 7.6e3) {
+        return Result::ErrorTrajectoryDuration;
+    }
+}
+*)
+
+IF (duration = 0.0) THEN
+  RETURN;
+END_IF
+
+IF (inp.synchronizationType = SynchronizationTypeEnum.none) THEN
+  FOR i:=0 TO inp.dofs-1 DO
+    IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
+      CONTINUE;
+    END_IF
+  
+    profiles[dof] := blocks[dof].p_min;
+  END_FOR
+  RETURN;
+END_IF
+
+IF (inp.synchronizationType = SynchronizationTypeEnum.phaseSync AND_THEN inp.interfaceType = InterfaceTypeENum.position) THEN
+  IF (isPhaseSynchronizable(inp, inp.max_velocity, inp_min_velocity, inp.max_acceleration, inp_min_acceleration, inp.max_jerk, profiles[limiting_dof].direction, limiting_dof, new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
+    found_time_synchronization := TRUE;
+    FOR i:=0 TO inp.dofs-1 DO
+      IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
+        CONTINUE;
+      END_IF
+
+      p REF= profiles[dof];
+      t_profile := duration - p.t_brake;
+
+      p.t := profiles[limiting_dof].t; // Copy timing information from limiting DoF
+      p.jerkSigns := profiles[limiting_dof].jerkSigns;
+      p.setBoundaryPosition(inp.current_position[dof], inp.current_velocity[dof], inp.current_acceleration[dof], inp.target_position[dof], inp.target_velocity[dof], inp.target_acceleration[dof]);
+
+      // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
+      CASE (p.jerkSigns) OF 
+        ProfileJerkSignsEnum.uddu: 
+          IF ( NOT p.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+              found_time_synchronization := FALSE;
+          END_IF
+
+        ProfileJerkSignsEnum.udud: 
+          IF ( NOT p.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+              found_time_synchronization := FALSE;
+          END_IF
+      END_CASE
+
+      p.limits := profiles[limiting_dof].limits; // After check method call to set correct limits
+    END_FOR
+
+    IF (found_time_synchronization) THEN
+      RETURN;
+    END_IF
+  END_IF
+END_IF
+
+// The general case
+FOR i:=0 TO inp.dofs-1
+DO
+  IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
+      continue;
+  END_IF
+  
+  p REF= profiles[dof];
+  t_profile := duration - p.t_brake;
+  
+  IF (inp.synchronizationType = SynchronizationTypeEnum.timeIfNecessarySync AND_THEN ABS(inp.target_velocity[dof]) < eps AND_THEN ABS(inp.current_acceleration[dof]) < eps) THEN
+      p := blocks[dof].p_min;
+      continue;
+  END_IF
+  
+  // Check if the final time corresponds to an extremal profile calculated in step 1
+  IF (ABS(t_profile - blocks[dof].t_min) < eps) THEN
+      p := blocks[dof].p_min;
+      continue;
+  ELSIF (blocks[dof].a.isUsed AND_THEN ABS(t_profile - blocks[dof].a.right) < eps)
+  THEN
+      p := blocks[dof].a.profile;
+      continue;
+  ELSIF (blocks[dof].b.isUsed AND_THEN ABS(t_profile - blocks[dof].b.right) < eps)
+  THEN
+      p := blocks[dof].b.profile;
+      continue;
+  END_IF
+  
+  CASE (inp.interfaceType)
+  OF  
+    InterfaceTypeEnum.position: 
+      positionStep2.set(t_profile, p0s[dof], v0s[dof], a0s[dof], inp.target_position[dof], inp.target_velocity[dof], inp.target_acceleration[dof], inp.max_velocity[dof], inp_min_velocity[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof]);
+      found_time_synchronization := positionStep2.get(p);
+
+    InterfaceTypeEnum.velocity: 
+      velocityStep2.set(t_profile, p0s[dof], v0s[dof], a0s[dof], inp.target_velocity[dof], inp.target_acceleration[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof]);
+
+  END_CASE
+
+  IF (NOT found_time_synchronization) THEN
+    (*
+      if constexpr (throw_error) {
+          throw std::runtime_error("[ruckig] error in step 2 in dof: " + std::to_string(dof) + " for t sync: " + std::to_string(duration) + " input: " + inp.to_string());
+      }
+      *)
+    calculate := ErrorCodeENum.synchronizationCalculation;
+  END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="isBlocked" Id="{e8f79806-8e7c-46e4-b6d5-680cc6a4040e}">
+      <Declaration><![CDATA[METHOD isBlocked : BOOL
+VAR_INPUT
+  block : REFERENCE TO BlockStruct;
+  t : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[isBlocked := (t < block.t_min) OR_ELSE (block.a.isUsed AND_THEN block.a.left < t AND_THEN t < block.a.right) OR_ELSE (block.b.isUsed AND_THEN block.b.left < t AND_THEN t < block.b.right);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="isPhaseSynchronizable" Id="{ae30f2ad-209b-4d75-9241-72b124189e4f}">
+      <Declaration><![CDATA[METHOD isPhaseSynchronizable : BOOL
+VAR_INPUT
+  inp : REFERENCE TO InputParameterStruct;
+  vMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  vMin : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  aMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  aMin : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  jMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  limitingDirection : ProfileDirectionEnum;
+  limitingDof : INT;
+  newMaxVelocity : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  newMaxAcceleration : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  newMinAcceleration : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  newMaxJerk : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+END_VAR
+VAR
+  pdFoundNoneZero : BOOL := FALSE;
+  v0Scale, a0Scale, vfScale, afScale, scale : LREAL;
+  oldMaxJerk, oldMaxVel, oldMaxAcc, oldMinAcc : LREAL;
+  dof : INT;
+  pd : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  maxJerkLimiting, maxVelLimiting, maxAccLimiting, minAccLimiting : LREAL;
+  newDirection : ProfileDirectionEnum;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR dof:=0 TO inp.dofs-1
+DO
+  pd[dof] := inp.target_position[dof] - inp.current_position[dof];
+  
+  IF NOT pdFoundNoneZero AND_THEN ABS(pd[dof]) > eps
+  THEN
+    v0Scale := inp.current_velocity[dof] / pd[dof];
+    a0Scale := inp.current_acceleration[dof] / pd[dof];
+    vfScale := inp.target_velocity[dof] / pd[dof];
+    afScale := inp.target_acceleration[dof] / pd[dof];
+    pdFoundNoneZero := TRUE;
+	END_IF
+END_FOR
+
+IF NOT pdFoundNoneZero
+THEN
+  RETURN;
+END_IF
+
+maxJerkLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
+maxVelLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
+maxAccLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
+minAccLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
+
+FOR dof:=0 TO inp.dofs-1
+DO
+  IF dof = limitingDof
+  THEN
+    CONTINUE;
+	END_IF
+
+  scale := pd[dof] / pd[limitingDof];
+  
+  // Are the vectors colinear?
+  IF inp.current_velocity[dof] - v0Scale * pd[dof] > epsColinear OR_ELSE
+    inp.current_acceleration[dof] - a0Scale * pd[dof] > epsColinear OR_ELSE
+    inp.target_velocity[dof] - vfScale * pd[dof] > epsColinear OR_ELSE
+    inp.target_acceleration[dof] - afScale * pd[dof] > epsColinear OR_ELSE
+    scale > 1.0
+  THEN
+    RETURN;
+	END_IF
+
+  // Are the old kinematic limits met?
+  newDirection := SEL((limitingDirection = ProfileDirectionEnum.up AND_THEN scale >= 0.0) OR_ELSE
+                      (limitingDirection = ProfileDirectionEnum.down AND_THEN scale <= 0.0),
+                      ProfileDirectionEnum.down,
+                      ProfileDirectionEnum.up);
+                      
+  oldMaxJerk := SEL(newDirection = ProfileDirectionEnum.up, -jMax[dof], jMax[dof]);
+  oldMaxVel := SEL(newDirection = ProfileDirectionEnum.up, -vMax[dof], vMin[dof]);
+  oldMaxAcc := SEL(newDirection = ProfileDirectionEnum.up, -aMax[dof], aMin[dof]);
+  oldMinAcc := SEL(newDirection = ProfileDirectionEnum.up, -aMin[dof], aMax[dof]);
+  
+  newMaxVelocity[dof] := scale * maxVelLimiting;
+  newMaxAcceleration[dof] := scale * maxAccLimiting;
+  newMinAcceleration[dof] := scale * minAccLimiting;
+  newMaxJerk[dof] := scale * maxJerkLimiting;
+  
+  IF ABS(oldMaxVel) < ABS(newMaxVelocity[dof]) OR_ELSE
+     ABS(oldMaxAcc) < ABS(newMaxAcceleration[dof]) OR_ELSE
+     ABS(oldMinAcc) < ABS(newMinAcceleration[dof]) OR_ELSE
+     ABS(oldMaxJerk) < ABS(newMaxJerk[dof])
+  THEN
+    RETURN;
+  END_IF
+END_FOR
+
+isPhaseSynchronizable := TRUE;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="synchronize" Id="{7b4768bc-5353-4188-9ce5-ca4a01b44343}">
+      <Declaration><![CDATA[METHOD synchronize : BOOL
+VAR_INPUT
+  dofs : INT;
+  discrete_duration : BOOL;
+  delta_time : LREAL;
+  blocks : POINTER TO BlockStruct;  
+  profiles : POINTER TO Profile;  
+END_VAR
+VAR_IN_OUT
+  blockCount : INT;
+  t_min : LREAL;
+  t_sync : LREAL;
+  limiting_dof : INT;
+END_VAR
+VAR
+  possible_t_syncs : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  possible_t_sync : REFERENCE TO LREAL;
+  idx : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF INT;  
+  dof : INT;
+  i : INT;
+  b : INT;
+  skip : BOOL;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (dofs = 1 AND_THEN t_min <> 0 AND_THEN discrete_duration <> 0)
+THEN 
+  limiting_dof := 0;
+  t_sync := blocks[0].t_min;
+  profiles[0] := blocks[0].p_min;
+  RETURN;
+END_IF
+
+// Possible t_syncs are the start times of the intervals and optional t_min
+FOR dof := 0 TO dofs-1 
+DO
+  possible_t_syncs[3 * dof] := blocks[dof].t_min;
+  possible_t_syncs[3 * dof + 1] := SEL(blocks[dof].a.isUsed, profiles[0].infinity, blocks[dof].a.right);
+  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.isUsed, profiles[0].infinity, blocks[dof].b.right);        
+END_FOR
+
+possible_t_syncs[3 * DOFs] := SEL(t_min = 0, t_min,  profiles[0].infinity);
+IF (discrete_duration)
+THEN
+  FOR i:=0 TO 3*dofs
+  DO
+    possible_t_syncs[i] := (*ceil*)(possible_t_syncs[i] / delta_time) * delta_time;   // todo: ceil                 
+  END_FOR
+END_IF
+
+// Test them in sorted order
+(*std::iota(idx.begin(), idx.end(), 0);
+std::sort(idx.begin(), idx.end(), [&possible_t_syncs](size_t i, size_t j)  RETURN possible_t_syncs[i] < possible_t_syncs[j]; );*)
+// TODO Sort possble t_syncs and store order in idx
+
+// Start at last tmin (or worse)
+FOR i:=0 TO 3*dofs
+DO
+  possible_t_sync REF= possible_t_syncs[i];
+  IF possible_t_sync < t_min
+  THEN
+    CONTINUE;
+	END_IF
+  
+  FOR b:=0 TO blockCount
+  DO
+    IF isBlocked(blocks[b], possible_t_sync) 
+    THEN
+      skip := TRUE;
+      EXIT;
+		END_IF
+	END_FOR
+  
+  IF skip
+  THEN
+    CONTINUE;
+	END_IF
+    
+  t_sync := possible_t_sync;
+  IF (idx[i] = 3*dofs)  // Optional t_min
+  THEN
+    limiting_dof := -1;
+    synchronize := TRUE;    
+  END_IF
+
+    
+  limiting_dof := DINT_TO_INT(TRUNC(idx[i] / 3));
+  CASE (idx[i] MOD 3)
+  OF
+    0: profiles[limiting_dof] := blocks[limiting_dof].p_min;
+    1: profiles[limiting_dof] := blocks[limiting_dof].a.profile;
+    2:  profiles[limiting_dof] := blocks[limiting_dof].b.profile;  
+	END_CASE
+  
+  synchronize := TRUE;
+  RETURN;
+  
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

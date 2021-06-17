@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="MAIN" Id="{c00a71d8-f00f-4c7d-a99b-aab97ff59a30}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+  ruckig : Ruckig(0.001);
+  input : InputParameterStruct;
+  output : OutputParameterStruct;    
+  init : BOOL := TRUE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF init
+THEN
+  init := FALSE;
+
+  input.dofs := 1;
+  input.enabled[0] := TRUE;
+  input.max_velocity[0] := 1.2;
+  input.max_acceleration[0] := 4.0;
+  input.max_jerk[0] := 10;
+  
+  input.current_position[0] := 0;
+  input.current_velocity[0] := 0;
+  input.current_acceleration[0] := 0;
+  
+  input.target_position[0] := 1;
+  input.target_velocity[0] := 0;
+  input.target_acceleration[0] := 0;  
+END_IF
+
+ruckig.update(input, output);
+input.current_position := output.new_position;
+input.current_velocity := output.new_velocity;
+input.current_acceleration := output.new_acceleration;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

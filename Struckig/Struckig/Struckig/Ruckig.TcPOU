@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Ruckig" Id="{1c5850a2-5b12-4229-9d95-591ad970a07b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Ruckig
+VAR_INPUT
+  current_input : InputParameterStruct;
+  degrees_of_freedom : INT;
+    
+  dt_ : LREAL; // Time step between updates (cycle time) in [s]
+  
+  state_ : StateEnum;
+  errorId_ : INT;
+END_VAR
+VAR CONSTANT
+  minimum : LREAL := 1.17549435082E-38; 
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="abortErrorId" Id="{e194e390-8553-4cc1-bda7-8604eb0d5513}">
+      <Declaration><![CDATA[METHOD abortErrorId
+VAR_INPUT
+  errorId : INT;
+  errorDetail : STRING(255);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[state_ := StateEnum.error;
+errorId_ := errorId;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
+      <Declaration><![CDATA[METHOD calculate : ErrorCodeEnum;
+VAR_INPUT
+  input : REFERENCE TO InputParameterStruct;
+  output : REFERENCE TO OutputParameterStruct;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[state_ := StateEnum.busy;
+
+IF NOT validateInput(input)
+THEN
+  abortErrorId(ErrorCodeEnum.invalidInput, 'input parameters for trajectory calculation');
+  RETURN;
+END_IF
+
+calculate := output.trajectory.calculate(input, dt_);
+IF (calculate <> 0) THEN
+  abortErrorId(calculate, '');
+  RETURN;
+END_IF
+
+current_input := input;
+output.current_time := 0.0;
+output.has_changed := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="errorId" Id="{144463d5-5136-4844-9c4c-5008735eb636}">
+      <Declaration><![CDATA[METHOD errorId : INT
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[errorId := errorId_;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{b602f7a7-4307-4d87-b5fe-4e3716d1e55b}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  deltaTime : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[dt_ := deltaTime;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="hasChanged" Id="{412a3b6e-c01a-46d6-b769-48dae1ba53ec}">
+      <Declaration><![CDATA[METHOD hasChanged : BOOL
+VAR_IN_OUT CONSTANT
+  lhs : InputParameterStruct;
+  rhs : InputParameterStruct;  
+END_VAR
+VAR
+  i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF lhs.dofs <> rhs.dofs
+THEN
+  hasChanged := TRUE;
+  RETURN;
+END_IF
+
+FOR i:=0 TO lhs.dofs-1
+DO
+  IF lhs.current_position[i] <> rhs.current_position[i] OR_ELSE
+     lhs.current_velocity[i] <> rhs.current_velocity[i] OR_ELSE
+     lhs.current_acceleration[i] <> rhs.current_acceleration[i] OR_ELSE
+     lhs.target_position[i] <> rhs.target_position[i] OR_ELSE
+     lhs.target_velocity[i] <> rhs.target_velocity[i] OR_ELSE
+     lhs.target_acceleration[i] <> rhs.target_acceleration[i] OR_ELSE
+     lhs.max_velocity[i] <> rhs.max_velocity[i] OR_ELSE
+     lhs.max_acceleration[i] <> rhs.max_acceleration[i] OR_ELSE
+     lhs.max_jerk[i] <> rhs.max_jerk[i] OR_ELSE
+     lhs.enabled[i] <> rhs.enabled[i] OR_ELSE
+     lhs.min_velocity[i] <> rhs.min_velocity[i] OR_ELSE
+     lhs.min_acceleration[i] <> rhs.min_acceleration[i]
+  THEN
+    hasChanged := TRUE;  
+    RETURN;
+	END_IF
+END_FOR
+
+IF lhs.interfaceType <> rhs.interfaceType OR_ELSE
+   lhs.synchronizationType <> rhs.synchronizationType OR_ELSE
+   lhs.discretizationType <> rhs.discretizationType OR_ELSE
+   lhs.minDuration <> rhs.minDuration   
+THEN
+  hasChanged := TRUE;
+  RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="hasError" Id="{33b10da3-85b7-4b88-93ab-c99f487e40ea}">
+      <Declaration><![CDATA[METHOD hasError : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[hasError := state_ = StateEnum.error;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="isBusy" Id="{4a1ba402-7473-4011-8c39-f1d191a4c886}">
+      <Declaration><![CDATA[METHOD isBusy : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[isBusy := state_ = StateEnum.busy;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="update" Id="{6c3982fb-7e79-4dd7-bf3c-9a685156d3bb}">
+      <Declaration><![CDATA[METHOD update
+VAR_IN_OUT
+  input : InputParameterStruct;
+  output : OutputParameterStruct;  
+END_VAR
+VAR
+  cpucounter : Tc2_System.GETCPUCOUNTER;
+  cpuCntHiDW : LWORD;
+  cpuCntLoDW : LWORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[cpucounter();
+cpuCntHiDW := cpucounter.cpuCntHiDW;
+cpuCntLoDW := cpucounter.cpuCntLoDW;
+
+output.has_changed := FALSE;
+
+IF hasChanged(input, current_input)
+THEN
+  state_ := StateEnum.busy;
+  errorId_ := calculate(input, output);
+  if (errorId_ <> 0) THEN
+    abortErrorId(errorId_, '');
+  END_IF
+ELSIF state_ = StateEnum.idle
+THEN
+  RETURN;
+END_IF
+
+output.dofs := input.dofs;
+output.current_time := output.current_time + dt_;
+output.trajectory.atTime(output.current_time, output.dofs, ADR(output.new_position), ADR(output.new_velocity), ADR(output.new_acceleration));
+
+cpucounter();
+output.calculation_duration := ULINT_TO_REAL(SHL(ULINT_TO_LWORD(cpucounter.cpuCntHiDW - cpuCntHiDW), 32) + cpucounter.cpuCntLoDW - cpuCntLoDW) * 0.1; // us
+
+current_input.current_position := output.new_position;
+current_input.current_velocity := output.new_velocity;
+current_input.current_acceleration := output.new_acceleration;
+
+IF (output.current_time > output.trajectory.duration) THEN
+  state_ := StateEnum.idle;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="validateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
+      <Declaration><![CDATA[METHOD validateInput : BOOL
+VAR_IN_OUT
+  input : InputParameterStruct;
+END_VAR
+VAR
+  dof : INT;
+  min_velocity, v_diff, max_target_acceleration : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR dof:=0 TO input.dofs-1
+DO
+  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <= minimum) THEN
+    RETURN;
+  END_IF
+
+  IF (input.min_velocity[dof] <> 0 AND_THEN input.min_velocity[dof] >= -minimum) THEN
+    RETURN;
+  END_IF
+
+  IF (input.max_acceleration[dof] <= minimum) THEN
+    RETURN;
+  END_IF
+
+  IF (input.min_acceleration[dof] <> 0 AND_THEN input.min_acceleration[dof] >= -minimum) THEN
+    RETURN;
+  END_IF
+
+  IF (input.max_jerk[dof] <= minimum) THEN
+    RETURN;
+  END_IF
+
+  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.target_position[dof] <> input.target_position[dof]) THEN
+    RETURN;
+  END_IF
+
+  IF (input.interfaceType = InterfaceTypeEnum.position) THEN
+    IF (input.min_velocity[dof] <> 0) THEN
+      IF (input.target_velocity[dof] > input.max_velocity[dof] OR_ELSE input.target_velocity[dof] < input.min_velocity[dof]) THEN
+          RETURN;
+      END_IF
+  
+    ELSE
+      IF (ABS(input.target_velocity[dof]) > input.max_velocity[dof]) THEN
+          RETURN;
+      END_IF
+    END_IF
+  END_IF
+
+  IF (input.min_acceleration[dof] <> 0) THEN
+    IF (input.target_acceleration[dof] > input.max_acceleration[dof] OR_ELSE input.target_acceleration[dof] < input.min_acceleration[dof]) THEN
+        RETURN;
+    END_IF
+
+  ELSE
+    IF (ABS(input.target_acceleration[dof]) > input.max_acceleration[dof]) THEN
+        RETURN;
+    END_IF
+  END_IF
+
+  // Target acceleration needs to be accessible from "above" and "below"
+  IF (input.interfaceType = InterfaceTypeEnum.position) THEN
+    min_velocity := SEL(input.min_velocity[dof] = 0, -input.max_velocity[dof], input.min_velocity[dof]);
+    v_diff := MIN(ABS(input.max_velocity[dof] - input.target_velocity[dof]), ABS(min_velocity - input.target_velocity[dof]));
+    max_target_acceleration := SQRT(2 * input.max_jerk[dof] * v_diff);
+    IF (ABS(input.target_acceleration[dof]) > max_target_acceleration) THEN
+      RETURN;
+    END_IF
+  END_IF
+END_FOR
+
+
+validateInput := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

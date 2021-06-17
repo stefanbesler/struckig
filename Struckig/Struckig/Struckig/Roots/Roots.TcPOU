@@ -1,0 +1,554 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="Roots" Id="{d76a81ac-9546-4544-b488-a2d6bc5b03e0}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Roots
+VAR_INPUT
+  roots : ARRAY[0..6] OF LREAL;
+  rootCount : INT := -1;
+END_VAR
+VAR CONSTANT
+  tolerance : LREAL := 1E-14;
+  cos120 : LREAL := -0.50;
+  sin120 : LREAL := 0.866025403784438646764;  
+  DBL_EPSILON : LREAL := 1E-9;
+  DBL_EPSILON_SQRT : LREAL := 1.483E-8;
+  PI : LREAL := 3.14159265358979323846;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="cbrt" Id="{c72fda2d-8208-4f63-b680-f8d46a9cff10}">
+      <Declaration><![CDATA[/// find cube root of x using newton method
+METHOD cbrt : LREAL
+VAR_INPUT
+  x : LREAL;
+END_VAR
+VAR
+  xn : LREAL;
+  h : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(x) < 1E-4
+THEN
+  RETURN;
+END_IF
+
+cbrt := SEL(x > 0, -1, 1);
+REPEAT
+  xn := cbrt;
+  h := cbrt*cbrt;
+  cbrt := cbrt - (h*cbrt - x) / (3.0*h);
+UNTIL ABS(cbrt-xn) < 1E-4 END_REPEAT]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="polyDeri" Id="{dfe87f72-0381-4b2a-bcd1-05fa624ab825}">
+      <Declaration><![CDATA[METHOD polyDeri
+VAR_INPUT
+  coeffs : POINTER TO LREAL;
+  coeffsCount : BYTE;
+  out : POINTER TO LREAL;
+END_VAR
+VAR
+  i : BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=0 TO coeffsCount DO
+  out[i] := (coeffsCount - i) * coeffs[i];
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="polyEval" Id="{2f997c70-a9b9-49aa-b73d-5a75cf110519}">
+      <Declaration><![CDATA[METHOD polyEval : LREAL;
+VAR_INPUT
+  polynom : POINTER TO LREAL;
+  degree : INT;
+  x : LREAL;
+END_VAR
+VAR
+  i : INT;
+  xn : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF degree > 0 THEN
+  IF (ABS(x) < DBL_EPSILON) THEN
+      polyEval := polynom[degree];
+  ELSIF (x = 1.0) THEN
+    FOR i:= degree TO 0 BY -1
+    DO
+      polyEval := polyEval + polynom[i];
+    END_FOR
+  ELSE
+    xn := 1.0;
+    FOR i:= degree TO 0 BY -1 
+    DO
+      polyEval := polyEval + polynom[i] * xn;
+      xn := xn * x;
+    END_FOR
+  END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="polyMonicDeri" Id="{d40a4e9b-3dc1-4c65-8f57-9d1d86228c06}">
+      <Declaration><![CDATA[METHOD polyMonicDeri
+VAR_INPUT
+  monic_coeffs : POINTER TO LREAL;
+  coeffsCount : BYTE;
+  out : POINTER TO LREAL;  
+END_VAR
+VAR
+  i : BYTE;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[out[0] := 1.0;
+FOR i:=1 TO coeffsCount DO
+  out[i] := (coeffsCount-i) * (monic_coeffs[i] / (coeffsCount - 1));
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Power" Id="{c52736c6-391c-40d5-bdd6-07413755a50d}">
+      <Declaration><![CDATA[METHOD Power : LREAL
+VAR_INPUT
+  v : LREAL;
+  e : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Power := EXPT(v, e);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="shrinkInterval" Id="{cdfd39a1-036a-45c9-827d-626807768bcc}">
+      <Declaration><![CDATA[// Calculate a single zero of polynom p(x) inside [lbound, ubound]
+// Requirements: p(lbound)*p(ubound) < 0, lbound < ubound
+METHOD shrinkInterval : LREAL
+VAR_INPUT
+  p : POINTER TO LREAL;
+  degree : BYTE;  
+  l, h : LREAL;
+END_VAR
+VAR
+  deriv : ARRAY[0 .. 10] OF LREAL; // todo: put parameter in parameterlist
+  fl, fh, temp : LREAL;
+  dxold, dx, f,df : LREAL;
+  j : BYTE := 127;
+END_VAR
+VAR CONSTANT
+  maxIterations : BYTE := 127;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[polyDeri(p, degree, out:=ADR(deriv));
+fl := polyEval(p, degree, l);
+fh := polyEval(p, degree, h);
+IF (fl = 0.0) THEN
+  shrinkInterval := l;
+  RETURN;
+END_IF
+
+IF (fh = 0.0) THEN
+  shrinkInterval := h;
+  RETURN;
+END_IF
+
+IF (fl > 0.0)
+THEN
+  // swap l and h
+  temp := l;
+  l := h;
+  h := temp;
+END_IF
+
+shrinkInterval := 0.5 * (l + h);
+dxold := ABS(h - l);
+dx := dxold;
+f := polyEval(ADR(p), degree, shrinkInterval);
+df := polyEval(ADR(deriv), degree-1, shrinkInterval);
+FOR j:=0 TO maxIterations DO
+  IF ((((shrinkInterval - h) * df - f) * ((shrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
+    dxold := dx;
+    dx := 0.5 * (h - l);
+    shrinkInterval := l + dx;
+    IF (l = shrinkInterval) THEN
+      RETURN;
+    END_IF
+  ELSE
+    dxold := dx;
+    dx := f / df;
+    temp := shrinkInterval;
+    shrinkInterval := shrinkInterval - dx;
+    IF (temp = shrinkInterval) THEN
+      RETURN;
+    END_IF
+  END_IF
+  
+  IF (ABS(dx) < tolerance) THEN
+    RETURN;
+  END_IF
+  
+  f := polyEval(p, degree, shrinkInterval);
+  df := polyEval(ADR(deriv), degree-1, shrinkInterval);
+  IF (f < 0.0) THEN
+    l := shrinkInterval;
+  ELSE
+    h := shrinkInterval;
+  END_IF
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="solveCub" Id="{f35d48e8-0d3e-478d-a0d7-c6d3c4d6917d}">
+      <Declaration><![CDATA[METHOD solveCub
+VAR_INPUT
+  polynom : POINTER TO LREAL;
+END_VAR
+VAR
+  a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w : LREAL;
+  discriminant : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[rootCount := -1;
+a := polynom[0];
+b := polynom[1];
+c := polynom[2];
+d := polynom[3];
+
+IF (ABS(d) < DBL_EPSILON)
+THEN
+  // First solution is x = 0
+  roots[0] := 0.0;
+  rootCount := 1;
+  
+  // Converting to a quadratic equation
+  d := c;
+  c := b;
+  b := a;
+  a := 0.0;
+END_IF
+
+IF (ABS(a) < DBL_EPSILON)
+THEN
+  IF (ABS(b) < DBL_EPSILON)
+  THEN
+    // Linear equation
+    IF (ABS(c) > DBL_EPSILON)
+    THEN
+      roots[rootCount+1] := (-d / c);
+      rootCount := rootCount + 1;
+    END_IF
+  ELSE
+    // Quadratic equation
+    discriminant := c * c - 4 * b * d;
+    IF (discriminant >= 0)
+    THEN
+      inv2b := 1.0 / (2 * b);
+      y := SQRT(discriminant);
+      roots[rootCount+1] := ((-c + y) * inv2b);
+      roots[rootCount+2] := ((-c - y) * inv2b);
+      rootCount := rootCount + 2;
+    END_IF
+  END_IF
+
+ELSE
+  
+  // Cubic equation
+  inva := 1.0 / a;
+  invaa := inva * inva;
+  bb := b * b;
+  bover3a := b * (1.0 / 3.0) * inva;
+  p := (3.0 * a * c - bb) * (1.0 / 3.0) * invaa;
+  halfq := (2 * bb * b - 9.0 * a * b * c + 27.0 * a * a * d) * (0.5 / 27.0) * invaa * inva;
+  yy := p * p * p / 27.0 + halfq * halfq;
+  
+  IF (yy > DBL_EPSILON) THEN
+    // Sqrt is positive: one real solution}
+    y := SQRT(yy);
+    uuu := -halfq + y;
+    vvv := -halfq - y;
+    www := SEL(ABS(uuu) > ABS(vvv), vvv, uuu);
+    w := cbrt(www);
+    roots[rootCount+1] := (w - p / (3.0 * w) - bover3a);
+    rootCount := rootCount + 1;
+  ELSIF (yy < -DBL_EPSILON) THEN
+    // Sqrt is negative: three real solutions
+    x := -halfq;
+    y := SQRT(-yy);
+
+    // Convert to polar form}
+    IF ABS(x) > DBL_EPSILON THEN
+      theta := SEL((x > 0.0), (ATAN(y / x) + PI), ATAN(y / x));
+      rr := SQRT(x * x - yy);
+    ELSE
+      // Vertical line}
+      theta := PI / 2;
+      rr := y;
+    END_IF
+    
+    // Calculate cube root
+    theta := theta / 3.0;
+    rr := cbrt(rr);
+    // Convert to complex coordinate
+    ux := COS(theta) * rr;
+    uyi := SIN(theta) * rr;
+    // First solution
+    roots[rootCount+1] := (ux + ux - bover3a);
+    // Second solution, rotate +120 degrees
+    roots[rootCount+2] := (2 * (ux * cos120 - uyi * sin120) - bover3a);
+    // Third solution, rotate -120 degrees
+    roots[rootCount+3] := (2 * (ux * cos120 + uyi * sin120) - bover3a);
+    rootCount := rootCount + 3;
+  ELSE
+    // Sqrt is zero: two real solutions
+    www := -halfq;
+    w := cbrt(www);
+    // First solution
+    roots[rootCount+1] := (w + w - bover3a);
+    // Second solution, rotate +120 degrees
+    roots[rootCount+2] := (2 * w * cos120 - bover3a);
+    rootCount := rootCount + 2;
+  END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="solveQuartMonic" Id="{df6d325c-5867-46b4-aac9-c6bd76b8bf98}">
+      <Declaration><![CDATA[/// Calculate all roots of the monic quartic equation: x^4 + a*x^3 + b*x^2 + c*x + d = 0
+METHOD solveQuartMonic
+VAR_INPUT
+  polynom : POINTER TO LREAL;  
+  degree : LREAL;
+END_VAR
+VAR
+  a, b, c, d : LREAL;
+  e0, e1, q1, q2, p1, p2, dd, sqrtD, y  : LREAL;
+  a3, b3, c3 : LREAL;
+  x3 : ARRAY[0..2] OF LREAL;
+  iZeroes : INT;
+  eps : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[rootCount := -1;
+
+a := polynom[0];
+b := polynom[1];
+c := polynom[2];
+d := polynom[3];
+
+IF (ABS(a) < DBL_EPSILON AND_THEN ABS(b) < DBL_EPSILON_SQRT AND_THEN ABS(c) < DBL_EPSILON_SQRT AND_THEN ABS(d) < DBL_EPSILON)
+THEN  
+  e0 := cbrt(c * c);
+  e1 := (b * b + 12 * d)/(9*e0);
+  q1 := -(4 * b)/3 - e0 - e1;
+  p1 := SQRT(-q1 - 2 * b);
+  q2 := 2 * c / p1;
+  
+  dd := q1 - q2;
+  IF (dd > 0.0)
+  THEN  
+    sqrtD := SQRT(dd);
+    roots[0] := ((p1 + sqrtD) * 0.5);
+    roots[1] := ((p1 - sqrtD) * 0.5);
+    rootCount := 1;
+  END_IF
+  
+  dd := q1 + q2;
+  IF (dd > 0.0)
+  THEN  
+    sqrtD := SQRT(dd);
+    roots[rootCount+1] := ((-p1 + sqrtD) * 0.5);
+    roots[rootCount+2] := ((-p1 - sqrtD) * 0.5);
+    rootCount := rootCount + 2;
+  END_IF
+  RETURN;
+END_IF
+
+IF (ABS(c) < DBL_EPSILON AND_THEN ABS(d) < DBL_EPSILON)
+THEN
+  roots[0] := 0.0;
+  rootCount := rootCount+1;
+  
+  dd := a * a - 4 * b;
+  IF (ABS(dd) < DBL_EPSILON)
+  THEN
+    roots[rootCount+1] := (-a / 2);
+    rootCount := rootCount+1;
+  ELSIF (dd > 0)
+  THEN
+    sqrtD := SQRT(dd);
+    roots[rootCount+1] := ((-a - sqrtD) / 2);
+    roots[rootCount+2] := ((-a + sqrtD) / 2);
+    rootCount := rootCount+2;    
+  END_IF
+  RETURN;
+END_IF
+
+a3 := -b;
+b3 := a * c - 4 * d;
+c3 := -a * a * d - c * c + 4 * b * d;
+
+// Solve the resolvent: y^3 - b*y^2 + (ac - 4*d)*y - a^2*d - c^2 + 4*b*d = 0
+iZeroes := solveResolvent(ADR(x3), a3, b3, c3);
+
+y := x3[0];
+// Choosing Y with maximal absolute value.
+IF (iZeroes <> 1) THEN
+  IF ABS(x3[1]) > ABS(y) THEN
+    y := x3[1];
+  END_IF
+  
+  IF ABS(x3[2]) > ABS(y) THEN
+    y := x3[2];
+  END_IF
+END_IF
+
+// h1 + h2 = y AND_THEN h1*h2 = d  <=>  h^2 - y*h + d = 0    (h === q)
+dd := y * y - 4 * d;
+IF (ABS(dd) < DBL_EPSILON) THEN
+  q1 := q2 := y * 0.5;
+  // g1 + g2 = a AND_THEN g1 + g2 = b - y   <=>   g^2 - a*g + b - y = 0    (p === g)}
+  dd := a * a - 4.0 * (b - y);
+  IF (ABS(dd) < DBL_EPSILON) THEN
+    p1 := p2 := a * 0.5;
+  ELSE
+    sqrtD := SQRT(dd);
+    p1 := (a + sqrtD) * 0.5;
+    p2 := (a - sqrtD) * 0.5;
+  END_IF
+ELSE
+  sqrtD := SQRT(dd);
+  q1 := (y + sqrtD) * 0.5;
+  q2 := (y - sqrtD) * 0.5;
+  // g1 + g2 = a AND_THEN g1*h2 + g2*h1 = c   ( AND_THEN g === p )  Krammer
+  p1 := (a * q1 - c) / (q1 - q2);
+  p2 := (c - a * q2) / (q1 - q2);
+END_IF
+
+eps := 16 * DBL_EPSILON;
+
+// Solve the quadratic equation: x^2 + p1*x + q1 = 0
+dd := p1 * p1 - 4 * q1;
+IF (ABS(dd) < eps) THEN
+  roots[rootCount+1] := (-p1 * 0.5);
+  rootCount := rootCount + 1;  
+ELSIF (dd > 0.0)  THEN
+  sqrtD := SQRT(dd);
+  roots[rootCount+1] := ((-p1 + sqrtD) * 0.5);
+  roots[rootCount+2] := ((-p1 - sqrtD) * 0.5);
+  rootCount := rootCount + 2;  
+END_IF
+
+// Solve the quadratic equation: x^2 + p2*x + q2 = 0
+dd := p2 * p2 - 4 * q2;
+IF (ABS(dd) < eps) THEN
+  roots[rootCount+1] := (-p2 * 0.5);
+  rootCount := rootCount + 1;    
+ELSIF (dd > 0.0) THEN
+  sqrtD := SQRT(dd);
+  roots[rootCount+1] := ((-p2 + sqrtD) * 0.5);
+  roots[rootCount+2] := ((-p2 - sqrtD) * 0.5);
+  rootCount := rootCount + 2;  
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="solveResolvent" Id="{559e05ff-7822-46dc-be00-7584fcb764a8}">
+      <Declaration><![CDATA[/// Solve resolvent eqaution of corresponding Quartic equation
+/// The input x must be of length 3
+/// Number of zeros are returned
+METHOD solveResolvent : INT
+VAR_INPUT
+  x : POINTER TO LREAL;
+  a,b,c : LREAL;
+END_VAR
+VAR
+  a2, q, rr, r2, q3, aa, bb, t : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[a2 := a * a;
+q := (a2 - 3.0 * b) / 9.0;
+rr := (a * (2 * a2 - 9.0 * b) + 27.0 * c) / 54.0;
+r2 := rr * rr;
+q3 := q * q * q;
+
+IF (r2 < q3) THEN
+  t := rr / SQRT(q3);
+  IF (t < -1.0) THEN
+      t := -1.0;
+  END_IF
+  
+  IF (t > 1.0) THEN
+      t := 1.0;
+  END_IF
+  
+  t := ACOS(t);
+  a := a / 3.0;
+  q := -2 * SQRT(q);
+  x[0] := q * COS(t / 3.0) - a;
+  x[1] := q * COS((t + PI * 2) / 3.0) - a;
+  x[2] := q * COS((t - PI * 2) / 3.0) - a;
+  solveResolvent := 3;
+  RETURN;
+
+ELSE
+  aa := -cbrt(ABS(rr) + SQRT(r2 - q3));
+  IF (rr < 0.0) THEN
+    aa := -aa;
+  END_IF
+  bb := SEL(0.0 = aa, q / aa, 0.0);
+  
+  a := a / 3.0;
+  x[0] := (aa + bb) - a;
+  x[1] := -0.5 * (aa + bb) - a;
+  x[2] := 0.5 * SQRT(3.0) * (aa - bb);
+  IF (ABS(x[2]) < DBL_EPSILON) THEN
+    x[2] := x[1];
+    solveResolvent := 2;
+    RETURN;
+  END_IF
+  
+  solveResolvent := 1;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="Roots">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.cbrt">
+      <LineId Id="3" Count="9" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.polyDeri">
+      <LineId Id="3" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.polyEval">
+      <LineId Id="3" Count="15" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.polyMonicDeri">
+      <LineId Id="3" Count="3" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.Power">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.shrinkInterval">
+      <LineId Id="3" Count="55" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.solveCub">
+      <LineId Id="3" Count="99" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.solveQuartMonic">
+      <LineId Id="3" Count="119" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="Roots.solveResolvent">
+      <LineId Id="3" Count="42" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

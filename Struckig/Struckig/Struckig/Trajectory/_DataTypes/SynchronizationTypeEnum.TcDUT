@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="SynchronizationTypeEnum" Id="{c2f32290-f62f-4354-9b4e-71d37ff75e54}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE SynchronizationTypeEnum :
+(
+  phaseSync, // Phase synchronize the DoFs when possible, else fallback to "Time" strategy
+  timeSync, // Always synchronize the DoFs to reach the target at the same time (Default)
+  timeIfNecessarySync, // Synchronize only when necessary (e.g. for non-zero target velocity or acceleration)
+  none // Calculate every DoF independently
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

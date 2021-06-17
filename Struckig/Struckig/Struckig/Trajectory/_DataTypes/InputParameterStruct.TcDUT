@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="InputParameterStruct" Id="{48372bed-1049-4fd4-96ba-72d20f853387}">
+    <Declaration><![CDATA[TYPE InputParameterStruct :
+STRUCT
+  dofs : INT;
+  interfaceType : InterfaceTypeEnum;
+  synchronizationType : SynchronizationTypeEnum;
+  discretizationType : DiscretizationTypeEnum;
+  
+  current_position, current_velocity, current_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  target_position, target_velocity, target_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  max_velocity, max_acceleration, max_jerk : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  min_velocity, min_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  
+  enabled : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF BOOL;  
+  minDuration : LREAL;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

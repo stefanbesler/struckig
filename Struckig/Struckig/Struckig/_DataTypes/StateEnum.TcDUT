@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="StateEnum" Id="{1b401aa7-ce7a-4de0-8dde-e86175fd1d75}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE StateEnum :
+(
+  undefined,
+  idle,
+  busy,
+  error
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

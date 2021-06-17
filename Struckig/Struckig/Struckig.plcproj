@@ -1,0 +1,151 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <FileVersion>1.0.0.0</FileVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{63b92d35-739b-4514-b8c2-b7baed341740}</ProjectGuid>
+    <SubObjectsSortedByName>True</SubObjectsSortedByName>
+    <DownloadApplicationInfo>true</DownloadApplicationInfo>
+    <WriteProductVersion>true</WriteProductVersion>
+    <GenerateTpy>false</GenerateTpy>
+    <Name>Struckig</Name>
+    <ProgramVersion>3.1.4024.12</ProgramVersion>
+    <Application>{1841ee32-fed0-4829-8f70-f65d9f9aec48}</Application>
+    <TypeSystem>{09e0364c-c348-4b68-870a-c9ca33970027}</TypeSystem>
+    <Implicit_Task_Info>{0a935299-cf6d-42b1-b1e2-0a7768a12bcf}</Implicit_Task_Info>
+    <Implicit_KindOfTask>{0c44351b-67e2-49b5-83db-103238f9686e}</Implicit_KindOfTask>
+    <Implicit_Jitter_Distribution>{9cd8f824-bb34-4513-8b2b-250f150e5c41}</Implicit_Jitter_Distribution>
+    <LibraryReferences>{f4bffdbd-5758-46b1-8be5-022517971003}</LibraryReferences>
+    <Released>false</Released>
+    <Title>Struckig</Title>
+    <ProjectVersion>0.0.0.0</ProjectVersion>
+    <DefaultNamespace>Struckig</DefaultNamespace>
+    <Author>
+    </Author>
+    <Company>Struckig</Company>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Struckig\_DataTypes" />
+    <Folder Include="Struckig" />
+    <Folder Include="Struckig\Block" />
+    <Folder Include="Struckig\Brake" />
+    <Folder Include="Struckig\Roots" />
+    <Folder Include="Struckig\Velocity" />
+    <Folder Include="Struckig\Position" />
+    <Folder Include="Struckig\Profile\_DataTypes" />
+    <Folder Include="Struckig\Trajectory" />
+    <Folder Include="Struckig\Profile" />
+    <Folder Include="Struckig\Trajectory\_DataTypes" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Struckig\Block\BlockIntervalStruct.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Block\BlockStruct.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Brake\Brake.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\ParameterList.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Struckig\Position\PositionStep1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Position\PositionStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Profile\Profile.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Profile\_DataTypes\PositionExtremaStruct.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileDirectionEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSignsEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileLimitsEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Roots\Roots.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Ruckig.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\Trajectory.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationTypeEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\_DataTypes\InputParameterStruct.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\_DataTypes\InterfaceTypeEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\_DataTypes\OutputParameterStruct.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\_DataTypes\SynchronizationTypeEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Velocity\VelocityStep1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Velocity\VelocityStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\_DataTypes\ErrorCodeEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\_DataTypes\StateEnum.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <PlcProjectOptions>
+      <XmlArchive>
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
+      <v n="Name">"&lt;ProjectRoot&gt;"</v>
+      <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
+        <v>{40450F57-0AA3-4216-96F3-5444ECB29763}</v>
+        <o>
+          <v n="Name">"{40450F57-0AA3-4216-96F3-5444ECB29763}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" ckt="String" cvt="String">
+            <v>ActiveVisuProfile</v>
+            <v>IR0whWr8bwfwBwAAiD2qpQAAAABVAgAA37x72QAAAAABAAAAAAAAAAEaUwB5AHMAdABlAG0ALgBTAHQAcgBpAG4AZwACTHsAZgA5ADUAYgBiADQAMgA2AC0ANQA1ADIANAAtADQAYgA0ADUALQA5ADQAMAAwAC0AZgBiADAAZgAyAGUANwA3AGUANQAxAGIAfQADCE4AYQBtAGUABDBUAHcAaQBuAEMAQQBUACAAMwAuADEAIABCAHUAaQBsAGQAIAA0ADAAMgA0AC4ANwAFFlAAcgBvAGYAaQBsAGUARABhAHQAYQAGTHsAMQA2AGUANQA1AGIANgAwAC0ANwAwADQAMwAtADQAYQA2ADMALQBiADYANQBiAC0ANgAxADQANwAxADMAOAA3ADgAZAA0ADIAfQAHEkwAaQBiAHIAYQByAGkAZQBzAAhMewAzAGIAZgBkADUANAA1ADkALQBiADAANwBmAC0ANABkADYAZQAtAGEAZQAxAGEALQBhADgAMwAzADUANgBhADUANQAxADQAMgB9AAlMewA5AGMAOQA1ADgAOQA2ADgALQAyAGMAOAA1AC0ANAAxAGIAYgAtADgAOAA3ADEALQA4ADkANQBmAGYAMQBmAGUAZABlADEAYQB9AAoOVgBlAHIAcwBpAG8AbgALBmkAbgB0AAwKVQBzAGEAZwBlAA0KVABpAHQAbABlAA4aVgBpAHMAdQBFAGwAZQBtAE0AZQB0AGUAcgAPDkMAbwBtAHAAYQBuAHkAEAxTAHkAcwB0AGUAbQARElYAaQBzAHUARQBsAGUAbQBzABIwVgBpAHMAdQBFAGwAZQBtAHMAUwBwAGUAYwBpAGEAbABDAG8AbgB0AHIAbwBsAHMAEyhWAGkAcwB1AEUAbABlAG0AcwBXAGkAbgBDAG8AbgB0AHIAbwBsAHMAFCRWAGkAcwB1AEUAbABlAG0AVABlAHgAdABFAGQAaQB0AG8AcgAVIlYAaQBzAHUATgBhAHQAaQB2AGUAQwBvAG4AdAByAG8AbAAWFHYAaQBzAHUAaQBuAHAAdQB0AHMAFwxzAHkAcwB0AGUAbQAYGFYAaQBzAHUARQBsAGUAbQBCAGEAcwBlABkmRABlAHYAUABsAGEAYwBlAGgAbwBsAGQAZQByAHMAVQBzAGUAZAAaCGIAbwBvAGwAGyJQAGwAdQBnAGkAbgBDAG8AbgBzAHQAcgBhAGkAbgB0AHMAHEx7ADQAMwBkADUAMgBiAGMAZQAtADkANAAyAGMALQA0ADQAZAA3AC0AOQBlADkANAAtADEAYgBmAGQAZgAzADEAMABlADYAMwBjAH0AHRxBAHQATABlAGEAcwB0AFYAZQByAHMAaQBvAG4AHhRQAGwAdQBnAGkAbgBHAHUAaQBkAB8WUwB5AHMAdABlAG0ALgBHAHUAaQBkACBIYQBmAGMAZAA1ADQANAA2AC0ANAA5ADEANAAtADQAZgBlADcALQBiAGIANwA4AC0AOQBiAGYAZgBlAGIANwAwAGYAZAAxADcAIRRVAHAAZABhAHQAZQBJAG4AZgBvACJMewBiADAAMwAzADYANgBhADgALQBiADUAYwAwAC0ANABiADkAYQAtAGEAMAAwAGUALQBlAGIAOAA2ADAAMQAxADEAMAA0AGMAMwB9ACMOVQBwAGQAYQB0AGUAcwAkTHsAMQA4ADYAOABmAGYAYwA5AC0AZQA0AGYAYwAtADQANQAzADIALQBhAGMAMAA2AC0AMQBlADMAOQBiAGIANQA1ADcAYgA2ADkAfQAlTHsAYQA1AGIAZAA0ADgAYwAzAC0AMABkADEANwAtADQAMQBiADUALQBiADEANgA0AC0ANQBmAGMANgBhAGQAMgBiADkANgBiADcAfQAmFk8AYgBqAGUAYwB0AHMAVAB5AHAAZQAnVFUAcABkAGEAdABlAEwAYQBuAGcAdQBhAGcAZQBNAG8AZABlAGwARgBvAHIAQwBvAG4AdgBlAHIAdABpAGIAbABlAEwAaQBiAHIAYQByAGkAZQBzACgQTABpAGIAVABpAHQAbABlACkUTABpAGIAQwBvAG0AcABhAG4AeQAqHlUAcABkAGEAdABlAFAAcgBvAHYAaQBkAGUAcgBzACs4UwB5AHMAdABlAG0ALgBDAG8AbABsAGUAYwB0AGkAbwBuAHMALgBIAGEAcwBoAHQAYQBiAGwAZQAsEnYAaQBzAHUAZQBsAGUAbQBzAC1INgBjAGIAMQBjAGQAZQAxAC0AZAA1AGQAYwAtADQAYQAzAGIALQA5ADAANQA0AC0AMgAxAGYAYQA3ADUANgBhADMAZgBhADQALihJAG4AdABlAHIAZgBhAGMAZQBWAGUAcgBzAGkAbwBuAEkAbgBmAG8AL0x7AGMANgAxADEAZQA0ADAAMAAtADcAZgBiADkALQA0AGMAMwA1AC0AYgA5AGEAYwAtADQAZQAzADEANABiADUAOQA5ADYANAAzAH0AMBhNAGEAagBvAHIAVgBlAHIAcwBpAG8AbgAxGE0AaQBuAG8AcgBWAGUAcgBzAGkAbwBuADIMTABlAGcAYQBjAHkAMzBMAGEAbgBnAHUAYQBnAGUATQBvAGQAZQBsAFYAZQByAHMAaQBvAG4ASQBuAGYAbwA0MEwAbwBhAGQATABpAGIAcgBhAHIAaQBlAHMASQBuAHQAbwBQAHIAbwBqAGUAYwB0ADUaQwBvAG0AcABhAHQAaQBiAGkAbABpAHQAeQDQAAIaA9ADAS0E0AUGGgfQBwgaAUUHCQjQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtDtAPAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60BAAAA0A0BLRHQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0S0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAUAAAA0AwLrQIAAADQDQEtE9APAS0Q0AAJGgRFCgsEAwAAAAUAAAANAAAAAAAAANAMC60CAAAA0A0BLRTQDwEtENAACRoERQoLBAMAAAAFAAAADQAAAAAAAADQDAutAgAAANANAS0V0A8BLRDQAAkaBEUKCwQDAAAABQAAAA0AAAAAAAAA0AwLrQIAAADQDQEtFtAPAS0X0AAJGgRFCgsEAwAAAAUAAAANAAAAKAAAANAMC60EAAAA0A0BLRjQDwEtENAZGq0BRRscAdAAHBoCRR0LBAMAAAAFAAAADQAAAAAAAADQHh8tINAhIhoCRSMkAtAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAAAAANADAS0n0CgBLRHQKQEtENAAJRoFRQoLBAMAAAADAAAAAAAAAAoAAADQJgutAQAAANADAS0n0CgBLRHQKQEtEJoqKwFFAAEC0AABLSzQAAEtF9AAHy0t0C4vGgPQMAutAQAAANAxC60XAAAA0DIarQDQMy8aA9AwC60CAAAA0DELrQMAAADQMhqtANA0Gq0A0DUarQA=</v>
+          </d>
+        </o>
+        <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
+        <o>
+          <v n="Name">"{192FAD59-8248-4824-A8DE-9177C94C195A}"</v>
+          <d n="SubKeys" t="Hashtable" />
+          <d n="Values" t="Hashtable" />
+        </o>
+      </d>
+      <d n="Values" t="Hashtable" />
+    </o>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
+    </PlcProjectOptions>
+  </ProjectExtensions>
+</Project>

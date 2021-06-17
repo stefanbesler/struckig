@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <DUT Name="InterfaceTypeEnum" Id="{fa41777e-c926-434f-898a-1e6e98888ce1}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE InterfaceTypeEnum :
+(
+  position, // Position-control: Full control over the entire kinematic state (Default)
+  velocity // Velocity-control: Ignores the current position, target position, and velocity limits
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
