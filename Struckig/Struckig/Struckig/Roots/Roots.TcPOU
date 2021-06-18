@@ -29,7 +29,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF ABS(x) < 1E-4
+        <ST><![CDATA[IF ABS(x) < 1E-9
 THEN
   RETURN;
 END_IF
@@ -39,7 +39,7 @@ REPEAT
   xn := cbrt;
   h := cbrt*cbrt;
   cbrt := cbrt - (h*cbrt - x) / (3.0*h);
-UNTIL ABS(cbrt-xn) < 1E-4 END_REPEAT]]></ST>
+UNTIL ABS(cbrt-xn) < 1E-9 END_REPEAT]]></ST>
       </Implementation>
     </Method>
     <Method Name="polyDeri" Id="{dfe87f72-0381-4b2a-bcd1-05fa624ab825}">
