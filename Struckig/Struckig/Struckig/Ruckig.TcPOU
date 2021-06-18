@@ -3,7 +3,7 @@
   <POU Name="Ruckig" Id="{1c5850a2-5b12-4229-9d95-591ad970a07b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Ruckig
 VAR_INPUT
-  current_input : InputParameterStruct;
+  current_input : InputParameter(0);
   degrees_of_freedom : INT;
     
   dt_ : LREAL; // Time step between updates (cycle time) in [s]
@@ -32,8 +32,8 @@ errorId_ := errorId;]]></ST>
     <Method Name="calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
       <Declaration><![CDATA[METHOD calculate : ErrorCodeEnum;
 VAR_INPUT
-  input : REFERENCE TO InputParameterStruct;
-  output : REFERENCE TO OutputParameterStruct;
+  input : REFERENCE TO InputParameter;
+  output : REFERENCE TO OutputParameter;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -79,22 +79,22 @@ END_VAR
     </Method>
     <Method Name="hasChanged" Id="{412a3b6e-c01a-46d6-b769-48dae1ba53ec}">
       <Declaration><![CDATA[METHOD hasChanged : BOOL
-VAR_IN_OUT CONSTANT
-  lhs : InputParameterStruct;
-  rhs : InputParameterStruct;  
+VAR_INPUT
+  lhs : REFERENCE TO InputParameter;
+  rhs : REFERENCE TO InputParameter;  
 END_VAR
 VAR
   i : INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF lhs.dofs <> rhs.dofs
+        <ST><![CDATA[IF lhs.dofs_ <> rhs.dofs_
 THEN
   hasChanged := TRUE;
   RETURN;
 END_IF
 
-FOR i:=0 TO lhs.dofs-1
+FOR i:=0 TO lhs.dofs_-1
 DO
   IF lhs.current_position[i] <> rhs.current_position[i] OR_ELSE
      lhs.current_velocity[i] <> rhs.current_velocity[i] OR_ELSE
@@ -145,9 +145,9 @@ END_VAR
     </Method>
     <Method Name="update" Id="{6c3982fb-7e79-4dd7-bf3c-9a685156d3bb}">
       <Declaration><![CDATA[METHOD update
-VAR_IN_OUT
-  input : InputParameterStruct;
-  output : OutputParameterStruct;  
+VAR_INPUT
+  input : REFERENCE TO InputParameter;
+  output : REFERENCE TO  OutputParameter;  
 END_VAR
 VAR
   cpucounter : Tc2_System.GETCPUCOUNTER;
@@ -173,9 +173,8 @@ THEN
   RETURN;
 END_IF
 
-output.dofs := input.dofs;
 output.current_time := output.current_time + dt_;
-output.trajectory.atTime(output.current_time, output.dofs, ADR(output.new_position), ADR(output.new_velocity), ADR(output.new_acceleration));
+output.trajectory.atTime(output.current_time, input.dofs_, ADR(output.new_position), ADR(output.new_velocity), ADR(output.new_acceleration));
 
 cpucounter();
 output.calculation_duration := ULINT_TO_REAL(SHL(ULINT_TO_LWORD(cpucounter.cpuCntHiDW - cpuCntHiDW), 32) + cpucounter.cpuCntLoDW - cpuCntLoDW) * 0.1; // us

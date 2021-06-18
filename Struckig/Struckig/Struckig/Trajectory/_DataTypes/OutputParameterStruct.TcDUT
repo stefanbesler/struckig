@@ -3,13 +3,7 @@
   <DUT Name="OutputParameterStruct" Id="{bb6bba4b-485d-44cd-b5e7-ed95fb925a58}">
     <Declaration><![CDATA[TYPE OutputParameterStruct :
 STRUCT
-  dofs : INT;
-  new_position, new_velocity, new_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  new_calculation : BOOL;
-  calculation_duration : REAL; // us
-  trajectory : Trajectory;
-  current_time : LREAL;
-  has_changed : BOOL;
+
 END_STRUCT
 END_TYPE
 ]]></Declaration>

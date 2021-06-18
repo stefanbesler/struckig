@@ -77,7 +77,13 @@
     <Compile Include="Struckig\Ruckig.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Trajectory\OutputParameter.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Trajectory\Trajectory.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Trajectory\InputParameter.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationTypeEnum.TcDUT">

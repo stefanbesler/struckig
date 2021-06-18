@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="OutputParameter" Id="{597621a9-5523-4c13-96bf-7b02710f89f6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK OutputParameter
+VAR_INPUT
+  new_position, new_velocity, new_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  new_calculation : BOOL;
+  calculation_duration : REAL; // us
+  trajectory : Trajectory;
+  current_time : LREAL;
+  has_changed : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

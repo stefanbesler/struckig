@@ -94,7 +94,7 @@ END_FOR]]></ST>
     <Method Name="calculate" Id="{24c01bf2-a8ac-457d-aca5-3adf95d3ce92}">
       <Declaration><![CDATA[METHOD calculate : ErrorCodeEnum
 VAR_INPUT
-  inp : REFERENCE TO InputParameterStruct;
+  inp : REFERENCE TO InputParameter;
   deltaTime : LREAL;
 END_VAR
 VAR_INST
@@ -112,7 +112,7 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR dof:=0 TO inp.dofs-1
+        <ST><![CDATA[FOR dof:=0 TO inp.dofs_-1
 DO
   p REF=profiles[dof];
   
@@ -202,7 +202,7 @@ IF (duration = 0.0) THEN
 END_IF
 
 IF (inp.synchronizationType = SynchronizationTypeEnum.none) THEN
-  FOR i:=0 TO inp.dofs-1 DO
+  FOR dof:=0 TO inp.dofs_-1 DO
     IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
       CONTINUE;
     END_IF
@@ -215,7 +215,7 @@ END_IF
 IF (inp.synchronizationType = SynchronizationTypeEnum.phaseSync AND_THEN inp.interfaceType = InterfaceTypeENum.position) THEN
   IF (isPhaseSynchronizable(inp, inp.max_velocity, inp_min_velocity, inp.max_acceleration, inp_min_acceleration, inp.max_jerk, profiles[limiting_dof].direction, limiting_dof, new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
-    FOR i:=0 TO inp.dofs-1 DO
+    FOR i:=0 TO inp.dofs_-1 DO
       IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
         CONTINUE;
       END_IF
@@ -250,7 +250,7 @@ IF (inp.synchronizationType = SynchronizationTypeEnum.phaseSync AND_THEN inp.int
 END_IF
 
 // The general case
-FOR i:=0 TO inp.dofs-1
+FOR i:=0 TO inp.dofs_-1
 DO
   IF (NOT inp.enabled[dof] OR_ELSE dof = limiting_dof) THEN
       continue;
@@ -314,7 +314,7 @@ END_VAR
     <Method Name="isPhaseSynchronizable" Id="{ae30f2ad-209b-4d75-9241-72b124189e4f}">
       <Declaration><![CDATA[METHOD isPhaseSynchronizable : BOOL
 VAR_INPUT
-  inp : REFERENCE TO InputParameterStruct;
+  inp : REFERENCE TO InputParameter;
   vMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
   vMin : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
   aMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
@@ -338,7 +338,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR dof:=0 TO inp.dofs-1
+        <ST><![CDATA[FOR dof:=0 TO inp.dofs_-1
 DO
   pd[dof] := inp.target_position[dof] - inp.current_position[dof];
   
@@ -362,7 +362,7 @@ maxVelLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitin
 maxAccLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
 minAccLimiting := SEL(limitingDirection = ProfileDirectionEnum.up, -jMax[limitingDof], jMax[limitingDof]);
 
-FOR dof:=0 TO inp.dofs-1
+FOR dof:=0 TO inp.dofs_-1
 DO
   IF dof = limitingDof
   THEN

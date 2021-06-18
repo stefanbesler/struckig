@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+  <POU Name="InputParameter" Id="{0a019405-401a-4d00-873d-f46c1ea6dfef}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK InputParameter
+VAR_INPUT
+  interfaceType : InterfaceTypeEnum;
+  synchronizationType : SynchronizationTypeEnum;
+  discretizationType : DiscretizationTypeEnum;
+  
+  current_position, current_velocity, current_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  target_position, target_velocity, target_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  max_velocity, max_acceleration, max_jerk : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  min_velocity, min_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  
+  enabled : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF BOOL;  
+  minDuration : LREAL;
+END_VAR
+VAR
+  dofs_ : INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{60bc6480-6df7-4a21-b7d6-793f6995b206}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  dofs : INT;
+END_VAR
+VAR
+  i : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[dofs_ := dofs;
+FOR i:=0 TO ParameterList.maximumDegreeOfFreedom
+DO
+  enabled[i] := i < dofs;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
