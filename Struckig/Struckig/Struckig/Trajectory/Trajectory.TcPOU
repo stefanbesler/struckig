@@ -449,33 +449,52 @@ FOR dof := 0 TO dofs-1
 DO
   possible_t_syncs[3 * dof] := blocks[dof].t_min;
   possible_t_syncs[3 * dof + 1] := SEL(blocks[dof].a.isUsed, profiles[0].infinity, blocks[dof].a.right);
-  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.isUsed, profiles[0].infinity, blocks[dof].b.right);        
+  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.isUsed, profiles[0].infinity, blocks[dof].b.right);      
 END_FOR
 
 possible_t_syncs[3 * DOFs] := SEL(t_min = 0, t_min,  profiles[0].infinity);
 IF (discrete_duration)
 THEN
-  FOR i:=0 TO 3*dofs
+  FOR i:=0 TO 3*dofs-1
   DO
     possible_t_syncs[i] := (*ceil*)(possible_t_syncs[i] / delta_time) * delta_time;   // todo: ceil                 
   END_FOR
 END_IF
 
+FOR i:=0 TO 3*dofs-1
+DO
+  idx[i] := i;
+END_FOR
+
 // Test them in sorted order
 (*std::iota(idx.begin(), idx.end(), 0);
 std::sort(idx.begin(), idx.end(), [&possible_t_syncs](size_t i, size_t j)  RETURN possible_t_syncs[i] < possible_t_syncs[j]; );*)
 // TODO Sort possble t_syncs and store order in idx
+// TODO: Optimize this, skip disabled dofs and stuff;
+
+FOR i:=0 TO 3*dofs - 2
+DO
+  FOR j:=0 TO 3*dofs - 2 - i
+  DO  
+    IF possible_t_syncs[idx[j]] > possible_t_syncs[idx[j+1]]
+    THEN
+      h := idx[j];
+      idx[j] := idx[j+1];
+      idx[j+1] := h;     
+		END_IF
+  END_FOR
+END_FOR
 
 // Start at last tmin (or worse)
-FOR i:=0 TO 3*dofs
-DO
-  possible_t_sync REF= possible_t_syncs[i];
+FOR i:=dofs-1 TO 3*dofs-1
+DO  
+  possible_t_sync REF= possible_t_syncs[idx[i]];
   IF possible_t_sync < t_min
   THEN
     CONTINUE;
 	END_IF
   
-  FOR b:=0 TO blockCount
+  FOR b:=0 TO dofs-1
   DO
     IF isBlocked(blocks[b], possible_t_sync) 
     THEN
