@@ -9,7 +9,7 @@
 </div>
 
 This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online
-Trajectory Generation to TwinCAT 3. Please note, that while this port is aims to be a full port, it will probably never reach the performance 
+Trajectory Generation to TwinCAT 3. Please note, that while this port aims to be a full port, it will probably never reach the performance 
 of the original C++ code for the following reasons. 
 - the original code uses templates and C++17 features to reduce load during runtime. 
 - the codesys compiler , in contrast to C++ compilers, does not come with a lot of compile time optimizations. Even simple loop unwrapping optimizations are not performed - probably to make debugging easier (?)
@@ -19,7 +19,7 @@ If you are looking for best possible performance of Ruckig, I suggest you look i
 if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
 
 ## Progress report
-*update 2021/06/18: fixed some issues that showed up during manual testing. Simple profiles without synchronizations now seem to work. There might however still be some exceptions. Twincat is less forgiving about SSE2 exceptions, e.g. I do not know to turn them off explictly for a library - hence, there are some checks that have to be added to various methods. To find all related bugs more reliable, I will implement unittests during the next week.
+*update 2021/06/18: fixed some issues that showed up during manual testing. Simple profiles without synchronizations now seem to work. There might however still be some exceptions. Twincat is less forgiving about SSE2 exceptions, e.g. I do not know to turn them off explictly for a library - hence, there are some checks that have to be added to various methods. To find all related bugs more reliable, I will implement unittests during the next week.*
 
 *update 2021/06/17: implemented cbrt since this is not available in vanilla structured text. The *general protection fault* exception was related to a call to SQRT(-1). While the C++ code seems to return NaN for this, TwinCAT instead brings this exception. It was a bit tricky to find, because the debugger stopped at a different location for some reason. Tried to run a simple trajectory with only 1 degree of freedom the calculated profile looked fine, but there is much more manual testing required and ofc. implementing the unittests from the original code.*
 
