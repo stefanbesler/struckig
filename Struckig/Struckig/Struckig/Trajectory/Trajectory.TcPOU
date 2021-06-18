@@ -126,8 +126,8 @@ DO
     CONTINUE;
 	END_IF
   
-  inp_min_velocity[dof] := SEL(inp.min_velocity[dof] = 0, inp.min_velocity[dof], -inp.max_velocity[dof]);
-  inp_min_acceleration[dof] := SEL(inp.min_acceleration[dof] = 0, inp.min_acceleration[dof], -inp.max_acceleration[dof]);
+  inp_min_velocity[dof] := SEL(ABS(inp.min_velocity[dof]) < eps, inp.min_velocity[dof], -inp.max_velocity[dof]);
+  inp_min_acceleration[dof] := SEL(ABS(inp.min_acceleration[dof]) < eps, inp.min_acceleration[dof], -inp.max_acceleration[dof]);
   
   CASE inp.interfaceType
   OF
