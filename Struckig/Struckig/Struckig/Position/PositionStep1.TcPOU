@@ -183,6 +183,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[profile.setBoundaryPosition(p0_, v0_, a0_, pf_, vf_, af_);
 validProfileCounter := -1;
+has_up_vel := has_down_vel := FALSE;
 
 IF (ABS(pf_ - p0_) < DBL_EPSILON AND_THEN ABS(v0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
 THEN 
