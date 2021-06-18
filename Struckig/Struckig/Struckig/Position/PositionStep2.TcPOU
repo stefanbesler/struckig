@@ -216,21 +216,27 @@ END_VAR]]></Declaration>
         <ST><![CDATA[// Profile UDDU, Solution 1
 
 h0a := af_af - 2*af_*aMin + (aMin - aMax)*aMin + 2*jMax*(aMin*tf_ - vd);
-h1 := SQRT(aMax*aMin*(a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*a0_a0*aMax*(aMin + aMax) + 2*a0_*(2*aMax - a0_)*h0a - 2*af_af*(aMax*aMax - aMin*aMin - 2*aMax*(aMin + jMax*tf_) + 2*jMax*vd) + 4*af_*aMin*(aMax*aMax - aMax*(aMin + 2*jMax*tf_) + 2*jMax*vd) + aMax*aMax*aMax*aMin - 2*aMax*aMax*(aMin*aMin + 2*jMax*(aMin*tf_ - vd)) + 4*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd*vd) + aMax*(aMin*aMin*aMin + 4*aMin*aMin*jMax*tf_ + 4*aMin*jMax_jMax*tf_tf - 8*jMax_jMax*(-pd + tf_*vf_)))) * Abs(jMax)/jMax;
+h1 := aMax*aMin*(a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*a0_a0*aMax*(aMin + aMax) + 2*a0_*(2*aMax - a0_)*h0a - 2*af_af*(aMax*aMax - aMin*aMin - 2*aMax*(aMin + jMax*tf_) + 2*jMax*vd) + 4*af_*aMin*(aMax*aMax - aMax*(aMin + 2*jMax*tf_) + 2*jMax*vd) + aMax*aMax*aMax*aMin - 2*aMax*aMax*(aMin*aMin + 2*jMax*(aMin*tf_ - vd)) + 4*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd*vd) + aMax*(aMin*aMin*aMin + 4*aMin*aMin*jMax*tf_ + 4*aMin*jMax_jMax*tf_tf - 8*jMax_jMax*(-pd + tf_*vf_)));
 
-profile.t[0] := (-a0_ + aMax)/jMax;
-profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax - 2*ad*aMin - 3*aMax*aMin + aMin*aMin + 2*jMax*(aMin*tf_ - vd)) - h1/aMax)/(2*(aMax - aMin)*jMax);
-profile.t[2] := aMax/jMax;
-profile.t[3] := (aMin - aMax - h1/(aMax*aMin))/(2*jMax);
-profile.t[4] := -aMin/jMax;
-profile.t[5] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3] + 2*profile.t[4] + af_/jMax);
-profile.t[6] := profile.t[4] + af_/jMax;
-
-time_acc0_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, tf_, jMax, vMax, aMax, aMin);
-IF time_acc0_acc1_vel
+IF h1 > 0
 THEN
-  RETURN;
+  h1 := SQRT(h1) * ABS(jMax)/jMax;
+  
+  profile.t[0] := (-a0_ + aMax)/jMax;
+  profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax - 2*ad*aMin - 3*aMax*aMin + aMin*aMin + 2*jMax*(aMin*tf_ - vd)) - h1/aMax)/(2*(aMax - aMin)*jMax);
+  profile.t[2] := aMax/jMax;
+  profile.t[3] := (aMin - aMax - h1/(aMax*aMin))/(2*jMax);
+  profile.t[4] := -aMin/jMax;
+  profile.t[5] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3] + 2*profile.t[4] + af_/jMax);
+  profile.t[6] := profile.t[4] + af_/jMax;
+  
+  time_acc0_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, tf_, jMax, vMax, aMax, aMin);
+  IF time_acc0_acc1_vel
+  THEN
+    RETURN;
+  END_IF
 END_IF
+
 
 // Profile UDUD
 h1 := 12*aMax*jMax*(a0_a0 + af_af - 2*(a0_ + af_)*aMax + 2*(aMax*aMax - aMax*jMax*tf_ + jMax*vd));

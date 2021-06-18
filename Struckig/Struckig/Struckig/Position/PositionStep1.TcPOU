@@ -433,37 +433,44 @@ VAR_INPUT
   vMax, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h0 := 3*(af_af - a0_a0 + 2*jMax*(v0_ + vf_));
-h1 := SQRT(2*jMax_jMax*(2*root.Power(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af,2) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0)))));
-
- // Two step
-profile.t[0] := 0;
-profile.t[1] := (af_af - a0_a0 + 2*jMax*(vf_ - v0_))/(2*a0_*jMax);
-profile.t[2] := (a0_ - af_)/jMax;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
-
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+        <ST><![CDATA[IF ABS(2*a0_*jMax) > eps
 THEN
+  // Two step
+  profile.t[0] := 0;
+  profile.t[1] := (af_af - a0_a0 + 2*jMax*(vf_ - v0_))/(2*a0_*jMax);
+  profile.t[2] := (a0_ - af_)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+  
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  THEN
     addProfile(profile, jMax);
     return;
+  END_IF
 END_IF
 
-// Three step
-profile.t[0] := (2*a0_p3*jMax - 6*a0_*af_af*jMax + 4*af_p3*jMax + 12*jMax_jMax*jMax*pd_ + 12*(af_ - a0_)*jMax_jMax*vf_ + h1)/(2*jMax_jMax*h0);
-profile.t[1] := -h1/(jMax_jMax*h0);
-profile.t[2] := (-4*a0_p3*jMax + 6*a0_a0*af_*jMax - 2*af_p3*jMax + 12*jMax_jMax*jMax*pd_ - 12*(af_ - a0_)*jMax_jMax*v0_ + h1)/(2*jMax_jMax*h0);
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
-
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+h0 := 3*(af_af - a0_a0 + 2*jMax*(v0_ + vf_));
+h1 := 2*jMax_jMax*(2*root.Power(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af,2) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0))));
+IF h1 > 0 AND_THEN ABS(h0) > eps
 THEN
-  addProfile(profile, jMax);
-  RETURN;     
+  h1 := SQRT(h1);
+  
+  // Three step
+  profile.t[0] := (2*a0_p3*jMax - 6*a0_*af_af*jMax + 4*af_p3*jMax + 12*jMax_jMax*jMax*pd_ + 12*(af_ - a0_)*jMax_jMax*vf_ + h1)/(2*jMax_jMax*h0);
+  profile.t[1] := -h1/(jMax_jMax*h0);
+  profile.t[2] := (-4*a0_p3*jMax + 6*a0_a0*af_*jMax - 2*af_p3*jMax + 12*jMax_jMax*jMax*pd_ - 12*(af_ - a0_)*jMax_jMax*v0_ + h1)/(2*jMax_jMax*h0);
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+  
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);
+    RETURN;     
+  END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -606,10 +613,9 @@ THEN
   
   IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
   THEN
-    addProfile(profile, jMax);            
+    addProfile(profile, jMax); 
+    RETURN;            
   END_IF
-  
-  RETURN;        
 END_IF
 
         
@@ -648,6 +654,7 @@ THEN
   RETURN;        
 END_IF
   
+RETURN;
 
 // UDDU / UDUD modern, this one is in particular prone to numerical issues
 // UDUD Strategy: t7 == 0 (equals UDDU)
@@ -698,9 +705,7 @@ VAR_INPUT
   vMax, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h0 := SQRT((a0_a0 + af_af)*0.5 + jMax*(vf_ - v0_)) * ABS(jMax) / jMax;
-
-// Single step
+        <ST><![CDATA[// Single step
 profile.t[0] := (af_ - a0_)/jMax;
 profile.t[1] := 0;
 profile.t[2] := 0;
@@ -715,18 +720,25 @@ THEN
   RETURN;        
 END_IF
 
-// Two step
-profile.t[0] := (h0 - a0_)/jMax;
-profile.t[1] := 0;
-profile.t[2] := (h0 - af_)/jMax;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
-
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+h0 := (a0_a0 + af_af)*0.5 + jMax*(vf_ - v0_);
+IF h0 >= 0
 THEN
-  addProfile(profile, jMax);        
+  h0 := SQRT(h0) * ABS(jMax) / jMax;
+  
+  // Two step
+  profile.t[0] := (h0 - a0_)/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := (h0 - af_)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+  
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  THEN
+    addProfile(profile, jMax);        
+  END_IF
+
 END_IF
 ]]></ST>
       </Implementation>

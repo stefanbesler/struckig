@@ -190,15 +190,15 @@ END_IF]]></ST>
     </Method>
     <Method Name="validateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
       <Declaration><![CDATA[METHOD validateInput : BOOL
-VAR_IN_OUT
-  input : InputParameterStruct;
+VAR_INPUT
+  input : REFERENCE TO InputParameter;
 END_VAR
 VAR
   dof : INT;
   min_velocity, v_diff, max_target_acceleration : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR dof:=0 TO input.dofs-1
+        <ST><![CDATA[FOR dof:=0 TO input.dofs_-1
 DO
   IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <= minimum) THEN
     RETURN;

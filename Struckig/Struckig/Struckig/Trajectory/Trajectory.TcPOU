@@ -180,7 +180,7 @@ END_FOR
 
 
 discrete_duration := (inp.discretizationType = DiscretizationTypeEnum.discrete);
-found_synchronization := synchronize(inp.dofs, discrete_duration, deltaTime, ADR(blocks), ADR(profiles), blockCount, inp.minDuration, duration, limiting_dof);
+found_synchronization := synchronize(inp.dofs_, discrete_duration, deltaTime, ADR(blocks), inp.minDuration, duration, limiting_dof);
 IF NOT found_synchronization THEN
   //if constexpr (throw_error) {
   //    throw std::runtime_error("[ruckig] error in time synchronization: " + std::to_string(duration));
@@ -417,21 +417,19 @@ VAR_INPUT
   dofs : INT;
   discrete_duration : BOOL;
   delta_time : LREAL;
-  blocks : POINTER TO BlockStruct;  
-  profiles : POINTER TO Profile;  
+  blocks : POINTER TO BlockStruct;   
 END_VAR
 VAR_IN_OUT
-  blockCount : INT;
   t_min : LREAL;
   t_sync : LREAL;
   limiting_dof : INT;
 END_VAR
 VAR
   possible_t_syncs : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  possible_t_sync : REFERENCE TO LREAL;
   idx : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF INT;  
+  possible_t_sync : REFERENCE TO LREAL;
   dof : INT;
-  i : INT;
+  i,j, h : INT;
   b : INT;
   skip : BOOL;
 END_VAR
@@ -504,7 +502,7 @@ DO
   OF
     0: profiles[limiting_dof] := blocks[limiting_dof].p_min;
     1: profiles[limiting_dof] := blocks[limiting_dof].a.profile;
-    2:  profiles[limiting_dof] := blocks[limiting_dof].b.profile;  
+    2: profiles[limiting_dof] := blocks[limiting_dof].b.profile;  
 	END_CASE
   
   synchronize := TRUE;
