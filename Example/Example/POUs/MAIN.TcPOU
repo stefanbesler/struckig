@@ -4,35 +4,38 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
   ruckig : Ruckig(0.001);
-  input : InputParameterStruct;
-  output : OutputParameterStruct;    
-  init : BOOL := TRUE;
+  input : InputParameter(6) := (max_velocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
+                                max_acceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
+                                max_jerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
+                                current_position :=     [ 0.0,  -0.1,  0.12, 0.0,  0.3, 0.05],
+                                current_velocity :=     [ 0.0,   0.0,  0.2,  0.0,  0.0, 0.0 ],
+                                current_acceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+                                target_position :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
+                                target_velocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+                                target_acceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);
+  output : OutputParameter;    
+  done : BOOL;
+  run : BOOL;
+  swap : BOOL := TRUE;
 END_VAR
+
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF init
-THEN
-  init := FALSE;
+      <ST><![CDATA[input.synchronizationType := SynchronizationTypeEnum.none;
 
-  input.dofs := 1;
-  input.enabled[0] := TRUE;
-  input.max_velocity[0] := 1.2;
-  input.max_acceleration[0] := 4.0;
-  input.max_jerk[0] := 10;
-  
-  input.current_position[0] := 0;
-  input.current_velocity[0] := 0;
-  input.current_acceleration[0] := 0;
-  
-  input.target_position[0] := 1;
-  input.target_velocity[0] := 0;
-  input.target_acceleration[0] := 0;  
+IF run
+THEN
+  ruckig.update(input, output);
+  input.current_position := output.new_position;
+  input.current_velocity := output.new_velocity;
+  input.current_acceleration := output.new_acceleration;
 END_IF
 
-ruckig.update(input, output);
-input.current_position := output.new_position;
-input.current_velocity := output.new_velocity;
-input.current_acceleration := output.new_acceleration;]]></ST>
+
+IF NOT ruckig.isBusy()
+THEN
+  done := TRUE;
+END_IF]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
