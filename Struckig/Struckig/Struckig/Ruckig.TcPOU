@@ -144,7 +144,7 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="update" Id="{6c3982fb-7e79-4dd7-bf3c-9a685156d3bb}">
-      <Declaration><![CDATA[METHOD update
+      <Declaration><![CDATA[METHOD update : StateEnum;
 VAR_INPUT
   input : REFERENCE TO InputParameter;
   output : REFERENCE TO  OutputParameter;  
@@ -185,7 +185,9 @@ current_input.current_acceleration := output.new_acceleration;
 
 IF (output.current_time > output.trajectory.duration) THEN
   state_ := StateEnum.idle;
-END_IF]]></ST>
+END_IF
+
+update := state_;]]></ST>
       </Implementation>
     </Method>
     <Method Name="validateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
