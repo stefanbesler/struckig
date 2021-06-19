@@ -337,6 +337,11 @@ DO
   orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf_)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0_ - vf_) + jMax*(jMax*t*t*(jMax*t*t + 2*vf_) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
   deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf_)))/aMax;
 
+  IF ABS(deriv) < eps
+  THEN
+    CONTINUE;
+	END_IF
+  
   t := t - orig / deriv;
 
   profile.t[0] := (-a0_ + aMax)/jMax;
@@ -532,6 +537,11 @@ DO
   orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
   deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
   
+  IF ABS(deriv) < eps
+  THEN
+    CONTINUE;
+	END_IF  
+  
   t := t - orig / deriv;
   
   h1 := jMax*t*t + v0_;
@@ -539,6 +549,12 @@ DO
   IF (ABS(orig) > 1E-9)
   THEN
     deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
+    
+    IF ABS(deriv) < eps
+    THEN
+      CONTINUE;
+    END_IF
+    
     t := t - orig / deriv;    
   END_IF
       
@@ -676,6 +692,12 @@ DO
   h1 := (a0_a0 - af_af)/(2*jMax) + (vf_ - v0_);
   orig := (-h1*h1 + 4*h1*t*(af_ + jMax*t))/(4*jMax*t) + (4*a0_p3 + 2*af_p3 - 6*a0_a0*(af_ + 2*jMax*t) + 12*(af_ - a0_)*jMax*v0_ + 3*jMax_jMax*(-4*pd_ + jMax*t*t*t + 8*t*v0_))/(12*jMax_jMax);
   deriv := h1 + 2*v0_ - a0_a0/jMax + h1*h1/(4*jMax*t*t) + (3*jMax*t*t)/4;
+  
+  IF ABS(deriv) < eps
+  THEN
+    CONTINUE;
+	END_IF
+  
   t := t - orig / deriv;
             
 
