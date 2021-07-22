@@ -685,7 +685,7 @@ root.solveQuartMonic(ADR(polynom[1]), 4);
 FOR i:=0 TO root.rootCount
 DO
   t := root.roots[i];
-  IF t < 0.0
+  IF t <= 0.0
   THEN
     CONTINUE;
 	END_IF
