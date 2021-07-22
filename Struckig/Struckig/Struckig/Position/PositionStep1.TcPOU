@@ -673,8 +673,6 @@ THEN
         
   RETURN;        
 END_IF
-  
-RETURN;
 
 // UDDU / UDUD modern, this one is in particular prone to numerical issues
 // UDUD Strategy: t7 == 0 (equals UDDU)
