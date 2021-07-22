@@ -466,12 +466,7 @@ DO
   idx[i] := i;
 END_FOR
 
-// Test them in sorted order
-(*std::iota(idx.begin(), idx.end(), 0);
-std::sort(idx.begin(), idx.end(), [&possible_t_syncs](size_t i, size_t j)  RETURN possible_t_syncs[i] < possible_t_syncs[j]; );*)
-// TODO Sort possble t_syncs and store order in idx
-// TODO: Optimize this, skip disabled dofs and stuff;
-
+// Bubblesort possible_t_syncs from best to worst
 FOR i:=0 TO 3*dofs - 2
 DO
   FOR j:=0 TO 3*dofs - 2 - i
@@ -494,6 +489,7 @@ DO
     CONTINUE;
 	END_IF
   
+  skip := FALSE;
   FOR b:=0 TO dofs-1
   DO
     IF isBlocked(blocks[b], possible_t_sync) 
