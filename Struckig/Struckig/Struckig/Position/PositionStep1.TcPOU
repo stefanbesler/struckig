@@ -56,10 +56,12 @@ THEN
   interval.left := left_duration;
   interval.right := right_duration;
   interval.profile := right;
+  interval.isUsed := TRUE;
 ELSE
   interval.left := right_duration;
   interval.right := left_duration;
   interval.profile := left;
+  interval.isUsed := TRUE;  
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -142,6 +144,8 @@ DO
   END_FOR
 END_FOR
 
+block.a.isUsed := FALSE;
+block.b.isUsed := FALSE;
 block.p_min := validProfiles[idx_min];
 block.t_min := block.p_min.t_sum[6] + block.p_min.t_brake;  
 
