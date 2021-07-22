@@ -26,20 +26,9 @@ END_VAR
 VAR
   xn : LREAL;
   h : LREAL;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF ABS(x) < 1E-9
-THEN
-  RETURN;
-END_IF
-
-cbrt := SEL(x > 0, -1, 1);
-REPEAT
-  xn := cbrt;
-  h := cbrt*cbrt;
-  cbrt := cbrt - (h*cbrt - x) / (3.0*h);
-UNTIL ABS(cbrt-xn) < 1E-9 END_REPEAT]]></ST>
+        <ST><![CDATA[cbrt := SEL(x < 0, 1.0, -1.0) * EXPT(ABS(x), 1.0 / 3.0);]]></ST>
       </Implementation>
     </Method>
     <Method Name="polyDeri" Id="{dfe87f72-0381-4b2a-bcd1-05fa624ab825}">
