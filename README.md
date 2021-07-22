@@ -19,7 +19,9 @@ If you are looking for best possible performance of Ruckig, I suggest you look i
 if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
 
 ## Progress report
-*update 2021/06/19: I am busy with other things at the moment so not so much progress on the code. I only had time to port one of the test cases (*known*) from otg-test.cpp. The results are *meh*, after some div0 exceptions fixes the result are 11/17 successful 3 tests can't find and profile and therefore fail, 2 tests fail because of precision (i.e. expected: 1.4939456041s, actual: 1.4937969582275) and another fails miserably, returning >1.8s instead of 8.9s).
+*update 2021/07/23: today I was in the mood to dig a bit deeper into some of the failed tests. I managed to fix the code to get to 14/18 successful tests. There was a bug regarding synchronization... There are still a lot of unittests missing that are implemented in ruckig. However, before porting those, I want to get to 18/18.
+
+*update 2021/06/19: I am busy with other things at the moment so not so much progress on the code. I only had time to port one of the test cases (*known*) from otg-test.cpp. The results are *meh*, after some div0 exceptions fixes the result are 11/18 successful 3 tests can't find and profile and therefore fail, 2 tests fail because of precision (i.e. expected: 1.4939456041s, actual: 1.4937969582275) and another fails miserably, returning >1.8s instead of 8.9s).
 Synchronization is still set to none for all test cases, I didn't look much into PositionStep2 so far - this code segment still causes exceptions.*
 
 *update 2021/06/18: fixed some issues that showed up during manual testing. Simple profiles without synchronizations now seem to work. There might however still be some exceptions. Twincat is less forgiving about SSE2 exceptions, e.g. I do not know to turn them off explictly for a library - hence, there are some checks that have to be added to various methods. To find all related bugs more reliable, I will implement unittests during the next week.*
