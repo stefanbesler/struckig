@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Ruckig" Id="{1c5850a2-5b12-4229-9d95-591ad970a07b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Ruckig
 VAR_INPUT

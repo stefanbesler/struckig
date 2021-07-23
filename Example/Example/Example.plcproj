@@ -20,7 +20,10 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\MAIN.TcPOU">
+    <Compile Include="POUs\Example01_6DoFs.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="POUs\Example02_PositionProfile_2Steps.TcPOU">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

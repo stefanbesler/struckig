@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Trajectory" Id="{6ae710e9-e92b-4222-9a89-21e6ad9f95fa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Trajectory
 VAR_INPUT
@@ -168,7 +168,7 @@ DO
       velocityStep1.set(p0s[dof], v0s[dof], a0s[dof], inp.target_velocity[dof], inp.target_acceleration[dof], inp.max_acceleration[dof], inp_min_acceleration[dof], inp.max_jerk[dof]);
       found_profile := velocityStep1.get(p, blocks[dof]);
 	END_CASE
-
+  
   IF NOT found_profile
   THEN
     hasError := TRUE;
