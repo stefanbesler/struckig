@@ -49,7 +49,7 @@ VAR
   input_step1 : InputParameter(1) := (synchronizationType := SynchronizationTypeEnum.none,
                                       max_velocity :=         [ 1200.0 ],
                                       max_acceleration :=     [ 25000.0 ],
-                                      max_jerk :=             [ 25000.0 / 0.008 ],
+                                      max_jerk :=             [ 25000.0 / 0.008 ], // ~ s-time = 8ms
                                       current_position :=     [ 47.0 ],
                                       current_velocity :=     [ 0.0 ],
                                       current_acceleration := [ 0.0 ],
