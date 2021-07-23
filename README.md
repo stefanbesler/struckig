@@ -80,7 +80,7 @@ THEN
     input.target_position := input_step2.target_position;
     input.target_velocity := input_step2.target_velocity;    
     input.target_acceleration := input_step2.target_acceleration;
-	END_IF
+  END_IF
   
   input.current_position := output.new_position;
   input.current_velocity := output.new_velocity;
