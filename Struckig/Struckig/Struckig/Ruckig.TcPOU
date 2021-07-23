@@ -249,7 +249,7 @@ DO
 
   // Target acceleration needs to be accessible from "above" and "below"
   IF (input.interfaceType = InterfaceTypeEnum.position) THEN
-    min_velocity := SEL(input.min_velocity[dof] = 0, -input.max_velocity[dof], input.min_velocity[dof]);
+    min_velocity := SEL(input.min_velocity[dof] <> 0, -input.max_velocity[dof], input.min_velocity[dof]);
     v_diff := MIN(ABS(input.max_velocity[dof] - input.target_velocity[dof]), ABS(min_velocity - input.target_velocity[dof]));
     max_target_acceleration := SQRT(2 * input.max_jerk[dof] * v_diff);
     IF (ABS(input.target_acceleration[dof]) > max_target_acceleration) THEN
