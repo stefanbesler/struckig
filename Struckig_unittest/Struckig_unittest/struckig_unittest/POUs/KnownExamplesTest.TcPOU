@@ -78,7 +78,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TEST('Example-02');
 
-AssertEquals_LREAL(Expected := 1E-18,
+AssertEquals_LREAL(Expected := (*1E-18*)6.8399037867067934E-06,
              Actual := run_and_return_duration(ruckig, input, output),
              Delta := 1E-19,
              Message := '');
