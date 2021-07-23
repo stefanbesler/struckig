@@ -18,29 +18,75 @@ of the original C++ code for the following reasons.
 If you are looking for best possible performance of Ruckig, I suggest you look into making pantor/ruckig a TwinCAT C++ module. However,
 if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
 
-## Progress report
-*update 2021/07/23: today I was in the mood to dig a bit deeper into some of the failed tests. I managed to fix the code to get to 14/18 successful tests. There was a bug regarding synchronization... There are still a lot of unittests missing that are implemented in ruckig. However, before porting those, I want to get to 18/18.
-
-*update 2021/06/19: I am busy with other things at the moment so not so much progress on the code. I only had time to port one of the test cases (*known*) from otg-test.cpp. The results are *meh*, after some div0 exceptions fixes the result are 11/18 successful 3 tests can't find and profile and therefore fail, 2 tests fail because of precision (i.e. expected: 1.4939456041s, actual: 1.4937969582275) and another fails miserably, returning >1.8s instead of 8.9s).
-Synchronization is still set to none for all test cases, I didn't look much into PositionStep2 so far - this code segment still causes exceptions.*
-
-*update 2021/06/18: fixed some issues that showed up during manual testing. Simple profiles without synchronizations now seem to work. There might however still be some exceptions. Twincat is less forgiving about SSE2 exceptions, e.g. I do not know to turn them off explictly for a library - hence, there are some checks that have to be added to various methods. To find all related bugs more reliable, I will implement unittests during the next week.*
-
-*update 2021/06/17: implemented cbrt since this is not available in vanilla structured text. The *general protection fault* exception was related to a call to SQRT(-1). While the C++ code seems to return NaN for this, TwinCAT instead brings this exception. It was a bit tricky to find, because the debugger stopped at a different location for some reason. Tried to run a simple trajectory with only 1 degree of freedom the calculated profile looked fine, but there is much more manual testing required and ofc. implementing the unittests from the original code.*
-
-*update 2021/06/16: the port is not nearly finished yet. While most of the code has already been "translated" to structured text, the process was ... intense - It took me like 10 hours in one sitting... it was a lot of code that I had to "translate" manually and I wasnt always as concentrated as I should have been so... there are a lot of mistakes that will cause exceptions. And there is one specific "general protection fault" I do not understand at the moment. Also, some passages still require work. For instance, during "translating" I did not feel like implementing a quicksort algo used in the original code.*
+# Porting progress
 
 - [x] Crude initial port of source code
-- [ ] Check source code for obvious copy & paste errors that may have occured during the port
-- [ ] Manual testing
+- [x] Check source code for obvious copy & paste errors that may have occured during the port
+- [x] Manual testing
 - [x] Initial commit
-- [ ] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
+- [x] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
     - [ ] otg-test.cpp - this should be sufficient
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
     - [ ] run unit tests to find more issues that sneaked in while porting
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Refactor (coding conventions)
 - [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler :-(
-- [ ] examples
-  - [ ] position.cpp
+- [x] examples
+  - [x] position.cpp
 - [ ] Documentation
+
+# Example
+
+The following (advanced) examples shows how to use (st)ruckig to calculate a 2-step positioning profile for a single axis.
+ - The first step moves the axis from a start position (47mm) to a target position (18mm) with a *high* velocity and an end-velocity of -50mm/s.
+ - From that point the profile is *switched* such that the axis continues to moves "slowly" (speed: 50mm/s) to its final destination (9mm) 
+   where the axis stops    moving.
+```
+
+PROGRAM Example02_PositionProfile_2Steps
+VAR
+  ruckig : Ruckig(0.001);
+  input_step1 : InputParameter(1) := (synchronizationType := SynchronizationTypeEnum.none,
+                                      max_velocity :=         [ 1200.0 ],
+                                      max_acceleration :=     [ 25000.0 ],
+                                      max_jerk :=             [ 25000.0 / 0.008 ],
+                                      current_position :=     [ 47.0 ],
+                                      current_velocity :=     [ 0.0 ],
+                                      current_acceleration := [ 0.0 ],
+                                      target_position :=      [ 18.0 ],
+                                      target_velocity :=      [ -50.0 ],
+                                      target_acceleration :=  [ 0.0 ]);
+  input_step2 : InputParameter(1) := (max_velocity :=         [ 50.0 ], // limit velocity to end-velocity of first step
+                                      target_position :=      [ 9.0 ],
+                                      target_velocity :=      [ 0.0 ],
+                                      target_acceleration :=  [ 0.0 ]);
+  input : REFERENCE TO InputParameter REF= input_step1;                                    
+  output : OutputParameter;    
+  run : BOOL;
+  switched : BOOL;
+END_VAR
+
+// =====================================================================================================================
+
+IF run
+THEN
+  ruckig.update(input, output);
+  
+  // switch to second profile
+  IF NOT ruckig.isBusy() AND_THEN NOT switched
+  THEN
+    switched := TRUE;
+    input.max_velocity := input_step2.max_velocity;    
+    input.target_position := input_step2.target_position;
+    input.target_velocity := input_step2.target_velocity;    
+    input.target_acceleration := input_step2.target_acceleration;
+	END_IF
+  
+  input.current_position := output.new_position;
+  input.current_velocity := output.new_velocity;
+  input.current_acceleration := output.new_acceleration;
+END_IF
+```
+
+![image](https://user-images.githubusercontent.com/11271989/126785368-205a491b-0acb-4a52-8b90-a6e3f1283a18.png)
+
