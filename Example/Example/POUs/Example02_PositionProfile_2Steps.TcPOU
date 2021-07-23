@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Example02_PositionProfile_2Steps" Id="{9bcc5091-27e8-40b3-85e4-3119402a5bb6}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
+VAR
+  ruckig : Ruckig(0.001);
+  input_step1 : InputParameter(1) := (synchronizationType := SynchronizationTypeEnum.none,
+                                      max_velocity :=         [ 1200.0 ],
+                                      max_acceleration :=     [ 25000.0 ],
+                                      max_jerk :=             [ 25000.0 / 0.008 ],
+                                      current_position :=     [ 47.0 ],
+                                      current_velocity :=     [ 0.0 ],
+                                      current_acceleration := [ 0.0 ],
+                                      target_position :=      [ 18.0 ],
+                                      target_velocity :=      [ -10.0 ],
+                                      target_acceleration :=  [ 0.0 ]);
+  input_step2 : InputParameter(1) := (max_velocity :=         [ 10.0 ], // limit velocity to end-velocity of first step
+                                      target_position :=      [ 9.0 ],
+                                      target_velocity :=      [ 0.0 ],
+                                      target_acceleration :=  [ 0.0 ]);
+  input : REFERENCE TO InputParameter REF= input_step1;                                    
+  output : OutputParameter;    
+  run : BOOL;
+  switched : BOOL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF run
+THEN
+  ruckig.update(input, output);
+  
+  // switch to second profile
+  IF NOT ruckig.isBusy() AND_THEN NOT switched
+  THEN
+    switched := TRUE;
+    input.max_velocity := input_step2.max_velocity;    
+    input.target_position := input_step2.target_position;
+    input.target_velocity := input_step2.target_velocity;    
+    input.target_acceleration := input_step2.target_acceleration;
+	END_IF
+  
+  input.current_position := output.new_position;
+  input.current_velocity := output.new_velocity;
+  input.current_acceleration := output.new_acceleration;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
