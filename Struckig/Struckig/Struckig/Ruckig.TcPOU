@@ -168,9 +168,6 @@ THEN
   if (errorId_ <> 0) THEN
     abortErrorId(errorId_, '');
   END_IF
-ELSIF state_ = StateEnum.idle
-THEN
-  RETURN;
 END_IF
 
 output.current_time := output.current_time + dt_;
