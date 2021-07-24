@@ -199,6 +199,14 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR dof:=0 TO input.dofs_-1
 DO
+  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.current_position[dof] <> input.current_position[dof]) THEN // isnan
+    RETURN;
+  END_IF
+  
+  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <> input.max_velocity[dof]) THEN // isnan
+    RETURN;
+  END_IF  
+
   IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <= minimum) THEN
     RETURN;
   END_IF
@@ -207,6 +215,10 @@ DO
     RETURN;
   END_IF
 
+  IF (input.max_acceleration[dof] <> input.max_acceleration[dof]) THEN // isnan
+    RETURN;
+  END_IF
+  
   IF (input.max_acceleration[dof] <= minimum) THEN
     RETURN;
   END_IF
