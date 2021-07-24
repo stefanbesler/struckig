@@ -582,5 +582,36 @@ AssertEquals_LREAL(Expected := 7295.4375633935,
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="example19" Id="{86ea15a9-bcc7-4c6c-9c52-2686c5495108}">
+      <Declaration><![CDATA[METHOD example19
+VAR_INST
+  ruckig : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    max_velocity :=         [ 1, 1, 1 ],
+    max_acceleration :=     [ 7, 7, 7 ],
+    max_jerk :=             [ 1000, 1000, 1000 ],
+    current_position :=     [ 0.01073568005271233, -0.7002627264230739, 0 ],
+    current_velocity :=     [ 0.05656281587106524, 1.011281770884991, 0 ],
+    current_acceleration := [ -5.348847133445708, -3.400994300842285, 0 ],
+    target_position :=      [ 0.0698, 0.6283, 0 ],
+    target_velocity :=      [ 0, 0, 0 ],
+    target_acceleration :=  [ 0, 0, 0 ]
+  );
+  output : Struckig.OutputParameter;
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-18');
+
+AssertEquals_LREAL(Expected := 1.403613276,
+             Actual := run_and_return_duration(ruckig, input, output),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
