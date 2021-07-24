@@ -591,8 +591,7 @@ END_IF
 // Is that really needed?
 // Profiles with a3 != 0, Solution UDDU
 
-{// First acc, then constant}
-
+// First acc, then constant
 polynom[0] := 1.0;
 polynom[1] := -2*tf_;
 polynom[2] := 2*vd/jMax + tf_tf;
@@ -657,7 +656,7 @@ DO
 
 
   // Single Newton step (regarding pd)
-  h1 := SQRT(jMax*(jMax*t*(t - tf_) - vd))/ABS(jMax);
+  h1 := SQRT((jMax*t*(t - tf_) - vd)/jMax);
   orig := (-2*pd + jMax*t*(t - tf_)*tf_ + 2*tf_*v0_)*0.5 - (h1*h1*h1)/jMax - t*(jMax*t*(t - tf_) - vd);
   deriv := (jMax*(-2*t + tf_)*(6*h1 - 2*tf_) - 4*jMax*t*(3*t - 2*tf_))/4 + vd;
   
@@ -668,7 +667,7 @@ DO
   
   t := t - orig / deriv;
   
-  h1 := SQRT(jMax*(jMax*t*(t - tf_) - vd))/ABS(jMax);
+  h1 := SQRT((jMax*t*(t - tf_) - vd)/jMax);
   
   // Solution 2 with aPlat
   profile.t[0] := 0;
@@ -833,7 +832,7 @@ DO
 	END_IF
 
 
-  h1 := SQRT(ad_ad*0.5 + jMax*(a0_*(t + tf_) - af_*t + jMax*t*tf_ - vd))/ABS(jMax);
+  h1 := SQRT(ad_ad/(2*jMax_jMax) + (a0_*(t + tf_) - af_*t + jMax*t*tf_ - vd)/jMax);
   
   profile.t[0] := t;
   profile.t[1] := tf_ - ad/jMax - 2*h1;
@@ -1056,7 +1055,7 @@ DO
     CONTINUE;
   END_IF
 
-  h1 := SQRT((a0_a0 + af_af)*0.5 + jMax*(t*(2*a0_ + jMax*t) - vd))/ABS(jMax);
+  h1 := SQRT((a0_a0 + af_af)/(2*jMax_jMax) + (t*(2*a0_ + jMax*t) - vd)/jMax);
 
   profile.t[0] := t;
   profile.t[1] := 0;
@@ -1169,13 +1168,13 @@ DO
 	END_IF
   
   // Double Newton step (regarding pd)
-  h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0_ + jMax*t)*t - vd);
+  h1 := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0_ + jMax*t)*t - vd)/jMax;
   IF h1 < 0
   THEN
     CONTINUE;
 	END_IF
   
-  h1 := SQRT(h1)/ABS(jMax);
+  h1 := SQRT(h1);
   orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf_ - 2*t))/(6*jMax_jMax) + (2*a0_ + jMax*t)*t*(tf_ - t) + (jMax*h1 - af_)*h1*h1 + tf_*v0_;
   deriv_newton := (a0_ + jMax*t)*(2*(af_ + jMax*tf_) - 3*jMax*(h1 + t) - a0_)/jMax;
 

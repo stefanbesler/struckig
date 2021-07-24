@@ -479,7 +479,7 @@ THEN
   RETURN;    
 END_IF
 
-h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
+h1 := SQRT(0.5*af_af/(jMax_jMax) + (vMax - vf_)/jMax);
 
 profile.t[0] := (-a0_ + aMax)/jMax;
 profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0_ - vMax))/(aMax*jMax);
@@ -575,7 +575,7 @@ THEN
   RETURN;    
 END_IF
 
-h1 := SQRT(a0_a0*0.5 + jMax*(vMax - v0_))/ABS(jMax);
+h1 := SQRT(0.5*a0_a0/(jMax_jMax) + (vMax - v0_)/jMax);
 profile.t[0] := -a0_/jMax + h1;
 profile.t[1] := 0;
 profile.t[2] := h1;
@@ -762,8 +762,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
-h2 := SQRT(a0_a0*0.5 + jMax*(vMax - v0_))/ABS(jMax);
+        <ST><![CDATA[h1 := SQRT(af_af/(2*jMax_jMax) + (vMax - vf_)/jMax);
+h2 := SQRT(a0_a0/(2*jMax_jMax) + (vMax - v0_)/jMax);
 
 IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel))
 THEN
@@ -792,7 +792,7 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
+        <ST><![CDATA[h1 := SQRT(af_af/(2*jMax_jMax) + (vMax - vf_)/jMax);
 
 // Four step        
 profile.t[0] := 0;
