@@ -25,7 +25,38 @@ VAR
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[TEST('Example-01');
+      <ST><![CDATA[Test_AtTime();
+Test_FirstStateAtTime();
+Test_IndependentMinDurations();
+Test_InvalidInput();
+Test_PositionExtrema();]]></ST>
+    </Implementation>
+    <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
+      <Declaration><![CDATA[METHOD Test_AtTime
+VAR_INST
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('AtTime');
 
 result := otg.update(input, output);
 
@@ -48,27 +79,37 @@ values[1] := -2.6871268303;
 values[2] := 1.0;
 AssertArrayEquals_LREAL(new_position, input.target_acceleration, 1E-9, message:='');
 
-AssertEquals_LREAL(output.trajectory.independentMinDurations[0], 3.1748021039, 1E-9, message:='');
-AssertEquals_LREAL(output.trajectory.independentMinDurations[1], 3.6860977315, 1E-9, message:='');
-AssertEquals_LREAL(output.trajectory.independentMinDurations[2], output.trajectory.duration, 1E-9, message:='');
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_FirstStateAtTime" Id="{45288964-70c7-4f04-951a-1ad9938f231b}">
+      <Declaration><![CDATA[METHOD Test_FirstStateAtTime
+VAR_INST
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('PositionExtrema');
 
-positionExtrema := output.trajectory.profiles[0].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, 1.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
-
-positionExtrema := output.trajectory.profiles[1].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, -2.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 3.2254033308, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, -3.1549193338, 1E-9, message:='');
-
-positionExtrema := output.trajectory.profiles[2].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, 2.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+result := otg.update(input, output);
 
 AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.0, 0.0, rtime, rvel, racc), message:='' );
 AssertEquals_LREAL( rtime, 0.0, 1E-9, message:='');
@@ -94,12 +135,140 @@ AssertFalse( output.trajectory.profiles[1].firstStateAtPosition(-3.4, 0.0, rtime
 // todo: this test doesn't make sense in the port of ruckig, the method is not exposed in the trajectory class yet
 // AssertFalse( output.trajectory.profiles[6].firstStateAtPosition(6, 0.0, rtime, rvel, racc), message:='' );
 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IndependentMinDurations" Id="{a2e696c4-c9ef-4360-ab1b-ce079b7c502e}">
+      <Declaration><![CDATA[METHOD Test_IndependentMinDurations
+VAR_INST
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('IndependentMinDurations');
 
-TEST_FINISHED();
+result := otg.update(input, output);
 
+AssertEquals_LREAL(output.trajectory.independentMinDurations[0], 3.1748021039, 1E-9, message:='');
+AssertEquals_LREAL(output.trajectory.independentMinDurations[1], 3.6860977315, 1E-9, message:='');
+AssertEquals_LREAL(output.trajectory.independentMinDurations[2], output.trajectory.duration, 1E-9, message:='');
 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_InvalidInput" Id="{7f2842b5-4b27-40e5-9e8d-50abf85326e8}">
+      <Declaration><![CDATA[METHOD Test_InvalidInput
+VAR_INST
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('InvalidInput');
+result := otg.update(input, output); // first run
 
-]]></ST>
-    </Implementation>
+input.target_velocity[0] := 2.0;
+input.target_velocity[0] := 0.3;
+input.target_velocity[0] := 0.0;
+result := otg.update(input, output);
+
+AssertEquals_INT(result, Struckig.StateEnum.error, message:='');
+AssertFalse(output.new_calculation, message:='');
+
+input.target_velocity[0] := 0.2;
+input.target_velocity[0] := -0.3;
+input.target_velocity[0] := 0.8;
+
+result := otg.update(input, output);
+
+AssertEquals_INT(result, Struckig.StateEnum.busy, message:='');
+AssertTrue(output.new_calculation, message:='');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PositionExtrema" Id="{59aa613e-c11d-40bf-a12f-16c3c93702fe}">
+      <Declaration><![CDATA[METHOD Test_PositionExtrema
+VAR_INST
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('PositionExtrema');
+
+result := otg.update(input, output);
+
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, 1.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, -2.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 3.2254033308, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, -3.1549193338, 1E-9, message:='');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, 2.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
   </POU>
 </TcPlcObject>
