@@ -1,6 +1,5 @@
-Struckig is a source code port from C++ to TwinCAT, IEC61131-3 (Structured Text).
-While some small parts of the code have been modified to better fit the language, most changes are only syntactic.
-Thus, what follows is the License of the original code, which can be found in https://github.com/pantor/ruckig
+Struckig is a source code port of "ruckig" to TwinCAT, IEC61131-3 (Structured Text).
+Most changes are only syntactic, thus, what follows is the License of the original code, which can be found in https://github.com/pantor/ruckig
 
 
 MIT License
