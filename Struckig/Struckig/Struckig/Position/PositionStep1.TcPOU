@@ -318,12 +318,15 @@ DO
 	END_IF
 
   // Single Newton step (regarding pd)
-  orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf_)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0_ - vf_) + jMax*(jMax*t*t*(jMax*t*t + 2*vf_) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
-  deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf_)))/aMax;
-
-  IF ABS(deriv) < DBL_EPSILON
+  IF t > DBL_EPSILON
   THEN
-    CONTINUE;
+    orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf_)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0_ - vf_) + jMax*(jMax*t*t*(jMax*t*t + 2*vf_) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
+    deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf_)))/aMax;
+  
+    IF ABS(deriv) < DBL_EPSILON
+    THEN
+      CONTINUE;
+    END_IF  
 	END_IF
   
   t := t - orig / deriv;
@@ -516,33 +519,35 @@ DO
     CONTINUE;
 	END_IF
 
-
-  // Double Newton step (regarding pd)
-  h1 := jMax*t*t + v0_;
-  orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
-  deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
-  
-  IF ABS(deriv) < DBL_EPSILON
+  IF t > DBL_EPSILON
   THEN
-    CONTINUE;
-	END_IF  
-  
-  t := t - orig / deriv;
-  
-  h1 := jMax*t*t + v0_;
-  orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
-  IF (ABS(orig) > 1E-9)
-  THEN
+    // Double Newton step (regarding pd)
+    h1 := jMax*t*t + v0_;
+    orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
     deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
     
     IF ABS(deriv) < DBL_EPSILON
     THEN
       CONTINUE;
-    END_IF
+    END_IF  
     
-    t := t - orig / deriv;    
-  END_IF
+    t := t - MIN(orig / deriv, t);
+    
+    h1 := jMax*t*t + v0_;
+    orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
+    IF (ABS(orig) > 1E-9)
+    THEN
+      deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
       
+      IF ABS(deriv) < DBL_EPSILON
+      THEN
+        CONTINUE;
+      END_IF
+      
+      t := t - orig / deriv;    
+    END_IF  
+	END_IF
+
   profile.t[0] := t;
   profile.t[1] := 0;
   profile.t[2] := (a0_ - aMin)/jMax + t;

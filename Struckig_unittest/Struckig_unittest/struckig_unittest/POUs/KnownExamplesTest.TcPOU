@@ -22,6 +22,9 @@ example15();
 example16();
 example17();
 example18();
+example19();
+example20();
+
 
 
 ]]></ST>
@@ -603,9 +606,40 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TEST('Example-18');
+        <ST><![CDATA[TEST('Example-19');
 
 AssertEquals_LREAL(Expected := 1.403613276,
+             Actual := run_and_return_duration(ruckig, input, output),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example20" Id="{43d3b3f8-bc82-46c0-9aaa-3c876692e06d}">
+      <Declaration><![CDATA[METHOD example20
+VAR_INST
+  ruckig : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    max_velocity :=         [ 1, 1, 1 ],
+    max_acceleration :=     [ 0.5, 0.5, 0.5 ],
+    max_jerk :=             [ 1, 1, 1 ],
+    current_position :=     [ 0.0001215, 0, 0 ],
+    current_velocity :=     [ 0.00405, 0, 0 ],
+    current_acceleration := [ 0.09, 0, 0 ],
+    target_position :=      [ 0.1421083333333333087, 0, 0 ],
+    target_velocity :=      [ 0.5, 0, 0 ],
+    target_acceleration :=  [ 0, 0, 0 ]
+  );
+  output : Struckig.OutputParameter;
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-20');
+
+AssertEquals_LREAL(Expected := 0.9,
              Actual := run_and_return_duration(ruckig, input, output),
              DELTA := 1E-8,
              Message := '');
