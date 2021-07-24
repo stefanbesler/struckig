@@ -183,7 +183,7 @@ THEN
   RETURN;   
 END_IF
 
-h1 := SQRT(144*root.Power((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf_ - vd)) - af_af*(aMax*tf_ - vd) + 2*af_*aMin*(aMax*tf_ - vd) + a0_a0*(aMin*tf_ + v0_ - vf_) - 2*a0_*aMax*(aMin*tf_ - vd),2) + 48*ad*(3*a0_p3 - 3*af_p3 + 12*aMax*aMin*(-aMax + aMin) + 4*af_af*(aMax + 2*aMin) + a0_*(-3*af_af - 8*af_*aMax + 6*aMax*aMax + 8*af_*aMin + 12*aMax*aMin - 6*aMin*aMin) + 6*af_*(aMax*aMax - 2*aMax*aMin - aMin*aMin) + a0_a0*(3*af_ - 4*(2*aMax + aMin)))*(2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_*tf_ - 2*tf_*vf_)));
+h1 := SQRT(144*root.Power2((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf_ - vd)) - af_af*(aMax*tf_ - vd) + 2*af_*aMin*(aMax*tf_ - vd) + a0_a0*(aMin*tf_ + v0_ - vf_) - 2*a0_*aMax*(aMin*tf_ - vd)) + 48*ad*(3*a0_p3 - 3*af_p3 + 12*aMax*aMin*(-aMax + aMin) + 4*af_af*(aMax + 2*aMin) + a0_*(-3*af_af - 8*af_*aMax + 6*aMax*aMax + 8*af_*aMin + 12*aMax*aMin - 6*aMin*aMin) + 6*af_*(aMax*aMax - 2*aMax*aMin - aMin*aMin) + a0_a0*(3*af_ - 4*(2*aMax + aMin)))*(2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_*tf_ - 2*tf_*vf_)));
 jf := -(3*af_af*aMax*tf_ - 3*a0_a0*aMin*tf_ - 6*ad*aMax*aMin*tf_ + 3*aMax*aMin*(aMin - aMax)*tf_ + 3*(a0_a0 - af_af)*vd + 6*af_*aMin*vd - 6*a0_*aMax*vd + 3*(aMax*aMax - aMin*aMin)*vd + h1/4)/(6*(2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf_*vf_)));
 
 profile.t[0] := (aMax - a0_)/jf;
@@ -464,7 +464,7 @@ DO
 	END_IF
 
   // Single Newton step (regarding pd)
-  orig := (3*a0_p4 + 3*af_p4 - 8*af_p3*aMin - 4*a0_p3*(aMin - 6*jMax*t) + 6*af_af*(aMin*aMin + 2*jMax*(jMax*t*t - vd)) + 24*a0_*jMax*t*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-t + tf_) + 2*jMax*(jMax*t*t - vd)) + 6*a0_a0*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-2*t + tf_) + 2*jMax*(5*jMax*t*t - vd)) - 24*af_*aMin*jMax*(jMax*t*t - vd) + 12*jMax*(2*aMin*jMax*(-pd - jMax*t*t*t + jMax*t*t*tf_ + tf_*v0_) + aMin*aMin*(jMax*t*t - vd) + jMax*root.Power(vd - jMax*t*t,2)))/(24*aMin*jMax_jMax);
+  orig := (3*a0_p4 + 3*af_p4 - 8*af_p3*aMin - 4*a0_p3*(aMin - 6*jMax*t) + 6*af_af*(aMin*aMin + 2*jMax*(jMax*t*t - vd)) + 24*a0_*jMax*t*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-t + tf_) + 2*jMax*(jMax*t*t - vd)) + 6*a0_a0*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-2*t + tf_) + 2*jMax*(5*jMax*t*t - vd)) - 24*af_*aMin*jMax*(jMax*t*t - vd) + 12*jMax*(2*aMin*jMax*(-pd - jMax*t*t*t + jMax*t*t*tf_ + tf_*v0_) + aMin*aMin*(jMax*t*t - vd) + jMax*root.Power2(vd - jMax*t*t)))/(24*aMin*jMax_jMax);
   deriv := ((a0_ + jMax*t)*(a0_a0 + af_af - a0_*aMin - 2*af_*aMin + aMin*aMin + 4*a0_*jMax*t + aMin*jMax*(2*tf_ - 3*t) + 2*jMax_jMax*t*t - 2*jMax*vd))/(aMin*jMax);
   
   IF ABS(deriv) < DBL_EPSILON
@@ -549,7 +549,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (ABS(v0_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
 THEN
-  h1 := SQRT(tf_tf*vf_vf + root.Power(4*pd - tf_*vf_,2));
+  h1 := SQRT(tf_tf*vf_vf + root.Power2(4*pd - tf_*vf_));
   jf := 4*(4*pd - 2*tf_*vf_ + h1)/tf_p3;
   
   profile.t[0] := tf_/4;
@@ -707,8 +707,8 @@ DO
 
   // Single Newton step (regarding pd)
   h1 := (ad_ad - 2*af_*jMax*t + 2*a0_*jMax*(t - tf_) + 2*jMax*(jMax*t*(t - tf_) + vd))/(2*jMax*(-ad + 2*jMax*t - jMax*tf_));
-  h2 := (-ad_ad + 2*jMax_jMax*t*t + af_*jMax*tf_ - 2*jMax_jMax*t*tf_ + jMax_jMax*tf_tf + a0_*(-ad + jMax*tf_) + ad*(af_ - 2*jMax*t + jMax*tf_) - 2*jMax*vd)/root.Power(ad + jMax*(-2*t + tf_),2);
-  orig := (-a0_p3 + af_p3 + 3*ad_ad*jMax*(h1 - t) + 3*ad*jMax_jMax*root.Power(h1 - t,2) - 3*a0_*af_*ad + 3*jMax_jMax*(a0_*tf_tf - 2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_)))/(6*jMax_jMax);
+  h2 := (-ad_ad + 2*jMax_jMax*t*t + af_*jMax*tf_ - 2*jMax_jMax*t*tf_ + jMax_jMax*tf_tf + a0_*(-ad + jMax*tf_) + ad*(af_ - 2*jMax*t + jMax*tf_) - 2*jMax*vd)/root.Power2(ad + jMax*(-2*t + tf_));
+  orig := (-a0_p3 + af_p3 + 3*ad_ad*jMax*(h1 - t) + 3*ad*jMax_jMax*root.Power2(h1 - t) - 3*a0_*af_*ad + 3*jMax_jMax*(a0_*tf_tf - 2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_)))/(6*jMax_jMax);
   deriv := ((-ad + 2*jMax*t - jMax*tf_)*(-ad + jMax*tf_)*(h2 - 1))/(2*jMax) + h1*(-ad + jMax*tf_ + (ad - 2*jMax*t + jMax*tf_)*h2 - jMax*h1);
   
   IF ABS(deriv) < DBL_EPSILON
@@ -786,7 +786,7 @@ END_FOR
 
 
 //
-h0 := SQRT(3*jMax_jMax*(a0_p4 + af_p4 - 4*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*(af_ - jMax*tf_) + 6*a0_a0*root.Power(af_ - jMax*tf_,2) + 24*af_*jMax_jMax*(-pd + tf_*v0_) - 4*a0_*(af_p3 - 3*af_af*jMax*tf_ + 6*jMax_jMax*(-pd + tf_*vf_)) - 12*jMax_jMax*(-vd_vd + jMax*tf_*(-2*pd + tf_*(v0_ + vf_)))));
+h0 := SQRT(3*jMax_jMax*(a0_p4 + af_p4 - 4*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*(af_ - jMax*tf_) + 6*a0_a0*root.Power2(af_ - jMax*tf_) + 24*af_*jMax_jMax*(-pd + tf_*v0_) - 4*a0_*(af_p3 - 3*af_af*jMax*tf_ + 6*jMax_jMax*(-pd + tf_*vf_)) - 12*jMax_jMax*(-vd_vd + jMax*tf_*(-2*pd + tf_*(v0_ + vf_)))));
 h2 := 3*(a0_a0 + af_af)*jMax + 6*a0_*jMax*(jMax*tf_ - af_);
 h1 := SQRT(3*jMax*(h2 - 6*af_*jMax_jMax*tf_ + 3*jMax_jMax*jMax*tf_tf + 2*h0));
 
@@ -819,7 +819,7 @@ ph7 := jMax_jMax*ph1*ph1;
 
 polynom[0] := 1.0;
 polynom[1] := (4*af_*tf_ - 2*jMax*tf_tf - 4*vd)/ph1;
-polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af_ - jMax*tf_) - 12*a0_a0*root.Power(af_ - jMax*tf_,2) - 12*af_*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf_*v0_ + 3*tf_*vf_) + 2*a0_*(4*af_p3 - 12*af_af*jMax*tf_ + 9*af_*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf_*vf_)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf_*(pd + tf_*v0_ - 2*tf_*vf_)))/(3*ph7);
+polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af_ - jMax*tf_) - 12*a0_a0*root.Power2(af_ - jMax*tf_) - 12*af_*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf_*v0_ + 3*tf_*vf_) + 2*a0_*(4*af_p3 - 12*af_af*jMax*tf_ + 9*af_*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf_*vf_)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf_*(pd + tf_*v0_ - 2*tf_*vf_)))/(3*ph7);
 polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf_ + 5*a0_p4*(af_ - jMax*tf_) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af_*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0_*(-5*af_p4 + 8*af_p3*jMax*tf_ + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af_*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf_*vf_) + 6*jMax_jMax*ph4))/(3*jMax*ph7);
 polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af_ - jMax*tf_) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af_*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0_*(af_p5 - af_p4*jMax*tf_ - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af_*ph6 + jMax*ph2)))/(18*jMax_jMax*ph7);
 
@@ -871,7 +871,7 @@ THEN
     RETURN;
 	END_IF
 ELSE 
-  h1 := ABS(jMax)/jMax*SQRT(9*root.Power((a0_ + af_)*tf_ - 2*vd,2) + 24*ad*g2);
+  h1 := ABS(jMax)/jMax*SQRT(9*root.Power2((a0_ + af_)*tf_ - 2*vd) + 24*ad*g2);
   jf := (3*(a0_a0 - af_af)*tf_ + ad*(6*vd - h1))/(12*g2);
   h2 := ABS(jMax)/jMax*SQRT(-ad_ad + jf*(2*(a0_ + af_)*tf_ + jf*tf_tf - 4*vd));
   
@@ -898,7 +898,7 @@ END_IF
 polynom[0] := ad_ad;
 polynom[1] := ad_ad*tf_;
 polynom[2] := (a0_a0 + af_af)*tf_tf + 24*(tf_*(af_*v0_ - a0_*vf_) - pd*ad) + 12*vd_vd + 10*a0_*af_*tf_tf;
-polynom[3] := -3*tf_*root.Power((a0_ + af_)*tf_ - 2*vd,2);
+polynom[3] := -3*tf_*root.Power2((a0_ + af_)*tf_ - 2*vd);
 polynom[4] := 0;
 
 root.solveCub(ADR(polynom));

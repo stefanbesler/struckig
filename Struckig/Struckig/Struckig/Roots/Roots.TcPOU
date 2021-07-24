@@ -110,6 +110,16 @@ END_VAR
         <ST><![CDATA[Power := EXPT(v, e);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Power2" Id="{abd9ca52-e417-447f-aecf-503f8c1f72c5}">
+      <Declaration><![CDATA[METHOD Power2 : LREAL
+VAR_INPUT
+  v : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Power2 := v*v;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="shrinkInterval" Id="{cdfd39a1-036a-45c9-827d-626807768bcc}">
       <Declaration><![CDATA[// Calculate a single zero of polynom p(x) inside [lbound, ubound]
 // Requirements: p(lbound)*p(ubound) < 0, lbound < ubound

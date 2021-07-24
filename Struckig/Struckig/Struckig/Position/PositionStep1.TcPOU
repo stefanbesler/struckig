@@ -353,10 +353,11 @@ VAR
   temp : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h0 := (aMax - aMin)*(3*af_p4*aMax - 3*a0_p4*aMin + 8*a0_p3*aMax*aMin - 8*af_p3*aMax*aMin - 24*a0_*aMax*aMin*jMax*v0_ - 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0_) + 24*af_*aMax*aMin*jMax*vf_ + 6*af_af*aMax*(aMin*aMin - 2*jMax*vf_) + 3*(root.Power(aMax,3)*aMin*aMin - 4*aMin*jMax*jMax*v0_*v0_ - aMax*aMax*(root.Power(aMin,3) - 4*aMin*jMax*v0_) + 4*aMax*jMax*(2*aMin*jMax*(p0_ - pf_) - aMin*aMin*vf_ + jMax*vf_*vf_)));
+        <ST><![CDATA[h0 := 3*(aMax - aMin)*(3*(af_p4*aMax - a0_p4*aMin) + 8*(a0_p3 - af_p3)*aMax*aMin + 24*aMax*aMin*jMax*(af_*vf_ - a0_*v0_) + 6*af_af*aMax*(aMin*aMin - 2*jMax*vf_) - 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0_) + 3*(aMax*aMax*aMax*aMin*aMin - 4*aMin*jMax_jMax*v0_v0 - aMax*aMax*aMin*(aMin*aMin - 4*jMax*v0_) + 4*aMax*jMax*(-2*aMin*jMax*pd_ - aMin*aMin*vf_ + jMax*vf_vf)));
+
 IF (h0 >= 0) // check if h1 isNan
 THEN
-  h1 := SQRT(3)*SQRT(h0)*ABS(jMax)/(3*(aMax - aMin)*jMax);
+  h1 := SQRT(h0)*ABS(jMax)/(3*(aMax - aMin)*jMax);
 
   // UDDU: Solution 2
   profile.t[0] := (-a0_ + aMax)/jMax;
@@ -441,15 +442,15 @@ THEN
 END_IF
 
 h0 := 3*(af_af - a0_a0 + 2*jMax*(v0_ + vf_));
-h1 := 2*jMax_jMax*(2*root.Power(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af,2) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0))));
-IF h1 > 0 AND_THEN ABS(h0) > eps
+h1 := SQRT(2*(2*root.Power2(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0))))) * ABS(jMax) / jMax;
+IF h1 >= 0 AND_THEN ABS(h0) > DBL_EPSILON
 THEN
   h1 := SQRT(h1);
   
   // Three step
-  profile.t[0] := (2*a0_p3*jMax - 6*a0_*af_af*jMax + 4*af_p3*jMax + 12*jMax_jMax*jMax*pd_ + 12*(af_ - a0_)*jMax_jMax*vf_ + h1)/(2*jMax_jMax*h0);
-  profile.t[1] := -h1/(jMax_jMax*h0);
-  profile.t[2] := (-4*a0_p3*jMax + 6*a0_a0*af_*jMax - 2*af_p3*jMax + 12*jMax_jMax*jMax*pd_ - 12*(af_ - a0_)*jMax_jMax*v0_ + h1)/(2*jMax_jMax*h0);
+  profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0_*af_af + 12*jMax_jMax*pd_ + 12*(af_ - a0_)*jMax*vf_ + h1)/(2*jMax_jMax*h0);
+  profile.t[1] := -h1/(jMax*h0);
+  profile.t[2] := (-4*a0_p3 - 2*af_p3 + 6*a0_a0*af_ + 12*jMax_jMax*pd_ - 12*(af_ - a0_)*jMax*v0_ + h1)/(2*jMax_jMax*h0);
   profile.t[3] := 0;
   profile.t[4] := 0;
   profile.t[5] := 0;
@@ -661,7 +662,7 @@ polynom[0] := 1.0;
 polynom[1] := 0.0;
 polynom[2] := (-2*(a0_a0 + af_af - 2*jMax*(v0_ + vf_)))/jMax_jMax;
 polynom[3] := (4*(a0_p3 - af_p3 + 3*jMax*(af_*vf_ - a0_*v0_ - jMax*pd_)))/(3*jMax*jMax_jMax);
-polynom[4] := -root.Power(a0_a0 - af_af + 2*jMax*(vf_ - v0_), 2)/(4*jMax_jMax*jMax_jMax);
+polynom[4] := -root.Power2(a0_a0 - af_af + 2*jMax*(vf_ - v0_))/(4*jMax_jMax*jMax_jMax);
 root.solveQuartMonic(ADR(polynom[1]), 4);
 FOR i:=0 TO root.rootCount
 DO
