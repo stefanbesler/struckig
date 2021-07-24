@@ -22,6 +22,7 @@ VAR
   result : Struckig.StateEnum;
   new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
+  rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[TEST('Example-01');
@@ -68,6 +69,31 @@ AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
 AssertEquals_LREAL(positionExtrema.maximum, 2.0, 1E-9, message:='');
 AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
 AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.0, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 0.0, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.5, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 2.0, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(1.0, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 4.0, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[1].firstStateAtPosition(-3.0, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 2.6004877902, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[1].firstStateAtPosition(-3.1, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 2.8644154489, 1E-9, message:='');
+
+AssertTrue( output.trajectory.profiles[2].firstStateAtPosition(0.05, 0.0, rtime, rvel, racc), message:='' );
+AssertEquals_LREAL( rtime, 0.6694329501, 1E-9, message:='');
+
+AssertFalse( output.trajectory.profiles[0].firstStateAtPosition(-1.0, 0.0, rtime, rvel, racc), message:='' );
+AssertFalse( output.trajectory.profiles[1].firstStateAtPosition(-3.4, 0.0, rtime, rvel, racc), message:='' );
+
+// todo: this test doesn't make sense in the port of ruckig, the method is not exposed in the trajectory class yet
+// AssertFalse( output.trajectory.profiles[6].firstStateAtPosition(6, 0.0, rtime, rvel, racc), message:='' );
+
 
 TEST_FINISHED();
 

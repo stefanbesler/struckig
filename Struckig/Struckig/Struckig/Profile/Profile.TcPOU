@@ -21,6 +21,9 @@ END_VAR
 VAR CONSTANT
   eps : LREAL := 1E-8;  
   infinity : LREAL := 1.7976931348623157E+308;
+END_VAR
+VAR_STAT
+  root : Roots;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -349,6 +352,64 @@ checkVel := ABS(p[7] - pf) < 1E-8
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim
     AND_THEN v[3] <= vUppLim AND_THEN v[4] <= vUppLim AND_THEN v[5] <= vUppLim AND_THEN v[6] <= vUppLim
     AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim; // this is not really needed, but we want to double check    ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="firstStateAtPosition" Id="{0159e4a6-0809-4a0c-b389-030aa446ea6f}">
+      <Declaration><![CDATA[METHOD firstStateAtPosition : BOOL
+VAR_INPUT
+  pt, offset : LREAL;
+END_VAR
+VAR_IN_OUT
+  t_t, v_t, a_t : LREAL;
+END_VAR
+VAR
+  i,h : INT;
+  p_t : LREAL;
+  polynom : ARRAY[0..4] OF LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=0 TO 6
+DO
+  IF ABS(p[i] - pt) < eps
+  THEN
+    t_t := offset + SEL(i>0, 0, t_sum[i-1]);
+    v_t := v[i];
+    a_t := a[i];
+    firstStateAtPosition := TRUE;
+    RETURN;
+	END_IF
+  
+  IF t[i] = 0
+  THEN
+    CONTINUE;
+	END_IF
+  
+  polynom[0] := j[i]/6;
+  polynom[1] := a[i]*0.5;
+  polynom[2] := v[i];
+  polynom[3] := p[i]-pt;
+  root.solveCub(ADR(polynom));
+  FOR h:=0 TO root.rootCount
+  DO
+    IF(0 < t[h] AND_THEN t[h] <= t[i])
+    THEN
+      t_t := offset + t[h] + SEL(i>0, 0, t_sum[i-1]);
+      integrate(t[h], p[i], v[i], a[i], j[i], p_t, v_t, a_t);
+      firstStateAtPosition := TRUE;
+      RETURN;      
+		END_IF
+  END_FOR
+  
+END_FOR
+
+IF ABS(pf-pt) < eps
+THEN
+  t_t := offset + t_sum[6];
+  v_t := vf;
+  a_t := af;
+  firstStateAtPosition := TRUE;
+  RETURN;      
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="integrate" Id="{801ace88-741b-4b24-8760-4124fdd6b2b6}">
