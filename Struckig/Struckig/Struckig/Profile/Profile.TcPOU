@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Profile" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
     <Declaration><![CDATA[/// The state profile for position, velocity, acceleration and jerk for a single DoF
 FUNCTION_BLOCK Profile
@@ -364,6 +364,7 @@ VAR_INPUT
 END_VAR
 VAR
   i : INT;
+  t_current_sum : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[positionExtrema.minimum := infinity;
@@ -382,10 +383,15 @@ THEN
   END_IF
 END_IF
 
-        
+t_current_sum := 0;        
 FOR i:=0 TO 6
 DO
-  checkStepForPositionExtremum(t_sum[i] + t_brakes[i], t[i], p[i], v[i], a[i], j[i], positionExtrema);
+  IF i > 0
+  THEN
+    t_current_sum := t_sum[i-1];
+	END_IF
+  
+  checkStepForPositionExtremum(t_current_sum + t_brakes[i], t[i], p[i], v[i], a[i], j[i], positionExtrema);
 END_FOR 
 
 IF (pf < positionExtrema.minimum)

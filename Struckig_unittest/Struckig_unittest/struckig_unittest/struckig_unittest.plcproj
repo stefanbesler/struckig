@@ -20,6 +20,9 @@
     <Compile Include="PlcTask.TcTTO">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\SecondaryFeaturesTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\run_and_return_duration.TcPOU">
       <SubType>Code</SubType>
     </Compile>

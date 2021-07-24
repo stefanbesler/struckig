@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="SecondaryFeaturesTest" Id="{78a4d410-064c-404a-a1d2-ebb5b6bc814b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK SecondaryFeaturesTest EXTENDS TcUnit.FB_TestSuite
+VAR
+  otg : Struckig.Ruckig(0.005);
+  input : Struckig.InputParameter(3) := (
+    synchronizationType := SynchronizationTypeEnum.none,
+    current_position :=     [ 0.0, -2.0, 0.0 ],
+    current_velocity :=     [ 0.0, 0.0, 0.0 ],
+    current_acceleration := [ 0.0, 0.0, 0.0 ],
+    target_position :=      [ 1.0, -3.0, 2.0 ],
+    target_velocity :=      [ 0.0, 0.3, 0.0 ],
+    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
+    max_velocity :=         [ 1.0, 1.0, 1.0 ],
+    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
+    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+  output : Struckig.OutputParameter;  
+END_VAR
+VAR
+  result : Struckig.StateEnum;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaStruct;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TEST('Example-01');
+
+result := otg.update(input, output);
+
+AssertEquals_INT(Expected := Struckig.StateEnum.busy, Actual := result, Message := '');
+AssertEquals_LREAL(output.trajectory.duration, 4.0, 1E-9, Message:='');
+
+output.trajectory.atTime(0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
+AssertArrayEquals_LREAL(new_position, input.current_position, 1E-9, message:='');
+AssertArrayEquals_LREAL(new_velocity, input.current_velocity, 1E-9, message:='');
+AssertArrayEquals_LREAL(new_acceleration, input.current_acceleration, 1E-9, message:='');
+
+output.trajectory.atTime(output.trajectory.duration, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
+AssertArrayEquals_LREAL(new_position, input.target_position, 1E-9, message:='');
+AssertArrayEquals_LREAL(new_velocity, input.target_velocity, 1E-9, message:='');
+AssertArrayEquals_LREAL(new_acceleration, input.target_acceleration, 1E-9, message:='');
+
+output.trajectory.atTime(2.0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
+values[0] := 0.5;
+values[1] := -2.6871268303;
+values[2] := 1.0;
+AssertArrayEquals_LREAL(new_position, input.target_acceleration, 1E-9, message:='');
+
+AssertEquals_LREAL(output.trajectory.independentMinDurations[0], 3.1748021039, 1E-9, message:='');
+AssertEquals_LREAL(output.trajectory.independentMinDurations[1], 3.6860977315, 1E-9, message:='');
+AssertEquals_LREAL(output.trajectory.independentMinDurations[2], output.trajectory.duration, 1E-9, message:='');
+
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, 1.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, -2.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 3.2254033308, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, -3.1549193338, 1E-9, message:='');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.maximum, 2.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+
+TEST_FINISHED();
+
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
