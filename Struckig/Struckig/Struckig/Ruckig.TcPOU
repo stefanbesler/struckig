@@ -41,19 +41,14 @@ END_VAR
 
 IF NOT validateInput(input)
 THEN
-  abortErrorId(ErrorCodeEnum.invalidInput, 'input parameters for trajectory calculation');
+  calculate := ErrorCodeEnum.invalidInput;
   RETURN;
 END_IF
 
 calculate := output.trajectory.calculate(input, dt_);
 IF (calculate <> 0) THEN
-  abortErrorId(calculate, '');
   RETURN;
-END_IF
-
-current_input := input;
-output.current_time := 0.0;
-output.has_changed := TRUE;]]></ST>
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="errorId" Id="{144463d5-5136-4844-9c4c-5008735eb636}">
@@ -159,15 +154,22 @@ END_VAR]]></Declaration>
 cpuCntHiDW := cpucounter.cpuCntHiDW;
 cpuCntLoDW := cpucounter.cpuCntLoDW;
 
-output.has_changed := FALSE;
+output.new_calculation := FALSE;
 
 IF hasChanged(input, current_input)
 THEN
   state_ := StateEnum.busy;
   errorId_ := calculate(input, output);
-  if (errorId_ <> 0) THEN
+  IF errorId_ <> 0 THEN
     abortErrorId(errorId_, '');
+    update := state_;
+    RETURN;
   END_IF
+  
+  update := state_;  
+  current_input := input;
+  output.current_time := 0.0;
+  output.new_calculation := TRUE;  
 END_IF
 
 output.current_time := output.current_time + dt_;

@@ -171,8 +171,8 @@ DO
   
   IF NOT found_profile
   THEN
-    hasError := TRUE;
-    errorDetail := 'error in calculate step 1';
+    calculate := ErrorCodeEnum.calculateStep1Failed;
+    RETURN; 
 	END_IF
 
   independentMinDurations[dof] := blocks[dof].t_min;
