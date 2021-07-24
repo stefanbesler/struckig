@@ -36,7 +36,7 @@ Test_PositionExtrema();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
+    synchronizationType := SynchronizationTypeEnum.timeSync,
     current_position :=     [ 0.0, -2.0, 0.0 ],
     current_velocity :=     [ 0.0, 0.0, 0.0 ],
     current_acceleration := [ 0.0, 0.0, 0.0 ],
@@ -51,33 +51,32 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('AtTime');
-
 result := otg.update(input, output);
 
 AssertEquals_INT(Expected := Struckig.StateEnum.busy, Actual := result, Message := '');
-AssertEquals_LREAL(output.trajectory.duration, 4.0, 1E-9, Message:='');
+AssertEquals_LREAL(4.0, output.trajectory.duration, 1E-9, Message:='');
 
 output.trajectory.atTime(0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
-AssertArrayEquals_LREAL(new_position, input.current_position, 1E-9, message:='');
-AssertArrayEquals_LREAL(new_velocity, input.current_velocity, 1E-9, message:='');
-AssertArrayEquals_LREAL(new_acceleration, input.current_acceleration, 1E-9, message:='');
+AssertArrayEquals_LREAL(input.current_position, new_position, 1E-9, message:='p(0) should be current_position');
+AssertArrayEquals_LREAL(input.current_velocity, new_velocity, 1E-9, message:='v(0) should be current_velocity');
+AssertArrayEquals_LREAL(input.current_acceleration, new_acceleration, 1E-9, message:='a(0) should be current_acceleration');
 
 output.trajectory.atTime(output.trajectory.duration, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
-AssertArrayEquals_LREAL(new_position, input.target_position, 1E-9, message:='');
-AssertArrayEquals_LREAL(new_velocity, input.target_velocity, 1E-9, message:='');
-AssertArrayEquals_LREAL(new_acceleration, input.target_acceleration, 1E-9, message:='');
+AssertArrayEquals_LREAL(input.target_position, new_position, 1E-9, message:='p(0) should be target_position');
+AssertArrayEquals_LREAL(input.target_velocity, new_velocity, 1E-9, message:='v(0) should be target_velocity');
+AssertArrayEquals_LREAL(input.target_acceleration, new_acceleration, 1E-9, message:='a(0) should be target_acceleration');
 
 output.trajectory.atTime(2.0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
 values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
-AssertArrayEquals_LREAL(new_position, input.target_acceleration, 1E-9, message:='');
+AssertArrayEquals_LREAL(values, new_position, 1E-9, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -87,7 +86,7 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
+    synchronizationType := SynchronizationTypeEnum.timeSync,
     current_position :=     [ 0.0, -2.0, 0.0 ],
     current_velocity :=     [ 0.0, 0.0, 0.0 ],
     current_acceleration := [ 0.0, 0.0, 0.0 ],
@@ -102,32 +101,32 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TEST('PositionExtrema');
+        <ST><![CDATA[TEST('FirstStateAtTime');
 
 result := otg.update(input, output);
 
 AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.0, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(0.0, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.5, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 2.0, 1E-9, message:='');
+AssertEquals_LREAL(2.0, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(1.0, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 4.0, 1E-9, message:='');
+AssertEquals_LREAL(4.0, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[1].firstStateAtPosition(-3.0, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 2.6004877902, 1E-9, message:='');
+AssertEquals_LREAL(2.6004877902, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[1].firstStateAtPosition(-3.1, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 2.8644154489, 1E-9, message:='');
+AssertEquals_LREAL(2.8644154489, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[2].firstStateAtPosition(0.05, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL( rtime, 0.6694329501, 1E-9, message:='');
+AssertEquals_LREAL(0.6694329501, rtime, 1E-9, message:='');
 
 AssertFalse( output.trajectory.profiles[0].firstStateAtPosition(-1.0, 0.0, rtime, rvel, racc), message:='' );
 AssertFalse( output.trajectory.profiles[1].firstStateAtPosition(-3.4, 0.0, rtime, rvel, racc), message:='' );
@@ -158,7 +157,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -194,7 +193,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -203,21 +202,22 @@ END_VAR]]></Declaration>
 result := otg.update(input, output); // first run
 
 input.target_velocity[0] := 2.0;
-input.target_velocity[0] := 0.3;
-input.target_velocity[0] := 0.0;
+input.target_velocity[1] := 0.3;
+input.target_velocity[2] := 0.0;
 result := otg.update(input, output);
 
-AssertEquals_INT(result, Struckig.StateEnum.error, message:='');
-AssertFalse(output.new_calculation, message:='');
+AssertEquals_INT(result, Struckig.StateEnum.error, message:='State should be error');
+AssertFalse(output.new_calculation, message:='output.new_calculation should be false');
 
 input.target_velocity[0] := 0.2;
-input.target_velocity[0] := -0.3;
-input.target_velocity[0] := 0.8;
-
+input.target_velocity[1] := -0.3;
+input.target_velocity[2] := 0.8;
 result := otg.update(input, output);
 
-AssertEquals_INT(result, Struckig.StateEnum.busy, message:='');
-AssertTrue(output.new_calculation, message:='');]]></ST>
+AssertEquals_INT(result, Struckig.StateEnum.busy, message:='State should be busy');
+AssertTrue(output.new_calculation, message:='output.new_calculation should be true');
+
+TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test_PositionExtrema" Id="{59aa613e-c11d-40bf-a12f-16c3c93702fe}">
@@ -225,7 +225,7 @@ AssertTrue(output.new_calculation, message:='');]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
+    synchronizationType := SynchronizationTypeEnum.timeSync,
     current_position :=     [ 0.0, -2.0, 0.0 ],
     current_velocity :=     [ 0.0, 0.0, 0.0 ],
     current_acceleration := [ 0.0, 0.0, 0.0 ],
@@ -240,7 +240,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
+  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
   positionExtrema : Struckig.PositionExtremaStruct;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -250,22 +250,22 @@ END_VAR]]></Declaration>
 result := otg.update(input, output);
 
 positionExtrema := output.trajectory.profiles[0].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, 1.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(4.0, positionExtrema.t_max, 1E-9, message:='Profile[0] t_max incorrect');
+AssertEquals_LREAL(1.0, positionExtrema.maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.t_min, 1E-9, message:='Profile[0] t_min incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[1].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, -2.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 3.2254033308, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, -3.1549193338, 1E-9, message:='');
+AssertEquals_LREAL(0.0, positionExtrema.t_max, 1E-9, message:='Profile[1] t_max incorrect');
+AssertEquals_LREAL(-2.0, positionExtrema.maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(3.2254033308, positionExtrema.t_min, 1E-9, message:='Profile[1] t_min incorrect');
+AssertEquals_LREAL(-3.1549193338, positionExtrema.minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[2].positionExtrema();
-AssertEquals_LREAL(positionExtrema.t_max, 4.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.maximum, 2.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.t_min, 0.0, 1E-9, message:='');
-AssertEquals_LREAL(positionExtrema.minimum, 0.0, 1E-9, message:='');
+AssertEquals_LREAL(4.0, positionExtrema.t_max, 1E-9, message:='Profile[2] t_max incorrect');
+AssertEquals_LREAL(2.0, positionExtrema.maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.t_min, 1E-9, message:='Profile[2] t_min incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.minimum, 1E-9, message:='Profile[2] minimum incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

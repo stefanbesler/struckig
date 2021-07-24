@@ -630,8 +630,8 @@ VAR_INST
     current_velocity :=     [ 0.00405, 0, 0 ],
     current_acceleration := [ 0.09, 0, 0 ],
     target_position :=      [ 0.1421083333333333087, 0, 0 ],
-    target_velocity :=      [ 0.5, 0, 0 ],
-    target_acceleration :=  [ 0, 0, 0 ]
+    target_velocity :=      [ 0.37, 0, 0 ],
+    target_acceleration :=  [ 0.5, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
