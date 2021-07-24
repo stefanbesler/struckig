@@ -448,9 +448,9 @@ THEN
   h1 := SQRT(h1);
   
   // Three step
-  profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0_*af_af + 12*jMax_jMax*pd_ + 12*(af_ - a0_)*jMax*vf_ + h1)/(2*jMax_jMax*h0);
+  profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0_*af_af + 12*jMax_jMax*pd_ + 12*(af_ - a0_)*jMax*vf_ + h1)/(2*jMax*h0);
   profile.t[1] := -h1/(jMax*h0);
-  profile.t[2] := (-4*a0_p3 - 2*af_p3 + 6*a0_a0*af_ + 12*jMax_jMax*pd_ - 12*(af_ - a0_)*jMax*v0_ + h1)/(2*jMax_jMax*h0);
+  profile.t[2] := (-4*a0_p3 - 2*af_p3 + 6*a0_a0*af_ + 12*jMax_jMax*pd_ - 12*(af_ - a0_)*jMax*v0_ + h1)/(2*jMax*h0);
   profile.t[3] := 0;
   profile.t[4] := 0;
   profile.t[5] := 0;
