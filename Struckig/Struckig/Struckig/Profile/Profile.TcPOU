@@ -33,17 +33,19 @@ VAR_INPUT
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;
+  vMin : LREAL;  
   aMax : LREAL;
   aMin : LREAL;
   jMax  : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[check := (ABS(jf) < ABS(jMax) + 1e-12) AND_THEN checkTime(jerkSigns, limits, tf, jf, vMax, aMax, aMin);]]></ST>
+        <ST><![CDATA[check := (ABS(jf) < ABS(jMax) + 1e-12) AND_THEN checkTime(jerkSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="checkAcc" Id="{dec39d38-9a64-41bc-99b6-6a7b67c016da}">
-      <Declaration><![CDATA[METHOD checkAcc : BOOL
+      <Declaration><![CDATA[/// For velocity interface
+METHOD checkAcc : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSignsEnum;
   limits : ProfileLimitsEnum;  
@@ -210,28 +212,32 @@ VAR_INPUT
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;
+  vMin : LREAL;  
   aMax : LREAL;
   aMin : LREAL;  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-checkTime := checkVel(jerkSigns, limits, jf, vMax, aMax, aMin); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
+checkTime := checkVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
       </Implementation>
     </Method>
     <Method Name="checkVel" Id="{1650deae-6774-4923-94a5-237877609b6a}">
-      <Declaration><![CDATA[METHOD checkVel : BOOL
+      <Declaration><![CDATA[/// For position interface
+METHOD checkVel : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSignsEnum;    
   limits : ProfileLimitsEnum;
   jf : LREAL;
   vMax : LREAL;
+  vMin : LREAL;  
   aMax : LREAL;
   aMin : LREAL;
 END_VAR
 VAR
   i : INT;
-  v_a_zero, vMaxAbs : LREAL;
+  v_a_zero : LREAL;
+  vUppLim, vLowLim : LREAL;  
   aUppLim, aLowLim : LREAL;
 END_VAR
 ]]></Declaration>
@@ -300,8 +306,10 @@ ELSE
   j[6] := -jf;          
 END_IF
         
-vMaxAbs := ABS(vMax) + 1E-12;
-
+// vMaxAbs := ABS(vMax) + 1E-12;
+vUppLim := SEL(vMax > 0, vMin, vMax) + 1E-12;
+vLowLim := SEL(vMax > 0, vMax, vMin) - 1E-12;
+        
 FOR i:= 0 TO 6 
 DO
   a[i+1] := a[i] + t[i] * j[i];
@@ -319,7 +327,7 @@ DO
   IF (i > 1 AND_THEN a[i+1] * a[i] < -eps) 
   THEN
     v_a_zero := v[i] - (a[i] * a[i]) / (2 * j[i]);
-    IF (ABS(v_a_zero) > vMaxAbs)
+    IF (v_a_zero > vUppLim OR_ELSE v_a_zero < vLowLim)
     THEN
       RETURN;        
 		END_IF
@@ -337,7 +345,9 @@ aLowLim := SEL((aMax > 0), aMax, aMin) - 1E-12;
 checkVel := ABS(p[7] - pf) < 1E-8
     AND_THEN ABS(v[7] - vf) < 1E-8
     AND_THEN ABS(a[7] - af) < 1E-12 // This is not really needed, but we want to double check
-    AND_THEN ABS(v[3]) <= vMaxAbs AND_THEN ABS(v[4]) <= vMaxAbs AND_THEN ABS(v[5]) <= vMaxAbs AND_THEN ABS(v[6]) <= vMaxAbs
+    // AND_THEN ABS(v[3]) <= vMaxAbs AND_THEN ABS(v[4]) <= vMaxAbs AND_THEN ABS(v[5]) <= vMaxAbs AND_THEN ABS(v[6]) <= vMaxAbs
+    AND_THEN v[3] <= vUppLim AND_THEN v[4] <= vUppLim AND_THEN v[5] <= vUppLim AND_THEN v[6] <= vUppLim
+    AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim    
     AND_THEN a[1] >= aLowLim AND_THEN a[3] >= aLowLim AND_THEN a[5] >= aLowLim
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim;]]></ST>
       </Implementation>

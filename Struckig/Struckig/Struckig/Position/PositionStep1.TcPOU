@@ -193,58 +193,38 @@ IF (ABS(pf_ - p0_) < DBL_EPSILON AND_THEN ABS(v0_) < DBL_EPSILON AND_THEN ABS(vf
 THEN 
   IF (pf_ >= p0_)
   THEN
-    time_none(profile, vMax_, aMax_, aMin_, jMax_);
+    time_none(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
   ELSE
-    time_none(profile, vMin_, aMin_, aMax_, -jMax_);        
+    time_none(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);        
   END_IF
 
 ELSE 
-  time_acc0_acc1_vel(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc0_acc1_vel(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_acc1_vel(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc1_vel(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_acc0_vel(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc0_vel(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_vel(profile, vMax_, aMax_, aMin_, jMax_);
-  time_vel(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_none(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc0(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc1(profile, vMax_, aMax_, aMin_, jMax_);
-  time_acc0_acc1(profile, vMax_, aMax_, aMin_, jMax_);
-  time_none(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_acc0(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_acc1(profile, vMin_, aMin_, aMax_, -jMax_);
-  time_acc0_acc1(profile, vMin_, aMin_, aMax_, -jMax_);  
+  time_acc0_acc1_vel(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc0_acc1_vel(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_acc1_vel(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc1_vel(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_acc0_vel(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc0_vel(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_vel(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_vel(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_none(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc0(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc1(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_acc0_acc1(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  time_none(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_acc0(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_acc1(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  time_acc0_acc1(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);  
 
   IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
   THEN
-    time_none_two_step(profile, vMax_, aMax_, aMin_, jMax_);        
+    time_none_two_step(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+    time_none_two_step(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+    time_acc0_two_step(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+    time_acc0_two_step(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);        
+    time_vel_two_step(profile, vMax_, vMin_, aMax_, aMin_, jMax_);        
+    time_vel_two_step(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);    
   END_IF
-    
-  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
-  THEN
-    time_none_two_step(profile, vMin_, aMin_, aMax_, -jMax_);
-  END_IF 
-    
-  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
-  THEN
-    time_acc0_two_step(profile, vMax_, aMax_, aMin_, jMax_);
-  END_IF 
-  
-  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1) 
-  THEN
-    time_acc0_two_step(profile, vMin_, aMin_, aMax_, -jMax_);        
-  END_IF
-  
-  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1) 
-  THEN
-    time_vel_two_step(profile, vMax_, aMax_, aMin_, jMax_);        
-  END_IF
-  
-  IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1)
-  THEN
-    time_vel_two_step(profile, vMin_, aMin_, aMax_, -jMax_);
-  END_IF 
 END_IF
 
 get := calculateBlock(block);]]></ST>
@@ -317,7 +297,7 @@ jMax_jMax := jMax * jMax;]]></ST>
       <Declaration><![CDATA[METHOD time_acc0
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Combined UDDU and UDUD
@@ -356,7 +336,7 @@ DO
   profile.t[5] := 0;
   profile.t[6] := (af_ - aMax)/jMax + t;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);        
   END_IF
@@ -367,7 +347,7 @@ END_FOR   ]]></ST>
       <Declaration><![CDATA[METHOD time_acc0_acc1
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 VAR
   temp : LREAL;
@@ -387,7 +367,7 @@ THEN
   profile.t[5] := -(af_af + aMax*aMin - 2*(aMin*aMin + jMax*vf_) - h1)/(2*aMin*jMax);
   profile.t[6] := profile.t[4] + af_/jMax;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);            
   END_IF
@@ -401,7 +381,7 @@ THEN
   profile.t[5] := -(af_af + aMax*aMin - 2*(aMin*aMin + jMax*vf_) + h1)/(2*aMin*jMax);
   profile.t[6] := profile.t[4] + af_/jMax;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);              
   END_IF
@@ -417,7 +397,7 @@ END_IF
       <Declaration><![CDATA[METHOD time_acc0_acc1_vel
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -429,7 +409,7 @@ profile.t[4] := -aMin/jMax;
 profile.t[5] := -(af_af*0.5 - aMin*aMin - jMax*(vf_ - vMax))/(aMin*jMax);
 profile.t[6] := profile.t[4] + af_/jMax;
 
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, jMax, vMax, aMax, aMin))
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, jMax, vMax, vMin, aMax, aMin))
 THEN
   addProfile(profile, jMax);    
 END_IF]]></ST>
@@ -439,7 +419,7 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD time_acc0_two_step
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ABS(2*a0_*jMax) > eps
@@ -453,7 +433,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
   
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);
     return;
@@ -475,7 +455,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
   
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);
     RETURN;     
@@ -487,7 +467,7 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD time_acc0_vel
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel)) 
@@ -505,7 +485,7 @@ profile.t[4] := h1;
 profile.t[5] := 0;
 profile.t[6] := profile.t[4] + af_/jMax;
 
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_vel, jMax, vMax, aMax, aMin)) 
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_vel, jMax, vMax, vMin, aMax, aMin)) 
 THEN
   addProfile(profile, jMax);    
 END_IF
@@ -516,7 +496,7 @@ END_IF
       <Declaration><![CDATA[METHOD time_acc1
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -570,7 +550,7 @@ DO
   profile.t[5] := -((a0_a0 + af_af)*0.5 - aMin*aMin + jMax*t*(2*a0_ + jMax*t) - jMax*(vf_ - v0_))/(aMin*jMax);
   profile.t[6] := (af_ - aMin)/jMax;
   
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);
   END_IF
@@ -581,7 +561,7 @@ END_FOR   ]]></ST>
       <Declaration><![CDATA[METHOD time_acc1_vel
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ((jMax > 0 AND_THEN has_up_vel) OR_ELSE (jMax < 0 AND_THEN has_down_vel)) 
@@ -603,7 +583,7 @@ THEN
   profile.t[0] := 0;    
 END_IF
     
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1_vel, jMax, vMax, aMax, aMin)) 
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1_vel, jMax, vMax, vMin, aMax, aMin)) 
 THEN
   addProfile(profile, jMax);    
 END_IF
@@ -615,6 +595,7 @@ END_IF
 VAR_INPUT
   profile : REFERENCE TO Profile;  
   vMax : LREAL;
+  vMin : LREAL;  
   aMax : LREAL;
   aMin : LREAL;
   jMax : LREAL;
@@ -631,7 +612,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := profile.t[0];
   
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax); 
     RETURN;            
@@ -652,7 +633,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);                
   END_IF
@@ -666,7 +647,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);                
   END_IF
@@ -712,7 +693,7 @@ DO
   profile.t[5] := 0;
   profile.t[6] := -h0 + t*0.5 + af_/jMax;
 
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin)) 
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, vMin, aMax, aMin)) 
   THEN
     addProfile(profile, jMax);            
   END_IF
@@ -726,7 +707,7 @@ END_FOR
       <Declaration><![CDATA[METHOD time_none_two_step
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Single step
@@ -738,7 +719,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsENum.none, jMax, vMax, aMax, aMin))
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsENum.none, jMax, vMax, vMin, aMax, aMin))
 THEN
   addProfile(profile, jMax);
   RETURN;        
@@ -758,7 +739,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
   
-  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, aMax, aMin))
+  IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, vMax, vMin, aMax, aMin))
   THEN
     addProfile(profile, jMax);        
   END_IF
@@ -771,7 +752,7 @@ END_IF
       <Declaration><![CDATA[METHOD time_vel
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -792,7 +773,7 @@ profile.t[4] := h1;
 profile.t[5] := 0;
 profile.t[6] := h1 + af_/jMax;
 
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, aMax, aMin))
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, vMin, aMax, aMin))
 THEN
   addProfile(profile, jMax);
 END_IF]]></ST>
@@ -802,7 +783,7 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD time_vel_two_step
 VAR_INPUT
   profile : REFERENCE TO Profile;
-  vMax, aMax, aMin, jMax : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[h1 := SQRT(af_af*0.5 + jMax*(vMax - vf_))/ABS(jMax);
@@ -816,7 +797,7 @@ profile.t[4] := h1;
 profile.t[5] := 0;
 profile.t[6] := h1 + af_/jMax;
 
-IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, aMax, aMin))
+IF (profile.checkVel(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, jMax, vMax, vMin, aMax, aMin))
 THEN
   addProfile(profile, jMax);        
 END_IF]]></ST>
