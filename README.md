@@ -20,6 +20,8 @@ if you would like to use a library that is implemented in a IEC 61131-3 conform 
 
 # Porting progress
 
+The original project, `ruckig` is a submodule of this repository. The commit-hash reflects the commits that are ported already - I try to keep up with changes that are done in `ruckig`.
+
 - [x] Crude initial port of source code
 - [x] Check source code for obvious copy & paste errors that may have occured during the port
 - [x] Manual testing
