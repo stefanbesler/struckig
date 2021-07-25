@@ -15,9 +15,6 @@ VAR
   t_to_v_max_with_constant : LREAL;
   t_to_v_min_with_constant : LREAL;    
 END_VAR
-VAR CONSTANT
-  eps : LREAL := 2.2E-14;
-END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -52,10 +49,10 @@ ELSIF (v_at_a_max < vMin AND_THEN jMax > 0) OR_ELSE (v_at_a_max > vMin AND_THEN 
 THEN
   t_to_v_min := -(v_at_a_max - vMin)/aMax;
   t_to_v_max := -aMax/(2*jMax) - (v_at_a_max + vMax)/aMax;
-  t_brake[0] := t_to_a_max + eps;
-  t_brake[1] := MAX(MIN(t_to_v_min, v_at_a_max - eps), 0.0);
+  t_brake[0] := t_to_a_max + Constants.BrakeEpsilon;
+  t_brake[1] := MAX(MIN(t_to_v_min, v_at_a_max - Constants.BrakeEpsilon), 0.0);
 ELSE
-  t_brake[0] := t_to_a_max + eps;
+  t_brake[0] := t_to_a_max + Constants.BrakeEpsilon;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -115,11 +112,11 @@ j_brake[1] := 0.0;
 IF (a0 > aMax)
 THEN
   j_brake[0] := -jMax;
-  t_brake[0] := (a0 - aMax)/jMax + eps;
+  t_brake[0] := (a0 - aMax)/jMax + Constants.BrakeEpsilon;
 ELSIF (a0 < aMin)
 THEN
   j_brake[0] := jMax;
-  t_brake[0] := -(a0 - aMin)/jMax + eps;
+  t_brake[0] := -(a0 - aMin)/jMax + Constants.BrakeEpsilon;
 END_IF ]]></ST>
       </Implementation>
     </Method>
@@ -170,10 +167,10 @@ THEN
   v_at_a_min := v_at_t(v0, a0, -jMax, t_to_a_min);
   t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
   t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
-  t_brake[0] := t_to_a_min - eps;
+  t_brake[0] := t_to_a_min - Constants.BrakeEpsilon;
   t_brake[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
 ELSE
-  t_brake[0] := t_min_to_v_max - eps;
+  t_brake[0] := t_min_to_v_max - Constants.BrakeEpsilon;
 END_IF]]></ST>
       </Implementation>
     </Method>

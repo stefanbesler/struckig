@@ -18,12 +18,7 @@ VAR
   jMax_jMax : LREAL;
   g1, g2 : LREAL;
   root : Roots;  
-END_VAR
-VAR CONSTANT
-  eps : LREAL := 1E-8;    
-  DBL_EPSILON : LREAL := 2.2204460492503131E-016; // smallest such that 1.0+DBL_EPSILON != 1.0
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
@@ -165,7 +160,7 @@ VAR
   h1, h2, h3, jf : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+        <ST><![CDATA[IF (ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
 THEN
   h1 := 2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf_*vf_);
   h2 := ((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf_ - vd)));
@@ -299,7 +294,7 @@ DO
   orig := (-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 24*af_*aMax*jMax_jMax*t*t - 12*a0_*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf_ + 2*jMax*h1) - 12*jMax*(aMax*aMax*h1 + jMax*h1*h1 + 2*aMax*jMax*(pd + jMax*t*t*(t - tf_) - tf_*vf_)))/(24*aMax*jMax_jMax);                
   deriv := -t*(a0_a0 - af_af + 2*aMax*(ad - jMax*tf_) + aMax*aMax + 3*aMax*jMax*t + 2*jMax*h1)/aMax;
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF  
@@ -344,7 +339,7 @@ DO
   orig := -(3*(a0_p4 + af_p4) - 4*(2*a0_p3 + af_p3)*aMax + 24*af_*aMax*jMax_jMax*t*t - 12*a0_*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af + aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*jMax*(tf_*aMax + h1)) + 12*jMax*(-aMax*aMax*h1 + jMax*h1*h1 - 2*aMax*jMax*(-pd + jMax*t*t*(t - tf_) + tf_*vf_)))/(24*aMax*jMax_jMax);
   deriv := t*(a0_a0 + af_af - 2*jMax*h1 - 2*(a0_ + af_ + jMax*tf_)*aMax + aMax*aMax + 3*aMax*jMax*t)/aMax;
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF    
@@ -467,7 +462,7 @@ DO
   orig := (3*a0_p4 + 3*af_p4 - 8*af_p3*aMin - 4*a0_p3*(aMin - 6*jMax*t) + 6*af_af*(aMin*aMin + 2*jMax*(jMax*t*t - vd)) + 24*a0_*jMax*t*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-t + tf_) + 2*jMax*(jMax*t*t - vd)) + 6*a0_a0*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-2*t + tf_) + 2*jMax*(5*jMax*t*t - vd)) - 24*af_*aMin*jMax*(jMax*t*t - vd) + 12*jMax*(2*aMin*jMax*(-pd - jMax*t*t*t + jMax*t*t*tf_ + tf_*v0_) + aMin*aMin*(jMax*t*t - vd) + jMax*root.Power2(vd - jMax*t*t)))/(24*aMin*jMax_jMax);
   deriv := ((a0_ + jMax*t)*(a0_a0 + af_af - a0_*aMin - 2*af_*aMin + aMin*aMin + 4*a0_*jMax*t + aMin*jMax*(2*tf_ - 3*t) + 2*jMax_jMax*t*t - 2*jMax*vd))/(aMin*jMax);
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF    
@@ -547,7 +542,7 @@ VAR
   ph0, ph1, ph2, ph3, ph4, ph5, ph6, ph7 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(v0_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+        <ST><![CDATA[IF (ABS(v0_) < Constants.DoubleEpsilon AND_THEN ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
 THEN
   h1 := SQRT(tf_tf*vf_vf + root.Power2(4*pd - tf_*vf_));
   jf := 4*(4*pd - 2*tf_*vf_ + h1)/tf_p3;
@@ -566,7 +561,7 @@ THEN
 END_IF
 
 
-IF (ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON) 
+IF (ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon) 
 THEN
 
   h1 := SQRT(16*pd*(pd - tf_*(v0_ + vf_)) + tf_tf*(5*v0_v0 + 6*v0_*vf_ + 5*vf_vf));
@@ -613,7 +608,7 @@ DO
   orig := (-2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_))*0.5;
   deriv := (jMax*tf_*(2*t - tf_)*(h2 - 1))*0.5 + h1*jMax*(tf_ - (2*t - tf_)*h2 - h1);
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF    
@@ -660,7 +655,7 @@ DO
   orig := (-2*pd + jMax*t*(t - tf_)*tf_ + 2*tf_*v0_)*0.5 - (h1*h1*h1)/jMax - t*(jMax*t*(t - tf_) - vd);
   deriv := (jMax*(-2*t + tf_)*(6*h1 - 2*tf_) - 4*jMax*t*(3*t - 2*tf_))/4 + vd;
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF    
@@ -710,7 +705,7 @@ DO
   orig := (-a0_p3 + af_p3 + 3*ad_ad*jMax*(h1 - t) + 3*ad*jMax_jMax*root.Power2(h1 - t) - 3*a0_*af_*ad + 3*jMax_jMax*(a0_*tf_tf - 2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_)))/(6*jMax_jMax);
   deriv := ((-ad + 2*jMax*t - jMax*tf_)*(-ad + jMax*tf_)*(h2 - 1))/(2*jMax) + h1*(-ad + jMax*tf_ + (ad - 2*jMax*t + jMax*tf_)*h2 - jMax*h1);
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF  
@@ -852,7 +847,7 @@ END_FOR
 
 
 // 3 step profile (ak. UZD), sometimes missed because of numerical errors
-IF (ABS(af_ - a0_) < DBL_EPSILON) 
+IF (ABS(af_ - a0_) < Constants.DoubleEpsilon) 
 THEN
   h1 := SQRT(4*(a0_*tf_ - vd)/jMax + tf_tf);
   
@@ -1012,12 +1007,12 @@ DO
     CONTINUE;
 	END_IF
 
-    IF (ABS(root.polyEval(ADR(deriv), 4, tz)) > root.tolerance)
+    IF (ABS(root.polyEval(ADR(deriv), 4, tz)) > Constants.Tolerance)
     THEN
       tz := tz - root.polyEval(ADR(deriv), 4, tz) / root.polyEval(ADR(dderiv), 3, tz);   
 		END_IF
 
-    res := 32 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * root.tolerance;
+    res := 32 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
     val_new := root.polyEval(ADR(polynom), 5, tz);
     IF (ABS(val_new) < res)
     THEN
@@ -1104,7 +1099,7 @@ DO
     CONTINUE;
 	END_IF
 
-  IF (ABS(root.polyEval(ADR(dderiv), 3, tz)) > root.tolerance)
+  IF (ABS(root.polyEval(ADR(dderiv), 3, tz)) > Constants.Tolerance)
   THEN
     root.polyMonicDeri(ADR(dderiv), 3, out:=ADR(ddderiv));  
     tz := tz - root.polyEval(ADR(dderiv), 3, tz) / root.polyEval(ADR(ddderiv), 2, tz);
@@ -1138,7 +1133,7 @@ DO
     CONTINUE;
 	END_IF
   
-  res := 10 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * root.tolerance;
+  res := 10 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
   p_val := root.polyEval(ADR(polynom), 5, tz);
   IF (ABS(p_val) < res)
   THEN
@@ -1178,7 +1173,7 @@ DO
   orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf_ - 2*t))/(6*jMax_jMax) + (2*a0_ + jMax*t)*t*(tf_ - t) + (jMax*h1 - af_)*h1*h1 + tf_*v0_;
   deriv_newton := (a0_ + jMax*t)*(2*(af_ + jMax*tf_) - 3*jMax*(h1 + t) - a0_)/jMax;
 
-  IF deriv_newton <= DBL_EPSILON
+  IF deriv_newton <= Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF
@@ -1190,7 +1185,7 @@ DO
   THEN
     deriv_newton := (a0_ + jMax*t)*(2*(af_ + jMax*tf_) - 3*jMax*(h1 + t) - a0_)/jMax;
     
-    IF deriv_newton <= DBL_EPSILON
+    IF deriv_newton <= Constants.DoubleEpsilon
     THEN
       CONTINUE;
     END_IF

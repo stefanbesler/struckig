@@ -30,13 +30,7 @@ VAR
   
   root : Roots; 
   left_duration, right_duration : LREAL;   
-END_VAR
-VAR CONSTANT
-  DBL_EPSILON : LREAL := 2.2204460492503131E-016; // smallest such that 1.0+DBL_EPSILON != 1.0
-  eps : LREAL := 1E-8;  
-  infinity : LREAL := 1.7976931348623157E+308;  
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
@@ -101,7 +95,7 @@ VAR
   idx_else_1, idx_else_2, idx_else_3, idx_else_4 : INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (validProfileCounter = 0) OR_ELSE (validProfileCounter = 1 AND_THEN ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*eps)
+        <ST><![CDATA[IF (validProfileCounter = 0) OR_ELSE (validProfileCounter = 1 AND_THEN ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*Constants.Epsilon)
 THEN
   block.p_min := validProfiles[0];
   block.t_min := block.p_min.t_sum[6] + block.p_min.t_brake;  
@@ -111,13 +105,13 @@ THEN
 ELSIF (validProfileCounter = 3) 
 THEN
   // Find "identical" profiles
-  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 16*eps OR_ELSE validProfiles[0].direction <> validProfiles[1].direction)
+  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 16*Constants.Epsilon OR_ELSE validProfiles[0].direction <> validProfiles[1].direction)
   THEN
     removeProfile(1);
-  ELSIF (ABS(validProfiles[2].t_sum[6] - validProfiles[3].t_sum[6]) < 16*eps  OR_ELSE validProfiles[2].direction <> validProfiles[3].direction)
+  ELSIF (ABS(validProfiles[2].t_sum[6] - validProfiles[3].t_sum[6]) < 16*Constants.Epsilon  OR_ELSE validProfiles[2].direction <> validProfiles[3].direction)
   THEN
     removeProfile(3);
-  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[3].t_sum[6]) < 256*eps OR_ELSE validProfiles[0].direction <> validProfiles[3].direction)
+  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[3].t_sum[6]) < 256*Constants.Epsilon OR_ELSE validProfiles[0].direction <> validProfiles[3].direction)
   THEN
     removeProfile(3);
   ELSE
@@ -130,7 +124,7 @@ THEN
 END_IF
 
 // Find index of fastest profile
-t_min := validProfiles[0].infinity; // todo: fix, this is ugly
+t_min := Constants.Infinity;
 FOR i:=0 TO validProfileCounter
 DO
   FOR j:=0 TO validProfileCounter
@@ -189,7 +183,7 @@ END_VAR]]></Declaration>
 validProfileCounter := -1;
 has_up_vel := has_down_vel := FALSE;
 
-IF (ABS(pf_ - p0_) < DBL_EPSILON AND_THEN ABS(v0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+IF (ABS(pf_ - p0_) < Constants.DoubleEpsilon AND_THEN ABS(v0_) < Constants.DoubleEpsilon AND_THEN ABS(vf_) < Constants.DoubleEpsilon AND_THEN ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
 THEN 
   IF (pf_ >= p0_)
   THEN
@@ -318,12 +312,12 @@ DO
 	END_IF
 
   // Single Newton step (regarding pd)
-  IF t > DBL_EPSILON
+  IF t > Constants.DoubleEpsilon
   THEN
     orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af_*vf_ - a0_*v0_) - 6*a0_a0*(aMax*aMax - 2*jMax*v0_) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf_)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0_ - vf_) + jMax*(jMax*t*t*(jMax*t*t + 2*vf_) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
     deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf_)))/aMax;
   
-    IF ABS(deriv) < DBL_EPSILON
+    IF ABS(deriv) < Constants.DoubleEpsilon
     THEN
       CONTINUE;
     END_IF  
@@ -426,7 +420,7 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF ABS(2*a0_*jMax) > eps
+        <ST><![CDATA[IF ABS(2*a0_*jMax) > Constants.Epsilon
 THEN
   // Two step
   profile.t[0] := 0;
@@ -446,7 +440,7 @@ END_IF
 
 h0 := 3*(af_af - a0_a0 + 2*jMax*(v0_ + vf_));
 h1 := SQRT(2*(2*root.Power2(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af_ - a0_)*jMax*vf_ - 3*a0_*af_af) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf_) + 8*a0_*(af_p3 + 3*jMax_jMax*pd_ + 3*af_*jMax*vf_) - 3*(af_p4 + 4*af_af*jMax*vf_ + 4*jMax_jMax*(vf_vf - v0_v0))))) * ABS(jMax) / jMax;
-IF h1 >= 0 AND_THEN ABS(h0) > DBL_EPSILON
+IF h1 >= 0 AND_THEN ABS(h0) > Constants.DoubleEpsilon
 THEN
   h1 := SQRT(h1);
   
@@ -519,14 +513,14 @@ DO
     CONTINUE;
 	END_IF
 
-  IF t > DBL_EPSILON
+  IF t > Constants.DoubleEpsilon
   THEN
     // Double Newton step (regarding pd)
     h1 := jMax*t*t + v0_;
     orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0_*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0_)) - 24*af_*aMin*jMax*vf_ - 6*af_af*(aMin*aMin - 2*jMax*vf_) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0_) + aMin*aMin*(h1 + vf_) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
     deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
     
-    IF ABS(deriv) < DBL_EPSILON
+    IF ABS(deriv) < Constants.DoubleEpsilon
     THEN
       CONTINUE;
     END_IF  
@@ -539,7 +533,7 @@ DO
     THEN
       deriv := -((a0_ - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0_*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
       
-      IF ABS(deriv) < DBL_EPSILON
+      IF ABS(deriv) < Constants.DoubleEpsilon
       THEN
         CONTINUE;
       END_IF
@@ -584,7 +578,7 @@ profile.t[4] := -aMin/jMax;
 profile.t[5] := -(af_af*0.5 - aMin*aMin + jMax*(vMax - vf_))/(aMin*jMax);
 profile.t[6] := profile.t[4] + af_/jMax;
 
-IF (ABS(profile.t[0]) < DBL_EPSILON AND_THEN profile.t[0] < 0.0) 
+IF (ABS(profile.t[0]) < Constants.DoubleEpsilon AND_THEN profile.t[0] < 0.0) 
 THEN
   profile.t[0] := 0;    
 END_IF
@@ -608,7 +602,7 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// UDDU
-IF (ABS(v0_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+IF (ABS(v0_) < Constants.DoubleEpsilon AND_THEN ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(vf_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
 THEN
   profile.t[0] := root.cbrt(0.5 * pd_/jMax);
   profile.t[1] := 0;
@@ -626,7 +620,7 @@ THEN
 END_IF
 
         
-IF (ABS(a0_ - af_) < DBL_EPSILON AND_THEN ABS(v0_ + vf_) < DBL_EPSILON AND_THEN ABS(p0_ - pf_) < DBL_EPSILON) 
+IF (ABS(a0_ - af_) < Constants.DoubleEpsilon AND_THEN ABS(v0_ + vf_) < Constants.DoubleEpsilon AND_THEN ABS(p0_ - pf_) < Constants.DoubleEpsilon) 
 THEN
   h1 := SQRT(a0_a0 - 2*jMax*v0_);
 
@@ -682,7 +676,7 @@ DO
   orig := (-h1*h1 + 4*h1*t*(af_ + jMax*t))/(4*jMax*t) + (4*a0_p3 + 2*af_p3 - 6*a0_a0*(af_ + 2*jMax*t) + 12*(af_ - a0_)*jMax*v0_ + 3*jMax_jMax*(-4*pd_ + jMax*t*t*t + 8*t*v0_))/(12*jMax_jMax);
   deriv := h1 + 2*v0_ - a0_a0/jMax + h1*h1/(4*jMax*t*t) + (3*jMax*t*t)/4;
   
-  IF ABS(deriv) < DBL_EPSILON
+  IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
 	END_IF

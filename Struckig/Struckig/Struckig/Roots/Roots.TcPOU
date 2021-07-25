@@ -5,14 +5,6 @@
 VAR_INPUT
   roots : ARRAY[0..6] OF LREAL;
   rootCount : INT := -1;
-END_VAR
-VAR CONSTANT
-  tolerance : LREAL := 1E-14;
-  cos120 : LREAL := -0.50;
-  sin120 : LREAL := 0.866025403784438646764;  
-  DBL_EPSILON : LREAL := 2.2204460492503131E-016; // smallest such that 1.0+DBL_EPSILON != 1.0
-  DBL_EPSILON_SQRT : LREAL := 1.483E-8;
-  PI : LREAL := 3.14159265358979323846;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -62,7 +54,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF degree > 0 THEN
-  IF (ABS(x) < DBL_EPSILON) THEN
+  IF (ABS(x) < Constants.DoubleEpsilon) THEN
       polyEval := polynom[degree];
   ELSIF (x = 1.0) THEN
     FOR i:= degree TO 0 BY -1
@@ -135,9 +127,6 @@ VAR
   dxold, dx, f,df : LREAL;
   j : BYTE := 127;
 END_VAR
-VAR CONSTANT
-  maxIterations : BYTE := 127;
-END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[polyDeri(p, degree, out:=ADR(deriv));
@@ -166,7 +155,7 @@ dxold := ABS(h - l);
 dx := dxold;
 f := polyEval(ADR(p), degree, shrinkInterval);
 df := polyEval(ADR(deriv), degree-1, shrinkInterval);
-FOR j:=0 TO maxIterations DO
+FOR j:=0 TO ParameterList.MaxIterations DO
   IF ((((shrinkInterval - h) * df - f) * ((shrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
     dxold := dx;
     dx := 0.5 * (h - l);
@@ -184,7 +173,7 @@ FOR j:=0 TO maxIterations DO
     END_IF
   END_IF
   
-  IF (ABS(dx) < tolerance) THEN
+  IF (ABS(dx) < Constants.Tolerance) THEN
     RETURN;
   END_IF
   
@@ -215,7 +204,7 @@ b := polynom[1];
 c := polynom[2];
 d := polynom[3];
 
-IF (ABS(d) < DBL_EPSILON)
+IF (ABS(d) < Constants.DoubleEpsilon)
 THEN
   // First solution is x = 0
   roots[0] := 0.0;
@@ -228,12 +217,12 @@ THEN
   a := 0.0;
 END_IF
 
-IF (ABS(a) < DBL_EPSILON)
+IF (ABS(a) < Constants.DoubleEpsilon)
 THEN
-  IF (ABS(b) < DBL_EPSILON)
+  IF (ABS(b) < Constants.DoubleEpsilon)
   THEN
     // Linear equation
-    IF (ABS(c) > DBL_EPSILON)
+    IF (ABS(c) > Constants.DoubleEpsilon)
     THEN
       roots[rootCount+1] := (-d / c);
       rootCount := rootCount + 1;
@@ -262,7 +251,7 @@ ELSE
   halfq := (2 * bb * b - 9.0 * a * b * c + 27.0 * a * a * d) * (0.5 / 27.0) * invaa * inva;
   yy := p * p * p / 27.0 + halfq * halfq;
   
-  IF (yy > DBL_EPSILON) THEN
+  IF (yy > Constants.DoubleEpsilon) THEN
     // Sqrt is positive: one real solution}
     y := SQRT(yy);
     uuu := -halfq + y;
@@ -271,18 +260,18 @@ ELSE
     w := cbrt(www);
     roots[rootCount+1] := (w - p / (3.0 * w) - bover3a);
     rootCount := rootCount + 1;
-  ELSIF (yy < -DBL_EPSILON) THEN
+  ELSIF (yy < -Constants.DoubleEpsilon) THEN
     // Sqrt is negative: three real solutions
     x := -halfq;
     y := SQRT(-yy);
 
     // Convert to polar form}
-    IF ABS(x) > DBL_EPSILON THEN
-      theta := SEL((x > 0.0), (ATAN(y / x) + PI), ATAN(y / x));
+    IF ABS(x) > Constants.DoubleEpsilon THEN
+      theta := SEL((x > 0.0), (ATAN(y / x) + Constants.Pi), ATAN(y / x));
       rr := SQRT(x * x - yy);
     ELSE
       // Vertical line}
-      theta := PI / 2;
+      theta := Constants.Pi / 2;
       rr := y;
     END_IF
     
@@ -295,9 +284,9 @@ ELSE
     // First solution
     roots[rootCount+1] := (ux + ux - bover3a);
     // Second solution, rotate +120 degrees
-    roots[rootCount+2] := (2 * (ux * cos120 - uyi * sin120) - bover3a);
+    roots[rootCount+2] := (2 * (ux * Constants.Cos120 - uyi * Constants.Sin120) - bover3a);
     // Third solution, rotate -120 degrees
-    roots[rootCount+3] := (2 * (ux * cos120 + uyi * sin120) - bover3a);
+    roots[rootCount+3] := (2 * (ux * Constants.Cos120 + uyi * Constants.Sin120) - bover3a);
     rootCount := rootCount + 3;
   ELSE
     // Sqrt is zero: two real solutions
@@ -306,7 +295,7 @@ ELSE
     // First solution
     roots[rootCount+1] := (w + w - bover3a);
     // Second solution, rotate +120 degrees
-    roots[rootCount+2] := (2 * w * cos120 - bover3a);
+    roots[rootCount+2] := (2 * w * Constants.Cos120 - bover3a);
     rootCount := rootCount + 2;
   END_IF
 END_IF]]></ST>
@@ -325,7 +314,6 @@ VAR
   a3, b3, c3 : LREAL;
   x3 : ARRAY[0..2] OF LREAL;
   iZeroes : INT;
-  eps : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -336,7 +324,7 @@ b := polynom[1];
 c := polynom[2];
 d := polynom[3];
 
-IF (ABS(a) < DBL_EPSILON AND_THEN ABS(b) < DBL_EPSILON_SQRT AND_THEN ABS(c) < DBL_EPSILON_SQRT AND_THEN ABS(d) < DBL_EPSILON)
+IF (ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilonSqrt AND_THEN ABS(c) < Constants.DoubleEpsilonSqrt AND_THEN ABS(d) < Constants.DoubleEpsilon)
 THEN  
   e0 := cbrt(c * c);
   e1 := (b * b + 12 * d)/(9*e0);
@@ -364,13 +352,13 @@ THEN
   RETURN;
 END_IF
 
-IF (ABS(c) < DBL_EPSILON AND_THEN ABS(d) < DBL_EPSILON)
+IF (ABS(c) < Constants.DoubleEpsilon AND_THEN ABS(d) < Constants.DoubleEpsilon)
 THEN
   roots[0] := 0.0;
   rootCount := rootCount+1;
   
   dd := a * a - 4 * b;
-  IF (ABS(dd) < DBL_EPSILON)
+  IF (ABS(dd) < Constants.DoubleEpsilon)
   THEN
     roots[rootCount+1] := (-a / 2);
     rootCount := rootCount+1;
@@ -405,11 +393,11 @@ END_IF
 
 // h1 + h2 = y AND_THEN h1*h2 = d  <=>  h^2 - y*h + d = 0    (h === q)
 dd := y * y - 4 * d;
-IF (ABS(dd) < DBL_EPSILON) THEN
+IF (ABS(dd) < Constants.DoubleEpsilon) THEN
   q1 := q2 := y * 0.5;
   // g1 + g2 = a AND_THEN g1 + g2 = b - y   <=>   g^2 - a*g + b - y = 0    (p === g)}
   dd := a * a - 4.0 * (b - y);
-  IF (ABS(dd) < DBL_EPSILON) THEN
+  IF (ABS(dd) < Constants.DoubleEpsilon) THEN
     p1 := p2 := a * 0.5;
   ELSE
     sqrtD := SQRT(dd);
@@ -425,11 +413,9 @@ ELSE
   p2 := (c - a * q2) / (q1 - q2);
 END_IF
 
-eps := 16 * DBL_EPSILON;
-
 // Solve the quadratic equation: x^2 + p1*x + q1 = 0
 dd := p1 * p1 - 4 * q1;
-IF (ABS(dd) < eps) THEN
+IF (ABS(dd) < Constants.Epsilon16) THEN
   roots[rootCount+1] := (-p1 * 0.5);
   rootCount := rootCount + 1;  
 ELSIF (dd > 0.0)  THEN
@@ -441,7 +427,7 @@ END_IF
 
 // Solve the quadratic equation: x^2 + p2*x + q2 = 0
 dd := p2 * p2 - 4 * q2;
-IF (ABS(dd) < eps) THEN
+IF (ABS(dd) < Constants.Epsilon16) THEN
   roots[rootCount+1] := (-p2 * 0.5);
   rootCount := rootCount + 1;    
 ELSIF (dd > 0.0) THEN
@@ -485,8 +471,8 @@ IF (r2 < q3) THEN
   a := a / 3.0;
   q := -2 * SQRT(q);
   x[0] := q * COS(t / 3.0) - a;
-  x[1] := q * COS((t + PI * 2) / 3.0) - a;
-  x[2] := q * COS((t - PI * 2) / 3.0) - a;
+  x[1] := q * COS((t + Constants.Pi * 2) / 3.0) - a;
+  x[2] := q * COS((t - Constants.Pi * 2) / 3.0) - a;
   solveResolvent := 3;
   RETURN;
 
@@ -501,7 +487,7 @@ ELSE
   x[0] := (aa + bb) - a;
   x[1] := -0.5 * (aa + bb) - a;
   x[2] := 0.5 * SQRT(3.0) * (aa - bb);
-  IF (ABS(x[2]) < DBL_EPSILON) THEN
+  IF (ABS(x[2]) < Constants.DoubleEpsilon) THEN
     x[2] := x[1];
     solveResolvent := 2;
     RETURN;

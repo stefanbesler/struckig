@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="VelocityStep1" Id="{0bad3140-2221-4abc-b516-4f31ef4a9048}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK VelocityStep1 
 VAR
@@ -9,11 +9,6 @@ VAR
   
   validProfiles : ARRAY[0..2] OF Profile; // Max 3 valid profiles
   validProfileCounter : INT := -1;  
-END_VAR
-VAR CONSTANT
-  DBL_EPSILON : LREAL := 1E-9;
-  eps : LREAL := 1E-8;  
-  infinity : LREAL := 1.7976931348623157E+308;  
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -69,7 +64,7 @@ VAR
   idx_else_1, idx_else_2, idx_else_3, idx_else_4 : INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (validProfileCounter = 0) OR_ELSE (validProfileCounter = 1 AND_THEN ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*eps)
+        <ST><![CDATA[IF (validProfileCounter = 0) OR_ELSE (validProfileCounter = 1 AND_THEN ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*Constants.Epsilon)
 THEN
   block.p_min := validProfiles[0];
   block.t_min := block.p_min.t_sum[6] + block.p_min.t_brake;  
@@ -79,13 +74,13 @@ THEN
 ELSIF (validProfileCounter = 3) 
 THEN
   // Find "identical" profiles
-  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 16*eps OR_ELSE validProfiles[0].direction <> validProfiles[1].direction)
+  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 16*Constants.Epsilon OR_ELSE validProfiles[0].direction <> validProfiles[1].direction)
   THEN
     removeProfile(1);
-  ELSIF (ABS(validProfiles[1].t_sum[6] - validProfiles[2].t_sum[6]) < 16*eps  OR_ELSE validProfiles[2].direction <> validProfiles[2].direction)
+  ELSIF (ABS(validProfiles[1].t_sum[6] - validProfiles[2].t_sum[6]) < 16*Constants.Epsilon  OR_ELSE validProfiles[2].direction <> validProfiles[2].direction)
   THEN
     removeProfile(2);
-  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[2].t_sum[6]) < 256*eps OR_ELSE validProfiles[0].direction <> validProfiles[2].direction)
+  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[2].t_sum[6]) < 256*Constants.Epsilon OR_ELSE validProfiles[0].direction <> validProfiles[2].direction)
   THEN
     removeProfile(2);
   ELSE
@@ -98,7 +93,7 @@ THEN
 END_IF
 
 // Find index of fastest profile
-t_min := validProfiles[0].infinity; // todo: fix, this is ugly
+t_min := Constants.Infinity;
 FOR i:=0 TO validProfileCounter
 DO
   FOR j:=0 TO validProfileCounter
@@ -157,7 +152,7 @@ END_VAR
         <ST><![CDATA[profile.setBoundaryVelocity(p0_, v0_, a0_, vf_, af_);
 validProfileCounter := -1;
 
-IF (ABS(v0_) < DBL_EPSILON AND_THEN ABS(vf_) < DBL_EPSILON AND_THEN ABS(a0_) < DBL_EPSILON AND_THEN ABS(af_) < DBL_EPSILON)
+IF (ABS(v0_) < Constants.DoubleEpsilon AND_THEN ABS(vf_) < Constants.DoubleEpsilon AND_THEN ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
 THEN
   time_none(profile, aMax_, aMin_, jMax_);
 ELSE

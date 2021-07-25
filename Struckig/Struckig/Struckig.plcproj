@@ -37,6 +37,10 @@
     <Folder Include="Struckig\Trajectory\_DataTypes" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
     <Compile Include="Struckig\Block\BlockIntervalStruct.TcDUT">
       <SubType>Code</SubType>
     </Compile>

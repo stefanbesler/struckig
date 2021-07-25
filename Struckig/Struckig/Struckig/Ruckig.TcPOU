@@ -10,9 +10,6 @@ VAR_INPUT
   
   state_ : StateEnum;
   errorId_ : INT;
-END_VAR
-VAR CONSTANT
-  minimum : LREAL := 1.17549435082E-38; 
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -209,11 +206,11 @@ DO
     RETURN;
   END_IF  
 
-  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <= minimum) THEN
+  IF (input.interfaceType = InterfaceTypeEnum.position AND_THEN input.max_velocity[dof] <= Constants.Minimum) THEN
     RETURN;
   END_IF
 
-  IF (input.min_velocity[dof] <> 0 AND_THEN input.min_velocity[dof] >= -minimum) THEN
+  IF (input.min_velocity[dof] <> 0 AND_THEN input.min_velocity[dof] >= -Constants.Minimum) THEN
     RETURN;
   END_IF
 
@@ -221,15 +218,15 @@ DO
     RETURN;
   END_IF
   
-  IF (input.max_acceleration[dof] <= minimum) THEN
+  IF (input.max_acceleration[dof] <= Constants.Minimum) THEN
     RETURN;
   END_IF
 
-  IF (input.min_acceleration[dof] <> 0 AND_THEN input.min_acceleration[dof] >= -minimum) THEN
+  IF (input.min_acceleration[dof] <> 0 AND_THEN input.min_acceleration[dof] >= -Constants.Minimum) THEN
     RETURN;
   END_IF
 
-  IF (input.max_jerk[dof] <= minimum) THEN
+  IF (input.max_jerk[dof] <= Constants.Minimum) THEN
     RETURN;
   END_IF
 

@@ -3,8 +3,8 @@
   <POU Name="Trajectory" Id="{6ae710e9-e92b-4222-9a89-21e6ad9f95fa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Trajectory
 VAR_INPUT
-  profiles : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF Profile;
-  independentMinDurations : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  profiles : ARRAY[0..ParameterList.MaxDoFs] OF Profile;
+  independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   brake : Brake;
   positionStep1 : PositionStep1;
   positionStep2 : PositionStep2;
@@ -16,11 +16,6 @@ VAR_OUTPUT
   hasError : BOOL;
   errorId : INT;
   errorDetail : STRING(255);
-END_VAR
-VAR CONSTANT
-  eps : LREAL := 1E-8;
-  epsColinear : LREAL := 1E-7;
-  infinity : LREAL := 1.7976931348623157E+308;  
 END_VAR
 
 ]]></Declaration>
@@ -99,15 +94,15 @@ VAR_INPUT
 END_VAR
 VAR_INST
   i, dof : INT;
-  blocks : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF BlockStruct;
+  blocks : ARRAY[0..ParameterList.MaxDoFs] OF BlockStruct;
   blockCount : INT;
-  p0s, v0s, a0s : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  inp_min_velocity, inp_min_acceleration : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  p0s, v0s, a0s : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  inp_min_velocity, inp_min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   p : REFERENCE TO Profile;
   found_profile : BOOL;
   limiting_dof : INT := -1; // The DoF that doesn't need step 2
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
-  new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   t_profile : LREAL;
 END_VAR
 ]]></Declaration>
@@ -126,8 +121,8 @@ DO
     CONTINUE;
 	END_IF
   
-  inp_min_velocity[dof] := SEL(ABS(inp.min_velocity[dof]) < eps, inp.min_velocity[dof], -inp.max_velocity[dof]);
-  inp_min_acceleration[dof] := SEL(ABS(inp.min_acceleration[dof]) < eps, inp.min_acceleration[dof], -inp.max_acceleration[dof]);
+  inp_min_velocity[dof] := SEL(ABS(inp.min_velocity[dof]) < Constants.Epsilon, inp.min_velocity[dof], -inp.max_velocity[dof]);
+  inp_min_acceleration[dof] := SEL(ABS(inp.min_acceleration[dof]) < Constants.Epsilon, inp.min_acceleration[dof], -inp.max_acceleration[dof]);
   
   CASE inp.interfaceType
   OF
@@ -259,20 +254,20 @@ DO
   p REF= profiles[dof];
   t_profile := duration - p.t_brake;
   
-  IF (inp.synchronizationType = SynchronizationTypeEnum.timeIfNecessarySync AND_THEN ABS(inp.target_velocity[dof]) < eps AND_THEN ABS(inp.current_acceleration[dof]) < eps) THEN
+  IF (inp.synchronizationType = SynchronizationTypeEnum.timeIfNecessarySync AND_THEN ABS(inp.target_velocity[dof]) < Constants.Epsilon AND_THEN ABS(inp.current_acceleration[dof]) < Constants.Epsilon) THEN
       p := blocks[dof].p_min;
       continue;
   END_IF
   
   // Check if the final time corresponds to an extremal profile calculated in step 1
-  IF (ABS(t_profile - blocks[dof].t_min) < eps) THEN
+  IF (ABS(t_profile - blocks[dof].t_min) < Constants.Epsilon) THEN
       p := blocks[dof].p_min;
       continue;
-  ELSIF (blocks[dof].a.isUsed AND_THEN ABS(t_profile - blocks[dof].a.right) < eps)
+  ELSIF (blocks[dof].a.isUsed AND_THEN ABS(t_profile - blocks[dof].a.right) < Constants.Epsilon)
   THEN
       p := blocks[dof].a.profile;
       continue;
-  ELSIF (blocks[dof].b.isUsed AND_THEN ABS(t_profile - blocks[dof].b.right) < eps)
+  ELSIF (blocks[dof].b.isUsed AND_THEN ABS(t_profile - blocks[dof].b.right) < Constants.Epsilon)
   THEN
       p := blocks[dof].b.profile;
       continue;
@@ -315,24 +310,24 @@ END_VAR
       <Declaration><![CDATA[METHOD isPhaseSynchronizable : BOOL
 VAR_INPUT
   inp : REFERENCE TO InputParameter;
-  vMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  vMin : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  aMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  aMin : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  jMax : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  vMax : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  vMin : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  aMax : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  aMin : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  jMax : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   limitingDirection : ProfileDirectionEnum;
   limitingDof : INT;
-  newMaxVelocity : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  newMaxAcceleration : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  newMinAcceleration : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  newMaxJerk : REFERENCE TO ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  newMaxVelocity : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  newMaxAcceleration : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  newMinAcceleration : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  newMaxJerk : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
 END_VAR
 VAR
   pdFoundNoneZero : BOOL := FALSE;
   v0Scale, a0Scale, vfScale, afScale, scale : LREAL;
   oldMaxJerk, oldMaxVel, oldMaxAcc, oldMinAcc : LREAL;
   dof : INT;
-  pd : ARRAY[0..ParameterList.maximumDegreeOfFreedom] OF LREAL;
+  pd : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   maxJerkLimiting, maxVelLimiting, maxAccLimiting, minAccLimiting : LREAL;
   newDirection : ProfileDirectionEnum;
 END_VAR
@@ -342,7 +337,7 @@ END_VAR
 DO
   pd[dof] := inp.target_position[dof] - inp.current_position[dof];
   
-  IF NOT pdFoundNoneZero AND_THEN ABS(pd[dof]) > eps
+  IF NOT pdFoundNoneZero AND_THEN ABS(pd[dof]) > Constants.Epsilon
   THEN
     v0Scale := inp.current_velocity[dof] / pd[dof];
     a0Scale := inp.current_acceleration[dof] / pd[dof];
@@ -372,10 +367,10 @@ DO
   scale := pd[dof] / pd[limitingDof];
   
   // Are the vectors colinear?
-  IF inp.current_velocity[dof] - v0Scale * pd[dof] > epsColinear OR_ELSE
-    inp.current_acceleration[dof] - a0Scale * pd[dof] > epsColinear OR_ELSE
-    inp.target_velocity[dof] - vfScale * pd[dof] > epsColinear OR_ELSE
-    inp.target_acceleration[dof] - afScale * pd[dof] > epsColinear OR_ELSE
+  IF inp.current_velocity[dof] - v0Scale * pd[dof] > Constants.EpsilonColinear OR_ELSE
+    inp.current_acceleration[dof] - a0Scale * pd[dof] > Constants.EpsilonColinear OR_ELSE
+    inp.target_velocity[dof] - vfScale * pd[dof] > Constants.EpsilonColinear OR_ELSE
+    inp.target_acceleration[dof] - afScale * pd[dof] > Constants.EpsilonColinear OR_ELSE
     scale > 1.0
   THEN
     RETURN;
@@ -425,8 +420,8 @@ VAR_IN_OUT
   limiting_dof : INT;
 END_VAR
 VAR
-  possible_t_syncs : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF LREAL;
-  idx : ARRAY [0..3*ParameterList.maximumDegreeOfFreedom] OF INT;  
+  possible_t_syncs : ARRAY [0..3*ParameterList.MaxDoFs] OF LREAL;
+  idx : ARRAY [0..3*ParameterList.MaxDoFs] OF INT;  
   possible_t_sync : REFERENCE TO LREAL;
   dof : INT;
   i,j, h : INT;
@@ -448,11 +443,11 @@ END_IF
 FOR dof := 0 TO dofs-1 
 DO
   possible_t_syncs[3 * dof] := blocks[dof].t_min;
-  possible_t_syncs[3 * dof + 1] := SEL(blocks[dof].a.isUsed, profiles[0].infinity, blocks[dof].a.right);
-  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.isUsed, profiles[0].infinity, blocks[dof].b.right);      
+  possible_t_syncs[3 * dof + 1] := SEL(blocks[dof].a.isUsed, Constants.Infinity, blocks[dof].a.right);
+  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.isUsed, Constants.Infinity, blocks[dof].b.right);      
 END_FOR
 
-possible_t_syncs[3 * DOFs] := SEL(t_min = 0, t_min,  profiles[0].infinity);
+possible_t_syncs[3 * DOFs] := SEL(t_min = 0, t_min,  Constants.Infinity);
 IF (discrete_duration)
 THEN
   FOR i:=0 TO 3*dofs-1
