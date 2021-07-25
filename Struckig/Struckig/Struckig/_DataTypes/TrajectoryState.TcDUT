@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <DUT Name="ErrorCodeEnum" Id="{b6f9027e-b647-46b0-a8f4-fdacb3d850bf}">
+  <DUT Name="TrajectoryState" Id="{1b401aa7-ce7a-4de0-8dde-e86175fd1d75}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
-TYPE ErrorCodeEnum :
+{attribute 'strict'}
+TYPE TrajectoryState :
 (
-	undefined := 0,
-  invalidInput,
-  synchronizationCalculation,
-  calculateStep1Failed
+  Undefined,
+  Idle,
+  Busy,
+  Error
 );
 END_TYPE
 ]]></Declaration>

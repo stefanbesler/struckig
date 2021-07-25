@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="BlockInterval" Id="{ddb6295e-c8fd-4ec6-9011-9c80b2d7a348}">
+    <Declaration><![CDATA[/// Which times are possible for synchronization?
+TYPE BlockInterval :
+STRUCT
+  IsUsed : BOOL;
+  Left, Right : LREAL;
+  Profile : ProfileDesc;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

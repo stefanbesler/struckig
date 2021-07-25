@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="PositionStep2" Id="{76034b67-20c8-4cde-bd76-8a31c34aeac6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK PositionStep2
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL PositionStep2
 VAR
-  p0_, v0_, a0_ : LREAL;
-  tf_, pf_, vf_, af_ : LREAL;
-  vMax_, vMin_, aMax_, aMin_, jMax_ : LREAL;
+  p0, v0, a0 : LREAL;
+  tf, pf, vf, af : LREAL;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
   
   // Pre-calculated expressions
   pd : LREAL;
@@ -17,50 +17,52 @@ VAR
   af_af, af_p3, af_p4, af_p5, af_p6 : LREAL;
   jMax_jMax : LREAL;
   g1, g2 : LREAL;
-  root : Roots;  
+  
+  rootCount : INT;
+  root : ARRAY[0..6] OF LREAL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="checkAll" Id="{dac9bcf7-b2c9-4934-965d-35d5c9c7bfcc}">
-      <Declaration><![CDATA[METHOD checkAll : BOOL
+    <Method Name="CheckAll" Id="{dac9bcf7-b2c9-4934-965d-35d5c9c7bfcc}">
+      <Declaration><![CDATA[METHOD CheckAll : BOOL
 VAR_INPUT
-  profile : REFERENCE TO Profile; 
+  Profile : REFERENCE TO ProfileDesc; 
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[checkAll := time_acc0_acc1_vel(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc0_vel(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc1_vel(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_vel(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc0(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc1(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_none(profile, vMax, vMin, aMax, aMin, jMax);]]></ST>
+        <ST><![CDATA[CheckAll := time_acc0_acc1_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc0_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc1_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc0(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc1(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc0_acc1(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_none(Profile, vMax, vMin, aMax, aMin, jMax);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="get" Id="{dbdd6792-f17f-427d-b490-a17c4aa900bf}">
-      <Declaration><![CDATA[METHOD get : BOOL
+    <Method Name="Get" Id="{dbdd6792-f17f-427d-b490-a17c4aa900bf}">
+      <Declaration><![CDATA[METHOD Get : BOOL
 VAR_INPUT
-  profile : REFERENCE TO Profile;
+  Profile : REFERENCE TO ProfileDesc;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[profile.setBoundaryPosition(p0_, v0_, a0_, pf_, vf_, af_);
+        <ST><![CDATA[Profile.SetBoundaryPosition(p0, v0, a0, pf, vf, af);
 
 // Test all cases to get ones that match
 // However we should guess which one is correct and try them first...
-IF (pd > tf_ * v0_)
+IF (pd > tf * v0)
 THEN
-  get := checkAll(profile, vMax_, vMin_, aMax_, aMin_, jMax_) OR_ELSE checkAll(profile, vMin_, vMax_, aMin_, aMax_, -jMax_);
+  Get := CheckAll(Profile, vMax, vMin, aMax, aMin, jMax) OR_ELSE CheckAll(Profile, vMin, vMax, aMin, aMax, -jMax);
 ELSE
-  get := checkAll(profile, vMin_, vMax_, aMin_, aMax_, -jMax_) OR_ELSE checkAll(profile, vMax_, vMin_, aMax_, aMin_, jMax_);
+  Get := CheckAll(Profile, vMin, vMax, aMin, aMax, -jMax) OR_ELSE CheckAll(Profile, vMax, vMin, aMax, aMin, jMax);
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="set" Id="{9a678141-8adf-4fac-8bc9-7fab52b65245}">
-      <Declaration><![CDATA[METHOD set
+    <Method Name="Set" Id="{9a678141-8adf-4fac-8bc9-7fab52b65245}">
+      <Declaration><![CDATA[METHOD Set
 VAR_INPUT
   tf : LREAL;
   p0, v0, a0 : LREAL;
@@ -71,18 +73,18 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[p0_ := p0;
-v0_ := v0;
-a0_ := a0;
-tf_ := tf;
-pf_ := pf;
-vf_ := vf;
-af_ := af;
-vMax_ := vMax;
-vMin_ := vMin;
-aMax_ := aMax;
-aMin_ := aMin;
-jMax_ := jMax;
+        <ST><![CDATA[THIS^.p0 := p0;
+THIS^.v0 := v0;
+THIS^.a0 := a0;
+THIS^.tf := tf;
+THIS^.pf := pf;
+THIS^.vf := vf;
+THIS^.af := af;
+THIS^.vMax := vMax;
+THIS^.vMin := vMin;
+THIS^.aMax := aMax;
+THIS^.aMin := aMin;
+THIS^.jMax := jMax;
 
 pd := pf - p0;
 tf_tf := tf * tf;
@@ -116,9 +118,9 @@ g2 := -2*pd + tf*(v0 + vf);]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{fd50728d-a338-4ba0-890f-9981830b852f}">
-      <Declaration><![CDATA[METHOD time_acc0 : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0 : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -131,26 +133,26 @@ END_VAR]]></Declaration>
 
 // UDDU Solution 1
 
-h0a := a0_p3 + 2*af_p3 - 6*(af_af + aMax*aMax)*aMax - 6*(a0_ + af_)*aMax*jMax*tf_ + 9*aMax*aMax*(af_ + jMax*tf_) + 3*a0_*aMax*(-2*af_ + 3*aMax) + 3*a0_a0*(af_ - 2*aMax + jMax*tf_) - 6*jMax_jMax*g1 + 6*(af_ - aMax)*jMax*vd - 3*aMax*jMax_jMax*tf_tf;
-h0b := a0_a0 + af_af + 2*(aMax*aMax - (a0_ + af_)*aMax + jMax*(vd - aMax*tf_));
+h0a := a0_p3 + 2*af_p3 - 6*(af_af + aMax*aMax)*aMax - 6*(a0 + af)*aMax*jMax*tf + 9*aMax*aMax*(af + jMax*tf) + 3*a0*aMax*(-2*af + 3*aMax) + 3*a0_a0*(af - 2*aMax + jMax*tf) - 6*jMax_jMax*g1 + 6*(af - aMax)*jMax*vd - 3*aMax*jMax_jMax*tf_tf;
+h0b := a0_a0 + af_af + 2*(aMax*aMax - (a0 + af)*aMax + jMax*(vd - aMax*tf));
 h1 := ABS(jMax)/jMax*SQRT(4*h0a*h0a - 18*h0b*h0b*h0b);
 h2 := 6*jMax*h0b;
 
-profile.t[0] := (-a0_ + aMax)/jMax;
-profile.t[1] := ad/jMax - 2 * profile.t[0] - (2*h0a - h1)/h2 + tf_;
-profile.t[2] := -(2*h0a + h1)/h2;
-profile.t[3] := (2*h0a - h1)/h2;
-profile.t[4] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3]);
-profile.t[5] := 0;
-profile.t[6] := 0;
+Profile.t[0] := (-a0 + aMax)/jMax;
+Profile.t[1] := ad/jMax - 2 * Profile.t[0] - (2*h0a - h1)/h2 + tf;
+Profile.t[2] := -(2*h0a + h1)/h2;
+Profile.t[3] := (2*h0a - h1)/h2;
+Profile.t[4] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3]);
+Profile.t[5] := 0;
+Profile.t[6] := 0;
 
-time_acc0 := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.ACC0, tf_, jMax, vMax, vMin, aMax, aMin);]]></ST>
+time_acc0 := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.ACC0, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0_acc1" Id="{7151b8f6-8f1d-455a-9e25-b504c08c7295}">
-      <Declaration><![CDATA[METHOD time_acc0_acc1 : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0_acc1 : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -160,36 +162,36 @@ VAR
   h1, h2, h3, jf : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
+        <ST><![CDATA[IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
 THEN
-  h1 := 2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf_*vf_);
-  h2 := ((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf_ - vd)));
+  h1 := 2*aMin*(-pd + tf*v0) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf*vf);
+  h2 := ((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf - vd)));
 
   jf := h2/h1;
-  profile.t[0] := aMax/jf;
-  profile.t[1] := (-2*aMax*h1 + aMin*aMin*(-2*pd + tf_*(v0_ + vf_)))/h2;
-  profile.t[2] := profile.t[0];
-  profile.t[3] := 0;
-  profile.t[4] := -aMin/jf;
-  profile.t[5] := tf_ - (2*profile.t[0] + profile.t[1] + 2*profile.t[4]);
-  profile.t[6] := profile.t[4];
+  Profile.t[0] := aMax/jf;
+  Profile.t[1] := (-2*aMax*h1 + aMin*aMin*(-2*pd + tf*(v0 + vf)))/h2;
+  Profile.t[2] := Profile.t[0];
+  Profile.t[3] := 0;
+  Profile.t[4] := -aMin/jf;
+  Profile.t[5] := tf - (2*Profile.t[0] + Profile.t[1] + 2*Profile.t[4]);
+  Profile.t[6] := Profile.t[4];
 
-  time_acc0_acc1 := profile.check(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, tf_, jf, vMax, vMin, aMax, aMin, jMax);
+  time_acc0_acc1 := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
   RETURN;   
 END_IF
 
-h1 := SQRT(144*root.Power2((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf_ - vd)) - af_af*(aMax*tf_ - vd) + 2*af_*aMin*(aMax*tf_ - vd) + a0_a0*(aMin*tf_ + v0_ - vf_) - 2*a0_*aMax*(aMin*tf_ - vd)) + 48*ad*(3*a0_p3 - 3*af_p3 + 12*aMax*aMin*(-aMax + aMin) + 4*af_af*(aMax + 2*aMin) + a0_*(-3*af_af - 8*af_*aMax + 6*aMax*aMax + 8*af_*aMin + 12*aMax*aMin - 6*aMin*aMin) + 6*af_*(aMax*aMax - 2*aMax*aMin - aMin*aMin) + a0_a0*(3*af_ - 4*(2*aMax + aMin)))*(2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_*tf_ - 2*tf_*vf_)));
-jf := -(3*af_af*aMax*tf_ - 3*a0_a0*aMin*tf_ - 6*ad*aMax*aMin*tf_ + 3*aMax*aMin*(aMin - aMax)*tf_ + 3*(a0_a0 - af_af)*vd + 6*af_*aMin*vd - 6*a0_*aMax*vd + 3*(aMax*aMax - aMin*aMin)*vd + h1/4)/(6*(2*aMin*(-pd + tf_*v0_) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf_*vf_)));
+h1 := SQRT(144*Power2((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf - vd)) - af_af*(aMax*tf - vd) + 2*af*aMin*(aMax*tf - vd) + a0_a0*(aMin*tf + v0 - vf) - 2*a0*aMax*(aMin*tf - vd)) + 48*ad*(3*a0_p3 - 3*af_p3 + 12*aMax*aMin*(-aMax + aMin) + 4*af_af*(aMax + 2*aMin) + a0*(-3*af_af - 8*af*aMax + 6*aMax*aMax + 8*af*aMin + 12*aMax*aMin - 6*aMin*aMin) + 6*af*(aMax*aMax - 2*aMax*aMin - aMin*aMin) + a0_a0*(3*af - 4*(2*aMax + aMin)))*(2*aMin*(-pd + tf*v0) + vd*vd + aMax*(2*pd + aMin*tf*tf - 2*tf*vf)));
+jf := -(3*af_af*aMax*tf - 3*a0_a0*aMin*tf - 6*ad*aMax*aMin*tf + 3*aMax*aMin*(aMin - aMax)*tf + 3*(a0_a0 - af_af)*vd + 6*af*aMin*vd - 6*a0*aMax*vd + 3*(aMax*aMax - aMin*aMin)*vd + h1/4)/(6*(2*aMin*(-pd + tf*v0) + vd*vd + aMax*(2*pd + aMin*tf_tf - 2*tf*vf)));
 
-profile.t[0] := (aMax - a0_)/jf;
-profile.t[1] := (a0_a0 - af_af + 2*ad*aMin - 2*(aMax*aMax - 2*aMax*aMin + aMin*aMin + aMin*jf*tf_ - jf*vd))/(2*(aMax - aMin)*jf);
-profile.t[2] := aMax/jf;
-profile.t[3] := 0;
-profile.t[4] := -aMin/jf;
-profile.t[5] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + 2*profile.t[4] + af_/jf);
-profile.t[6] := profile.t[4] + af_/jf;
+Profile.t[0] := (aMax - a0)/jf;
+Profile.t[1] := (a0_a0 - af_af + 2*ad*aMin - 2*(aMax*aMax - 2*aMax*aMin + aMin*aMin + aMin*jf*tf - jf*vd))/(2*(aMax - aMin)*jf);
+Profile.t[2] := aMax/jf;
+Profile.t[3] := 0;
+Profile.t[4] := -aMin/jf;
+Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + 2*Profile.t[4] + af/jf);
+Profile.t[6] := Profile.t[4] + af/jf;
 
-time_acc0_acc1 := profile.check(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1, tf_, jf, vMax, vMin, aMax, aMin, jMax);
+time_acc0_acc1 := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
 IF time_acc0_acc1
 THEN
   RETURN;
@@ -197,9 +199,9 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0_acc1_vel" Id="{907b7862-6844-4d30-800e-31087180e12b}">
-      <Declaration><![CDATA[METHOD time_acc0_acc1_vel : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0_acc1_vel : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -211,22 +213,22 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU, Solution 1
 
-h0a := af_af - 2*af_*aMin + (aMin - aMax)*aMin + 2*jMax*(aMin*tf_ - vd);
-h1 := aMax*aMin*(a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*a0_a0*aMax*(aMin + aMax) + 2*a0_*(2*aMax - a0_)*h0a - 2*af_af*(aMax*aMax - aMin*aMin - 2*aMax*(aMin + jMax*tf_) + 2*jMax*vd) + 4*af_*aMin*(aMax*aMax - aMax*(aMin + 2*jMax*tf_) + 2*jMax*vd) + aMax*aMax*aMax*aMin - 2*aMax*aMax*(aMin*aMin + 2*jMax*(aMin*tf_ - vd)) + 4*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd*vd) + aMax*(aMin*aMin*aMin + 4*aMin*aMin*jMax*tf_ + 4*aMin*jMax_jMax*tf_tf - 8*jMax_jMax*(-pd + tf_*vf_)));
+h0a := af_af - 2*af*aMin + (aMin - aMax)*aMin + 2*jMax*(aMin*tf - vd);
+h1 := aMax*aMin*(a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*a0_a0*aMax*(aMin + aMax) + 2*a0*(2*aMax - a0)*h0a - 2*af_af*(aMax*aMax - aMin*aMin - 2*aMax*(aMin + jMax*tf) + 2*jMax*vd) + 4*af*aMin*(aMax*aMax - aMax*(aMin + 2*jMax*tf) + 2*jMax*vd) + aMax*aMax*aMax*aMin - 2*aMax*aMax*(aMin*aMin + 2*jMax*(aMin*tf - vd)) + 4*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd*vd) + aMax*(aMin*aMin*aMin + 4*aMin*aMin*jMax*tf + 4*aMin*jMax_jMax*tf_tf - 8*jMax_jMax*(-pd + tf*vf)));
 
 IF h1 > 0
 THEN
   h1 := SQRT(h1) * ABS(jMax)/jMax;
   
-  profile.t[0] := (-a0_ + aMax)/jMax;
-  profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax - 2*ad*aMin - 3*aMax*aMin + aMin*aMin + 2*jMax*(aMin*tf_ - vd)) - h1/aMax)/(2*(aMax - aMin)*jMax);
-  profile.t[2] := aMax/jMax;
-  profile.t[3] := (aMin - aMax - h1/(aMax*aMin))/(2*jMax);
-  profile.t[4] := -aMin/jMax;
-  profile.t[5] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3] + 2*profile.t[4] + af_/jMax);
-  profile.t[6] := profile.t[4] + af_/jMax;
+  Profile.t[0] := (-a0 + aMax)/jMax;
+  Profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax - 2*ad*aMin - 3*aMax*aMin + aMin*aMin + 2*jMax*(aMin*tf - vd)) - h1/aMax)/(2*(aMax - aMin)*jMax);
+  Profile.t[2] := aMax/jMax;
+  Profile.t[3] := (aMin - aMax - h1/(aMax*aMin))/(2*jMax);
+  Profile.t[4] := -aMin/jMax;
+  Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] + af/jMax);
+  Profile.t[6] := Profile.t[4] + af/jMax;
   
-  time_acc0_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_acc1_vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_acc1_vel
   THEN
     RETURN;
@@ -235,25 +237,25 @@ END_IF
 
 
 // Profile UDUD
-h1 := 12*aMax*jMax*(a0_a0 + af_af - 2*(a0_ + af_)*aMax + 2*(aMax*aMax - aMax*jMax*tf_ + jMax*vd));
+h1 := 12*aMax*jMax*(a0_a0 + af_af - 2*(a0 + af)*aMax + 2*(aMax*aMax - aMax*jMax*tf + jMax*vd));
 h2 := 3*(a0_p4 + af_p4) - 4*(a0_p3 + af_p3)*aMax;
-h3 := -4*af_p3*aMax + 24*(a0_ + af_)*aMax*aMax*aMax - 6*(af_af + a0_a0)*(aMax*aMax - 2*jMax*vd) + 6*a0_a0*(af_af - 2*af_*aMax - 2*aMax*jMax*tf_) - 12*aMax*aMax*(2*aMax*aMax - 2*aMax*jMax*tf_ + jMax*vd) - 24*af_*aMax*jMax*vd + 12*jMax_jMax*(2*aMax*g1 + vd_vd);
+h3 := -4*af_p3*aMax + 24*(a0 + af)*aMax*aMax*aMax - 6*(af_af + a0_a0)*(aMax*aMax - 2*jMax*vd) + 6*a0_a0*(af_af - 2*af*aMax - 2*aMax*jMax*tf) - 12*aMax*aMax*(2*aMax*aMax - 2*aMax*jMax*tf + jMax*vd) - 24*af*aMax*jMax*vd + 12*jMax_jMax*(2*aMax*g1 + vd_vd);
 
-profile.t[0] := (-a0_ + aMax)/jMax;
-profile.t[1] := (h2 + h3)/h1;
-profile.t[2] := profile.t[0] + a0_/jMax;
-profile.t[3] := -(a0_a0 + af_af - 2*aMax*(a0_ + af_ + jMax*tf_) + 4*aMax*aMax + 2*jMax*vd)/(2*aMax*jMax);
-profile.t[4] := profile.t[2];
-profile.t[5] := tf_ - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3] + 2*profile.t[4] - af_/jMax);
-profile.t[6] := profile.t[4] - af_/jMax;
+Profile.t[0] := (-a0 + aMax)/jMax;
+Profile.t[1] := (h2 + h3)/h1;
+Profile.t[2] := Profile.t[0] + a0/jMax;
+Profile.t[3] := -(a0_a0 + af_af - 2*aMax*(a0 + af + jMax*tf) + 4*aMax*aMax + 2*jMax*vd)/(2*aMax*jMax);
+Profile.t[4] := Profile.t[2];
+Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] - af/jMax);
+Profile.t[6] := Profile.t[4] - af/jMax;
 
-time_acc0_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.acc0_acc1_vel, tf_, jMax, vMax, vMin, aMax, aMin);]]></ST>
+time_acc0_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0_vel" Id="{525f27d2-ae9a-4ac9-8442-eb549f9bf992}">
-      <Declaration><![CDATA[METHOD time_acc0_vel : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0_vel : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -267,23 +269,23 @@ VAR
   i : INT;  
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (tf_ < MAX((-a0_ + aMax)/jMax, 0.0) + MAX(aMax/jMax, 0.0))
+        <ST><![CDATA[IF (tf < MAX((-a0 + aMax)/jMax, 0.0) + MAX(aMax/jMax, 0.0))
 THEN
   RETURN;
 END_IF
 
-ph1 := 12*jMax*(-aMax*aMax*vd - jMax*vd_vd + 2*aMax*jMax*(-pd + tf_*vf_));
+ph1 := 12*jMax*(-aMax*aMax*vd - jMax*vd_vd + 2*aMax*jMax*(-pd + tf*vf));
 
 polynom[0] := 1.0;
 polynom[1] := (2*aMax)/jMax;
-polynom[2] := (a0_a0 - af_af + 2*ad*aMax + aMax*aMax + 2*jMax*(vd - aMax*tf_))/jMax_jMax;
+polynom[2] := (a0_a0 - af_af + 2*ad*aMax + aMax*aMax + 2*jMax*(vd - aMax*tf))/jMax_jMax;
 polynom[3] := 0;
-polynom[4] := -(-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 12*a0_*aMax*(af_af - 2*jMax*vd) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf_ + 2*jMax*vd) + ph1)/(12*jMax_jMax*jMax_jMax);
+polynom[4] := -(-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 12*a0*aMax*(af_af - 2*jMax*vd) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*vd) + ph1)/(12*jMax_jMax*jMax_jMax);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -291,8 +293,8 @@ DO
 
   // Single Newton step (regarding pd)
   h1 := jMax*t*t + vd;
-  orig := (-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 24*af_*aMax*jMax_jMax*t*t - 12*a0_*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf_ + 2*jMax*h1) - 12*jMax*(aMax*aMax*h1 + jMax*h1*h1 + 2*aMax*jMax*(pd + jMax*t*t*(t - tf_) - tf_*vf_)))/(24*aMax*jMax_jMax);                
-  deriv := -t*(a0_a0 - af_af + 2*aMax*(ad - jMax*tf_) + aMax*aMax + 3*aMax*jMax*t + 2*jMax*h1)/aMax;
+  orig := (-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 24*af*aMax*jMax_jMax*t*t - 12*a0*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*h1) - 12*jMax*(aMax*aMax*h1 + jMax*h1*h1 + 2*aMax*jMax*(pd + jMax*t*t*(t - tf) - tf*vf)))/(24*aMax*jMax_jMax);                
+  deriv := -t*(a0_a0 - af_af + 2*aMax*(ad - jMax*tf) + aMax*aMax + 3*aMax*jMax*t + 2*jMax*h1)/aMax;
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -303,15 +305,15 @@ DO
 
   h1 := ((a0_a0 - af_af)*0.5 + jMax*(jMax*t*t + vd))/aMax;
 
-  profile.t[0] := (-a0_ + aMax)/jMax;
-  profile.t[1] := (h1 - aMax)/jMax;
-  profile.t[2] := aMax/jMax;
-  profile.t[3] := tf_ - (h1 + ad + aMax)/jMax - 2*t;
-  profile.t[4] := t;
-  profile.t[5] := 0;
-  profile.t[6] := af_/jMax + t;
+  Profile.t[0] := (-a0 + aMax)/jMax;
+  Profile.t[1] := (h1 - aMax)/jMax;
+  Profile.t[2] := aMax/jMax;
+  Profile.t[3] := tf - (h1 + ad + aMax)/jMax - 2*t;
+  Profile.t[4] := t;
+  Profile.t[5] := 0;
+  Profile.t[6] := af/jMax + t;
 
-  time_acc0_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0_vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -321,14 +323,14 @@ END_FOR
 
 polynom[0] := 1.0;
 polynom[1] := (-2*aMax)/jMax;
-polynom[2] := -(a0_a0 + af_af - 2*(a0_ + af_)*aMax + aMax*aMax + 2*jMax*(vd - aMax*tf_))/jMax_jMax;
+polynom[2] := -(a0_a0 + af_af - 2*(a0 + af)*aMax + aMax*aMax + 2*jMax*(vd - aMax*tf))/jMax_jMax;
 polynom[3] := 0;
-polynom[4] := (3*(a0_p4 + af_p4) - 4*(af_p3 + 2*a0_p3)*aMax + 6*a0_a0*(af_af + aMax*aMax + 2*jMax*vd) - 12*a0_*aMax*(af_af + 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf_ + 2*jMax*vd) - ph1)/(12*jMax_jMax*jMax_jMax);
+polynom[4] := (3*(a0_p4 + af_p4) - 4*(af_p3 + 2*a0_p3)*aMax + 6*a0_a0*(af_af + aMax*aMax + 2*jMax*vd) - 12*a0*aMax*(af_af + 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*vd) - ph1)/(12*jMax_jMax*jMax_jMax);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -336,8 +338,8 @@ DO
 
   // Single Newton step (regarding pd)
   h1 := jMax*t*t - vd;
-  orig := -(3*(a0_p4 + af_p4) - 4*(2*a0_p3 + af_p3)*aMax + 24*af_*aMax*jMax_jMax*t*t - 12*a0_*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af + aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*jMax*(tf_*aMax + h1)) + 12*jMax*(-aMax*aMax*h1 + jMax*h1*h1 - 2*aMax*jMax*(-pd + jMax*t*t*(t - tf_) + tf_*vf_)))/(24*aMax*jMax_jMax);
-  deriv := t*(a0_a0 + af_af - 2*jMax*h1 - 2*(a0_ + af_ + jMax*tf_)*aMax + aMax*aMax + 3*aMax*jMax*t)/aMax;
+  orig := -(3*(a0_p4 + af_p4) - 4*(2*a0_p3 + af_p3)*aMax + 24*af*aMax*jMax_jMax*t*t - 12*a0*aMax*(af_af - 2*jMax*h1) + 6*a0_a0*(af_af + aMax*aMax - 2*jMax*h1) + 6*af_af*(aMax*aMax - 2*jMax*(tf*aMax + h1)) + 12*jMax*(-aMax*aMax*h1 + jMax*h1*h1 - 2*aMax*jMax*(-pd + jMax*t*t*(t - tf) + tf*vf)))/(24*aMax*jMax_jMax);
+  deriv := t*(a0_a0 + af_af - 2*jMax*h1 - 2*(a0 + af + jMax*tf)*aMax + aMax*aMax + 3*aMax*jMax*t)/aMax;
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -347,15 +349,15 @@ DO
   t := t - orig / deriv;
   
   h1 := ((a0_a0 + af_af)*0.5 + jMax*(vd - jMax*t*t))/aMax;
-  profile.t[0] := (-a0_ + aMax)/jMax;
-  profile.t[1] := (h1 - aMax)/jMax;
-  profile.t[2] := aMax/jMax;
-  profile.t[3] := tf_ - (h1 - a0_ - af_ + aMax)/jMax - 2*t;
-  profile.t[4] := t;
-  profile.t[5] := 0;
-  profile.t[6] := -(af_/jMax) + t;
+  Profile.t[0] := (-a0 + aMax)/jMax;
+  Profile.t[1] := (h1 - aMax)/jMax;
+  Profile.t[2] := aMax/jMax;
+  Profile.t[3] := tf - (h1 - a0 - af + aMax)/jMax - 2*t;
+  Profile.t[4] := t;
+  Profile.t[5] := 0;
+  Profile.t[6] := -(af/jMax) + t;
 
-  time_acc0_vel := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.acc0_vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -364,9 +366,9 @@ END_FOR    ]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc1" Id="{c3083484-6cc0-4b4c-b724-b4189e0984b7}">
-      <Declaration><![CDATA[METHOD time_acc1 : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc1 : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -378,42 +380,42 @@ END_VAR]]></Declaration>
         <ST><![CDATA[// a3 != 0
 
 // Case UDDU, Solution 2
-h0a := a0_p3 - af_p3 - 3*a0_a0*aMin + 3*a0_*aMin*aMin + 3*aMin*aMin*jMax*tf_ + 3*af_*aMin*(-aMin - 2*jMax*tf_) - 3*af_af*(-aMin - jMax*tf_) - 3*jMax_jMax*(-2*pd - aMin*tf_tf + 2*tf_*vf_);
-h0b := a0_a0 + af_af - 2*(a0_ + af_)*aMin + 2*(aMin*aMin - jMax*(-aMin*tf_ + vd));
-h0c := a0_p4 + 3*af_p4 - 4*(a0_p3 + 2*af_p3)*aMin + 6*a0_a0*aMin*aMin + 6*af_af*(aMin*aMin - 2*jMax*vd) + 12*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd_vd) + 24*af_*aMin*jMax*vd - 4*a0_*(af_p3 - 3*af_*aMin*(-aMin - 2*jMax*tf_) + 3*af_af*(-aMin - jMax*tf_) + 3*jMax*(-aMin*aMin*tf_ + jMax*(-2*pd - aMin*tf_tf + 2*tf_*vf_)));
+h0a := a0_p3 - af_p3 - 3*a0_a0*aMin + 3*a0*aMin*aMin + 3*aMin*aMin*jMax*tf + 3*af*aMin*(-aMin - 2*jMax*tf) - 3*af_af*(-aMin - jMax*tf) - 3*jMax_jMax*(-2*pd - aMin*tf_tf + 2*tf*vf);
+h0b := a0_a0 + af_af - 2*(a0 + af)*aMin + 2*(aMin*aMin - jMax*(-aMin*tf + vd));
+h0c := a0_p4 + 3*af_p4 - 4*(a0_p3 + 2*af_p3)*aMin + 6*a0_a0*aMin*aMin + 6*af_af*(aMin*aMin - 2*jMax*vd) + 12*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd_vd) + 24*af*aMin*jMax*vd - 4*a0*(af_p3 - 3*af*aMin*(-aMin - 2*jMax*tf) + 3*af_af*(-aMin - jMax*tf) + 3*jMax*(-aMin*aMin*tf + jMax*(-2*pd - aMin*tf_tf + 2*tf*vf)));
 h1 := ABS(jMax)/jMax*SQRT(4*h0a*h0a - 6*h0b*h0c);
 h2 := 6*jMax*h0b;
 
-profile.t[0] := 0;
-profile.t[1] := 0;
-profile.t[2] := (2*h0a + h1)/h2;
-profile.t[3] := -(a0_a0 + af_af - 2*(a0_ + af_)*aMin + 2*(aMin*aMin + aMin*jMax*tf_ - jMax*vd))/(2*jMax*(a0_ - aMin - jMax*profile.t[2]));
-profile.t[4] := (a0_ - aMin)/jMax - profile.t[2];
-profile.t[5] := tf_ - (profile.t[2] + profile.t[3] + profile.t[4] + (af_ - aMin)/jMax);
-profile.t[6] := (af_ - aMin)/jMax;
+Profile.t[0] := 0;
+Profile.t[1] := 0;
+Profile.t[2] := (2*h0a + h1)/h2;
+Profile.t[3] := -(a0_a0 + af_af - 2*(a0 + af)*aMin + 2*(aMin*aMin + aMin*jMax*tf - jMax*vd))/(2*jMax*(a0 - aMin - jMax*Profile.t[2]));
+Profile.t[4] := (a0 - aMin)/jMax - Profile.t[2];
+Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (af - aMin)/jMax);
+Profile.t[6] := (af - aMin)/jMax;
 
-time_acc1 := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1, tf_, jMax, vMax, vMin, aMax, aMin);
+time_acc1 := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
 IF (time_acc1)
 THEN
   RETURN;
 END_IF
         
 // Case UDUD, Solution 1
-h0a := -a0_p3 + af_p3 + 3*a0_a0*aMax - 3*a0_*aMax*aMax + 3*af_*aMax*(aMax - 2*jMax*tf_) - 3*af_af*(aMax - jMax*tf_) + 3*jMax*(aMax*aMax*tf_ + jMax*(-2*pd - aMax*tf_tf + 2*tf_*vf_));
-h0b := a0_a0 - af_af + 2*ad*aMax + 2*jMax*(aMax*tf_ - vd);
-h0c := a0_p4 + 3*af_p4 - 4*(a0_p3 + 2*af_p3)*aMax + 6*a0_a0*aMax*aMax - 24*af_*aMax*jMax*vd + 12*jMax*(2*aMax*jMax*g1 + jMax*vd_vd + aMax*aMax*vd) + 6*af_af*(aMax*aMax + 2*jMax*vd) - 4*a0_*(af_p3 + 3*af_*aMax*(aMax - 2*jMax*tf_) - 3*af_af*(aMax - jMax*tf_) + 3*jMax*(aMax*aMax*tf_ + jMax*(-2*pd - aMax*tf_tf + 2*tf_*vf_)));
+h0a := -a0_p3 + af_p3 + 3*a0_a0*aMax - 3*a0*aMax*aMax + 3*af*aMax*(aMax - 2*jMax*tf) - 3*af_af*(aMax - jMax*tf) + 3*jMax*(aMax*aMax*tf + jMax*(-2*pd - aMax*tf_tf + 2*tf*vf));
+h0b := a0_a0 - af_af + 2*ad*aMax + 2*jMax*(aMax*tf - vd);
+h0c := a0_p4 + 3*af_p4 - 4*(a0_p3 + 2*af_p3)*aMax + 6*a0_a0*aMax*aMax - 24*af*aMax*jMax*vd + 12*jMax*(2*aMax*jMax*g1 + jMax*vd_vd + aMax*aMax*vd) + 6*af_af*(aMax*aMax + 2*jMax*vd) - 4*a0*(af_p3 + 3*af*aMax*(aMax - 2*jMax*tf) - 3*af_af*(aMax - jMax*tf) + 3*jMax*(aMax*aMax*tf + jMax*(-2*pd - aMax*tf_tf + 2*tf*vf)));
 h1 := ABS(jMax)/jMax*SQRT(4*h0a*h0a - 6*h0b*h0c);
 h2 := 6*jMax*h0b;
 
-profile.t[0] := 0;
-profile.t[1] := 0;
-profile.t[2] := -(2*h0a + h1)/h2;
-profile.t[3] := 2*h1/h2;
-profile.t[4] := (aMax - a0_)/jMax + profile.t[2];
-profile.t[5] := tf_ - (profile.t[2] + profile.t[3] + profile.t[4] + (-af_ + aMax)/jMax);
-profile.t[6] := (-af_ + aMax)/jMax;
+Profile.t[0] := 0;
+Profile.t[1] := 0;
+Profile.t[2] := -(2*h0a + h1)/h2;
+Profile.t[3] := 2*h1/h2;
+Profile.t[4] := (aMax - a0)/jMax + Profile.t[2];
+Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (-af + aMax)/jMax);
+Profile.t[6] := (-af + aMax)/jMax;
 
-time_acc1 := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.acc1, tf_, jMax, vMax, vMin, aMax, aMin);
+time_acc1 := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
 IF (time_acc1)
 THEN
   RETURN;
@@ -421,9 +423,9 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc1_vel" Id="{61921669-de39-469f-aa6e-67d4b0f84a7e}">
-      <Declaration><![CDATA[METHOD time_acc1_vel : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc1_vel : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -433,9 +435,9 @@ VAR
   polynom : ARRAY[0..4] OF LREAL :=
     [
       1.0,
-      (2*(2*a0_ - aMin))/jMax,
-      (4*a0_a0 + ph1 - 3*a0_*aMin)/jMax_jMax,
-      (2*a0_*ph1)/(jMax_jMax*jMax),
+      (2*(2*a0 - aMin))/jMax,
+      (4*a0_a0 + ph1 - 3*a0*aMin)/jMax_jMax,
+      (2*a0*ph1)/(jMax_jMax*jMax),
       (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMin + 6*af_af*(aMin*aMin - 2*jMax*vd) + 12*jMax*ph2 + 6*a0_a0*ph3)/(12*jMax_jMax*jMax_jMax)
     ]; 
   t : LREAL; 
@@ -445,22 +447,22 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU
-ph1 := a0_a0 + af_af - aMin*(a0_ + 2*af_) + aMin*aMin - 2*jMax*(vd - aMin*tf_);
-ph2 := 2*aMin*(jMax*g1 + af_*vd) - aMin*aMin*vd + jMax*vd_vd;
-ph3 := af_af - 2*af_*aMin + aMin*aMin - 2*jMax*(vd - aMin*tf_);
+ph1 := a0_a0 + af_af - aMin*(a0 + 2*af) + aMin*aMin - 2*jMax*(vd - aMin*tf);
+ph2 := 2*aMin*(jMax*g1 + af*vd) - aMin*aMin*vd + jMax*vd_vd;
+ph3 := af_af - 2*af*aMin + aMin*aMin - 2*jMax*(vd - aMin*tf);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
 	END_IF
 
   // Single Newton step (regarding pd)
-  orig := (3*a0_p4 + 3*af_p4 - 8*af_p3*aMin - 4*a0_p3*(aMin - 6*jMax*t) + 6*af_af*(aMin*aMin + 2*jMax*(jMax*t*t - vd)) + 24*a0_*jMax*t*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-t + tf_) + 2*jMax*(jMax*t*t - vd)) + 6*a0_a0*(af_af - 2*af_*aMin + aMin*aMin + 2*aMin*jMax*(-2*t + tf_) + 2*jMax*(5*jMax*t*t - vd)) - 24*af_*aMin*jMax*(jMax*t*t - vd) + 12*jMax*(2*aMin*jMax*(-pd - jMax*t*t*t + jMax*t*t*tf_ + tf_*v0_) + aMin*aMin*(jMax*t*t - vd) + jMax*root.Power2(vd - jMax*t*t)))/(24*aMin*jMax_jMax);
-  deriv := ((a0_ + jMax*t)*(a0_a0 + af_af - a0_*aMin - 2*af_*aMin + aMin*aMin + 4*a0_*jMax*t + aMin*jMax*(2*tf_ - 3*t) + 2*jMax_jMax*t*t - 2*jMax*vd))/(aMin*jMax);
+  orig := (3*a0_p4 + 3*af_p4 - 8*af_p3*aMin - 4*a0_p3*(aMin - 6*jMax*t) + 6*af_af*(aMin*aMin + 2*jMax*(jMax*t*t - vd)) + 24*a0*jMax*t*(af_af - 2*af*aMin + aMin*aMin + 2*aMin*jMax*(-t + tf) + 2*jMax*(jMax*t*t - vd)) + 6*a0_a0*(af_af - 2*af*aMin + aMin*aMin + 2*aMin*jMax*(-2*t + tf) + 2*jMax*(5*jMax*t*t - vd)) - 24*af*aMin*jMax*(jMax*t*t - vd) + 12*jMax*(2*aMin*jMax*(-pd - jMax*t*t*t + jMax*t*t*tf + tf*v0) + aMin*aMin*(jMax*t*t - vd) + jMax*Power2(vd - jMax*t*t)))/(24*aMin*jMax_jMax);
+  deriv := ((a0 + jMax*t)*(a0_a0 + af_af - a0*aMin - 2*af*aMin + aMin*aMin + 4*a0*jMax*t + aMin*jMax*(2*tf - 3*t) + 2*jMax_jMax*t*t - 2*jMax*vd))/(aMin*jMax);
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -469,17 +471,17 @@ DO
 
   t := t - orig / deriv;
 
-  h1 := -((a0_a0 + af_af)*0.5 + jMax*(-vd + 2*a0_*t + jMax*t*t))/aMin;
+  h1 := -((a0_a0 + af_af)*0.5 + jMax*(-vd + 2*a0*t + jMax*t*t))/aMin;
 
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := profile.t[0] + a0_/jMax;
-  profile.t[3] := tf_ - (h1 - aMin + a0_ + af_)/jMax - 2*t;
-  profile.t[4] := -aMin/jMax;
-  profile.t[5] := (h1 + aMin)/jMax;
-  profile.t[6] := profile.t[4] + af_/jMax;
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := Profile.t[0] + a0/jMax;
+  Profile.t[3] := tf - (h1 - aMin + a0 + af)/jMax - 2*t;
+  Profile.t[4] := -aMin/jMax;
+  Profile.t[5] := (h1 + aMin)/jMax;
+  Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc1_vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -489,37 +491,37 @@ END_FOR
 
 
 // Profile UDUD
-ph1 := a0_a0 - af_af + (2*af_ - a0_)*aMax - aMax*aMax - 2*jMax*(vd - aMax*tf_);
+ph1 := a0_a0 - af_af + (2*af - a0)*aMax - aMax*aMax - 2*jMax*(vd - aMax*tf);
 ph2 := aMax*aMax + 2*jMax*vd;
-ph3 := af_af + ph2 - 2*aMax*(af_ + jMax*tf_);
+ph3 := af_af + ph2 - 2*aMax*(af + jMax*tf);
 ph4 := 2*aMax*jMax*g1 + aMax*aMax*vd + jMax*vd_vd;
 
 polynom[0] := 1.0;
-polynom[1] := (4*a0_ - 2*aMax)/jMax;
-polynom[2] := (4*a0_a0 - 3*a0_*aMax + ph1)/jMax_jMax;
-polynom[3] := (2*a0_*ph1)/(jMax_jMax*jMax);
-polynom[4] := (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMax - 24*af_*aMax*jMax*vd + 12*jMax*ph4 - 6*a0_a0*ph3 + 6*af_af*ph2)/(12*jMax_jMax*jMax_jMax);
+polynom[1] := (4*a0 - 2*aMax)/jMax;
+polynom[2] := (4*a0_a0 - 3*a0*aMax + ph1)/jMax_jMax;
+polynom[3] := (2*a0*ph1)/(jMax_jMax*jMax);
+polynom[4] := (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMax - 24*af*aMax*jMax*vd + 12*jMax*ph4 - 6*a0_a0*ph3 + 6*af_af*ph2)/(12*jMax_jMax*jMax_jMax);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
 	END_IF
 
-  h1 := ((a0_a0 - af_af)*0.5 + jMax_jMax*t*t - jMax*(vd - 2*a0_*t))/aMax;
+  h1 := ((a0_a0 - af_af)*0.5 + jMax_jMax*t*t - jMax*(vd - 2*a0*t))/aMax;
 
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := profile.t[0] + a0_/jMax;
-  profile.t[3] := tf_ + (h1 + ad - aMax)/jMax - 2*t;
-  profile.t[4] := aMax/jMax;
-  profile.t[5] := -(h1 + aMax)/jMax;
-  profile.t[6] := profile.t[4] - af_/jMax;
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := Profile.t[0] + a0/jMax;
+  Profile.t[3] := tf + (h1 + ad - aMax)/jMax - 2*t;
+  Profile.t[4] := aMax/jMax;
+  Profile.t[5] := -(h1 + aMax)/jMax;
+  Profile.t[6] := Profile.t[4] - af/jMax;
 
-  time_acc1_vel := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.acc1_vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -528,9 +530,9 @@ END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_none" Id="{83d242ce-3b8d-4328-b72b-2ae80162e005}">
-      <Declaration><![CDATA[METHOD time_none : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_none : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
@@ -542,40 +544,40 @@ VAR
   ph0, ph1, ph2, ph3, ph4, ph5, ph6, ph7 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(v0_) < Constants.DoubleEpsilon AND_THEN ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon)
+        <ST><![CDATA[IF (ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
 THEN
-  h1 := SQRT(tf_tf*vf_vf + root.Power2(4*pd - tf_*vf_));
-  jf := 4*(4*pd - 2*tf_*vf_ + h1)/tf_p3;
+  h1 := SQRT(tf_tf*vf_vf + Power2(4*pd - tf*vf));
+  jf := 4*(4*pd - 2*tf*vf + h1)/tf_p3;
   
-  profile.t[0] := tf_/4;
-  profile.t[1] := 0;
-  profile.t[2] := 2*profile.t[0];
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := profile.t[0];
-  time_none := profile.check(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jf, vMax, vMin, aMax, aMin, jMax);
+  Profile.t[0] := tf/4;
+  Profile.t[1] := 0;
+  Profile.t[2] := 2*Profile.t[0];
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := Profile.t[0];
+  time_none := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none THEN
     RETURN;
   END_IF
 END_IF
 
 
-IF (ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon) 
+IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon) 
 THEN
 
-  h1 := SQRT(16*pd*(pd - tf_*(v0_ + vf_)) + tf_tf*(5*v0_v0 + 6*v0_*vf_ + 5*vf_vf));
-  jf := 4*(4*pd - 2*tf_*(v0_ + vf_) - h1)/tf_p3;
+  h1 := SQRT(16*pd*(pd - tf*(v0 + vf)) + tf_tf*(5*v0_v0 + 6*v0*vf + 5*vf_vf));
+  jf := 4*(4*pd - 2*tf*(v0 + vf) - h1)/tf_p3;
   
-  profile.t[0] := (tf_*(v0_ + 3*vf_) - 4*pd)/(4*vd);
-  profile.t[1] := 0;
-  profile.t[2] := tf_*0.5;
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := profile.t[4];
+  Profile.t[0] := (tf*(v0 + 3*vf) - 4*pd)/(4*vd);
+  Profile.t[1] := 0;
+  Profile.t[2] := tf*0.5;
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := Profile.t[4];
 
-  time_none := profile.check(ProfileJerkSignsEnum.UDDU, ProfileLimitsEnum.none, tf_, jf, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.Check(ProfileJerkSigns.UDDU, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -588,14 +590,14 @@ END_IF
 
 // First acc, then constant
 polynom[0] := 1.0;
-polynom[1] := -2*tf_;
+polynom[1] := -2*tf;
 polynom[2] := 2*vd/jMax + tf_tf;
-polynom[3] := 4*(pd - tf_*vf_)/jMax;
-polynom[4] := (vd_vd + jMax*tf_*g2)/(jMax_jMax);
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+polynom[3] := 4*(pd - tf*vf)/jMax;
+polynom[4] := (vd_vd + jMax*tf*g2)/(jMax_jMax);
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -603,10 +605,10 @@ DO
 
 
   // Single Newton step (regarding pd)
-  h1 := (jMax*t*(t - tf_) + vd)/(jMax*(2*t - tf_));
-  h2 := (2*jMax*t*(t - tf_) + jMax*tf_tf - 2*vd)/(jMax*(2*t - tf_)*(2*t - tf_));
-  orig := (-2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_))*0.5;
-  deriv := (jMax*tf_*(2*t - tf_)*(h2 - 1))*0.5 + h1*jMax*(tf_ - (2*t - tf_)*h2 - h1);
+  h1 := (jMax*t*(t - tf) + vd)/(jMax*(2*t - tf));
+  h2 := (2*jMax*t*(t - tf) + jMax*tf_tf - 2*vd)/(jMax*(2*t - tf)*(2*t - tf));
+  orig := (-2*pd + 2*tf*v0 + h1*h1*jMax*(tf - 2*t) + jMax*tf*(2*h1*t - t*t - (h1 - t)*tf))*0.5;
+  deriv := (jMax*tf*(2*t - tf)*(h2 - 1))*0.5 + h1*jMax*(tf - (2*t - tf)*h2 - h1);
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -615,15 +617,15 @@ DO
   
   t := t - orig / deriv;
   
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := (jMax*t*(t - tf_) + vd)/(jMax*(2*t - tf_));
-  profile.t[3] := tf_ - 2*t;
-  profile.t[4] := t - profile.t[2];
-  profile.t[5] := 0;
-  profile.t[6] := 0;
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := (jMax*t*(t - tf) + vd)/(jMax*(2*t - tf));
+  Profile.t[3] := tf - 2*t;
+  Profile.t[4] := t - Profile.t[2];
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -635,15 +637,15 @@ END_FOR
 ph1 := -jMax*(jMax*tf_tf + 4*vd);
 
 polynom[0] := 1.0;
-polynom[1] := 2*jMax*(-4*pd + tf_*(jMax*tf_tf - 2*v0_ + 6*vf_))/ph1;
-polynom[2] := -(jMax_jMax*tf_p4 - 8*vd_vd + 4*jMax*tf_*(-3*pd + tf_*v0_ + 2*tf_*vf_))/ph1;
-polynom[3] := 4*(jMax*tf_tf*g1 - vd*(-2*pd - tf_*v0_ + 3*tf_*vf_))/ph1;
+polynom[1] := 2*jMax*(-4*pd + tf*(jMax*tf_tf - 2*v0 + 6*vf))/ph1;
+polynom[2] := -(jMax_jMax*tf_p4 - 8*vd_vd + 4*jMax*tf*(-3*pd + tf*v0 + 2*tf*vf))/ph1;
+polynom[3] := 4*(jMax*tf_tf*g1 - vd*(-2*pd - tf*v0 + 3*tf*vf))/ph1;
 polynom[4] := -4*(jMax*g1*g1 + vd_vd*vd)/(jMax*ph1);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -651,9 +653,9 @@ DO
 
 
   // Single Newton step (regarding pd)
-  h1 := SQRT((jMax*t*(t - tf_) - vd)/jMax);
-  orig := (-2*pd + jMax*t*(t - tf_)*tf_ + 2*tf_*v0_)*0.5 - (h1*h1*h1)/jMax - t*(jMax*t*(t - tf_) - vd);
-  deriv := (jMax*(-2*t + tf_)*(6*h1 - 2*tf_) - 4*jMax*t*(3*t - 2*tf_))/4 + vd;
+  h1 := SQRT((jMax*t*(t - tf) - vd)/jMax);
+  orig := (-2*pd + jMax*t*(t - tf)*tf + 2*tf*v0)*0.5 - (h1*h1*h1)/jMax - t*(jMax*t*(t - tf) - vd);
+  deriv := (jMax*(-2*t + tf)*(6*h1 - 2*tf) - 4*jMax*t*(3*t - 2*tf))/4 + vd;
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -662,18 +664,18 @@ DO
   
   t := t - orig / deriv;
   
-  h1 := SQRT((jMax*t*(t - tf_) - vd)/jMax);
+  h1 := SQRT((jMax*t*(t - tf) - vd)/jMax);
   
   // Solution 2 with aPlat
-  profile.t[0] := 0;
-  profile.t[1] := 0;
-  profile.t[2] := t;
-  profile.t[3] := tf_ - 2*t - 2*h1;
-  profile.t[4] := h1;
-  profile.t[5] := 0;
-  profile.t[6] := tf_ - (t + profile.t[3] + profile.t[4]);
+  Profile.t[0] := 0;
+  Profile.t[1] := 0;
+  Profile.t[2] := t;
+  Profile.t[3] := tf - 2*t - 2*h1;
+  Profile.t[4] := h1;
+  Profile.t[5] := 0;
+  Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none 
   THEN
     RETURN; 
@@ -684,26 +686,26 @@ END_FOR
 
 // Profiles with a3 != 0, Solution UDDU
 // First acc, then constant
-ph1 := af_ + jMax*tf_;
+ph1 := af + jMax*tf;
 polynom[0] := 1.0;
-polynom[1] := (-2*(ad + jMax*tf_))/jMax;
-polynom[2] := (2*(a0_a0 + af_af) + 2*af_*jMax*tf_ - 4*a0_*ph1 + jMax*(jMax*tf_tf + 2*vd))/jMax_jMax;
-polynom[3] := (2*(a0_p3 - af_p3 - 3*af_af*jMax*tf_ + 3*a0_*ph1*(ph1 - a0_) - 6*jMax_jMax*(-pd + tf_*vf_)))/(3*jMax_jMax*jMax);
-polynom[4] := (a0_p4 + af_p4 + 4*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*ph1 + 6*a0_a0*ph1*ph1 + 24*af_*jMax_jMax*g1 - 4*a0_*(af_p3 + 3*af_af*jMax*tf_ + 6*jMax_jMax*(-pd + tf_*vf_)) + 12*jMax_jMax*(vd_vd + jMax*tf_*g2))/(12*jMax_jMax*jMax_jMax);
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+polynom[1] := (-2*(ad + jMax*tf))/jMax;
+polynom[2] := (2*(a0_a0 + af_af) + 2*af*jMax*tf - 4*a0*ph1 + jMax*(jMax*tf_tf + 2*vd))/jMax_jMax;
+polynom[3] := (2*(a0_p3 - af_p3 - 3*af_af*jMax*tf + 3*a0*ph1*(ph1 - a0) - 6*jMax_jMax*(-pd + tf*vf)))/(3*jMax_jMax*jMax);
+polynom[4] := (a0_p4 + af_p4 + 4*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*ph1 + 6*a0_a0*ph1*ph1 + 24*af*jMax_jMax*g1 - 4*a0*(af_p3 + 3*af_af*jMax*tf + 6*jMax_jMax*(-pd + tf*vf)) + 12*jMax_jMax*(vd_vd + jMax*tf*g2))/(12*jMax_jMax*jMax_jMax);
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
-  IF t < 0.0 OR_ELSE t > MIN(tf_, (ad/jMax + tf_) / 2)
+  t := root[i];
+  IF t < 0.0 OR_ELSE t > MIN(tf, (ad/jMax + tf) / 2)
   THEN
     CONTINUE;
 	END_IF
 
   // Single Newton step (regarding pd)
-  h1 := (ad_ad - 2*af_*jMax*t + 2*a0_*jMax*(t - tf_) + 2*jMax*(jMax*t*(t - tf_) + vd))/(2*jMax*(-ad + 2*jMax*t - jMax*tf_));
-  h2 := (-ad_ad + 2*jMax_jMax*t*t + af_*jMax*tf_ - 2*jMax_jMax*t*tf_ + jMax_jMax*tf_tf + a0_*(-ad + jMax*tf_) + ad*(af_ - 2*jMax*t + jMax*tf_) - 2*jMax*vd)/root.Power2(ad + jMax*(-2*t + tf_));
-  orig := (-a0_p3 + af_p3 + 3*ad_ad*jMax*(h1 - t) + 3*ad*jMax_jMax*root.Power2(h1 - t) - 3*a0_*af_*ad + 3*jMax_jMax*(a0_*tf_tf - 2*pd + 2*tf_*v0_ + h1*h1*jMax*(tf_ - 2*t) + jMax*tf_*(2*h1*t - t*t - (h1 - t)*tf_)))/(6*jMax_jMax);
-  deriv := ((-ad + 2*jMax*t - jMax*tf_)*(-ad + jMax*tf_)*(h2 - 1))/(2*jMax) + h1*(-ad + jMax*tf_ + (ad - 2*jMax*t + jMax*tf_)*h2 - jMax*h1);
+  h1 := (ad_ad - 2*af*jMax*t + 2*a0*jMax*(t - tf) + 2*jMax*(jMax*t*(t - tf) + vd))/(2*jMax*(-ad + 2*jMax*t - jMax*tf));
+  h2 := (-ad_ad + 2*jMax_jMax*t*t + af*jMax*tf - 2*jMax_jMax*t*tf + jMax_jMax*tf_tf + a0*(-ad + jMax*tf) + ad*(af - 2*jMax*t + jMax*tf) - 2*jMax*vd)/Power2(ad + jMax*(-2*t + tf));
+  orig := (-a0_p3 + af_p3 + 3*ad_ad*jMax*(h1 - t) + 3*ad*jMax_jMax*Power2(h1 - t) - 3*a0*af*ad + 3*jMax_jMax*(a0*tf_tf - 2*pd + 2*tf*v0 + h1*h1*jMax*(tf - 2*t) + jMax*tf*(2*h1*t - t*t - (h1 - t)*tf)))/(6*jMax_jMax);
+  deriv := ((-ad + 2*jMax*t - jMax*tf)*(-ad + jMax*tf)*(h2 - 1))/(2*jMax) + h1*(-ad + jMax*tf + (ad - 2*jMax*t + jMax*tf)*h2 - jMax*h1);
   
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
@@ -712,15 +714,15 @@ DO
   
   t := t - orig / deriv;
   
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := (ad_ad + 2*jMax*(-a0_*tf_ - ad*t + jMax*t*(t - tf_) + vd))/(2*jMax*(-ad + jMax*(2*t - tf_)));
-  profile.t[3] := ad/jMax + tf_ - 2*t;
-  profile.t[4] := tf_ - (t + profile.t[2] + profile.t[3]);
-  profile.t[5] := 0;
-  profile.t[6] := 0;
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := (ad_ad + 2*jMax*(-a0*tf - ad*t + jMax*t*(t - tf) + vd))/(2*jMax*(-ad + jMax*(2*t - tf)));
+  Profile.t[3] := ad/jMax + tf - 2*t;
+  Profile.t[4] := tf - (t + Profile.t[2] + Profile.t[3]);
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN; 
@@ -730,48 +732,48 @@ END_FOR
 
 
 // First constant, then acc
-ph1 := ad_ad + 2*(af_ + a0_)*jMax*tf_ - jMax*(jMax*tf_tf + 4*vd);
-ph2 := jMax*tf_tf*g1 - vd*(-2*pd - tf_*v0_ + 3*tf_*vf_);
-ph3 := 5*af_af - 8*af_*jMax*tf_ + 2*jMax*(2*jMax*tf_tf - vd);
-ph4 := jMax_jMax*tf_p4 - 2*vd_vd + 8*jMax*tf_*(-pd + tf_*vf_);
-ph5 := (5*af_p4 - 8*af_p3*jMax*tf_ - 12*af_af*jMax*(jMax*tf_tf + vd) + 24*af_*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf_*vf_) - 6*jMax_jMax*ph4);
-ph6 := -vd_vd + jMax*tf_*(-2*pd + 3*tf_*v0_ - tf_*vf_) - af_*g2;
+ph1 := ad_ad + 2*(af + a0)*jMax*tf - jMax*(jMax*tf_tf + 4*vd);
+ph2 := jMax*tf_tf*g1 - vd*(-2*pd - tf*v0 + 3*tf*vf);
+ph3 := 5*af_af - 8*af*jMax*tf + 2*jMax*(2*jMax*tf_tf - vd);
+ph4 := jMax_jMax*tf_p4 - 2*vd_vd + 8*jMax*tf*(-pd + tf*vf);
+ph5 := (5*af_p4 - 8*af_p3*jMax*tf - 12*af_af*jMax*(jMax*tf_tf + vd) + 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) - 6*jMax_jMax*ph4);
+ph6 := -vd_vd + jMax*tf*(-2*pd + 3*tf*v0 - tf*vf) - af*g2;
 
 polynom[0] := 1.0;
-polynom[1] := -(4*(a0_p3 - af_p3) - 12*a0_a0*(af_ - jMax*tf_) + 6*a0_*(2*af_af - 2*af_*jMax*tf_ + jMax*(jMax*tf_tf - 2*vd)) + 6*af_*jMax*(3*jMax*tf_tf + 2*vd) - 6*jMax_jMax*(-4*pd + jMax*tf_p3 - 2*tf_*v0_ + 6*tf_*vf_))/(3*jMax*ph1);
-polynom[2] := -(-a0_p4 - af_p4 + 4*a0_p3*(af_ - jMax*tf_) + a0_a0*(-6*af_af + 8*af_*jMax*tf_ - 4*jMax*(jMax*tf_tf - vd)) + 2*af_af*jMax*(jMax*tf_tf + 2*vd) - 4*af_*jMax_jMax*(-3*pd + jMax*tf_p3 + 2*tf_*v0_ + tf_*vf_) + jMax_jMax*(jMax_jMax*tf_p4 - 8*vd_vd + 4*jMax*tf_*(-3*pd + tf_*v0_ + 2*tf_*vf_)) + 2*a0_*(2*af_p3 - 2*af_af*jMax*tf_ + af_*jMax*(-3*jMax*tf_tf - 4*vd) + jMax_jMax*(-6*pd + jMax*tf_p3 - 4*tf_*v0_ + 10*tf_*vf_)))/(jMax_jMax*ph1);
-polynom[3] := -(a0_p5 - af_p5 + af_p4*jMax*tf_ - 5*a0_p4*(af_ - jMax*tf_) + 2*a0_p3*ph3 + 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*af_*ph6 - 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*(-2*pd - tf_*v0_ + 3*tf_*vf_)) - 12*jMax_jMax*jMax*ph2 + a0_*ph5)/(3*jMax_jMax*jMax*ph1);
-polynom[4] := -(-a0_p6 - af_p6 + 6*a0_p5*(af_ - jMax*tf_) - 48*af_p3*jMax_jMax*g1 + 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af_*g1*vd) - 3*a0_p4*ph3 - 36*af_af*jMax_jMax*vd_vd + 6*af_p4*jMax*vd + 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*(-2*pd - tf_*v0_ + 3*tf_*vf_)) - 3*a0_a0*ph5 + 6*a0_*(af_p5 - af_p4*jMax*tf_ - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(-af_*ph6 + jMax*ph2)))/(18*jMax_jMax*jMax_jMax*ph1);
+polynom[1] := -(4*(a0_p3 - af_p3) - 12*a0_a0*(af - jMax*tf) + 6*a0*(2*af_af - 2*af*jMax*tf + jMax*(jMax*tf_tf - 2*vd)) + 6*af*jMax*(3*jMax*tf_tf + 2*vd) - 6*jMax_jMax*(-4*pd + jMax*tf_p3 - 2*tf*v0 + 6*tf*vf))/(3*jMax*ph1);
+polynom[2] := -(-a0_p4 - af_p4 + 4*a0_p3*(af - jMax*tf) + a0_a0*(-6*af_af + 8*af*jMax*tf - 4*jMax*(jMax*tf_tf - vd)) + 2*af_af*jMax*(jMax*tf_tf + 2*vd) - 4*af*jMax_jMax*(-3*pd + jMax*tf_p3 + 2*tf*v0 + tf*vf) + jMax_jMax*(jMax_jMax*tf_p4 - 8*vd_vd + 4*jMax*tf*(-3*pd + tf*v0 + 2*tf*vf)) + 2*a0*(2*af_p3 - 2*af_af*jMax*tf + af*jMax*(-3*jMax*tf_tf - 4*vd) + jMax_jMax*(-6*pd + jMax*tf_p3 - 4*tf*v0 + 10*tf*vf)))/(jMax_jMax*ph1);
+polynom[3] := -(a0_p5 - af_p5 + af_p4*jMax*tf - 5*a0_p4*(af - jMax*tf) + 2*a0_p3*ph3 + 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*af*ph6 - 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*(-2*pd - tf*v0 + 3*tf*vf)) - 12*jMax_jMax*jMax*ph2 + a0*ph5)/(3*jMax_jMax*jMax*ph1);
+polynom[4] := -(-a0_p6 - af_p6 + 6*a0_p5*(af - jMax*tf) - 48*af_p3*jMax_jMax*g1 + 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 3*a0_p4*ph3 - 36*af_af*jMax_jMax*vd_vd + 6*af_p4*jMax*vd + 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*(-2*pd - tf*v0 + 3*tf*vf)) - 3*a0_a0*ph5 + 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(-af*ph6 + jMax*ph2)))/(18*jMax_jMax*jMax_jMax*ph1);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
-  IF t < 0.0 OR_ELSE t > MIN(tf_, (ad/jMax + tf_) / 2)
+  t := root[i];
+  IF t < 0.0 OR_ELSE t > MIN(tf, (ad/jMax + tf) / 2)
   THEN
     CONTINUE;
 	END_IF
 
   // Single Newton step (regarding pd)
-  h1 := (ad_ad + 2*jMax*(af_*t + (jMax*t - a0_)*(t - tf_) - vd))*0.5;
-  h2 := (-ad + jMax*(-2*t + tf_));
-  orig := (af_p3 - a0_p3 + 3*af_*jMax*t*(af_ + jMax*t) + 3*a0_a0*(af_ + jMax*t) - 3*a0_*(af_af + 2*af_*jMax*t + jMax_jMax*(t*t - tf_tf)) + 3*jMax_jMax*(-2*pd + jMax*t*(t - tf_)*tf_ + 2*tf_*v0_))/(6*jMax_jMax) - root.Power(h1,1.5)/(jMax*ABS(jMax)) + ((-ad - jMax*t)*h1)/(jMax_jMax);
-  deriv := (6*jMax*h2*SQRT(h1)/ABS(jMax) + 2*(-ad - jMax*tf_)*h2 - 2*(3*ad_ad + af_*jMax*(8*t - 2*tf_) + 4*a0_*jMax*(-2*t + tf_) + 2*jMax*(jMax*t*(3*t - 2*tf_) - vd)))/(4*jMax);
+  h1 := (ad_ad + 2*jMax*(af*t + (jMax*t - a0)*(t - tf) - vd))*0.5;
+  h2 := (-ad + jMax*(-2*t + tf));
+  orig := (af_p3 - a0_p3 + 3*af*jMax*t*(af + jMax*t) + 3*a0_a0*(af + jMax*t) - 3*a0*(af_af + 2*af*jMax*t + jMax_jMax*(t*t - tf_tf)) + 3*jMax_jMax*(-2*pd + jMax*t*(t - tf)*tf + 2*tf*v0))/(6*jMax_jMax) - Power(h1,1.5)/(jMax*ABS(jMax)) + ((-ad - jMax*t)*h1)/(jMax_jMax);
+  deriv := (6*jMax*h2*SQRT(h1)/ABS(jMax) + 2*(-ad - jMax*tf)*h2 - 2*(3*ad_ad + af*jMax*(8*t - 2*tf) + 4*a0*jMax*(-2*t + tf) + 2*jMax*(jMax*t*(3*t - 2*tf) - vd)))/(4*jMax);
   
   t := t - orig / deriv;
   
-  h1 := SQRT(2*(ad_ad + 2*af_*jMax*t - 2*a0_*jMax*(t - tf_) + 2*jMax*(jMax*t*(t - tf_) - vd)))/ABS(jMax);
+  h1 := SQRT(2*(ad_ad + 2*af*jMax*t - 2*a0*jMax*(t - tf) + 2*jMax*(jMax*t*(t - tf) - vd)))/ABS(jMax);
   
   // Solution 2 with aPlat
-  profile.t[0] := 0;
-  profile.t[1] := 0;
-  profile.t[2] := t;
-  profile.t[3] := tf_ - 2*t - ad/jMax - h1;
-  profile.t[4] := h1*0.5;
-  profile.t[5] := 0;
-  profile.t[6] := tf_ - (t + profile.t[3] + profile.t[4]);
+  Profile.t[0] := 0;
+  Profile.t[1] := 0;
+  Profile.t[2] := t;
+  Profile.t[3] := tf - 2*t - ad/jMax - h1;
+  Profile.t[4] := h1*0.5;
+  Profile.t[5] := 0;
+  Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -780,19 +782,19 @@ END_FOR
 
 
 //
-h0 := SQRT(3*jMax_jMax*(a0_p4 + af_p4 - 4*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*(af_ - jMax*tf_) + 6*a0_a0*root.Power2(af_ - jMax*tf_) + 24*af_*jMax_jMax*(-pd + tf_*v0_) - 4*a0_*(af_p3 - 3*af_af*jMax*tf_ + 6*jMax_jMax*(-pd + tf_*vf_)) - 12*jMax_jMax*(-vd_vd + jMax*tf_*(-2*pd + tf_*(v0_ + vf_)))));
-h2 := 3*(a0_a0 + af_af)*jMax + 6*a0_*jMax*(jMax*tf_ - af_);
-h1 := SQRT(3*jMax*(h2 - 6*af_*jMax_jMax*tf_ + 3*jMax_jMax*jMax*tf_tf + 2*h0));
+h0 := SQRT(3*jMax_jMax*(a0_p4 + af_p4 - 4*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*(af - jMax*tf) + 6*a0_a0*Power2(af - jMax*tf) + 24*af*jMax_jMax*(-pd + tf*v0) - 4*a0*(af_p3 - 3*af_af*jMax*tf + 6*jMax_jMax*(-pd + tf*vf)) - 12*jMax_jMax*(-vd_vd + jMax*tf*(-2*pd + tf*(v0 + vf)))));
+h2 := 3*(a0_a0 + af_af)*jMax + 6*a0*jMax*(jMax*tf - af);
+h1 := SQRT(3*jMax*(h2 - 6*af*jMax_jMax*tf + 3*jMax_jMax*jMax*tf_tf + 2*h0));
 
-profile.t[0] := -(h2 + h0 - 6*jMax_jMax*vd)/(6*jMax_jMax*(-ad + jMax*tf_));
-profile.t[1] := 0;
-profile.t[2] := -(h1 + 3*ad*jMax)/(6*jMax_jMax) + tf_*0.5;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := h1/(3*jMax_jMax);
-profile.t[6] := tf_ - (profile.t[0] + profile.t[2] + profile.t[5]);
+Profile.t[0] := -(h2 + h0 - 6*jMax_jMax*vd)/(6*jMax_jMax*(-ad + jMax*tf));
+Profile.t[1] := 0;
+Profile.t[2] := -(h1 + 3*ad*jMax)/(6*jMax_jMax) + tf*0.5;
+Profile.t[3] := 0;
+Profile.t[4] := 0;
+Profile.t[5] := h1/(3*jMax_jMax);
+Profile.t[6] := tf - (Profile.t[0] + Profile.t[2] + Profile.t[5]);
 
-time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -802,42 +804,42 @@ END_IF
 
 // Profiles with a3 != 0, Solution UDUD
 // First constant, then acc
-ph0 := -2*pd - tf_*v0_ + 3*tf_*vf_;
-ph1 := -ad + jMax*tf_;
+ph0 := -2*pd - tf*v0 + 3*tf*vf;
+ph1 := -ad + jMax*tf;
 ph2 := jMax*tf_tf*g1 - vd*ph0;
-ph3 := 5*af_af - 8*af_*jMax*tf_ + 2*jMax*(2*jMax*tf_tf - vd);
-ph4 := jMax_jMax*tf_p4 - 2*vd_vd + 8*jMax*tf_*(-pd + tf_*vf_);
-ph5 := (5*af_p4 - 8*af_p3*jMax*tf_ - 12*af_af*jMax*(jMax*tf_tf + vd) + 24*af_*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf_*vf_) - 6*jMax_jMax*ph4);
-ph6 := -vd_vd + jMax*tf_*(-2*pd + 3*tf_*v0_ - tf_*vf_);
+ph3 := 5*af_af - 8*af*jMax*tf + 2*jMax*(2*jMax*tf_tf - vd);
+ph4 := jMax_jMax*tf_p4 - 2*vd_vd + 8*jMax*tf*(-pd + tf*vf);
+ph5 := (5*af_p4 - 8*af_p3*jMax*tf - 12*af_af*jMax*(jMax*tf_tf + vd) + 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) - 6*jMax_jMax*ph4);
+ph6 := -vd_vd + jMax*tf*(-2*pd + 3*tf*v0 - tf*vf);
 ph7 := jMax_jMax*ph1*ph1;
 
 polynom[0] := 1.0;
-polynom[1] := (4*af_*tf_ - 2*jMax*tf_tf - 4*vd)/ph1;
-polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf_ + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af_ - jMax*tf_) - 12*a0_a0*root.Power2(af_ - jMax*tf_) - 12*af_*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf_*v0_ + 3*tf_*vf_) + 2*a0_*(4*af_p3 - 12*af_af*jMax*tf_ + 9*af_*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf_*vf_)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf_*(pd + tf_*v0_ - 2*tf_*vf_)))/(3*ph7);
-polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf_ + 5*a0_p4*(af_ - jMax*tf_) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af_*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0_*(-5*af_p4 + 8*af_p3*jMax*tf_ + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af_*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf_*vf_) + 6*jMax_jMax*ph4))/(3*jMax*ph7);
-polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af_ - jMax*tf_) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af_*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf_ - 6*af_*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0_*(af_p5 - af_p4*jMax*tf_ - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af_*ph6 + jMax*ph2)))/(18*jMax_jMax*ph7);
+polynom[1] := (4*af*tf - 2*jMax*tf_tf - 4*vd)/ph1;
+polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af - jMax*tf) - 12*a0_a0*Power2(af - jMax*tf) - 12*af*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf*v0 + 3*tf*vf) + 2*a0*(4*af_p3 - 12*af_af*jMax*tf + 9*af*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf*vf)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf*(pd + tf*v0 - 2*tf*vf)))/(3*ph7);
+polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf + 5*a0_p4*(af - jMax*tf) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0*(-5*af_p4 + 8*af_p3*jMax*tf + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) + 6*jMax_jMax*ph4))/(3*jMax*ph7);
+polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af - jMax*tf) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af*ph6 + jMax*ph2)))/(18*jMax_jMax*ph7);
 
-root.solveQuartMonic(ADR(polynom[1]), 4);
-FOR i:=0 TO root.rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
-  IF t < 0.0 OR_ELSE t > tf_
+  t := root[i];
+  IF t < 0.0 OR_ELSE t > tf
   THEN
     CONTINUE;
 	END_IF
 
 
-  h1 := SQRT(ad_ad/(2*jMax_jMax) + (a0_*(t + tf_) - af_*t + jMax*t*tf_ - vd)/jMax);
+  h1 := SQRT(ad_ad/(2*jMax_jMax) + (a0*(t + tf) - af*t + jMax*t*tf - vd)/jMax);
   
-  profile.t[0] := t;
-  profile.t[1] := tf_ - ad/jMax - 2*h1;
-  profile.t[2] := h1;
-  profile.t[3] := 0;
-  profile.t[4] := ad/jMax + h1 - t;
-  profile.t[5] := 0;
-  profile.t[6] := 0;
+  Profile.t[0] := t;
+  Profile.t[1] := tf - ad/jMax - 2*h1;
+  Profile.t[2] := h1;
+  Profile.t[3] := 0;
+  Profile.t[4] := ad/jMax + h1 - t;
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
 
-  time_none := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -846,40 +848,40 @@ END_FOR
 
 
 
-// 3 step profile (ak. UZD), sometimes missed because of numerical errors
-IF (ABS(af_ - a0_) < Constants.DoubleEpsilon) 
+// 3 step Profile (ak. UZD), sometimes missed because of numerical errors
+IF (ABS(af - a0) < Constants.DoubleEpsilon) 
 THEN
-  h1 := SQRT(4*(a0_*tf_ - vd)/jMax + tf_tf);
+  h1 := SQRT(4*(a0*tf - vd)/jMax + tf_tf);
   
-  profile.t[0] := (tf_ - h1)*0.5;
-  profile.t[1] := h1;
-  profile.t[2] := profile.t[0];
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := 0;
+  Profile.t[0] := (tf - h1)*0.5;
+  Profile.t[1] := h1;
+  Profile.t[2] := Profile.t[0];
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
 	END_IF
 ELSE 
-  h1 := ABS(jMax)/jMax*SQRT(9*root.Power2((a0_ + af_)*tf_ - 2*vd) + 24*ad*g2);
-  jf := (3*(a0_a0 - af_af)*tf_ + ad*(6*vd - h1))/(12*g2);
-  h2 := ABS(jMax)/jMax*SQRT(-ad_ad + jf*(2*(a0_ + af_)*tf_ + jf*tf_tf - 4*vd));
+  h1 := ABS(jMax)/jMax*SQRT(9*Power2((a0 + af)*tf - 2*vd) + 24*ad*g2);
+  jf := (3*(a0_a0 - af_af)*tf + ad*(6*vd - h1))/(12*g2);
+  h2 := ABS(jMax)/jMax*SQRT(-ad_ad + jf*(2*(a0 + af)*tf + jf*tf_tf - 4*vd));
   
   IF h1 = h1 AND_THEN h2 = h2 // isfinite
   THEN
-    profile.t[0] := 0.5*(ad + h2)/(jf) + tf_*0.5;
-    profile.t[1] := ad/jf + tf_ - 2*profile.t[0];
-    profile.t[2] := tf_ - (profile.t[0] + profile.t[1]);
-    profile.t[3] := 0;
-    profile.t[4] := 0;
-    profile.t[5] := 0;
-    profile.t[6] := 0;
+    Profile.t[0] := 0.5*(ad + h2)/(jf) + tf*0.5;
+    Profile.t[1] := ad/jf + tf - 2*Profile.t[0];
+    Profile.t[2] := tf - (Profile.t[0] + Profile.t[1]);
+    Profile.t[3] := 0;
+    Profile.t[4] := 0;
+    Profile.t[5] := 0;
+    Profile.t[6] := 0;
     
-    time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -888,33 +890,33 @@ ELSE
 END_IF
 
 
-// 3 step profile (ak. UZU), sometimes missed because of numerical errors
+// 3 step Profile (ak. UZU), sometimes missed because of numerical errors
 polynom[0] := ad_ad;
-polynom[1] := ad_ad*tf_;
-polynom[2] := (a0_a0 + af_af)*tf_tf + 24*(tf_*(af_*v0_ - a0_*vf_) - pd*ad) + 12*vd_vd + 10*a0_*af_*tf_tf;
-polynom[3] := -3*tf_*root.Power2((a0_ + af_)*tf_ - 2*vd);
+polynom[1] := ad_ad*tf;
+polynom[2] := (a0_a0 + af_af)*tf_tf + 24*(tf*(af*v0 - a0*vf) - pd*ad) + 12*vd_vd + 10*a0*af*tf_tf;
+polynom[3] := -3*tf*Power2((a0 + af)*tf - 2*vd);
 polynom[4] := 0;
 
-root.solveCub(ADR(polynom));
-FOR i:=0 TO root.rootCount
+Roots.SolveCub(ADR(polynom), rootCount:=rootCount, roots:=root);
+FOR i:=0 TO rootCount
 DO
-  t := root.roots[i];
-  IF t < 0.0 OR_ELSE t > tf_
+  t := root[i];
+  IF t < 0.0 OR_ELSE t > tf
   THEN
     CONTINUE;
 	END_IF
   
-  jf := ad/(tf_ - t);
+  jf := ad/(tf - t);
   
-  profile.t[0] := (2*(vd - a0_*tf_) + ad*(t - tf_))/(2*jf*t);
-  profile.t[1] := t;
-  profile.t[2] := 0;
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := tf_ - (profile.t[0] + profile.t[1]);
+  Profile.t[0] := (2*(vd - a0*tf) + ad*(t - tf))/(2*jf*t);
+  Profile.t[1] := t;
+  Profile.t[2] := 0;
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := tf - (Profile.t[0] + Profile.t[1]);
   
-  time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -922,32 +924,32 @@ DO
 END_FOR
 
 
-// 3 step profile (ak. UDU), sometimes missed because of numerical errors
-profile.t[0] := (ad_ad/jMax + 2*(a0_ + af_)*tf_ - jMax*tf_tf - 4*vd)/(4*(ad - jMax*tf_));
-profile.t[1] := 0;
-profile.t[2] := -ad/(2*jMax) + tf_ * 0.5;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := tf_ - (profile.t[0] + profile.t[2]);
+// 3 step Profile (ak. UDU), sometimes missed because of numerical errors
+Profile.t[0] := (ad_ad/jMax + 2*(a0 + af)*tf - jMax*tf_tf - 4*vd)/(4*(ad - jMax*tf));
+Profile.t[1] := 0;
+Profile.t[2] := -ad/(2*jMax) + tf * 0.5;
+Profile.t[3] := 0;
+Profile.t[4] := 0;
+Profile.t[5] := 0;
+Profile.t[6] := tf - (Profile.t[0] + Profile.t[2]);
 
-time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jMax, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
 END_IF 
 
-// 1 step profile (ak. UDU), sometimes missed because of numerical errors
-jf := ad/tf_;
-profile.t[0] := tf_;
-profile.t[1] := 0;
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
+// 1 step Profile (ak. UDU), sometimes missed because of numerical errors
+jf := ad/tf;
+Profile.t[0] := tf;
+Profile.t[1] := 0;
+Profile.t[2] := 0;
+Profile.t[3] := 0;
+Profile.t[4] := 0;
+Profile.t[5] := 0;
+Profile.t[6] := 0;
 
-time_none := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, tf_, jf, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -956,16 +958,16 @@ END_IF
       </Implementation>
     </Method>
     <Method Name="time_vel" Id="{36e16475-201b-495c-9333-d139efd29455}">
-      <Declaration><![CDATA[METHOD time_vel : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_vel : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 VAR
   p1, ph1, ph2, ph3, ph4, ph5 : LREAL;
-  polynom, deriv, dderiv, ddderiv, roots : ARRAY[0..6] OF LREAL;
+  polynom, deriv, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
   dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
   rootCount, dd_tz_intervalCount : INT := -1;
   t, tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
@@ -975,92 +977,92 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU
-p1 := af_af - 2*jMax*(-2*af_*tf_ + jMax*tf_tf + 3*vd);
-ph1 := af_p3 - 3*jMax_jMax*g1 - 3*af_*jMax*vd;
-ph2 := af_p4 + 8*af_p3*jMax*tf_ + 12*jMax*(3*jMax*vd_vd - af_af*vd + 2*af_*jMax*(g1 - tf_*vd) - 2*jMax_jMax*tf_*g1);
-ph3 := a0_*(af_ - jMax*tf_);
-ph4 := jMax*(-ad + jMax*tf_);
+p1 := af_af - 2*jMax*(-2*af*tf + jMax*tf_tf + 3*vd);
+ph1 := af_p3 - 3*jMax_jMax*g1 - 3*af*jMax*vd;
+ph2 := af_p4 + 8*af_p3*jMax*tf + 12*jMax*(3*jMax*vd_vd - af_af*vd + 2*af*jMax*(g1 - tf*vd) - 2*jMax_jMax*tf*g1);
+ph3 := a0*(af - jMax*tf);
+ph4 := jMax*(-ad + jMax*tf);
 
 // Find root of 5th order polynom
 polynom[0] := 1.0;
-polynom[1] := (15*a0_a0 + af_af + 4*af_*jMax*tf_ - 16*ph3 - 2*jMax*(jMax*tf_tf + 3*vd))/(4*ph4);
-polynom[2] := (29*a0_p3 - 2*af_p3 - 33*a0_*ph3 + 6*jMax_jMax*g1 + 6*af_*jMax*vd + 6*a0_*p1)/(6*jMax*ph4);
-polynom[3] := (61*a0_p4 - 76*a0_a0*ph3 - 16*a0_*ph1 + 30*a0_a0*p1 + ph2)/(24*jMax_jMax*ph4);
-polynom[4] := (a0_*(7*a0_p4 - 10*a0_a0*ph3 - 4*a0_*ph1 + 6*a0_a0*p1 + ph2))/(12*jMax_jMax*jMax*ph4);
-polynom[5] := (7*a0_p6 + af_p6 - 12*a0_p4*ph3 + 48*af_p3*jMax_jMax*g1 - 8*a0_p3*ph1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af_*g1*vd) - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd + 9*a0_p4*p1 + 3*a0_a0*ph2)/(144*jMax_jMax*jMax_jMax*ph4);
+polynom[1] := (15*a0_a0 + af_af + 4*af*jMax*tf - 16*ph3 - 2*jMax*(jMax*tf_tf + 3*vd))/(4*ph4);
+polynom[2] := (29*a0_p3 - 2*af_p3 - 33*a0*ph3 + 6*jMax_jMax*g1 + 6*af*jMax*vd + 6*a0*p1)/(6*jMax*ph4);
+polynom[3] := (61*a0_p4 - 76*a0_a0*ph3 - 16*a0*ph1 + 30*a0_a0*p1 + ph2)/(24*jMax_jMax*ph4);
+polynom[4] := (a0*(7*a0_p4 - 10*a0_a0*ph3 - 4*a0*ph1 + 6*a0_a0*p1 + ph2))/(12*jMax_jMax*jMax*ph4);
+polynom[5] := (7*a0_p6 + af_p6 - 12*a0_p4*ph3 + 48*af_p3*jMax_jMax*g1 - 8*a0_p3*ph1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd + 9*a0_p4*p1 + 3*a0_a0*ph2)/(144*jMax_jMax*jMax_jMax*ph4);
 
-root.polyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
-root.polyDeri(ADR(deriv), 4, out:=ADR(dderiv));
+Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
+Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
 
 // Solve 4th order derivative analytically
-root.solveQuartMonic(ADR(deriv), 4);
+Roots.SolveQuartMonic(ADR(deriv), 4, rootCount:=rootCount, roots:=root);
 
 tz_min := 0.0;
-tz_max := tf_;
+tz_max := tf;
 tz_current := tz_min;
 
-FOR i:=0 TO root.rootCount
+FOR i:=0 TO rootCount
 DO
-  tz := root.roots[i];
+  tz := root[i];
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;
 	END_IF
 
-    IF (ABS(root.polyEval(ADR(deriv), 4, tz)) > Constants.Tolerance)
+    IF (ABS(Roots.PolyEval(ADR(deriv), 4, tz)) > Constants.Tolerance)
     THEN
-      tz := tz - root.polyEval(ADR(deriv), 4, tz) / root.polyEval(ADR(dderiv), 3, tz);   
+      tz := tz - Roots.PolyEval(ADR(deriv), 4, tz) / Roots.PolyEval(ADR(dderiv), 3, tz);   
 		END_IF
 
-    res := 32 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
-    val_new := root.polyEval(ADR(polynom), 5, tz);
+    res := 32 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
+    val_new := Roots.PolyEval(ADR(polynom), 5, tz);
     IF (ABS(val_new) < res)
     THEN
-      roots[rootCount+1] := tz;
+      root[rootCount+1] := tz;
       rootCount := rootCount + 1;
-    ELSIF (root.polyEval(ADR(polynom), 5, tz_current) * val_new < 0)
+    ELSIF (Roots.PolyEval(ADR(polynom), 5, tz_current) * val_new < 0)
     THEN
-      roots[rootCount+1] := root.shrinkInterval(ADR(polynom), 5, tz_current, tz);
+      root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz);
       rootCount := rootCount + 1;
     END_IF
 
     tz_current := tz;
 END_FOR
 
-IF (root.polyEval(ADR(polynom), 5, tz_current) * root.polyEval(ADR(polynom), 5, tz_max) < 0)
+IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
 THEN
-  roots[rootCount] := root.shrinkInterval(ADR(polynom), 5, tz_current, tz_max);
+  root[rootCount] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
   rootCount := rootCount + 1;
 END_IF
 
 FOR i:=0 TO rootCount
 DO
-  t := roots[i];
+  t := root[i];
   IF t < 0.0
   THEN
     CONTINUE;
 	END_IF
-  h1 := SQRT((a0_a0 + af_af)*0.5 + jMax*(2*a0_*t + jMax*t*t - vd))/ABS(jMax);
-  orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0_*jMax*t*(af_ + jMax*(h1 + t - tf_)) + 6*a0_a0*(af_ + jMax*(2*t - tf_)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af_*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf_) - tf_*v0_ - h1*vd))/(12*jMax_jMax);
-  deriv_newton := -(a0_ + jMax*t)*(3*(h1 + t) - 2*tf_ + (a0_ + 2*af_)/jMax);
+  h1 := SQRT((a0_a0 + af_af)*0.5 + jMax*(2*a0*t + jMax*t*t - vd))/ABS(jMax);
+  orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0*jMax*t*(af + jMax*(h1 + t - tf)) + 6*a0_a0*(af + jMax*(2*t - tf)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf) - tf*v0 - h1*vd))/(12*jMax_jMax);
+  deriv_newton := -(a0 + jMax*t)*(3*(h1 + t) - 2*tf + (a0 + 2*af)/jMax);
   t := t - orig / deriv_newton;
 
-  IF (t < 0.0 OR_ELSE t > tf_ OR_ELSE t <> t (*isnan*))
+  IF (t < 0.0 OR_ELSE t > tf OR_ELSE t <> t (*isnan*))
   THEN
     CONTINUE;
   END_IF
 
-  h1 := SQRT((a0_a0 + af_af)/(2*jMax_jMax) + (t*(2*a0_ + jMax*t) - vd)/jMax);
+  h1 := SQRT((a0_a0 + af_af)/(2*jMax_jMax) + (t*(2*a0 + jMax*t) - vd)/jMax);
 
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := profile.t[0] + a0_/jMax;
-  profile.t[3] := tf_ - 2*(t + h1) - (a0_ + af_)/jMax;
-  profile.t[4] := h1;
-  profile.t[5] := 0;
-  profile.t[6] := profile.t[4] + af_/jMax;
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := Profile.t[0] + a0/jMax;
+  Profile.t[3] := tf - 2*(t + h1) - (a0 + af)/jMax;
+  Profile.t[4] := h1;
+  Profile.t[5] := 0;
+  Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_vel := profile.checkTime(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_vel
   THEN
     RETURN;
@@ -1068,44 +1070,44 @@ DO
 END_FOR
 
 // Profile UDUD
-ph1 := af_af - 2*jMax*(2*af_*tf_ + jMax*tf_tf - 3*vd);
-ph2 := af_p3 - 3*jMax_jMax*g1 + 3*af_*jMax*vd;
-ph3 := 2*jMax*tf_*g1 + 3*vd_vd;
-ph4 := af_p4 - 8*af_p3*jMax*tf_ + 12*jMax*(jMax*ph3 + af_af*vd + 2*af_*jMax*(g1 - tf_*vd));
-ph5 := af_ + jMax*tf_;
+ph1 := af_af - 2*jMax*(2*af*tf + jMax*tf_tf - 3*vd);
+ph2 := af_p3 - 3*jMax_jMax*g1 + 3*af*jMax*vd;
+ph3 := 2*jMax*tf*g1 + 3*vd_vd;
+ph4 := af_p4 - 8*af_p3*jMax*tf + 12*jMax*(jMax*ph3 + af_af*vd + 2*af*jMax*(g1 - tf*vd));
+ph5 := af + jMax*tf;
 
 // Find root of 6th order polynom
 polynom[0] := 1.0;
-polynom[1] := (5*a0_ - ph5)/jMax;
-polynom[2] := (39*a0_a0 - ph1 - 16*a0_*ph5)/(4*jMax_jMax);
-polynom[3] := (55*a0_p3 - 33*a0_a0*ph5 - 6*a0_*ph1 + 2*ph2)/(6*jMax_jMax*jMax);
-polynom[4] := (101*a0_p4 + ph4 - 76*a0_p3*ph5 - 30*a0_a0*ph1 + 16*a0_*ph2)/(24*jMax_jMax*jMax_jMax);
-polynom[5] := (a0_*(11*a0_p4 + ph4 - 10*a0_p3*ph5 - 6*a0_a0*ph1 + 4*a0_*ph2))/(12*jMax_jMax*jMax_jMax*jMax);
-polynom[6] := (11*a0_p6 - af_p6 - 12*a0_p5*ph5 - 48*af_p3*jMax_jMax*g1 - 9*a0_p4*ph1 + 72*jMax_jMax*jMax*(jMax*g1*g1 - vd_vd*vd - 2*af_*g1*vd) - 6*af_p4*jMax*vd - 36*af_af*jMax_jMax*vd_vd + 8*a0_p3*ph2 + 3*a0_a0*ph4)/(144*jMax_jMax*jMax_jMax*jMax_jMax);
+polynom[1] := (5*a0 - ph5)/jMax;
+polynom[2] := (39*a0_a0 - ph1 - 16*a0*ph5)/(4*jMax_jMax);
+polynom[3] := (55*a0_p3 - 33*a0_a0*ph5 - 6*a0*ph1 + 2*ph2)/(6*jMax_jMax*jMax);
+polynom[4] := (101*a0_p4 + ph4 - 76*a0_p3*ph5 - 30*a0_a0*ph1 + 16*a0*ph2)/(24*jMax_jMax*jMax_jMax);
+polynom[5] := (a0*(11*a0_p4 + ph4 - 10*a0_p3*ph5 - 6*a0_a0*ph1 + 4*a0*ph2))/(12*jMax_jMax*jMax_jMax*jMax);
+polynom[6] := (11*a0_p6 - af_p6 - 12*a0_p5*ph5 - 48*af_p3*jMax_jMax*g1 - 9*a0_p4*ph1 + 72*jMax_jMax*jMax*(jMax*g1*g1 - vd_vd*vd - 2*af*g1*vd) - 6*af_p4*jMax*vd - 36*af_af*jMax_jMax*vd_vd + 8*a0_p3*ph2 + 3*a0_a0*ph4)/(144*jMax_jMax*jMax_jMax*jMax_jMax);
 
-root.polyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
-root.polyMonicDeri(ADR(deriv), 4, out:=ADR(dderiv));
-root.solveQuartMonic(ADR(dderiv), 3);
+Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
+Roots.PolyMonicDeri(ADR(deriv), 4, out:=ADR(dderiv));
+Roots.SolveQuartMonic(ADR(dderiv), 3, rootCount:=rootCount, roots:=root);
 
 tz_min := 0.0;
-tz_max := tf_;
+tz_max := tf;
 dd_tz_current := tz_min;
 
 FOR i:=0 TO rootCount
 DO
-  tz := root.roots[i];
+  tz := root[i];
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;
 	END_IF
 
-  IF (ABS(root.polyEval(ADR(dderiv), 3, tz)) > Constants.Tolerance)
+  IF (ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) > Constants.Tolerance)
   THEN
-    root.polyMonicDeri(ADR(dderiv), 3, out:=ADR(ddderiv));  
-    tz := tz - root.polyEval(ADR(dderiv), 3, tz) / root.polyEval(ADR(ddderiv), 2, tz);
+    Roots.PolyMonicDeri(ADR(dderiv), 3, out:=ADR(ddderiv));  
+    tz := tz - Roots.PolyEval(ADR(dderiv), 3, tz) / Roots.PolyEval(ADR(ddderiv), 2, tz);
   END_IF
 
-  IF (root.polyEval(ADR(deriv), 4, dd_tz_current) * root.polyEval(ADR(deriv), 4, tz) < 0)
+  IF (Roots.PolyEval(ADR(deriv), 4, dd_tz_current) * Roots.PolyEval(ADR(deriv), 4, tz) < 0)
   THEN
     dd_tz_intervals[dd_tz_intervalCount, 0] := dd_tz_current;
     dd_tz_intervals[dd_tz_intervalCount, 1] := tz;
@@ -1116,7 +1118,7 @@ DO
     
 END_FOR
 
-IF (root.polyEval(ADR(deriv), 4, dd_tz_current) * root.polyEval(ADR(deriv), 4, tz_max) < 0)
+IF (Roots.PolyEval(ADR(deriv), 4, dd_tz_current) * Roots.PolyEval(ADR(deriv), 4, tz_max) < 0)
 THEN
   dd_tz_intervals[dd_tz_intervalCount, 0] := dd_tz_current; 
   dd_tz_intervals[dd_tz_intervalCount, 1] := tz_max;
@@ -1127,51 +1129,51 @@ END_IF
 tz_current := tz_min;
 FOR i:=0 TO dd_tz_intervalCount
 DO
-  tz := root.shrinkInterval(ADR(deriv), 4, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
+  tz := Roots.ShrinkInterval(ADR(deriv), 4, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;
 	END_IF
   
-  res := 10 * ABS(root.polyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
-  p_val := root.polyEval(ADR(polynom), 5, tz);
+  res := 10 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
+  p_val := Roots.PolyEval(ADR(polynom), 5, tz);
   IF (ABS(p_val) < res)
   THEN
-    roots[rootCount+1] := tz;
+    root[rootCount+1] := tz;
     rootCount := rootCount + 1;
-  ELSIF (root.polyEval(ADR(polynom), 5, tz_current) * p_val < 0)
+  ELSIF (Roots.PolyEval(ADR(polynom), 5, tz_current) * p_val < 0)
   THEN
-    roots[rootCount+1] := root.shrinkInterval(ADR(polynom), 5, tz_current, tz);
+    root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz);
     rootCount := rootCount + 1;
   END_IF
   tz_current := tz;
 END_FOR
 
-IF (root.polyEval(ADR(polynom), 5, tz_current) * root.polyEval(ADR(polynom), 5, tz_max) < 0)
+IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
 THEN
-  roots[rootCount+1] := root.shrinkInterval(ADR(polynom), 5, tz_current, tz_max);
+  root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
   rootCount := rootCount + 1;
 END_IF
 
 
 FOR i:=0 TO rootCount
 DO
-  tz := roots[i];
+  tz := root[i];
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;
 	END_IF
   
   // Double Newton step (regarding pd)
-  h1 := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0_ + jMax*t)*t - vd)/jMax;
+  h1 := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0 + jMax*t)*t - vd)/jMax;
   IF h1 < 0
   THEN
     CONTINUE;
 	END_IF
   
   h1 := SQRT(h1);
-  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf_ - 2*t))/(6*jMax_jMax) + (2*a0_ + jMax*t)*t*(tf_ - t) + (jMax*h1 - af_)*h1*h1 + tf_*v0_;
-  deriv_newton := (a0_ + jMax*t)*(2*(af_ + jMax*tf_) - 3*jMax*(h1 + t) - a0_)/jMax;
+  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
+  deriv_newton := (a0 + jMax*t)*(2*(af + jMax*tf) - 3*jMax*(h1 + t) - a0)/jMax;
 
   IF deriv_newton <= Constants.DoubleEpsilon
   THEN
@@ -1179,11 +1181,11 @@ DO
 	END_IF
   
   t := t - orig / deriv_newton;
-  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0_ + jMax*t)*t - vd))/ABS(jMax);
-  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf_ - 2*t))/(6*jMax_jMax) + (2*a0_ + jMax*t)*t*(tf_ - t) + (jMax*h1 - af_)*h1*h1 + tf_*v0_;
+  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd))/ABS(jMax);
+  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
   IF (ABS(orig) > 1E-9)
   THEN
-    deriv_newton := (a0_ + jMax*t)*(2*(af_ + jMax*tf_) - 3*jMax*(h1 + t) - a0_)/jMax;
+    deriv_newton := (a0 + jMax*t)*(2*(af + jMax*tf) - 3*jMax*(h1 + t) - a0)/jMax;
     
     IF deriv_newton <= Constants.DoubleEpsilon
     THEN
@@ -1193,16 +1195,16 @@ DO
     t := t - orig / deriv_newton;           
   END_IF
 
-  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0_ + jMax*t)*t - vd))/ABS(jMax);
-  profile.t[0] := t;
-  profile.t[1] := 0;
-  profile.t[2] := profile.t[0] + a0_/jMax;
-  profile.t[3] := tf_ - 2*(t + h1) + ad/jMax;
-  profile.t[4] := h1;
-  profile.t[5] := 0;
-  profile.t[6] := profile.t[4] - af_/jMax;
+  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd))/ABS(jMax);
+  Profile.t[0] := t;
+  Profile.t[1] := 0;
+  Profile.t[2] := Profile.t[0] + a0/jMax;
+  Profile.t[3] := tf - 2*(t + h1) + ad/jMax;
+  Profile.t[4] := h1;
+  Profile.t[5] := 0;
+  Profile.t[6] := Profile.t[4] - af/jMax;
 
-  time_vel := profile.checkTime(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.vel, tf_, jMax, vMax, vMin, aMax, aMin);
+  time_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_vel
   THEN
     RETURN;

@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <DUT Name="PositionExtremaDesc" Id="{b615dcba-8544-436f-9a57-30985945064e}">
+    <Declaration><![CDATA[TYPE PositionExtremaDesc :
+STRUCT
+  Minimum, Maximum : LREAL;
+  Tmin, Tmax : LREAL;  
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

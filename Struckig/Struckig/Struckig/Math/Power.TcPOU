@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Power" Id="{76716193-d546-414d-a8ab-5cbcfa9a3d68}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION INTERNAL Power : LREAL
+VAR_INPUT
+  v : LREAL;
+  e : LREAL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Power := EXPT(v, e);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

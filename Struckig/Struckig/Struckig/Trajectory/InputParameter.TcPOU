@@ -3,20 +3,20 @@
   <POU Name="InputParameter" Id="{0a019405-401a-4d00-873d-f46c1ea6dfef}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK InputParameter
 VAR_INPUT
-  interfaceType : InterfaceTypeEnum;
-  synchronizationType : SynchronizationTypeEnum;
-  discretizationType : DiscretizationTypeEnum;
+  Intrf : InterfaceType;
+  Synchronization : SynchronizationType;
+  Discretization : DiscretizationType;
   
-  current_position, current_velocity, current_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  target_position, target_velocity, target_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  max_velocity, max_acceleration, max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  min_velocity, min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   
-  enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
-  minDuration : LREAL;
+  Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
+  MinDuration : LREAL;
 END_VAR
 VAR
-  dofs_ : INT;
+  _dofs : INT;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -32,10 +32,10 @@ VAR
   i : INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[dofs_ := dofs;
+        <ST><![CDATA[_dofs := dofs;
 FOR i:=0 TO ParameterList.MaxDoFs
 DO
-  enabled[i] := i < dofs;
+  Enabled[i] := i < dofs;
 END_FOR]]></ST>
       </Implementation>
     </Method>

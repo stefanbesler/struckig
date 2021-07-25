@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="run_and_return_duration" Id="{7705c60f-b3f4-4b53-bef5-2ced749a7c74}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION run_and_return_duration : LREAL
 VAR_INPUT
@@ -8,11 +8,11 @@ VAR_INPUT
   output : REFERENCE TO Struckig.OutputParameter;  
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[WHILE(ruckig.update(input, output) = Struckig.StateEnum.busy)
+      <ST><![CDATA[WHILE(ruckig.update(input, output) = Struckig.TrajectoryState.busy)
 DO
-  input.current_position := output.new_position;
-  input.current_velocity := output.new_velocity;
-  input.current_acceleration := output.new_acceleration;
+  input.CurrentPosition := output.NewPosition;
+  input.CurrentVelocity := output.NewVelocity;
+  input.CurrentAcceleration := output.NewAcceleration;
 END_WHILE
 
 run_and_return_duration := output.trajectory.duration;]]></ST>

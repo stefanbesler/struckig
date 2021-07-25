@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <POU Name="Profile" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
-    <Declaration><![CDATA[/// The state profile for position, velocity, acceleration and jerk for a single DoF
-FUNCTION_BLOCK Profile
+  <POU Name="ProfileDesc" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
+    <Declaration><![CDATA[/// The state Profile for position, velocity, acceleration and jerk for a single DoF
+FUNCTION_BLOCK ProfileDesc
 VAR_INPUT
-  limits : ProfileLimitsEnum;
-  direction : ProfileDirectionEnum;
-  jerkSigns : ProfileJerkSignsEnum;
+  Limits : ProfileLimits;
+  Direction : ProfileDirection;
+  JerkSigns : ProfileJerkSigns;
   
   t, t_sum, j : ARRAY[0..6] OF LREAL;
   a, v, p : ARRAY[0..7] OF LREAL;
@@ -15,20 +15,16 @@ VAR_INPUT
   
   hasBrake : BOOL;
   t_brake : LREAL; // Total time of the braking segments
-  t_brakes, j_brakes, a_brakes, v_brakes, p_brakes : ARRAY[0..1] OF LREAL; // Allow up to two segments of braking before the "correct" profile starts 
-
-END_VAR
-VAR_STAT
-  root : Roots;
+  t_brakes, j_brakes, a_brakes, v_brakes, p_brakes : ARRAY[0..1] OF LREAL; // Allow up to two segments of braking before the "correct" Profile starts 
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="check" Id="{c707d6dc-e662-4300-aebc-c29e90e74532}">
-      <Declaration><![CDATA[METHOD check : BOOL
+    <Method Name="Check" Id="{c707d6dc-e662-4300-aebc-c29e90e74532}">
+      <Declaration><![CDATA[METHOD Check : BOOL
 VAR_INPUT
-  jerkSigns : ProfileJerkSignsEnum;    
-  limits : ProfileLimitsEnum;
+  jerkSigns : ProfileJerkSigns;    
+  limits : ProfileLimits;
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;
@@ -39,15 +35,15 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[check := (ABS(jf) < ABS(jMax) + 1e-12) AND_THEN checkTime(jerkSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
+        <ST><![CDATA[Check := (ABS(jf) < ABS(jMax) + 1e-12) AND_THEN CheckTime(jerkSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="checkAcc" Id="{dec39d38-9a64-41bc-99b6-6a7b67c016da}">
+    <Method Name="CheckAcc" Id="{dec39d38-9a64-41bc-99b6-6a7b67c016da}">
       <Declaration><![CDATA[/// For velocity interface
-METHOD checkAcc : BOOL
+METHOD CheckAcc : BOOL
 VAR_INPUT
-  jerkSigns : ProfileJerkSignsEnum;
-  limits : ProfileLimitsEnum;  
+  jerkSigns : ProfileJerkSigns;
+  limits : ProfileLimits;  
   jf : LREAL;
   aMax : LREAL;
   aMin : LREAL;  
@@ -75,7 +71,7 @@ DO
 END_FOR
 
 
-IF limits = ProfileLimitsEnum.acc0
+IF limits = ProfileLimits.Acc0
 THEN
   IF t[1] < Constants.Epsilon
   THEN
@@ -89,7 +85,7 @@ THEN
   RETURN;        
 END_IF
 
-IF jerkSigns = ProfileJerkSignsEnum.uddu
+IF jerkSigns = ProfileJerkSigns.Uddu
 THEN
   j[0] := jf;
   j[1] := 0;
@@ -117,26 +113,26 @@ DO
 END_FOR
 
       
-THIS^.jerkSigns := jerkSigns;
-THIS^.limits := limits;
+THIS^.JerkSigns := jerkSigns;
+THIS^.Limits := limits;
 
 aUppLim := SEL((aMax > 0), aMin, aMax) + 1E-12;
 aLowLim := SEL((aMax > 0), aMax, aMin) - 1E-12;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-checkAcc := ABS(v[7] - vf) < 1E-8
+CheckAcc := ABS(v[7] - vf) < 1E-8
     AND_THEN ABS(a[7] - af) < 1E-12 // This is not really needed, but we want to double check
     AND_THEN a[1] >= aLowLim AND_THEN a[3] >= aLowLim AND_THEN a[5] >= aLowLim
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="checkPositionExtremum" Id="{e3c5916b-156b-465a-87ae-6759453a325c}">
-      <Declaration><![CDATA[METHOD checkPositionExtremum : BOOL
+    <Method Name="CheckPositionExtremum" Id="{e3c5916b-156b-465a-87ae-6759453a325c}">
+      <Declaration><![CDATA[METHOD CheckPositionExtremum : BOOL
 VAR_INPUT
   t_ext, t_sum, t, p, v, a, j : LREAL;
 END_VAR
 VAR_IN_OUT
-  ext : PositionExtremaStruct;     
+  ext : PositionExtremaDesc;     
 END_VAR
 VAR
   p_ext, v_Ext, a_ext : LREAL;
@@ -145,44 +141,44 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF (0 < t_ext AND_THEN t_ext < t)
 THEN
-  integrate(t_ext, p, v, a, j, p:=p_ext, v:=v_ext, a:=a_ext);
-  IF (a_ext > 0 AND_THEN p_ext < ext.minimum)
+  Integrate(t_ext, p, v, a, j, p:=p_ext, v:=v_ext, a:=a_ext);
+  IF (a_ext > 0 AND_THEN p_ext < ext.Minimum)
   THEN
-    ext.minimum := p_ext;
-    ext.t_min := t_sum + t_ext;
-   ELSIF (a_ext < 0 AND_THEN p_ext > ext.maximum) 
+    ext.Minimum := p_ext;
+    ext.Tmin := t_sum + t_ext;
+   ELSIF (a_ext < 0 AND_THEN p_ext > ext.Maximum) 
    THEN
-    ext.maximum := p_ext;
-    ext.t_max := t_sum + t_ext; 
+    ext.Maximum := p_ext;
+    ext.Tmax := t_sum + t_ext; 
   END_IF
 END_IF
 
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="checkStepForPositionExtremum" Id="{ce8df4c2-1570-4fbc-87ab-2de79032d446}">
-      <Declaration><![CDATA[METHOD checkStepForPositionExtremum : BOOL
+    <Method Name="CheckStepForPositionExtremum" Id="{ce8df4c2-1570-4fbc-87ab-2de79032d446}">
+      <Declaration><![CDATA[METHOD CheckStepForPositionExtremum : BOOL
 VAR_INPUT
   t_sum, t, p, v, a, j : LREAL;
 END_VAR
 VAR_IN_OUT
-  ext : PositionExtremaStruct;  
+  ext : PositionExtremaDesc;  
 END_VAR
 VAR
   d, d_sqrt : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (p < ext.minimum)
+        <ST><![CDATA[IF (p < ext.Minimum)
 THEN 
-  ext.minimum := p;
-  ext.t_min := t_sum;
+  ext.Minimum := p;
+  ext.Tmin := t_sum;
 END_IF
 
-IF (p > ext.maximum)
+IF (p > ext.Maximum)
 THEN 
-  ext.maximum := p;
-  ext.t_max := t_sum;
+  ext.Maximum := p;
+  ext.Tmax := t_sum;
 END_IF
 
 IF (j <> 0) 
@@ -190,12 +186,12 @@ THEN
   d := a * a - 2 * j * v;
   IF (ABS(d) < Constants.Epsilon)
   THEN
-    checkPositionExtremum(-a / j, t_sum, t, p, v, a, j, ext:=ext);
+    CheckPositionExtremum(-a / j, t_sum, t, p, v, a, j, ext:=ext);
    ELSIF (d > 0) 
    THEN
     d_sqrt := SQRT(d);
-    checkPositionExtremum((-a - D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);
-    checkPositionExtremum((-a + D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);           
+    CheckPositionExtremum((-a - D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);
+    CheckPositionExtremum((-a + D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);           
   END_IF
 END_IF
 
@@ -203,11 +199,11 @@ END_IF
         ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="checkTime" Id="{a762f8df-7f20-4c45-819e-1ecbfa908ad5}">
-      <Declaration><![CDATA[METHOD checkTime : BOOL
+    <Method Name="CheckTime" Id="{a762f8df-7f20-4c45-819e-1ecbfa908ad5}">
+      <Declaration><![CDATA[METHOD CheckTime : BOOL
 VAR_INPUT
-  jerkSigns : ProfileJerkSignsEnum;    
-  limits : ProfileLimitsEnum;
+  jerkSigns : ProfileJerkSigns;    
+  limits : ProfileLimits;
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;
@@ -217,16 +213,16 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-checkTime := checkVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
+        <ST><![CDATA[// Time doesn't need to be checked as every Profile has a: tf - ... equation
+CheckTime := CheckVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
       </Implementation>
     </Method>
-    <Method Name="checkVel" Id="{1650deae-6774-4923-94a5-237877609b6a}">
+    <Method Name="CheckVel" Id="{1650deae-6774-4923-94a5-237877609b6a}">
       <Declaration><![CDATA[/// For position interface
-METHOD checkVel : BOOL
+METHOD CheckVel : BOOL
 VAR_INPUT
-  jerkSigns : ProfileJerkSignsEnum;    
-  limits : ProfileLimitsEnum;
+  jerkSigns : ProfileJerkSigns;    
+  limits : ProfileLimits;
   jf : LREAL;
   vMax : LREAL;
   vMin : LREAL;  
@@ -257,15 +253,14 @@ DO
   t_sum[i+1] := t_sum[i] + t[i+1];  
 END_FOR
 
-IF limits = ProfileLimitsEnum.acc0_acc1_vel OR_ELSE limits = ProfileLimitsEnum.acc0_vel OR_ELSE limits = ProfileLimitsEnum.acc1_vel OR_ELSE limits = ProfileLimitsEnum.vel
-THEN
+IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel THEN
   IF (t[3] < Constants.Epsilon) 
   THEN
     RETURN;                    
   END_IF
 END_IF
 
-IF limits = ProfileLimitsEnum.acc0 OR_ELSE limits = ProfileLimitsEnum.acc0_acc1
+IF limits = ProfileLimits.Acc0 OR_ELSE limits = ProfileLimits.Acc0Acc1
 THEN
   IF (t[1] < Constants.Epsilon) 
   THEN
@@ -273,7 +268,7 @@ THEN
   END_IF
 END_IF
 
-IF limits = ProfileLimitsEnum.acc1 OR_ELSE limits = ProfileLimitsEnum.acc0_acc1
+IF limits = ProfileLimits.Acc1 OR_ELSE limits = ProfileLimits.Acc0Acc1
 THEN
   IF (t[5] < Constants.Epsilon)
   THEN
@@ -286,7 +281,7 @@ THEN
   RETURN;        
 END_IF
         
-IF jerkSigns = ProfileJerkSignsEnum.uddu
+IF jerkSigns = ProfileJerkSigns.Uddu
 THEN
   j[0] := jf;
   j[1] := 0;
@@ -314,8 +309,7 @@ DO
   v[i+1] := v[i] + t[i] * (a[i] + t[i] * j[i] / 2);
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * (a[i] / 2 + t[i] * j[i] / 6));
 
-  IF limits = ProfileLimitsEnum.acc0_acc1_vel OR_ELSE limits = ProfileLimitsEnum.acc0_vel OR_ELSE limits = ProfileLimitsEnum.acc1_vel OR_ELSE limits = ProfileLimitsEnum.vel
-  THEN
+  IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel THEN
     IF i = 2
     THEN
      a[3] := 0.0;
@@ -333,14 +327,14 @@ DO
 END_FOR
 
 
-THIS^.jerkSigns := jerkSigns;
-THIS^.limits := limits;
+THIS^.JerkSigns := jerkSigns;
+THIS^.Limits := limits;
 
 aUppLim := SEL((aMax > 0), aMin, aMax) + 1E-12;
 aLowLim := SEL((aMax > 0), aMax, aMin) - 1E-12;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-checkVel := ABS(p[7] - pf) < 1E-8
+CheckVel := ABS(p[7] - pf) < 1E-8
     AND_THEN ABS(v[7] - vf) < 1E-8
     AND_THEN ABS(a[7] - af) < 1E-10 // This is not really needed, but we want to double check
     // AND_THEN ABS(v[3]) <= vMaxAbs AND_THEN ABS(v[4]) <= vMaxAbs AND_THEN ABS(v[5]) <= vMaxAbs AND_THEN ABS(v[6]) <= vMaxAbs
@@ -350,8 +344,8 @@ checkVel := ABS(p[7] - pf) < 1E-8
     AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim; // this is not really needed, but we want to double check    ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="firstStateAtPosition" Id="{0159e4a6-0809-4a0c-b389-030aa446ea6f}">
-      <Declaration><![CDATA[METHOD firstStateAtPosition : BOOL
+    <Method Name="FirstStateAtPosition" Id="{0159e4a6-0809-4a0c-b389-030aa446ea6f}">
+      <Declaration><![CDATA[METHOD FirstStateAtPosition : BOOL
 VAR_INPUT
   pt, offset : LREAL;
 END_VAR
@@ -362,6 +356,8 @@ VAR
   i,h : INT;
   p_t : LREAL;
   polynom : ARRAY[0..4] OF LREAL;
+  rootCount : INT;
+  root : ARRAY[0..6] OF LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR i:=0 TO 6
@@ -371,7 +367,7 @@ DO
     t_t := offset + SEL(i>0, 0, t_sum[i-1]);
     v_t := v[i];
     a_t := a[i];
-    firstStateAtPosition := TRUE;
+    FirstStateAtPosition := TRUE;
     RETURN;
 	END_IF
   
@@ -384,14 +380,14 @@ DO
   polynom[1] := a[i]*0.5;
   polynom[2] := v[i];
   polynom[3] := p[i]-pt;
-  root.solveCub(ADR(polynom));
-  FOR h:=0 TO root.rootCount
+  Roots.SolveCub(ADR(polynom), rootCount:=rootCount, roots:=root);
+  FOR h:=0 TO rootCount
   DO
-    IF(0 < t[h] AND_THEN t[h] <= t[i])
+    IF(0 < root[h] AND_THEN root[h] <= t[i])
     THEN
-      t_t := offset + t[h] + SEL(i>0, 0, t_sum[i-1]);
-      integrate(t[h], p[i], v[i], a[i], j[i], p_t, v_t, a_t);
-      firstStateAtPosition := TRUE;
+      t_t := offset + root[h] + SEL(i>0, 0, t_sum[i-1]);
+      Integrate(root[h], p[i], v[i], a[i], j[i], p_t, v_t, a_t);
+      FirstStateAtPosition := TRUE;
       RETURN;      
 		END_IF
   END_FOR
@@ -403,14 +399,14 @@ THEN
   t_t := offset + t_sum[6];
   v_t := vf;
   a_t := af;
-  firstStateAtPosition := TRUE;
+  FirstStateAtPosition := TRUE;
   RETURN;      
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="integrate" Id="{801ace88-741b-4b24-8760-4124fdd6b2b6}">
+    <Method Name="Integrate" Id="{801ace88-741b-4b24-8760-4124fdd6b2b6}">
       <Declaration><![CDATA[ /// Integrate with constant jerk for duration t. Returns new position, new velocity, and new acceleration.
-METHOD integrate
+METHOD Integrate
 VAR_INPUT
   t, p0, v0, a0, j  : LREAL;
 END_VAR
@@ -424,8 +420,8 @@ v := v0 + t * (a0 + t * j * 0.5);
 a := a0 + t * j;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="positionExtrema" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
-      <Declaration><![CDATA[METHOD positionExtrema : PositionExtremaStruct
+    <Method Name="PositionExtrema" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
+      <Declaration><![CDATA[METHOD PositionExtrema : PositionExtremaDesc
 VAR_INPUT
 END_VAR
 VAR
@@ -433,18 +429,18 @@ VAR
   t_current_sum : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[positionExtrema.minimum := Constants.Infinity;
-positionExtrema.maximum := -Constants.Infinity;
+        <ST><![CDATA[PositionExtrema.Minimum := Constants.Infinity;
+PositionExtrema.Maximum := -Constants.Infinity;
 
 IF (hasBrake)
 THEN
   IF (t_brakes[0] > 0.0)
   THEN
-    checkStepForPositionExtremum(0.0, t_brakes[0], p_brakes[0], v_brakes[0], a_brakes[0], j_brakes[0], positionExtrema);
+    CheckStepForPositionExtremum(0.0, t_brakes[0], p_brakes[0], v_brakes[0], a_brakes[0], j_brakes[0], PositionExtrema);
   
     IF (t_brakes[1] > 0.0) 
     THEN
-      checkStepForPositionExtremum(t_brakes[0], t_brakes[1], p_brakes[1], v_brakes[1], a_brakes[1], j_brakes[1], positionExtrema);            
+      CheckStepForPositionExtremum(t_brakes[0], t_brakes[1], p_brakes[1], v_brakes[1], a_brakes[1], j_brakes[1], PositionExtrema);            
     END_IF
   END_IF
 END_IF
@@ -457,29 +453,29 @@ DO
     t_current_sum := t_sum[i-1];
 	END_IF
   
-  checkStepForPositionExtremum(t_current_sum + t_brakes[i], t[i], p[i], v[i], a[i], j[i], positionExtrema);
+  CheckStepForPositionExtremum(t_current_sum + t_brakes[i], t[i], p[i], v[i], a[i], j[i], PositionExtrema);
 END_FOR 
 
-IF (pf < positionExtrema.minimum)
+IF (pf < PositionExtrema.Minimum)
 THEN
-  positionExtrema.minimum := pf;
-  positionExtrema.t_min := t_sum[6] + t_brakes[i];
+  PositionExtrema.Minimum := pf;
+  PositionExtrema.Tmin := t_sum[6] + t_brakes[i];
 END_IF 
 
 
-IF (pf > positionExtrema.maximum) 
+IF (pf > PositionExtrema.Maximum) 
 THEN
-  positionExtrema.maximum := pf;
-  positionExtrema.t_max := t_sum[6] + t_brakes[i];
+  PositionExtrema.Maximum := pf;
+  PositionExtrema.Tmax := t_sum[6] + t_brakes[i];
 END_IF
 
 
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setBoundaryPosition" Id="{bcaf6cf3-3cdf-411e-b9b2-105283f26c0e}">
+    <Method Name="SetBoundaryPosition" Id="{bcaf6cf3-3cdf-411e-b9b2-105283f26c0e}">
       <Declaration><![CDATA[/// Set boundary values for the position interface
-METHOD setBoundaryPosition
+METHOD SetBoundaryPosition
 VAR_INPUT
   p0_new, v0_new, a0_new, pf_new, vf_new, af_new : LREAL;
 END_VAR
@@ -493,9 +489,9 @@ vf := vf_new;
 pf := pf_new;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="setBoundaryVelocity" Id="{5e35273a-4554-4245-bfd9-f07367ed9a5c}">
+    <Method Name="SetBoundaryVelocity" Id="{5e35273a-4554-4245-bfd9-f07367ed9a5c}">
       <Declaration><![CDATA[/// Set boundary values for the velocity interface
-METHOD setBoundaryVelocity
+METHOD SetBoundaryVelocity
 VAR_INPUT
   p0_new, v0_new, a0_new, vf_new, af_new : LREAL;
 END_VAR

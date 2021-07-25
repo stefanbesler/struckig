@@ -5,23 +5,23 @@
 VAR
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.None,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..2] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..2] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
@@ -36,47 +36,47 @@ Test_PositionExtrema();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.timeSync,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.TimeSync,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('AtTime');
 result := otg.update(input, output);
 
-AssertEquals_INT(Expected := Struckig.StateEnum.busy, Actual := result, Message := '');
+AssertEquals_INT(Expected := Struckig.TrajectoryState.busy, Actual := result, Message := '');
 AssertEquals_LREAL(4.0, output.trajectory.duration, 1E-9, Message:='');
 
-output.trajectory.atTime(0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
-AssertArrayEquals_LREAL(input.current_position, new_position, 1E-9, message:='p(0) should be current_position');
-AssertArrayEquals_LREAL(input.current_velocity, new_velocity, 1E-9, message:='v(0) should be current_velocity');
-AssertArrayEquals_LREAL(input.current_acceleration, new_acceleration, 1E-9, message:='a(0) should be current_acceleration');
+output.trajectory.atTime(0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration));
+AssertArrayEquals_LREAL(input.CurrentPosition, NewPosition, 1E-9, message:='p(0) should be CurrentPosition');
+AssertArrayEquals_LREAL(input.CurrentVelocity, NewVelocity, 1E-9, message:='v(0) should be CurrentVelocity');
+AssertArrayEquals_LREAL(input.CurrentAcceleration, NewAcceleration, 1E-9, message:='a(0) should be CurrentAcceleration');
 
-output.trajectory.atTime(output.trajectory.duration, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
-AssertArrayEquals_LREAL(input.target_position, new_position, 1E-9, message:='p(0) should be target_position');
-AssertArrayEquals_LREAL(input.target_velocity, new_velocity, 1E-9, message:='v(0) should be target_velocity');
-AssertArrayEquals_LREAL(input.target_acceleration, new_acceleration, 1E-9, message:='a(0) should be target_acceleration');
+output.trajectory.atTime(output.trajectory.duration, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration));
+AssertArrayEquals_LREAL(input.TargetPosition, NewPosition, 1E-9, message:='p(0) should be TargetPosition');
+AssertArrayEquals_LREAL(input.TargetVelocity, NewVelocity, 1E-9, message:='v(0) should be TargetVelocity');
+AssertArrayEquals_LREAL(input.TargetAcceleration, NewAcceleration, 1E-9, message:='a(0) should be TargetAcceleration');
 
-output.trajectory.atTime(2.0, 3, ADR(new_position), ADR(new_velocity), ADR(new_acceleration));
+output.trajectory.atTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration));
 values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
-AssertArrayEquals_LREAL(values, new_position, 1E-9, message:='');
+AssertArrayEquals_LREAL(values, NewPosition, 1E-9, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -86,23 +86,23 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.timeSync,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.TimeSync,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -142,23 +142,23 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.None,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -178,44 +178,44 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.None,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('InvalidInput');
 result := otg.update(input, output); // first run
 
-input.target_velocity[0] := 2.0;
-input.target_velocity[1] := 0.3;
-input.target_velocity[2] := 0.0;
+input.TargetVelocity[0] := 2.0;
+input.TargetVelocity[1] := 0.3;
+input.TargetVelocity[2] := 0.0;
 result := otg.update(input, output);
 
-AssertEquals_INT(result, Struckig.StateEnum.error, message:='State should be error');
-AssertFalse(output.new_calculation, message:='output.new_calculation should be false');
+AssertEquals_INT(result, Struckig.TrajectoryState.error, message:='State should be error');
+AssertFalse(output.NewCalculation, message:='output.NewCalculation should be false');
 
-input.target_velocity[0] := 0.2;
-input.target_velocity[1] := -0.3;
-input.target_velocity[2] := 0.8;
+input.TargetVelocity[0] := 0.2;
+input.TargetVelocity[1] := -0.3;
+input.TargetVelocity[2] := 0.8;
 result := otg.update(input, output);
 
-AssertEquals_INT(result, Struckig.StateEnum.busy, message:='State should be busy');
-AssertTrue(output.new_calculation, message:='output.new_calculation should be true');
+AssertEquals_INT(result, Struckig.TrajectoryState.busy, message:='State should be busy');
+AssertTrue(output.NewCalculation, message:='output.NewCalculation should be true');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -225,23 +225,23 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.timeSync,
-    current_position :=     [ 0.0, -2.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, -3.0, 2.0 ],
-    target_velocity :=      [ 0.0, 0.3, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ],
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ]
+    Synchronization := SynchronizationType.TimeSync,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
 VAR
-  result : Struckig.StateEnum;
-  new_position, new_velocity, new_acceleration, values : ARRAY[0..6] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaStruct;
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -250,22 +250,22 @@ END_VAR]]></Declaration>
 result := otg.update(input, output);
 
 positionExtrema := output.trajectory.profiles[0].positionExtrema();
-AssertEquals_LREAL(4.0, positionExtrema.t_max, 1E-9, message:='Profile[0] t_max incorrect');
-AssertEquals_LREAL(1.0, positionExtrema.maximum, 1E-9, message:='Profile[0] maximum incorrect');
-AssertEquals_LREAL(0.0, positionExtrema.t_min, 1E-9, message:='Profile[0] t_min incorrect');
-AssertEquals_LREAL(0.0, positionExtrema.minimum, 1E-9, message:='Profile[0] minimum incorrect');
+AssertEquals_LREAL(4.0, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(1.0, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[1].positionExtrema();
-AssertEquals_LREAL(0.0, positionExtrema.t_max, 1E-9, message:='Profile[1] t_max incorrect');
-AssertEquals_LREAL(-2.0, positionExtrema.maximum, 1E-9, message:='Profile[1] maximum incorrect');
-AssertEquals_LREAL(3.2254033308, positionExtrema.t_min, 1E-9, message:='Profile[1] t_min incorrect');
-AssertEquals_LREAL(-3.1549193338, positionExtrema.minimum, 1E-9, message:='Profile[1] minimum incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-2.0, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(3.2254033308, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-3.1549193338, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[2].positionExtrema();
-AssertEquals_LREAL(4.0, positionExtrema.t_max, 1E-9, message:='Profile[2] t_max incorrect');
-AssertEquals_LREAL(2.0, positionExtrema.maximum, 1E-9, message:='Profile[2] maximum incorrect');
-AssertEquals_LREAL(0.0, positionExtrema.t_min, 1E-9, message:='Profile[2] t_min incorrect');
-AssertEquals_LREAL(0.0, positionExtrema.minimum, 1E-9, message:='Profile[2] minimum incorrect');
+AssertEquals_LREAL(4.0, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(2.0, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(0.0, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

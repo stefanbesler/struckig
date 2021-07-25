@@ -1,26 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <POU Name="Brake" Id="{71bb0e37-952f-49d1-ab84-8c5adc30ea54}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK Brake
+  <POU Name="Brake" Id="{d49e6330-1a7a-48f8-bd8c-7a100b3a37c2}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Brake
 VAR
-  t_to_a_max : LREAL;
-  t_to_a_zero : LREAL;
-  v_at_a_max : LREAL;
-  v_at_a0 : LREAL;
-  v_at_a_min : LREAL;
-  t_to_v_max : LREAL;
-  t_to_v_min : LREAL;  
-  t_to_a_min : LREAL;
-  t_min_to_v_max : LREAL;
-  t_to_v_max_with_constant : LREAL;
-  t_to_v_min_with_constant : LREAL;    
+  t_to_a_min, t_to_a_max, t_min_to_v_max, t_to_a_zero, t_to_v_min, t_to_v_max : LREAL;
+  t_to_v_max_with_constant, t_to_v_min_with_constant, v_at_a0, v_at_a_max, v_at_a_min : LREAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="accelerationBrake" Id="{dfef5ef2-f60f-4f35-9f3f-5bcdd49b8338}">
-      <Declaration><![CDATA[METHOD accelerationBrake
+    <Method Name="AccelerationBrake" Id="{151af409-7ad6-4437-ae65-90af2283f00d}">
+      <Declaration><![CDATA[METHOD AccelerationBrake
 VAR_INPUT
   v0, a0 : LREAL;
   vMax, vMin : LREAL;
@@ -38,8 +29,8 @@ END_VAR
 t_to_a_max := (a0 - aMax) / jMax;
 t_to_a_zero := a0 / jMax;
 
-v_at_a_max := v_at_t(v0, a0, -jMax, t_to_a_max);
-v_at_a0 := v_at_t(v0, a0, -jMax, t_to_a_zero);
+v_at_a_max := VelocityAtTime(v0, a0, -jMax, t_to_a_max);
+v_at_a0 := VelocityAtTime(v0, a0, -jMax, t_to_a_zero);
 
 IF (v_at_a0 > vMax AND_THEN jMax > 0) OR_ELSE (v_at_a0 < vMax AND_THEN jMax < 0)
 THEN
@@ -56,8 +47,8 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="get_position_brake_trajectory" Id="{ab7c1bc1-5de4-4c10-8515-0a1d1e69f808}">
-      <Declaration><![CDATA[METHOD get_position_brake_trajectory
+    <Method Name="PositionBrakeTrajectory" Id="{95c53b9d-c397-464e-b5fb-c3d4cad36b7c}">
+      <Declaration><![CDATA[METHOD PositionBrakeTrajectory
 VAR_INPUT
   v0, a0 : LREAL;
   vMax, vMin : LREAL;
@@ -77,22 +68,76 @@ j_brake[1] := 0.0;
 
 IF a0 > aMax
 THEN
-  accelerationBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
+  AccelerationBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
 ELSIF a0 < aMin
 THEN
-  accelerationBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);
-ELSIF ((v0 > vMax AND_THEN v_at_a_zero(v0, a0, -jMax) > vMin) OR_ELSE (a0 > 0 AND_THEN v_at_a_zero(v0, a0, jMax) > vMax))
+  AccelerationBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);
+ELSIF ((v0 > vMax AND_THEN VelocityAtZeroAcceleration(v0, a0, -jMax) > vMin) OR_ELSE (a0 > 0 AND_THEN VelocityAtZeroAcceleration(v0, a0, jMax) > vMax))
 THEN
   velocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
-ELSIF ((v0 < vMin AND_THEN v_at_a_zero(v0, a0, jMax) < vMax) OR_ELSE (a0 < 0 AND_THEN v_at_a_zero(v0, a0, -jMax) < vMin))
+ELSIF ((v0 < vMin AND_THEN VelocityAtZeroAcceleration(v0, a0, jMax) < vMax) OR_ELSE (a0 < 0 AND_THEN VelocityAtZeroAcceleration(v0, a0, -jMax) < vMin))
 THEN
   velocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);      
 END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="get_velocity_brake_trajectory" Id="{a8861f54-8722-4cea-8a17-f5634e69b8af}">
-      <Declaration><![CDATA[METHOD get_velocity_brake_trajectory
+    <Method Name="VelocityAtTime" Id="{f532e452-5e4d-4b4e-a9b9-55765c5c49dc}">
+      <Declaration><![CDATA[METHOD VelocityAtTime : LREAL
+VAR_INPUT
+  v0, a0 : LREAL;
+  j : LREAL;
+  t : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[VelocityAtTime := v0 + t * (a0 + j * t * 0.5);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="VelocityAtZeroAcceleration" Id="{fadf7222-52a9-4a60-9bb7-04c04e997a4d}">
+      <Declaration><![CDATA[METHOD VelocityAtZeroAcceleration : LREAL
+VAR_INPUT
+  v0, a0 : LREAL;
+  j : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[VelocityAtZeroAcceleration := v0 + (a0 * a0) / (2 * j);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="velocityBrake" Id="{c8d0a7a0-928d-4c6d-8096-2b92af8cd1a4}">
+      <Declaration><![CDATA[METHOD velocityBrake
+VAR_INPUT
+  v0, a0 : LREAL;
+  vMax, vMin : LREAL;
+  aMax, aMin : LREAL;
+  jMax : LREAL;
+END_VAR
+VAR_IN_OUT
+  t_brake : ARRAY[0..1] OF LREAL;
+  j_brake : ARRAY[0..1] OF LREAL;    
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[j_brake[0] := -jMax;
+t_to_a_min := (a0 - aMin)/jMax;
+t_to_v_max := a0/jMax + SQRT(a0*a0 + 2 * jMax * (v0 - vMax)) / ABS(jMax);
+t_to_v_min := a0/jMax + SQRT(a0*a0 / 2 + jMax * (v0 - vMin)) / ABS(jMax);
+t_min_to_v_max := MIN(t_to_v_max, t_to_v_min);
+
+IF (t_to_a_min < t_min_to_v_max)
+THEN
+  v_at_a_min := VelocityAtTime(v0, a0, -jMax, t_to_a_min);
+  t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
+  t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
+  t_brake[0] := t_to_a_min - Constants.BrakeEpsilon;
+  t_brake[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
+ELSE
+  t_brake[0] := t_min_to_v_max - Constants.BrakeEpsilon;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="VelocityBrakeTrajectory" Id="{33c02e8e-5511-4646-952e-73b09c9f73ca}">
+      <Declaration><![CDATA[METHOD VelocityBrakeTrajectory
 VAR_INPUT
   v0, a0 : LREAL;
   aMax, aMin : LREAL;
@@ -118,60 +163,6 @@ THEN
   j_brake[0] := jMax;
   t_brake[0] := -(a0 - aMin)/jMax + Constants.BrakeEpsilon;
 END_IF ]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="v_at_a_zero" Id="{2e5e7dc2-a290-4b96-ae01-441e92ef0874}">
-      <Declaration><![CDATA[METHOD v_at_a_zero : LREAL
-VAR_INPUT
-  v0, a0 : LREAL;
-  j : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[v_at_a_zero := v0 + (a0 * a0) / (2 * j);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="v_at_t" Id="{17ed7fcc-6e58-492d-b214-1fe08f730141}">
-      <Declaration><![CDATA[METHOD v_at_t : LREAL
-VAR_INPUT
-  v0, a0 : LREAL;
-  j : LREAL;
-  t : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[v_at_t := v0 + t * (a0 + j * t * 0.5);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="velocityBrake" Id="{9e5ad2c9-7f6b-4d2e-8d38-8721c2405309}">
-      <Declaration><![CDATA[METHOD velocityBrake
-VAR_INPUT
-  v0, a0 : LREAL;
-  vMax, vMin : LREAL;
-  aMax, aMin : LREAL;
-  jMax : LREAL;
-END_VAR
-VAR_IN_OUT
-  t_brake : ARRAY[0..1] OF LREAL;
-  j_brake : ARRAY[0..1] OF LREAL;    
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[j_brake[0] := -jMax;
-t_to_a_min := (a0 - aMin)/jMax;
-t_to_v_max := a0/jMax + SQRT(a0*a0 + 2 * jMax * (v0 - vMax)) / ABS(jMax);
-t_to_v_min := a0/jMax + SQRT(a0*a0 / 2 + jMax * (v0 - vMin)) / ABS(jMax);
-t_min_to_v_max := MIN(t_to_v_max, t_to_v_min);
-
-IF (t_to_a_min < t_min_to_v_max)
-THEN
-  v_at_a_min := v_at_t(v0, a0, -jMax, t_to_a_min);
-  t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
-  t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
-  t_brake[0] := t_to_a_min - Constants.BrakeEpsilon;
-  t_brake[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
-ELSE
-  t_brake[0] := t_min_to_v_max - Constants.BrakeEpsilon;
-END_IF]]></ST>
       </Implementation>
     </Method>
   </POU>

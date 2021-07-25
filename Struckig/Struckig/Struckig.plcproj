@@ -28,7 +28,7 @@
     <Folder Include="Struckig" />
     <Folder Include="Struckig\Block" />
     <Folder Include="Struckig\Brake" />
-    <Folder Include="Struckig\Roots" />
+    <Folder Include="Struckig\Math" />
     <Folder Include="Struckig\Velocity" />
     <Folder Include="Struckig\Position" />
     <Folder Include="Struckig\Profile\_DataTypes" />
@@ -41,18 +41,27 @@
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="Struckig\Block\BlockIntervalStruct.TcDUT">
+    <Compile Include="ParameterList.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Struckig\Block\BlockInterval.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Block\BlockStruct.TcDUT">
+    <Compile Include="Struckig\Block\Block.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Brake\Brake.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\ParameterList.TcGVL">
+    <Compile Include="Struckig\Math\Power.TcPOU">
       <SubType>Code</SubType>
-      <LinkAlways>true</LinkAlways>
+    </Compile>
+    <Compile Include="Struckig\Math\Power2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Math\Cbrt.TcPOU">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Position\PositionStep1.TcPOU">
       <SubType>Code</SubType>
@@ -60,22 +69,22 @@
     <Compile Include="Struckig\Position\PositionStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\Profile.TcPOU">
+    <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\PositionExtremaStruct.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\PositionExtremaDesc.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\ProfileDirectionEnum.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileDirection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSignsEnum.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSigns.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\ProfileLimitsEnum.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileLimits.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Roots\Roots.TcPOU">
+    <Compile Include="Struckig\Math\Roots.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Ruckig.TcPOU">
@@ -84,25 +93,19 @@
     <Compile Include="Struckig\Trajectory\OutputParameter.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\Trajectory.TcPOU">
+    <Compile Include="Struckig\Trajectory\TrajectoryDesc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Trajectory\InputParameter.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationTypeEnum.TcDUT">
+    <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\InputParameterStruct.TcDUT">
+    <Compile Include="Struckig\Trajectory\_DataTypes\InterfaceType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\InterfaceTypeEnum.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\OutputParameterStruct.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\SynchronizationTypeEnum.TcDUT">
+    <Compile Include="Struckig\Trajectory\_DataTypes\SynchronizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Velocity\VelocityStep1.TcPOU">
@@ -111,10 +114,10 @@
     <Compile Include="Struckig\Velocity\VelocityStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\_DataTypes\ErrorCodeEnum.TcDUT">
+    <Compile Include="Struckig\_DataTypes\TrajectoryErrorCode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\_DataTypes\StateEnum.TcDUT">
+    <Compile Include="Struckig\_DataTypes\TrajectoryState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

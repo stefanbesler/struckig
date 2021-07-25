@@ -3,46 +3,46 @@
   <POU Name="VelocityStep2" Id="{44d0404d-f840-43a5-b935-c3fca779d43d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK VelocityStep2 
 VAR
-  p0_, v0_, a0_ : LREAL;
-  tf_, vf_, af_ : LREAL;
-  aMax_, aMin_, jMax_ : LREAL;
+  p0, v0, a0 : LREAL;
+  tf, vf, af : LREAL;
+  aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="checkAll" Id="{5edd91ed-f446-4dff-95cf-42bfd1ecd2c0}">
-      <Declaration><![CDATA[METHOD checkAll : BOOL
+    <Method Name="CheckAll" Id="{5edd91ed-f446-4dff-95cf-42bfd1ecd2c0}">
+      <Declaration><![CDATA[METHOD CheckAll : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[checkAll := time_acc0(profile, aMax, aMin, jMax) OR_ELSE time_none(profile, aMax, aMin, jMax);]]></ST>
+        <ST><![CDATA[CheckAll := time_acc0(Profile, aMax, aMin, jMax) OR_ELSE time_none(Profile, aMax, aMin, jMax);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="get" Id="{291bf2c1-3902-431e-bdad-f5b9a8de3521}">
-      <Declaration><![CDATA[METHOD get : BOOL
+    <Method Name="Get" Id="{291bf2c1-3902-431e-bdad-f5b9a8de3521}">
+      <Declaration><![CDATA[METHOD Get : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[profile.setBoundaryVelocity(p0_, v0_, a0_, vf_, af_);
+        <ST><![CDATA[Profile.SetBoundaryVelocity(p0, v0, a0, vf, af);
 
 // Test all cases to get ones that match
 // However we should guess which one is correct and try them first...
-IF (vf_ > v0_) THEN
-  get := checkAll(profile, aMax_, aMin_, jMax_) OR_ELSE checkAll(profile, aMin_, aMax_, -jMax_);
+IF (vf > v0) THEN
+  Get := CheckAll(Profile, aMax, aMin, jMax) OR_ELSE CheckAll(Profile, aMin, aMax, -jMax);
 ELSE
-  get := checkAll(profile, aMin_, aMax_, -jMax_) OR_ELSE checkAll(profile, aMax_, aMin_, jMax_);
+  Get := CheckAll(Profile, aMin, aMax, -jMax) OR_ELSE CheckAll(Profile, aMax, aMin, jMax);
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="set" Id="{1ea081ff-38e9-4265-a71e-f22d7dc2ecbe}">
-      <Declaration><![CDATA[METHOD set
+    <Method Name="Set" Id="{1ea081ff-38e9-4265-a71e-f22d7dc2ecbe}">
+      <Declaration><![CDATA[METHOD Set
 VAR_INPUT
   tf : LREAL;
   p0, v0, a0 : LREAL;
@@ -52,21 +52,21 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[p0_ := p0;
-v0_ := v0;
-a0_ := a0;
-tf_ := tf;
-vf_ := vf;
-af_ := af;
-aMax_ := aMax;
-aMin_ := aMin;
-jMax_ := jMax;]]></ST>
+        <ST><![CDATA[THIS^.p0 := p0;
+THIS^.v0 := v0;
+THIS^.a0 := a0;
+THIS^.tf := tf;
+THIS^.vf := vf;
+THIS^.af := af;
+THIS^.aMax := aMax;
+THIS^.aMin := aMin;
+THIS^.jMax := jMax;]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{139ae830-064a-498c-9553-ea8f79b368be}">
-      <Declaration><![CDATA[METHOD time_acc0 : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0 : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
@@ -77,35 +77,35 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// UD Solution 1/2
-h1 := Sqrt(-a0_*a0_ - af_*af_ + 2*(a0_ + af_)*jMax*tf_ + 2*a0_*af_ + jMax*(jMax*tf_*tf_ - 4*(vf_ - v0_)))/ABS(jMax);
+h1 := Sqrt(-a0*a0 - af*af + 2*(a0 + af)*jMax*tf + 2*a0*af + jMax*(jMax*tf*tf - 4*(vf - v0)))/ABS(jMax);
 
-profile.t[0] := (af_ - a0_ + jMax*tf_ - jMax*h1)/(2*jMax);
-profile.t[1] := h1;
-profile.t[2] := tf_ - (profile.t[0] + h1);
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
+Profile.t[0] := (af - a0 + jMax*tf - jMax*h1)/(2*jMax);
+Profile.t[1] := h1;
+Profile.t[2] := tf - (Profile.t[0] + h1);
+Profile.t[3] := 0;
+Profile.t[4] := 0;
+Profile.t[5] := 0;
+Profile.t[6] := 0;
 
-IF (profile.checkAcc(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.acc0, jMax, aMax, aMin)) THEN
-  profile.pf := profile.p[7];
+IF (Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
+  Profile.pf := Profile.p[7];
   time_acc0 := TRUE;
   RETURN;
 END_IF
 
 // UU Solution
-h1 := (a0_ - af_ + jMax*tf_);
+h1 := (a0 - af + jMax*tf);
 
-profile.t[0] := -((a0_*a0_ + af_*af_ - 2*a0_*af_ - 2*jMax*(vf_ - v0_ - a0_*tf_))/(2*jMax*h1));
-profile.t[1] := h1/jMax;
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := tf_ - (profile.t[0] + profile.t[1]);
-profile.t[5] := 0;
-profile.t[6] := 0;
+Profile.t[0] := -((a0*a0 + af*af - 2*a0*af - 2*jMax*(vf - v0 - a0*tf))/(2*jMax*h1));
+Profile.t[1] := h1/jMax;
+Profile.t[2] := 0;
+Profile.t[3] := 0;
+Profile.t[4] := tf - (Profile.t[0] + Profile.t[1]);
+Profile.t[5] := 0;
+Profile.t[6] := 0;
 
-IF (profile.checkAcc(ProfileJerkSignsEnum.udud, ProfileLimitsEnum.acc0, jMax, aMax, aMin)) THEN
-  profile.pf := profile.p[7];
+IF (Profile.CheckAcc(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
+  Profile.pf := Profile.p[7];
   time_acc0 := TRUE;
 END_IF
 
@@ -113,9 +113,9 @@ END_IF
       </Implementation>
     </Method>
     <Method Name="time_none" Id="{b7252407-1ffc-4203-89cb-177864a2876c}">
-      <Declaration><![CDATA[METHOD time_none : BOOL
+      <Declaration><![CDATA[METHOD PRIVATE time_none : BOOL
 VAR_IN_OUT
-  profile : Profile;
+  Profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
@@ -125,34 +125,34 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(a0_) < Constants.DoubleEpsilon AND_THEN ABS(af_) < Constants.DoubleEpsilon AND_THEN ABS(vf_ - v0_) < Constants.DoubleEpsilon) THEN
-  profile.t[0] := 0;
-  profile.t[1] := 0;
-  profile.t[2] := 0;
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := 0;
+        <ST><![CDATA[IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon AND_THEN ABS(vf - v0) < Constants.DoubleEpsilon) THEN
+  Profile.t[0] := 0;
+  Profile.t[1] := 0;
+  Profile.t[2] := 0;
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
   
-  IF (profile.checkAcc(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jMax, aMax, aMin)) THEN
-    profile.pf := profile.p[7];
+  IF (Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+    Profile.pf := Profile.p[7];
     time_none := TRUE;
     RETURN;
   END_IF
 END_IF
     
 // UD Solution 1/2
-profile.t[0] := -(2*(af_*tf_ + v0_ - vf_))/(a0_ - af_);
-profile.t[1] := tf_ - profile.t[0];
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
+Profile.t[0] := -(2*(af*tf + v0 - vf))/(a0 - af);
+Profile.t[1] := tf - Profile.t[0];
+Profile.t[2] := 0;
+Profile.t[3] := 0;
+Profile.t[4] := 0;
+Profile.t[5] := 0;
+Profile.t[6] := 0;
 
-jf := (a0_ - af_)*(a0_ - af_)/(2*(af_*tf_ + v0_ - vf_));
-IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.checkAcc(ProfileJerkSignsEnum.uddu, ProfileLimitsEnum.none, jf, aMax, aMin)) THEN
-  profile.pf := profile.p[7];
+jf := (a0 - af)*(a0 - af)/(2*(af*tf + v0 - vf));
+IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.None, jf, aMax, aMin)) THEN
+  Profile.pf := Profile.p[7];
   time_none := TRUE;
 END_IF]]></ST>
       </Implementation>

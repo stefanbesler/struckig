@@ -1,30 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <POU Name="Roots" Id="{d76a81ac-9546-4544-b488-a2d6bc5b03e0}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK Roots
-VAR_INPUT
-  roots : ARRAY[0..6] OF LREAL;
-  rootCount : INT := -1;
-END_VAR]]></Declaration>
+  <POU Name="Roots" Id="{551d5993-d7b8-4037-a2a7-4cae14a4c1a9}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM INTERNAL Roots
+]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="cbrt" Id="{c72fda2d-8208-4f63-b680-f8d46a9cff10}">
-      <Declaration><![CDATA[/// find cube root of x using newton method
-METHOD cbrt : LREAL
-VAR_INPUT
-  x : LREAL;
-END_VAR
-VAR
-  xn : LREAL;
-  h : LREAL;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[cbrt := SEL(x < 0, 1.0, -1.0) * EXPT(ABS(x), 1.0 / 3.0);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="polyDeri" Id="{dfe87f72-0381-4b2a-bcd1-05fa624ab825}">
-      <Declaration><![CDATA[METHOD polyDeri
+    <Method Name="PolyDeri" Id="{dfe87f72-0381-4b2a-bcd1-05fa624ab825}">
+      <Declaration><![CDATA[METHOD PolyDeri
 VAR_INPUT
   coeffs : POINTER TO LREAL;
   coeffsCount : BYTE;
@@ -41,8 +24,8 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="polyEval" Id="{2f997c70-a9b9-49aa-b73d-5a75cf110519}">
-      <Declaration><![CDATA[METHOD polyEval : LREAL;
+    <Method Name="PolyEval" Id="{2f997c70-a9b9-49aa-b73d-5a75cf110519}">
+      <Declaration><![CDATA[METHOD PolyEval : LREAL;
 VAR_INPUT
   polynom : POINTER TO LREAL;
   degree : INT;
@@ -55,25 +38,25 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF degree > 0 THEN
   IF (ABS(x) < Constants.DoubleEpsilon) THEN
-      polyEval := polynom[degree];
+      PolyEval := polynom[degree];
   ELSIF (x = 1.0) THEN
     FOR i:= degree TO 0 BY -1
     DO
-      polyEval := polyEval + polynom[i];
+      PolyEval := PolyEval + polynom[i];
     END_FOR
   ELSE
     xn := 1.0;
     FOR i:= degree TO 0 BY -1 
     DO
-      polyEval := polyEval + polynom[i] * xn;
+      PolyEval := PolyEval + polynom[i] * xn;
       xn := xn * x;
     END_FOR
   END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="polyMonicDeri" Id="{d40a4e9b-3dc1-4c65-8f57-9d1d86228c06}">
-      <Declaration><![CDATA[METHOD polyMonicDeri
+    <Method Name="PolyMonicDeri" Id="{d40a4e9b-3dc1-4c65-8f57-9d1d86228c06}">
+      <Declaration><![CDATA[METHOD PolyMonicDeri
 VAR_INPUT
   monic_coeffs : POINTER TO LREAL;
   coeffsCount : BYTE;
@@ -91,31 +74,10 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Power" Id="{c52736c6-391c-40d5-bdd6-07413755a50d}">
-      <Declaration><![CDATA[METHOD Power : LREAL
-VAR_INPUT
-  v : LREAL;
-  e : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[Power := EXPT(v, e);]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Power2" Id="{abd9ca52-e417-447f-aecf-503f8c1f72c5}">
-      <Declaration><![CDATA[METHOD Power2 : LREAL
-VAR_INPUT
-  v : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[Power2 := v*v;]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="shrinkInterval" Id="{cdfd39a1-036a-45c9-827d-626807768bcc}">
+    <Method Name="ShrinkInterval" Id="{cdfd39a1-036a-45c9-827d-626807768bcc}">
       <Declaration><![CDATA[// Calculate a single zero of polynom p(x) inside [lbound, ubound]
 // Requirements: p(lbound)*p(ubound) < 0, lbound < ubound
-METHOD shrinkInterval : LREAL
+METHOD ShrinkInterval : LREAL
 VAR_INPUT
   p : POINTER TO LREAL;
   degree : BYTE;  
@@ -129,16 +91,16 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[polyDeri(p, degree, out:=ADR(deriv));
-fl := polyEval(p, degree, l);
-fh := polyEval(p, degree, h);
+        <ST><![CDATA[PolyDeri(p, degree, out:=ADR(deriv));
+fl := PolyEval(p, degree, l);
+fh := PolyEval(p, degree, h);
 IF (fl = 0.0) THEN
-  shrinkInterval := l;
+  ShrinkInterval := l;
   RETURN;
 END_IF
 
 IF (fh = 0.0) THEN
-  shrinkInterval := h;
+  ShrinkInterval := h;
   RETURN;
 END_IF
 
@@ -150,25 +112,25 @@ THEN
   h := temp;
 END_IF
 
-shrinkInterval := 0.5 * (l + h);
+ShrinkInterval := 0.5 * (l + h);
 dxold := ABS(h - l);
 dx := dxold;
-f := polyEval(ADR(p), degree, shrinkInterval);
-df := polyEval(ADR(deriv), degree-1, shrinkInterval);
+f := PolyEval(ADR(p), degree, ShrinkInterval);
+df := PolyEval(ADR(deriv), degree-1, ShrinkInterval);
 FOR j:=0 TO ParameterList.MaxIterations DO
-  IF ((((shrinkInterval - h) * df - f) * ((shrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
+  IF ((((ShrinkInterval - h) * df - f) * ((ShrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
     dxold := dx;
     dx := 0.5 * (h - l);
-    shrinkInterval := l + dx;
-    IF (l = shrinkInterval) THEN
+    ShrinkInterval := l + dx;
+    IF (l = ShrinkInterval) THEN
       RETURN;
     END_IF
   ELSE
     dxold := dx;
     dx := f / df;
-    temp := shrinkInterval;
-    shrinkInterval := shrinkInterval - dx;
-    IF (temp = shrinkInterval) THEN
+    temp := ShrinkInterval;
+    ShrinkInterval := ShrinkInterval - dx;
+    IF (temp = ShrinkInterval) THEN
       RETURN;
     END_IF
   END_IF
@@ -177,21 +139,25 @@ FOR j:=0 TO ParameterList.MaxIterations DO
     RETURN;
   END_IF
   
-  f := polyEval(p, degree, shrinkInterval);
-  df := polyEval(ADR(deriv), degree-1, shrinkInterval);
+  f := PolyEval(p, degree, ShrinkInterval);
+  df := PolyEval(ADR(deriv), degree-1, ShrinkInterval);
   IF (f < 0.0) THEN
-    l := shrinkInterval;
+    l := ShrinkInterval;
   ELSE
-    h := shrinkInterval;
+    h := ShrinkInterval;
   END_IF
 END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="solveCub" Id="{f35d48e8-0d3e-478d-a0d7-c6d3c4d6917d}">
-      <Declaration><![CDATA[METHOD solveCub
+    <Method Name="SolveCub" Id="{f35d48e8-0d3e-478d-a0d7-c6d3c4d6917d}">
+      <Declaration><![CDATA[METHOD SolveCub
 VAR_INPUT
   polynom : POINTER TO LREAL;
+END_VAR
+VAR_IN_OUT
+  rootCount : INT;
+  roots : ARRAY[0..6] OF LREAL;
 END_VAR
 VAR
   a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w : LREAL;
@@ -301,12 +267,16 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="solveQuartMonic" Id="{df6d325c-5867-46b4-aac9-c6bd76b8bf98}">
+    <Method Name="SolveQuartMonic" Id="{df6d325c-5867-46b4-aac9-c6bd76b8bf98}">
       <Declaration><![CDATA[/// Calculate all roots of the monic quartic equation: x^4 + a*x^3 + b*x^2 + c*x + d = 0
-METHOD solveQuartMonic
+METHOD SolveQuartMonic
 VAR_INPUT
   polynom : POINTER TO LREAL;  
   degree : LREAL;
+END_VAR
+VAR_IN_OUT
+  rootCount : INT;
+  roots : ARRAY[0..6] OF LREAL;
 END_VAR
 VAR
   a, b, c, d : LREAL;
@@ -377,7 +347,7 @@ b3 := a * c - 4 * d;
 c3 := -a * a * d - c * c + 4 * b * d;
 
 // Solve the resolvent: y^3 - b*y^2 + (ac - 4*d)*y - a^2*d - c^2 + 4*b*d = 0
-iZeroes := solveResolvent(ADR(x3), a3, b3, c3);
+iZeroes := SolveResolvent(ADR(x3), a3, b3, c3);
 
 y := x3[0];
 // Choosing Y with maximal absolute value.
@@ -438,11 +408,11 @@ ELSIF (dd > 0.0) THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="solveResolvent" Id="{559e05ff-7822-46dc-be00-7584fcb764a8}">
+    <Method Name="SolveResolvent" Id="{559e05ff-7822-46dc-be00-7584fcb764a8}">
       <Declaration><![CDATA[/// Solve resolvent eqaution of corresponding Quartic equation
 /// The input x must be of length 3
 /// Number of zeros are returned
-METHOD solveResolvent : INT
+METHOD SolveResolvent : INT
 VAR_INPUT
   x : POINTER TO LREAL;
   a,b,c : LREAL;
@@ -473,7 +443,7 @@ IF (r2 < q3) THEN
   x[0] := q * COS(t / 3.0) - a;
   x[1] := q * COS((t + Constants.Pi * 2) / 3.0) - a;
   x[2] := q * COS((t - Constants.Pi * 2) / 3.0) - a;
-  solveResolvent := 3;
+  SolveResolvent := 3;
   RETURN;
 
 ELSE
@@ -489,11 +459,11 @@ ELSE
   x[2] := 0.5 * SQRT(3.0) * (aa - bb);
   IF (ABS(x[2]) < Constants.DoubleEpsilon) THEN
     x[2] := x[1];
-    solveResolvent := 2;
+    SolveResolvent := 2;
     RETURN;
   END_IF
   
-  solveResolvent := 1;
+  SolveResolvent := 1;
 END_IF]]></ST>
       </Implementation>
     </Method>

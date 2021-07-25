@@ -4,7 +4,7 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
   MaxDoFs : INT := 6;
-  MaxIterations : BYTE := 127; // maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
+  MaxIterations : BYTE := 127; // Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

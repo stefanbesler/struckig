@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Cbrt" Id="{e2df428d-5876-4ac5-a001-8b2714e1a509}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION INTERNAL Cbrt : LREAL
+VAR_INPUT
+  x : LREAL;
+END_VAR
+VAR
+  xn : LREAL;
+  h : LREAL;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Cbrt := SEL(x < 0, 1.0, -1.0) * EXPT(ABS(x), 1.0 / 3.0);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -35,16 +35,16 @@ example21();
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 0.0, 0.0, 0.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.0, 0.0, 0.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
 END_VAR
@@ -65,16 +65,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 0.0, 1E-17, -1E-17 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.0, 1E-17, -1E-17 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;  
 END_VAR
@@ -95,16 +95,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 1.0, 1.0, 1.0 ],
-    current_position :=     [ 0.0, 1E-17, -1E-17 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 1E-17, -1E-17 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -126,16 +126,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -157,16 +157,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.6, 0.6, 0.6 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -188,16 +188,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.4, 0.4, 0.4 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -219,16 +219,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 1.0, 1.0, 1.0 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.3, 0.3, 0.3 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.3, 0.3, 0.3 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -250,16 +250,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.6, 0.6, 0.6 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.3, 0.3, 0.3 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.3, 0.3, 0.3 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -281,16 +281,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.6, 0.6, 0.6 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.0, 0.0, 0.0 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ -1.0, -1.0, -1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ -1.0, -1.0, -1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -312,16 +312,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 10.0, 10.0, 10.0 ],
-    max_acceleration :=     [ 10.0, 10.0, 10.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ 0.0, 0.0, 0.0 ],
-    current_velocity :=     [ 0.2, 0.2, 0.2 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ -1.0, -1.0, -1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 10.0, 10.0, 10.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.2, 0.2, 0.2 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ -1.0, -1.0, -1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -343,16 +343,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.4, 0.4, 0.4 ],
-    max_acceleration :=     [ 1.0, 1.0, 1.0 ],
-    max_jerk :=             [ 2.0, 2.0, 2.0 ],
-    current_position :=     [ -1.0, -1.0, -1.0 ],
-    current_velocity :=     [ 0.2, 0.2, 0.2 ],
-    current_acceleration := [ 0.0, 0.0, 0.0 ],
-    target_position :=      [ 1.0, 1.0, 1.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 2.0, 2.0, 2.0 ],
+    CurrentPosition :=     [ -1.0, -1.0, -1.0 ],
+    CurrentVelocity :=     [ 0.2, 0.2, 0.2 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -374,16 +374,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 3.0, 3.0, 3.0 ],
-    max_acceleration :=     [ 0.5, 0.5, 0.5 ],
-    max_jerk :=             [ 0.2, 0.2, 0.2 ],
-    current_position :=     [ 0.3888899206957 - 10E-14, 0.0, 0.0 ],
-    current_velocity :=     [ 0.2231429352410215, 0.0, 0.0 ],
-    current_acceleration := [ -0.2987593916455, 0.0, 0.0 ],
-    target_position :=      [ 0.5, 0.0, 0.0 ],
-    target_velocity :=      [ 0.0, 0.0, 0.0 ],
-    target_acceleration :=  [ 0.0, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 3.0, 3.0, 3.0 ],
+    MaxAcceleration :=     [ 0.5, 0.5, 0.5 ],
+    MaxJerk :=             [ 0.2, 0.2, 0.2 ],
+    CurrentPosition :=     [ 0.3888899206957 - 10E-14, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.2231429352410215, 0.0, 0.0 ],
+    CurrentAcceleration := [ -0.2987593916455, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.5, 0.0, 0.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -405,16 +405,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 12.9892953062198, 3.74169932927481, 1.42398447457303 ],
-    max_acceleration :=     [ 4.2162106624246, 10.2906731766853, 2.1869079548297 ],
-    max_jerk :=             [ 8.03496976453435, 0.200684346397485 - 1.0E-14, 0.0848503482861296 ],
-    current_position :=     [ -5.54640573838539, -2.34195463203842, 5.10070661762967 ],
-    current_velocity :=     [ 0.824843228617216, -1.03863337183304, -0.749451523227729 ],
-    current_acceleration := [ -0.119403564898501, 0.923861820607788, 3.04022341347259 ],
-    target_position :=      [ -1.58293112753888, 0.383405919465141, 5.79349604610299 ],
-    target_velocity :=      [ -1.59453676324393, 0.0, -0.0693173526513803 ],
-    target_acceleration :=  [ -0.664429703711622, 0.0, 0.0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 12.9892953062198, 3.74169932927481, 1.42398447457303 ],
+    MaxAcceleration :=     [ 4.2162106624246, 10.2906731766853, 2.1869079548297 ],
+    MaxJerk :=             [ 8.03496976453435, 0.200684346397485 - 1.0E-14, 0.0848503482861296 ],
+    CurrentPosition :=     [ -5.54640573838539, -2.34195463203842, 5.10070661762967 ],
+    CurrentVelocity :=     [ 0.824843228617216, -1.03863337183304, -0.749451523227729 ],
+    CurrentAcceleration := [ -0.119403564898501, 0.923861820607788, 3.04022341347259 ],
+    TargetPosition :=      [ -1.58293112753888, 0.383405919465141, 5.79349604610299 ],
+    TargetVelocity :=      [ -1.59453676324393, 0.0, -0.0693173526513803 ],
+    TargetAcceleration :=  [ -0.664429703711622, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -436,16 +436,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 8.65978706670502, 5.94921088330542, 10.7652253566829 ],
-    max_acceleration :=     [ 3.40137210377608, 4.04166318018487, 10.8617860610581 ],
-    max_jerk :=             [ 10.9542353113865, 3.11056302676629, 0.798055744482636 + 9e-12 ],
-    current_position :=     [ -6.49539540831446, 6.14883133273172, -2.02636240900911 ],
-    current_velocity :=     [ -1.14327601654428, 0.00991019970085593, -1.00932863927626 ],
-    current_acceleration := [ -1.73501068960131, -0.584885092422228, 0 ],
-    target_position :=      [ 4.4676187540058, 2.93367894961155, -0.646008452514058 ],
-    target_velocity :=      [ -0.544559915133859, 0.298517792372943, 1.6058847848484 ],
-    target_acceleration :=  [ -1.31832055647831, 0, 0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 8.65978706670502, 5.94921088330542, 10.7652253566829 ],
+    MaxAcceleration :=     [ 3.40137210377608, 4.04166318018487, 10.8617860610581 ],
+    MaxJerk :=             [ 10.9542353113865, 3.11056302676629, 0.798055744482636 + 9E-12 ],
+    CurrentPosition :=     [ -6.49539540831446, 6.14883133273172, -2.02636240900911 ],
+    CurrentVelocity :=     [ -1.14327601654428, 0.00991019970085593, -1.00932863927626 ],
+    CurrentAcceleration := [ -1.73501068960131, -0.584885092422228, 0 ],
+    TargetPosition :=      [ 4.4676187540058, 2.93367894961155, -0.646008452514058 ],
+    TargetVelocity :=      [ -0.544559915133859, 0.298517792372943, 1.6058847848484 ],
+    TargetAcceleration :=  [ -1.31832055647831, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -467,16 +467,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 7.97399137456765, 2.68591430972239, 9.54987666746364 ],
-    max_acceleration :=     [ 5.44679859206862, 7.61752909348119, 0.473482772614085 ],
-    max_jerk :=             [ 7.88958080921515, 5.26855927512131, 0.764061581326592 - 1e-14 ],
-    current_position :=     [ 7.06378251402596, -2.4834697862831, -0.843847405371359 ],
-    current_velocity :=     [ 0.436985859305842, 0.0708113515655622, -0.751266816040307 ],
-    current_acceleration := [ -0.80835350359544, 0, -0.355284934641626 ],
-    target_position :=      [ 4.40606827118048, -2.84629921001043, -2.91829890043522 ],
-    target_velocity :=      [ 0.555084596169823, 0, -1.24631524923535 ],
-    target_acceleration :=  [ 0.463000173872542, 0, 0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 7.97399137456765, 2.68591430972239, 9.54987666746364 ],
+    MaxAcceleration :=     [ 5.44679859206862, 7.61752909348119, 0.473482772614085 ],
+    MaxJerk :=             [ 7.88958080921515, 5.26855927512131, 0.764061581326592 - 1E-14 ],
+    CurrentPosition :=     [ 7.06378251402596, -2.4834697862831, -0.843847405371359 ],
+    CurrentVelocity :=     [ 0.436985859305842, 0.0708113515655622, -0.751266816040307 ],
+    CurrentAcceleration := [ -0.80835350359544, 0, -0.355284934641626 ],
+    TargetPosition :=      [ 4.40606827118048, -2.84629921001043, -2.91829890043522 ],
+    TargetVelocity :=      [ 0.555084596169823, 0, -1.24631524923535 ],
+    TargetAcceleration :=  [ 0.463000173872542, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -498,16 +498,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,        
-    max_velocity :=         [ 0.1241065584614779, 1, 1 ],
-    max_acceleration :=     [ 1.808598147153279, 1, 1 ],
-    max_jerk :=             [ 2.516849090900998 - 3e-15, 1, 1 ],
-    current_position :=     [ -7.962737259350095, 0, 0 ],
-    current_velocity :=     [ -0.8844863500141733, 0, 0 ],
-    current_acceleration := [ 2.252932547031004, 0, 0 ],
-    target_position :=      [ -3.547368989678775, 0, 0 ],
-    target_velocity :=      [ 0, 0, 0 ],
-    target_acceleration :=  [ 0.217242176687843, 0, 0 ]
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=         [ 0.1241065584614779, 1, 1 ],
+    MaxAcceleration :=     [ 1.808598147153279, 1, 1 ],
+    MaxJerk :=             [ 2.516849090900998 - 3E-15, 1, 1 ],
+    CurrentPosition :=     [ -7.962737259350095, 0, 0 ],
+    CurrentVelocity :=     [ -0.8844863500141733, 0, 0 ],
+    CurrentAcceleration := [ 2.252932547031004, 0, 0 ],
+    TargetPosition :=      [ -3.547368989678775, 0, 0 ],
+    TargetVelocity :=      [ 0, 0, 0 ],
+    TargetAcceleration :=  [ 0.217242176687843, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -529,16 +529,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,    
-    max_velocity :=         [ 1.863775561344568, 0.4357836109021987, 6.260907804906162 ],
-    max_acceleration :=     [ 9.49223908896113, 9.002562577262177, 1.119142029086944 ],
-    max_jerk :=             [ 8.689575453772798, 0.09322235504216797, 0.1594452521517275 + 3e-15 ],
-    current_position :=     [ -4.180150148354134, 1.030371049895473, -2.660154279239869 ],
-    current_velocity :=     [ 1.673805463302308, -1.435796222257198, 0.9711306630275642 ],
-    current_acceleration := [ 1.412175048500792, 1.892262449040863, -1.128847905860926 ],
-    target_position :=      [ 2.079913937916431, 1.839862681333277, 2.341421542126605 ],
-    target_velocity :=      [ 0.7537566830764975, 0, 0.02507782261105568 ],
-    target_acceleration :=  [ -0.8610296259045267, -0.07876324073516261, 0 ]
+    Synchronization := SynchronizationType.None,    
+    MaxVelocity :=         [ 1.863775561344568, 0.4357836109021987, 6.260907804906162 ],
+    MaxAcceleration :=     [ 9.49223908896113, 9.002562577262177, 1.119142029086944 ],
+    MaxJerk :=             [ 8.689575453772798, 0.09322235504216797, 0.1594452521517275 + 3E-15 ],
+    CurrentPosition :=     [ -4.180150148354134, 1.030371049895473, -2.660154279239869 ],
+    CurrentVelocity :=     [ 1.673805463302308, -1.435796222257198, 0.9711306630275642 ],
+    CurrentAcceleration := [ 1.412175048500792, 1.892262449040863, -1.128847905860926 ],
+    TargetPosition :=      [ 2.079913937916431, 1.839862681333277, 2.341421542126605 ],
+    TargetVelocity :=      [ 0.7537566830764975, 0, 0.02507782261105568 ],
+    TargetAcceleration :=  [ -0.8610296259045267, -0.07876324073516261, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -560,16 +560,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    max_velocity :=         [ 6.144314006624488, 2.93258338415229, 0.1820021269527196 ],
-    max_acceleration :=     [ 5.199401036221791, 1.848176490768948, 11.11168017805234 ],
-    max_jerk :=             [ 9.940940357283978, 10.46997753899755, 0.08166297169205029 ],
-    current_position :=     [ -4.490717417930574, 3.467236624628543, -0.7545929089757601 ],
-    current_velocity :=     [ 0.1839756723363622, -0.4356283320280516, 0.7490399525818022 ],
-    current_acceleration := [ -1.057769973808928, 0, -2.368645439140517 ],
-    target_position :=      [ -4.928244836531066, -4.821780824003112, -8.20567952461017 ],
-    target_velocity :=      [ 0.1097319156272965, -0.9272874846270881, 0 ],
-    target_acceleration :=  [ 0.03089046366221739, -0.9744054582899561, 0 ]
+    Synchronization := SynchronizationType.None,
+    MaxVelocity :=         [ 6.144314006624488, 2.93258338415229, 0.1820021269527196 ],
+    MaxAcceleration :=     [ 5.199401036221791, 1.848176490768948, 11.11168017805234 ],
+    MaxJerk :=             [ 9.940940357283978, 10.46997753899755, 0.08166297169205029 ],
+    CurrentPosition :=     [ -4.490717417930574, 3.467236624628543, -0.7545929089757601 ],
+    CurrentVelocity :=     [ 0.1839756723363622, -0.4356283320280516, 0.7490399525818022 ],
+    CurrentAcceleration := [ -1.057769973808928, 0, -2.368645439140517 ],
+    TargetPosition :=      [ -4.928244836531066, -4.821780824003112, -8.20567952461017 ],
+    TargetVelocity :=      [ 0.1097319156272965, -0.9272874846270881, 0 ],
+    TargetAcceleration :=  [ 0.03089046366221739, -0.9744054582899561, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -591,16 +591,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    max_velocity :=         [ 1, 1, 1 ],
-    max_acceleration :=     [ 7, 7, 7 ],
-    max_jerk :=             [ 1000, 1000, 1000 ],
-    current_position :=     [ 0.01073568005271233, -0.7002627264230739, 0 ],
-    current_velocity :=     [ 0.05656281587106524, 1.011281770884991, 0 ],
-    current_acceleration := [ -5.348847133445708, -3.400994300842285, 0 ],
-    target_position :=      [ 0.0698, 0.6283, 0 ],
-    target_velocity :=      [ 0, 0, 0 ],
-    target_acceleration :=  [ 0, 0, 0 ]
+    Synchronization := SynchronizationType.None,
+    MaxVelocity :=         [ 1, 1, 1 ],
+    MaxAcceleration :=     [ 7, 7, 7 ],
+    MaxJerk :=             [ 1000, 1000, 1000 ],
+    CurrentPosition :=     [ 0.01073568005271233, -0.7002627264230739, 0 ],
+    CurrentVelocity :=     [ 0.05656281587106524, 1.011281770884991, 0 ],
+    CurrentAcceleration := [ -5.348847133445708, -3.400994300842285, 0 ],
+    TargetPosition :=      [ 0.0698, 0.6283, 0 ],
+    TargetVelocity :=      [ 0, 0, 0 ],
+    TargetAcceleration :=  [ 0, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -622,16 +622,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    max_velocity :=         [ 1, 1, 1 ],
-    max_acceleration :=     [ 0.5, 0.5, 0.5 ],
-    max_jerk :=             [ 1, 1, 1 ],
-    current_position :=     [ 0.0001215, 0, 0 ],
-    current_velocity :=     [ 0.00405, 0, 0 ],
-    current_acceleration := [ 0.09, 0, 0 ],
-    target_position :=      [ 0.1421083333333333087, 0, 0 ],
-    target_velocity :=      [ 0.37, 0, 0 ],
-    target_acceleration :=  [ 0.5, 0, 0 ]
+    Synchronization := SynchronizationType.None,
+    MaxVelocity :=         [ 1, 1, 1 ],
+    MaxAcceleration :=     [ 0.5, 0.5, 0.5 ],
+    MaxJerk :=             [ 1, 1, 1 ],
+    CurrentPosition :=     [ 0.0001215, 0, 0 ],
+    CurrentVelocity :=     [ 0.00405, 0, 0 ],
+    CurrentAcceleration := [ 0.09, 0, 0 ],
+    TargetPosition :=      [ 0.1421083333333333087, 0, 0 ],
+    TargetVelocity :=      [ 0.37, 0, 0 ],
+    TargetAcceleration :=  [ 0.5, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
@@ -653,16 +653,16 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   ruckig : Struckig.Ruckig(0.005);
   input : Struckig.InputParameter(3) := (
-    synchronizationType := SynchronizationTypeEnum.none,
-    max_velocity :=         [ 1800, 18000, 180000 ],
-    max_acceleration :=     [ 20000, 200000, 2000000 ],
-    max_jerk :=             [ 200000, 2000000, 20000000 ],
-    current_position :=     [ 0, 0, 0 ],
-    current_velocity :=     [ 0, 0, 0 ],
-    current_acceleration := [ 0, 0, 0 ],
-    target_position :=      [ 400, 4000, 40000 ],
-    target_velocity :=      [ 0, 0, 0 ],
-    target_acceleration :=  [ 0, 0, 0 ]
+    Synchronization := SynchronizationType.None,
+    MaxVelocity :=         [ 1800, 18000, 180000 ],
+    MaxAcceleration :=     [ 20000, 200000, 2000000 ],
+    MaxJerk :=             [ 200000, 2000000, 20000000 ],
+    CurrentPosition :=     [ 0, 0, 0 ],
+    CurrentVelocity :=     [ 0, 0, 0 ],
+    CurrentAcceleration := [ 0, 0, 0 ],
+    TargetPosition :=      [ 400, 4000, 40000 ],
+    TargetVelocity :=      [ 0, 0, 0 ],
+    TargetAcceleration :=  [ 0, 0, 0 ]
   );
   output : Struckig.OutputParameter;
   
