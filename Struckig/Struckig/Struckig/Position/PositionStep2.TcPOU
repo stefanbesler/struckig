@@ -18,8 +18,8 @@ VAR
   jMax_jMax : LREAL;
   g1, g2 : LREAL;
   
-  rootCount : INT;
-  root : ARRAY[0..6] OF LREAL;
+  d_extremasCount : INT;
+  d_extremas : ARRAY[0..6] OF LREAL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -282,10 +282,10 @@ polynom[2] := (a0_a0 - af_af + 2*ad*aMax + aMax*aMax + 2*jMax*(vd - aMax*tf))/jM
 polynom[3] := 0;
 polynom[4] := -(-3*(a0_p4 + af_p4) + 4*(af_p3 + 2*a0_p3)*aMax - 12*a0*aMax*(af_af - 2*jMax*vd) + 6*a0_a0*(af_af - aMax*aMax - 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*vd) + ph1)/(12*jMax_jMax*jMax_jMax);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -327,10 +327,10 @@ polynom[2] := -(a0_a0 + af_af - 2*(a0 + af)*aMax + aMax*aMax + 2*jMax*(vd - aMax
 polynom[3] := 0;
 polynom[4] := (3*(a0_p4 + af_p4) - 4*(af_p3 + 2*a0_p3)*aMax + 6*a0_a0*(af_af + aMax*aMax + 2*jMax*vd) - 12*a0*aMax*(af_af + 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*vd) - ph1)/(12*jMax_jMax*jMax_jMax);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -451,10 +451,10 @@ ph1 := a0_a0 + af_af - aMin*(a0 + 2*af) + aMin*aMin - 2*jMax*(vd - aMin*tf);
 ph2 := 2*aMin*(jMax*g1 + af*vd) - aMin*aMin*vd + jMax*vd_vd;
 ph3 := af_af - 2*af*aMin + aMin*aMin - 2*jMax*(vd - aMin*tf);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -502,10 +502,10 @@ polynom[2] := (4*a0_a0 - 3*a0*aMax + ph1)/jMax_jMax;
 polynom[3] := (2*a0*ph1)/(jMax_jMax*jMax);
 polynom[4] := (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMax - 24*af*aMax*jMax*vd + 12*jMax*ph4 - 6*a0_a0*ph3 + 6*af_af*ph2)/(12*jMax_jMax*jMax_jMax);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -594,10 +594,10 @@ polynom[1] := -2*tf;
 polynom[2] := 2*vd/jMax + tf_tf;
 polynom[3] := 4*(pd - tf*vf)/jMax;
 polynom[4] := (vd_vd + jMax*tf*g2)/(jMax_jMax);
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -642,10 +642,10 @@ polynom[2] := -(jMax_jMax*tf_p4 - 8*vd_vd + 4*jMax*tf*(-3*pd + tf*v0 + 2*tf*vf))
 polynom[3] := 4*(jMax*tf_tf*g1 - vd*(-2*pd - tf*v0 + 3*tf*vf))/ph1;
 polynom[4] := -4*(jMax*g1*g1 + vd_vd*vd)/(jMax*ph1);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0
   THEN
     CONTINUE;
@@ -692,10 +692,10 @@ polynom[1] := (-2*(ad + jMax*tf))/jMax;
 polynom[2] := (2*(a0_a0 + af_af) + 2*af*jMax*tf - 4*a0*ph1 + jMax*(jMax*tf_tf + 2*vd))/jMax_jMax;
 polynom[3] := (2*(a0_p3 - af_p3 - 3*af_af*jMax*tf + 3*a0*ph1*(ph1 - a0) - 6*jMax_jMax*(-pd + tf*vf)))/(3*jMax_jMax*jMax);
 polynom[4] := (a0_p4 + af_p4 + 4*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf - 4*a0_p3*ph1 + 6*a0_a0*ph1*ph1 + 24*af*jMax_jMax*g1 - 4*a0*(af_p3 + 3*af_af*jMax*tf + 6*jMax_jMax*(-pd + tf*vf)) + 12*jMax_jMax*(vd_vd + jMax*tf*g2))/(12*jMax_jMax*jMax_jMax);
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0 OR_ELSE t > MIN(tf, (ad/jMax + tf) / 2)
   THEN
     CONTINUE;
@@ -745,10 +745,10 @@ polynom[2] := -(-a0_p4 - af_p4 + 4*a0_p3*(af - jMax*tf) + a0_a0*(-6*af_af + 8*af
 polynom[3] := -(a0_p5 - af_p5 + af_p4*jMax*tf - 5*a0_p4*(af - jMax*tf) + 2*a0_p3*ph3 + 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*af*ph6 - 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*(-2*pd - tf*v0 + 3*tf*vf)) - 12*jMax_jMax*jMax*ph2 + a0*ph5)/(3*jMax_jMax*jMax*ph1);
 polynom[4] := -(-a0_p6 - af_p6 + 6*a0_p5*(af - jMax*tf) - 48*af_p3*jMax_jMax*g1 + 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 3*a0_p4*ph3 - 36*af_af*jMax_jMax*vd_vd + 6*af_p4*jMax*vd + 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*(-2*pd - tf*v0 + 3*tf*vf)) - 3*a0_a0*ph5 + 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(-af*ph6 + jMax*ph2)))/(18*jMax_jMax*jMax_jMax*ph1);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0 OR_ELSE t > MIN(tf, (ad/jMax + tf) / 2)
   THEN
     CONTINUE;
@@ -819,10 +819,10 @@ polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf + 
 polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf + 5*a0_p4*(af - jMax*tf) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0*(-5*af_p4 + 8*af_p3*jMax*tf + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) + 6*jMax_jMax*ph4))/(3*jMax*ph7);
 polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af - jMax*tf) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af*ph6 + jMax*ph2)))/(18*jMax_jMax*ph7);
 
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0 OR_ELSE t > tf
   THEN
     CONTINUE;
@@ -897,10 +897,10 @@ polynom[2] := (a0_a0 + af_af)*tf_tf + 24*(tf*(af*v0 - a0*vf) - pd*ad) + 12*vd_vd
 polynom[3] := -3*tf*Power2((a0 + af)*tf - 2*vd);
 polynom[4] := 0;
 
-Roots.SolveCub(ADR(polynom), rootCount:=rootCount, roots:=root);
-FOR i:=0 TO rootCount
+Roots.SolveCub(ADR(polynom), rootCount:=d_extremasCount, roots:=d_extremas);
+FOR i:=0 TO d_extremasCount
 DO
-  t := root[i];
+  t := d_extremas[i];
   IF t < 0.0 OR_ELSE t > tf
   THEN
     CONTINUE;
@@ -995,15 +995,20 @@ Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
 Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
 
 // Solve 4th order derivative analytically
-Roots.SolveQuartMonic(ADR(deriv), 4, rootCount:=rootCount, roots:=root);
+Roots.SolveQuartMonic(ADR(deriv[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+
+// TODO: just for testing, sort extremas!!
+d_extremas[2] := d_extremas[0];
+d_extremas[0] := d_extremas[1];
+d_extremas[1] := d_extremas[2];
 
 tz_min := 0.0;
 tz_max := tf;
 tz_current := tz_min;
 
-FOR i:=0 TO rootCount
+FOR i:=0 TO d_extremasCount
 DO
-  tz := root[i];
+  tz := d_extremas[i];
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;
@@ -1031,7 +1036,7 @@ END_FOR
 
 IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
 THEN
-  root[rootCount] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
+  root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
   rootCount := rootCount + 1;
 END_IF
 
@@ -1045,6 +1050,12 @@ DO
   h1 := SQRT((a0_a0 + af_af)*0.5 + jMax*(2*a0*t + jMax*t*t - vd))/ABS(jMax);
   orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0*jMax*t*(af + jMax*(h1 + t - tf)) + 6*a0_a0*(af + jMax*(2*t - tf)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf) - tf*v0 - h1*vd))/(12*jMax_jMax);
   deriv_newton := -(a0 + jMax*t)*(3*(h1 + t) - 2*tf + (a0 + 2*af)/jMax);
+  
+  IF ABS(deriv_newton) < Constants.DoubleEpsilon
+  THEN
+    CONTINUE;
+	END_IF
+  
   t := t - orig / deriv_newton;
 
   IF (t < 0.0 OR_ELSE t > tf OR_ELSE t <> t (*isnan*))
@@ -1062,7 +1073,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_vel
   THEN
     RETURN;

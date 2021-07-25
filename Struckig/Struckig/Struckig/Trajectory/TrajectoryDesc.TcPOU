@@ -94,7 +94,7 @@ VAR_INPUT
   deltaTime : LREAL;
 END_VAR
 VAR_INST
-  i, dof : INT;
+  dof, i : INT;
   blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;
   blockCount : INT;
   p0s, v0s, a0s : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
@@ -211,7 +211,7 @@ END_IF
 IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = InterfaceType.Position) THEN
   IF (IsPhaseSynchronizable(inp, inp.MaxVelocity, inp_min_velocity, inp.MaxAcceleration, inp_min_acceleration, inp.MaxJerk, Profiles[limiting_dof].Direction, limiting_dof, new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
-    FOR i:=0 TO inp._dofs-1 DO
+    FOR dof:=0 TO inp._dofs-1 DO
       IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
         CONTINUE;
       END_IF
@@ -246,7 +246,7 @@ IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = Interfa
 END_IF
 
 // The general case
-FOR i:=0 TO inp._dofs-1
+FOR dof:=0 TO inp._dofs-1
 DO
   IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
       continue;

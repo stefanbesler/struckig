@@ -68,8 +68,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[out[0] := 1.0;
-FOR i:=1 TO coeffsCount DO
-  out[i] := (coeffsCount-i) * (monic_coeffs[i] / (coeffsCount - 1));
+FOR i:=1 TO coeffsCount-1 DO
+  out[i] := (coeffsCount- i) * (monic_coeffs[i] / (coeffsCount));
 END_FOR
 ]]></ST>
       </Implementation>
@@ -115,7 +115,7 @@ END_IF
 ShrinkInterval := 0.5 * (l + h);
 dxold := ABS(h - l);
 dx := dxold;
-f := PolyEval(ADR(p), degree, ShrinkInterval);
+f := PolyEval(p, degree, ShrinkInterval);
 df := PolyEval(ADR(deriv), degree-1, ShrinkInterval);
 FOR j:=0 TO ParameterList.MaxIterations DO
   IF ((((ShrinkInterval - h) * df - f) * ((ShrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
