@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="Example03_2DoFs_Synchronized_Waypoints" Id="{f65c24cb-6647-4ba6-8455-ae973aeb2aa2}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM Example03_2DoFs_Synchronized_Waypoints
+VAR
+  ruckig : Ruckig(0.001);
+  input: InputParameter(2) := (Synchronization := SynchronizationType.TimeSync,
+                               MaxVelocity :=         [ 1000.0, 1000.0 ],
+                               MaxAcceleration :=     [ 50000.0, 50000.0 ],
+                               MaxJerk :=             [ 500000.0, 500000.0 ],
+                               CurrentPosition :=     [ 0.0, 0.0 ],
+                               CurrentVelocity :=     [ 0.0, 0.0 ],
+                               CurrentAcceleration := [ 0.0, 0.0 ],
+                               TargetPosition :=      [ 0.0, 0.0 ],
+                               TargetVelocity :=      [ 0.0, 0.0 ],
+                               TargetAcceleration :=  [ 0.0, 0.0 ]);
+  output : OutputParameter;
+  
+  waypoints : INT := 50;
+  a : LREAL := 300;
+  b : LREAL := 200;
+  w1 : LREAL := 3;
+  w2 : LREAL := 2;
+  delta : LREAL := PI * 0.5;
+  currentWaypoint : INT := 0;
+  firstRun : BOOL := TRUE;
+  dump : LREAL; // just for testing
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// init trajectory
+IF firstRun
+THEN
+  firstRun := FALSE;
+  Waypoint(currentWaypoint, px := input.CurrentPosition[0], py := input.CurrentPosition[1],
+                            vx := input.CurrentVelocity[0], 
+                            vy := input.CurrentVelocity[1],
+                            ax := dump, //input.CurrentAcceleration[0], 
+                            ay := dump //input.CurrentAcceleration[1]);
+							);
+  input.TargetPosition := input.CurrentPosition;
+  input.TargetVelocity := input.CurrentVelocity;
+  input.TargetAcceleration := input.CurrentAcceleration;  
+END_IF
+
+// increment waypoints
+IF ruckig.update(input, output) = TrajectoryState.Idle
+THEN
+  Waypoint(currentWaypoint, px := input.TargetPosition[0], py := input.TargetPosition[1],
+                            vx := input.TargetVelocity[0], 
+                            vy := input.TargetVelocity[1],
+                            ax := dump, //input.TargetAcceleration[0], 
+                            ay := dump //input.TargetAcceleration[1]);
+							);
+  currentWaypoint := SEL(currentWaypoint + 1 < waypoints, 0, currentWaypoint+1);                    
+END_IF
+
+input.CurrentPosition := output.NewPosition;
+input.CurrentVelocity := output.NewVelocity;
+input.CurrentAcceleration := output.NewAcceleration;]]></ST>
+    </Implementation>
+    <Method Name="LissajousCurve" Id="{41997914-621e-4b15-83c0-980183ab3918}">
+      <Declaration><![CDATA[METHOD LissajousCurve
+VAR_INPUT
+  a : LREAL;
+  b : LREAL;
+  w1 : LREAL;
+  w2 : LREAL;
+  delta : LREAL;
+  t : LREAL;
+END_VAR
+VAR_IN_OUT
+  px, py : LREAL;
+  vx, vy : LREAL;
+  ax, ay : LREAL;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[px := a * SIN(w1 * t + delta);
+py := b * SIN(w2 * t);
+
+vx := a * w1 * COS(w1 * t + delta);
+vy := b * w2 * COS(w2 * t);
+
+ax := -a * w1 * w1 * SIN(w1 * t + delta);
+ay := -b * w2 * w2 * SIN(w2 * t);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Waypoint" Id="{29d2cf11-a88f-466b-8253-3ff57810397f}">
+      <Declaration><![CDATA[METHOD Waypoint
+VAR_INPUT
+  w : INT;
+END_VAR
+VAR_IN_OUT
+  px, py : LREAL;
+  vx, vy : LREAL;
+  ax, ay : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[LissajousCurve(a, b, w1, w2, delta, INT_TO_LREAL(w) * 2*PI / INT_TO_LREAL(waypoints),
+               px := px, py := py,
+               vx := vx, vy := vy,
+               ax := ax, ay := ay);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

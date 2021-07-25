@@ -4,37 +4,29 @@
     <Declaration><![CDATA[PROGRAM Example01_6DoFs
 VAR
   ruckig : Ruckig(0.001);
-  input : InputParameter(6) := (max_velocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
-                                max_acceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
-                                max_jerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
-                                current_position :=     [ 0.0,  -0.1,  0.12, 0.0,  0.3, 0.05],
-                                current_velocity :=     [ 0.0,   0.0,  0.2,  0.0,  0.0, 0.0 ],
-                                current_acceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
-                                target_position :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
-                                target_velocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
-                                target_acceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);
+  input : InputParameter(6) := (MaxVelocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
+                                MaxAcceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
+                                MaxJerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
+                                CurrentPosition :=     [ 0.0,  -0.1,  0.12, 0.0,  0.3, 0.05],
+                                CurrentVelocity :=     [ 0.0,   0.0,  0.2,  0.0,  0.0, 0.0 ],
+                                CurrentAcceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+                                TargetPosition :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
+                                TargetVelocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+                                TargetAcceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);
   output : OutputParameter;    
-  done : BOOL;
   run : BOOL;
-  swap : BOOL := TRUE;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[input.synchronizationType := SynchronizationTypeEnum.none;
+      <ST><![CDATA[input.Synchronization := SynchronizationType.None;
 
 IF run
 THEN
   ruckig.update(input, output);
-  input.current_position := output.new_position;
-  input.current_velocity := output.new_velocity;
-  input.current_acceleration := output.new_acceleration;
-END_IF
-
-
-IF NOT ruckig.isBusy()
-THEN
-  done := TRUE;
+  input.CurrentPosition := output.NewPosition;
+  input.CurrentVelocity := output.NewVelocity;
+  input.CurrentAcceleration := output.NewAcceleration;
 END_IF]]></ST>
     </Implementation>
   </POU>

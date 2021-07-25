@@ -317,14 +317,17 @@ DO
     orig := (3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af*vf - a0*v0) - 6*a0_a0*(aMax*aMax - 2*jMax*v0) + 6*af_af*(aMax*aMax - 2*jMax*(jMax*t*t + vf)) + 12*jMax*(-2*aMax*jMax*(pd_ + jMax*t*t*t) + aMax*aMax*(jMax*t*t + v0 - vf) + jMax*(jMax*t*t*(jMax*t*t + 2*vf) + vf_vf - v0_v0)))/(24*aMax*jMax_jMax);
     deriv := (t*(-af_af + aMax*aMax - 3*aMax*jMax*t + 2*jMax*(jMax*t*t + vf)))/aMax;
   
-    IF ABS(deriv) < Constants.DoubleEpsilon
+    IF ABS(deriv) > Constants.DoubleEpsilon
     THEN
-      CONTINUE;
-    END_IF  
+      t := t - orig / deriv;
+    END_IF
+  END_IF
+  
+  IF ABS(deriv) < Constants.DoubleEpsilon
+  THEN
+    CONTINUE;
 	END_IF
   
-  t := t - orig / deriv;
-
   Profile.t[0] := (-a0 + aMax)/jMax;
   Profile.t[1] := (a0_a0 - af_af + 2*jMax*((-2*aMax + jMax*t)*t + vf - v0))/(2*aMax*jMax);
   Profile.t[2] := t;
@@ -332,7 +335,7 @@ DO
   Profile.t[4] := 0;
   Profile.t[5] := 0;
   Profile.t[6] := (af - aMax)/jMax + t;
-
+  
   IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin))
   THEN
     AddProfile(Profile, jMax);        
@@ -520,25 +523,21 @@ DO
     orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0)) - 24*af*aMin*jMax*vf - 6*af_af*(aMin*aMin - 2*jMax*vf) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0) + aMin*aMin*(h1 + vf) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
     deriv := -((a0 - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
     
-    IF ABS(deriv) < Constants.DoubleEpsilon
+    IF ABS(deriv) > Constants.DoubleEpsilon
     THEN
-      CONTINUE;
-    END_IF  
-    
-    t := t - MIN(orig / deriv, t);
-    
-    h1 := jMax*t*t + v0;
-    orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0)) - 24*af*aMin*jMax*vf - 6*af_af*(aMin*aMin - 2*jMax*vf) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0) + aMin*aMin*(h1 + vf) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
-    IF (ABS(orig) > 1E-9)
-    THEN
-      deriv := -((a0 - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
+      t := t - MIN(orig / deriv, t);
       
-      IF ABS(deriv) < Constants.DoubleEpsilon
+      h1 := jMax*t*t + v0;
+      orig := -pd_ + (3*(a0_p4 - af_p4) + 8*af_p3*aMin + 8*a0_p3*(-aMin + 3*jMax*t) + 24*a0*jMax*(-aMin + 2*jMax*t)*(-aMin*t + h1) + 6*a0_a0*(aMin*aMin + 2*jMax*(-4*aMin*t + 5*h1 - 4*v0)) - 24*af*aMin*jMax*vf - 6*af_af*(aMin*aMin - 2*jMax*vf) + 12*jMax*(-2*aMin*jMax*t*(h1 + v0) + aMin*aMin*(h1 + vf) + jMax*(h1*h1 - vf_vf)))/(-24*aMin*jMax_jMax);
+      IF (ABS(orig) > 1E-9)
       THEN
-        CONTINUE;
-      END_IF
-      
-      t := t - orig / deriv;    
+        deriv := -((a0 - aMin + jMax*t)*(a0_a0 - aMin*jMax*t + a0*(-aMin + 4*jMax*t) + 2*jMax*h1))/(aMin*jMax);
+        
+        IF ABS(deriv) > Constants.DoubleEpsilon
+        THEN
+          t := t - orig / deriv; 
+        END_IF
+      END_IF 
     END_IF  
 	END_IF
 
@@ -682,7 +681,6 @@ DO
 	END_IF
   
   t := t - orig / deriv;
-            
 
   h0 := ((a0_a0 - af_af)/jMax + 2*(vf - v0))/(4*jMax*t);
   Profile.t[0] := h0 + t*0.5 - a0/jMax;

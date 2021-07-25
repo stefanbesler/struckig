@@ -4,20 +4,20 @@
     <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
 VAR
   ruckig : Ruckig(0.001);
-  input_step1 : InputParameter(1) := (synchronizationType := SynchronizationTypeEnum.none,
-                                      max_velocity :=         [ 1200.0 ],
-                                      max_acceleration :=     [ 25000.0 ],
-                                      max_jerk :=             [ 25000.0 / 0.008 ],
-                                      current_position :=     [ 47.0 ],
-                                      current_velocity :=     [ 0.0 ],
-                                      current_acceleration := [ 0.0 ],
-                                      target_position :=      [ 18.0 ],
-                                      target_velocity :=      [ -10.0 ],
-                                      target_acceleration :=  [ 0.0 ]);
-  input_step2 : InputParameter(1) := (max_velocity :=         [ 10.0 ], // limit velocity to end-velocity of first step
-                                      target_position :=      [ 9.0 ],
-                                      target_velocity :=      [ 0.0 ],
-                                      target_acceleration :=  [ 0.0 ]);
+  input_step1 : InputParameter(1) := (Synchronization := SynchronizationType.None,
+                                      MaxVelocity :=         [ 1200.0 ],
+                                      MaxAcceleration :=     [ 25000.0 ],
+                                      MaxJerk :=             [ 25000.0 / 0.008 ],
+                                      CurrentPosition :=     [ 47.0 ],
+                                      CurrentVelocity :=     [ 0.0 ],
+                                      CurrentAcceleration := [ 0.0 ],
+                                      TargetPosition :=      [ 18.0 ],
+                                      TargetVelocity :=      [ -10.0 ],
+                                      TargetAcceleration :=  [ 0.0 ]);
+  input_step2 : InputParameter(1) := (MaxVelocity :=         [ 10.0 ], // limit velocity to end-velocity of first step
+                                      TargetPosition :=      [ 9.0 ],
+                                      TargetVelocity :=      [ 0.0 ],
+                                      TargetAcceleration :=  [ 0.0 ]);
   input : REFERENCE TO InputParameter REF= input_step1;                                    
   output : OutputParameter;    
   run : BOOL;
@@ -28,21 +28,21 @@ END_VAR
     <Implementation>
       <ST><![CDATA[IF run
 THEN
-  ruckig.update(input, output);
+  ;
   
   // switch to second profile
-  IF NOT ruckig.isBusy() AND_THEN NOT switched
+  IF ruckig.update(input, output) = Struckig.TrajectoryState.Idle AND_THEN NOT switched
   THEN
     switched := TRUE;
-    input.max_velocity := input_step2.max_velocity;    
-    input.target_position := input_step2.target_position;
-    input.target_velocity := input_step2.target_velocity;    
-    input.target_acceleration := input_step2.target_acceleration;
+    input.MaxVelocity := input_step2.MaxVelocity;    
+    input.TargetPosition := input_step2.TargetPosition;
+    input.TargetVelocity := input_step2.TargetVelocity;    
+    input.TargetAcceleration := input_step2.TargetAcceleration;
 	END_IF
   
-  input.current_position := output.new_position;
-  input.current_velocity := output.new_velocity;
-  input.current_acceleration := output.new_acceleration;
+  input.CurrentPosition := output.NewPosition;
+  input.CurrentVelocity := output.NewVelocity;
+  input.CurrentAcceleration := output.NewAcceleration;
 END_IF]]></ST>
     </Implementation>
   </POU>

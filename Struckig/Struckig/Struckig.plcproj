@@ -1,3 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <FileVersion>1.0.0.0</FileVersion>
@@ -19,8 +20,7 @@
     <Title>Struckig</Title>
     <ProjectVersion>0.3.3.0</ProjectVersion>
     <DefaultNamespace>Struckig</DefaultNamespace>
-    <Author>
-    </Author>
+    <Author></Author>
     <Company>Struckig</Company>
   </PropertyGroup>
   <ItemGroup>
@@ -122,15 +122,15 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PlaceholderReference Include="Tc2_System">
-      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
-      <Namespace>Tc2_System</Namespace>
-    </PlaceholderReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Struckig.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <LibraryReference Include="Tc2_System,3.4.24.0,Beckhoff Automation GmbH">
+      <Namespace>Tc2_System</Namespace>
+      <QualifiedOnly>true</QualifiedOnly>
+    </LibraryReference>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

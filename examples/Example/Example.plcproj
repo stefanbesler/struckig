@@ -26,6 +26,9 @@
     <Compile Include="POUs\Example02_PositionProfile_2Steps.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\Example03_2DoFs_Synchronized_Waypoints.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
