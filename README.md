@@ -25,15 +25,27 @@ if you would like to use a library that is implemented in a IEC 61131-3 conform 
 - [x] Manual testing
 - [x] Initial commit
 - [x] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
-    - [ ] otg-test.cpp - this should be sufficient
+    - [x] KnownExamples (otg-test.cpp)
+    - [x] SecondaryFeatures (otg-test.cpp)
+    - [ ] Randomized trajectories (otg-test.cpp)
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
     - [ ] run unit tests to find more issues that sneaked in while porting
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Refactor (coding conventions)
 - [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler :-(
-- [x] examples
-  - [x] position.cpp
+- [x] Examples
+  - [x] Position.cpp
 - [ ] Documentation
+
+# Unittests
+
+This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./Struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be (saved and installed)[https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=] and TcUnit.library has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
+
+Please note, that not all unittests from the [original](https://www.github.com/pantor/ruckig) source code are ported yet, but only the `KnownExamples` and `SecondaryFeatures` tests. Also, at the moment 1 of those tests is still failing!
+
+# Continuous integration
+
+tbd
 
 # Example
 
