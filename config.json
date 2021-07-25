@@ -1,0 +1,18 @@
+{
+  "name": "Struckig/Struckig.sln",
+  "repository": "",
+  "plcprojects": [
+    {
+      "name": "Struckig",
+      "version": "0.3.3.0",
+      "type": "Library",
+      "iaf_references": {},
+      "system_references": {
+        "TC3.1.4024.17": [
+          "Tc2_System=3.4.24.0"
+        ]
+      },
+      "bindings": {}
+    }
+  ]
+}
