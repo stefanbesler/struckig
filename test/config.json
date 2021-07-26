@@ -5,7 +5,7 @@
     {
       "name": "Struckig_unittest",
       "version": "0.3.3.0",
-      "type": "Application",
+      "type": "Library",
       "iaf_references": {
         "version": "0.3.3.0",
         "references": [
