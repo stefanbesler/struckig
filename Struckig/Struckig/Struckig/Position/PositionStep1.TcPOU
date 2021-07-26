@@ -656,12 +656,12 @@ END_IF
 
 // UDDU / UDUD modern, this one is in particular prone to numerical issues
 // UDUD Strategy: t7 == 0 (equals UDDU)
-h0 := (a0_a0 - af_af + 2*jMax*(vf - v0))/(2*jMax_jMax);
+h2 := (a0_a0 - af_af + 2*jMax*(vf - v0))/(2*jMax_jMax);
 polynom[0] := 1.0;
 polynom[1] := 0.0;
 polynom[2] := (-2*(a0_a0 + af_af - 2*jMax*(v0 + vf)))/jMax_jMax;
 polynom[3] := (4*(a0_p3 - af_p3 + 3*jMax*(af*vf - a0*v0 - jMax*pd_)))/(3*jMax*jMax_jMax);
-polynom[4] := -h0*h0;
+polynom[4] := -h2*h2;
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
