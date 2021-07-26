@@ -405,7 +405,7 @@ END_VAR
         <ST><![CDATA[Profile.t[0] := (-a0 + aMax)/jMax;
 Profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0 - vMax))/(aMax*jMax);
 Profile.t[2] := aMax/jMax;
-Profile.t[3] := (3*a0_p4*aMin - 3*af_p4*aMax + 8*(af_p3 - a0_p3)*aMax*aMin + 24*aMax*aMin*jMax*(a0*v0 - af*vf) + 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0) - 6*af_af*aMax*(aMin*aMin - 2*jMax*vf) - 12*jMax*(aMax*aMax*aMin*(v0 + vMax) + aMin*jMax*(vMax*vMax - v0_v0) - aMax*(2*aMin*jMax*pd_ + aMin*aMin*(vf + vMax) + jMax*(vMax*vMax - vf_vf))))/(24*aMax*aMin*jMax_jMax*vMax);
+Profile.t[3] := (3*(a0_p4*aMin - af_p4*aMax) + 8*aMax*aMin*(af_p3 - a0_p3 + 3*jMax*(a0*v0 - af*vf)) + 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0) - 6*af_af*aMax*(aMin*aMin - 2*jMax*vf) - 12*jMax*(aMax*aMin*(aMax*(v0 + vMax) - aMin*(vf + vMax) - 2*jMax*pd_) + (aMin - aMax)*jMax*vMax*vMax + jMax*(aMax*vf_vf - aMin*v0_v0)))/(24*aMax*aMin*jMax_jMax*vMax);
 Profile.t[4] := -aMin/jMax;
 Profile.t[5] := -(af_af*0.5 - aMin*aMin - jMax*(vf - vMax))/(aMin*jMax);
 Profile.t[6] := Profile.t[4] + af/jMax;
@@ -656,11 +656,12 @@ END_IF
 
 // UDDU / UDUD modern, this one is in particular prone to numerical issues
 // UDUD Strategy: t7 == 0 (equals UDDU)
+h0 := (a0_a0 - af_af + 2*jMax*(vf - v0))/(2*jMax_jMax);
 polynom[0] := 1.0;
 polynom[1] := 0.0;
 polynom[2] := (-2*(a0_a0 + af_af - 2*jMax*(v0 + vf)))/jMax_jMax;
 polynom[3] := (4*(a0_p3 - af_p3 + 3*jMax*(af*vf - a0*v0 - jMax*pd_)))/(3*jMax*jMax_jMax);
-polynom[4] := -Power2(a0_a0 - af_af + 2*jMax*(vf - v0))/(4*jMax_jMax*jMax_jMax);
+polynom[4] := -h0*h0;
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
