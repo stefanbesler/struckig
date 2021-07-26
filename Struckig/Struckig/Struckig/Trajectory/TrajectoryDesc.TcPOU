@@ -226,12 +226,12 @@ IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = Interfa
       // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
       CASE (p.JerkSigns) OF 
         ProfileJerkSigns.Uddu: 
-          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+          IF ( NOT p.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
               found_time_synchronization := FALSE;
           END_IF
 
         ProfileJerkSigns.Udud: 
-          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+          IF ( NOT p.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
               found_time_synchronization := FALSE;
           END_IF
       END_CASE

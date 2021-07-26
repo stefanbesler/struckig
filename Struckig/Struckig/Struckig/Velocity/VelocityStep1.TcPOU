@@ -223,7 +223,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-IF (Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
+IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
   AddProfile(Profile, jMax);
 END_IF
 
@@ -236,7 +236,7 @@ Profile.t[4] := (af - aMax)/jMax;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-IF (Profile.CheckAcc(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
+IF (Profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
   AddProfile(Profile, jMax);
 END_IF]]></ST>
       </Implementation>
@@ -265,7 +265,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-IF (Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
   AddProfile(Profile, jMax);
 END_IF
 
@@ -279,7 +279,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-IF (Profile.CheckAcc(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
   AddProfile(Profile, jMax);
 END_IF
     ]]></ST>

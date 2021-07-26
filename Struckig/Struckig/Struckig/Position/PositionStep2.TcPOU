@@ -146,7 +146,7 @@ Profile.t[4] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3])
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-time_acc0 := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.ACC0, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
+time_acc0 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.ACC0, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0_acc1" Id="{7151b8f6-8f1d-455a-9e25-b504c08c7295}">
@@ -176,7 +176,7 @@ THEN
   Profile.t[5] := tf - (2*Profile.t[0] + Profile.t[1] + 2*Profile.t[4]);
   Profile.t[6] := Profile.t[4];
 
-  time_acc0_acc1 := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
+  time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
   RETURN;   
 END_IF
 
@@ -191,7 +191,7 @@ Profile.t[4] := -aMin/jf;
 Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + 2*Profile.t[4] + af/jf);
 Profile.t[6] := Profile.t[4] + af/jf;
 
-time_acc0_acc1 := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
+time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
 IF time_acc0_acc1
 THEN
   RETURN;
@@ -228,7 +228,7 @@ THEN
   Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] + af/jMax);
   Profile.t[6] := Profile.t[4] + af/jMax;
   
-  time_acc0_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_acc1_vel
   THEN
     RETURN;
@@ -249,7 +249,7 @@ Profile.t[4] := Profile.t[2];
 Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] - af/jMax);
 Profile.t[6] := Profile.t[4] - af/jMax;
 
-time_acc0_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
+time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0_vel" Id="{525f27d2-ae9a-4ac9-8442-eb549f9bf992}">
@@ -313,7 +313,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := af/jMax + t;
 
-  time_acc0_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -357,7 +357,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := -(af/jMax) + t;
 
-  time_acc0_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -398,7 +398,7 @@ THEN
 	Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (af - aMin)/jMax);
 	Profile.t[6] := (af - aMin)/jMax;
 	
-	time_acc1 := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+	time_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
 	IF (time_acc1)
 	THEN
 	  RETURN;
@@ -423,7 +423,7 @@ THEN
 	Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (-af + aMax)/jMax);
 	Profile.t[6] := (-af + aMax)/jMax;
 	
-	time_acc1 := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+	time_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
 	IF (time_acc1)
 	THEN
 	  RETURN;
@@ -491,7 +491,7 @@ DO
   Profile.t[5] := (h1 + aMin)/jMax;
   Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -531,7 +531,7 @@ DO
   Profile.t[5] := -(h1 + aMax)/jMax;
   Profile.t[6] := Profile.t[4] - af/jMax;
 
-  time_acc1_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -566,7 +566,7 @@ THEN
   Profile.t[4] := 0;
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[0];
-  time_none := Profile.Check(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none THEN
     RETURN;
   END_IF
@@ -587,7 +587,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[4];
 
-  time_none := Profile.Check(ProfileJerkSigns.UDDU, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.UDDU, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -608,11 +608,10 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t < 0.0
+  IF t < 0.0 OR_ELSE t > tf * 0.5
   THEN
     CONTINUE;
-	END_IF
-
+  END_IF
 
   // Single Newton step (regarding pd)
   h1 := (jMax*t*(t - tf) + vd)/(jMax*(2*t - tf));
@@ -623,7 +622,7 @@ DO
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
-	END_IF    
+  END_IF    
   
   t := t - orig / deriv;
   
@@ -635,7 +634,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -656,10 +655,10 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t < 0.0
+  IF t < 0.0 OR_ELSE t > tf
   THEN
     CONTINUE;
-	END_IF
+  END_IF
 
 
   // Single Newton step (regarding pd)
@@ -697,7 +696,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none 
   THEN
     RETURN; 
@@ -744,7 +743,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN; 
@@ -774,7 +773,7 @@ DO
   IF t < 0.0 OR_ELSE t > MIN(tf, (ad/jMax + tf) / 2)
   THEN
     CONTINUE;
-	END_IF
+  END_IF
 
   // Single Newton step (regarding pd)
   h1 := (ad_ad + 2*jMax*(af*t + (jMax*t - a0)*(t - tf) - vd))*0.5;
@@ -795,7 +794,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -817,7 +816,7 @@ THEN
   Profile.t[5] := h1/(3*jMax_jMax);
   Profile.t[6] := tf - (Profile.t[0] + Profile.t[2] + Profile.t[5]);
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -829,17 +828,17 @@ END_IF
 ph0 := -2*pd - tf*v0 + 3*tf*vf;
 ph1 := -ad + jMax*tf;
 ph2 := jMax*tf_tf*g1 - vd*ph0;
-ph3 := 5*af_af - 8*af*jMax*tf + 2*jMax*(2*jMax*tf_tf - vd);
+ph3 := 5*af_af + 2*jMax*(2*jMax*tf_tf - vd - 4*af*tf);
 ph4 := jMax_jMax*tf_p4 - 2*vd_vd + 8*jMax*tf*(-pd + tf*vf);
 ph5 := (5*af_p4 - 8*af_p3*jMax*tf - 12*af_af*jMax*(jMax*tf_tf + vd) + 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) - 6*jMax_jMax*ph4);
 ph6 := -vd_vd + jMax*tf*(-2*pd + 3*tf*v0 - tf*vf);
-ph7 := jMax_jMax*ph1*ph1;
+ph7 := 3*jMax_jMax*ph1*ph1;
 
 polynom[0] := 1.0;
 polynom[1] := (4*af*tf - 2*jMax*tf_tf - 4*vd)/ph1;
-polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af - jMax*tf) - 12*a0_a0*Power2(af - jMax*tf) - 12*af*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf*v0 + 3*tf*vf) + 2*a0*(4*af_p3 - 12*af_af*jMax*tf + 9*af*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf*vf)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf*(pd + tf*v0 - 2*tf*vf)))/(3*ph7);
-polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf + 5*a0_p4*(af - jMax*tf) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0*(-5*af_p4 + 8*af_p3*jMax*tf + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) + 6*jMax_jMax*ph4))/(3*jMax*ph7);
-polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af - jMax*tf) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af*ph6 + jMax*ph2)))/(18*jMax_jMax*ph7);
+polynom[2] := (-2*(a0_p4 + af_p4) + 8*af_p3*jMax*tf + 6*af_af*jMax_jMax*tf_tf + 8*a0_p3*(af - jMax*tf) - 12*a0_a0*Power2(af - jMax*tf) - 12*af*jMax_jMax*(-pd + jMax*tf_p3 - 2*tf*v0 + 3*tf*vf) + 2*a0*(4*af_p3 - 12*af_af*jMax*tf + 9*af*jMax_jMax*tf_tf - 3*jMax_jMax*(2*pd + jMax*tf_p3 - 2*tf*vf)) + 3*jMax_jMax*(jMax_jMax*tf_p4 + 4*vd_vd - 4*jMax*tf*(pd + tf*v0 - 2*tf*vf)))/ph7;
+polynom[3] := (-a0_p5 + af_p5 - af_p4*jMax*tf + 5*a0_p4*(af - jMax*tf) - 2*a0_p3*ph3 - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*af_af*jMax_jMax*g2 - 12*af*jMax_jMax*ph6 + 2*a0_a0*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 12*jMax_jMax*jMax*ph2 + a0*(-5*af_p4 + 8*af_p3*jMax*tf + 12*af_af*jMax*(jMax*tf_tf + vd) - 24*af*jMax_jMax*(-2*pd + jMax*tf_p3 + 2*tf*vf) + 6*jMax_jMax*ph4))/(jMax*ph7);
+polynom[4] := -(a0_p6 + af_p6 - 6*a0_p5*(af - jMax*tf) + 48*af_p3*jMax_jMax*g1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) + 3*a0_p4*ph3 - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd - 4*a0_p3*(5*af_p3 - 9*af_af*jMax*tf - 6*af*jMax*vd + 6*jMax_jMax*ph0) + 3*a0_a0*ph5 - 6*a0*(af_p5 - af_p4*jMax*tf - 4*af_p3*jMax*(jMax*tf_tf + vd) + 12*jMax_jMax*(af_af*g2 - af*ph6 + jMax*ph2)))/(6*jMax_jMax*ph7);
 
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 FOR i:=0 TO d_extremasCount
@@ -863,7 +862,7 @@ DO
     Profile.t[5] := 0;
     Profile.t[6] := 0;
   
-    time_none := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -885,7 +884,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -909,7 +908,7 @@ ELSE
     Profile.t[5] := 0;
     Profile.t[6] := 0;
     
-    time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -944,7 +943,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (Profile.t[0] + Profile.t[1]);
   
-  time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -961,7 +960,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := tf - (Profile.t[0] + Profile.t[2]);
 
-time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -977,7 +976,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-time_none := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, tf, jf, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -1101,7 +1100,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_vel := Profile.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_vel
   THEN
     RETURN;
@@ -1243,7 +1242,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[4] - af/jMax;
 
-  time_vel := Profile.CheckTime(ProfileJerkSigns.Udud, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_vel
   THEN
     RETURN;
