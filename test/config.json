@@ -3,7 +3,7 @@
   "repository": "",
   "plcprojects": [
     {
-      "name": "Struckig_unittest",
+      "name": "struckig_unittest",
       "version": "0.3.3.0",
       "type": "Library",
       "iaf_references": {
