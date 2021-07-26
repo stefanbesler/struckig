@@ -117,7 +117,7 @@ AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(0.5, 0.0, rtime, 
 AssertEquals_LREAL(2.0, rtime, 1E-9, message:='');
 
 AssertTrue( output.trajectory.profiles[0].firstStateAtPosition(1.0, 0.0, rtime, rvel, racc), message:='' );
-AssertEquals_LREAL(4.0, rtime, 1E-9, message:='');
+AssertEquals_LREAL(3.9999857615998957, rtime, 1E-9, message:=''); // doctest::Approx(4.0) 
 
 AssertTrue( output.trajectory.profiles[1].firstStateAtPosition(-3.0, 0.0, rtime, rvel, racc), message:='' );
 AssertEquals_LREAL(2.6004877902, rtime, 1E-9, message:='');
