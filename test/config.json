@@ -1,0 +1,24 @@
+{
+  "name": "Struckig_unittest.sln",
+  "repository": "",
+  "plcprojects": [
+    {
+      "name": "Struckig_unittest",
+      "version": "0.3.3.0",
+      "type": "Application",
+      "iaf_references": {
+        "version": "0.3.3.0",
+        "references": [
+            "Struckig"
+        ]
+      },
+      "system_references": {
+        "TC3.1.4024.17": [
+          "Tc3_Module=*",
+          "TcUnit=*"
+        ]
+      },
+      "bindings": {}
+    }
+  ]
+}
