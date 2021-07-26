@@ -103,7 +103,7 @@ VAR_INST
   found_profile : BOOL;
   limiting_dof : INT := -1; // The DoF that doesn't need step 2
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
-  new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  new_max_velocity, new_min_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   t_profile : LREAL;
 END_VAR
 ]]></Declaration>
@@ -209,7 +209,7 @@ IF (inp.Synchronization = SynchronizationType.None) THEN
 END_IF
 
 IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = InterfaceType.Position) THEN
-  IF (IsPhaseSynchronizable(inp, inp.MaxVelocity, inp_min_velocity, inp.MaxAcceleration, inp_min_acceleration, inp.MaxJerk, Profiles[limiting_dof].Direction, limiting_dof, new_max_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
+  IF (IsPhaseSynchronizable(inp, inp.MaxVelocity, inp_min_velocity, inp.MaxAcceleration, inp_min_acceleration, inp.MaxJerk, Profiles[limiting_dof].Direction, limiting_dof, new_max_velocity, new_min_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO inp._dofs-1 DO
       IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
@@ -226,12 +226,12 @@ IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = Interfa
       // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
       CASE (p.JerkSigns) OF 
         ProfileJerkSigns.Uddu: 
-          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], -new_max_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
               found_time_synchronization := FALSE;
           END_IF
 
         ProfileJerkSigns.Udud: 
-          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], -new_max_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
+          IF ( NOT p.CheckTime(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], new_max_velocity[dof], new_min_velocity[dof], new_max_acceleration[dof], new_min_acceleration[dof])) THEN
               found_time_synchronization := FALSE;
           END_IF
       END_CASE
@@ -319,6 +319,7 @@ VAR_INPUT
   limitingDirection : ProfileDirection;
   limitingDof : INT;
   newMaxVelocity : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  newMinVelocity : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;  
   newMaxAcceleration : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   newMinAcceleration : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   newMaxJerk : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
@@ -326,10 +327,10 @@ END_VAR
 VAR
   pdFoundNoneZero : BOOL := FALSE;
   v0Scale, a0Scale, vfScale, afScale, scale : LREAL;
-  oldMaxJerk, oldMaxVel, oldMaxAcc, oldMinAcc : LREAL;
+  oldMaxJerk, oldMaxVel, oldMinVel, oldMaxAcc, oldMinAcc : LREAL;
   dof : INT;
   pd : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  maxJerkLimiting, maxVelLimiting, maxAccLimiting, minAccLimiting : LREAL;
+  maxJerkLimiting, maxVelLimiting, minVelLimiting, maxAccLimiting, minAccLimiting : LREAL;
   newDirection : ProfileDirection;
 END_VAR
 ]]></Declaration>
@@ -354,9 +355,10 @@ THEN
 END_IF
 
 maxJerkLimiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
-maxVelLimiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
-maxAccLimiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
-minAccLimiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
+maxVelLimiting := SEL(limitingDirection = ProfileDirection.Up, vMin[limitingDof], vMax[limitingDof]);
+minVelLimiting := SEL(limitingDirection = ProfileDirection.Up, vMax[limitingDof], vMin[limitingDof]);
+maxAccLimiting := SEL(limitingDirection = ProfileDirection.Up, aMin[limitingDof], aMax[limitingDof]);
+minAccLimiting := SEL(limitingDirection = ProfileDirection.Up, aMax[limitingDof], aMin[limitingDof]);
 
 FOR dof:=0 TO inp._dofs-1
 DO
@@ -384,16 +386,19 @@ DO
                       ProfileDirection.Up);
                       
   oldMaxJerk := SEL(newDirection = ProfileDirection.Up, -jMax[dof], jMax[dof]);
-  oldMaxVel := SEL(newDirection = ProfileDirection.Up, -vMax[dof], vMin[dof]);
-  oldMaxAcc := SEL(newDirection = ProfileDirection.Up, -aMax[dof], aMin[dof]);
-  oldMinAcc := SEL(newDirection = ProfileDirection.Up, -aMin[dof], aMax[dof]);
+  oldMaxVel := SEL(newDirection = ProfileDirection.Up, vMin[dof], vMax[dof]);
+  oldMinVel := SEL(newDirection = ProfileDirection.Up, vMax[dof], vMin[dof]);  
+  oldMaxAcc := SEL(newDirection = ProfileDirection.Up, aMin[dof], aMax[dof]);
+  oldMinAcc := SEL(newDirection = ProfileDirection.Up, aMax[dof], aMin[dof]);
   
   newMaxVelocity[dof] := scale * maxVelLimiting;
+  newMinVelocity[dof] := scale * maxVelLimiting;  
   newMaxAcceleration[dof] := scale * maxAccLimiting;
   newMinAcceleration[dof] := scale * minAccLimiting;
   newMaxJerk[dof] := scale * maxJerkLimiting;
   
   IF ABS(oldMaxVel) < ABS(newMaxVelocity[dof]) OR_ELSE
+	 ABS(oldMinVel) < ABS(newMinVelocity[dof]) OR_ELSE
      ABS(oldMaxAcc) < ABS(newMaxAcceleration[dof]) OR_ELSE
      ABS(oldMinAcc) < ABS(newMinAcceleration[dof]) OR_ELSE
      ABS(oldMaxJerk) < ABS(newMaxJerk[dof])
