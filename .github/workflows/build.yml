@@ -1,0 +1,26 @@
+name: Build/Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  Build:
+    name: Build via proxy
+    runs-on: ubuntu-latest
+    env:
+      JENKINS_USER: ${{ secrets.JENKINS_USER }}
+      JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
+    steps:
+      - name: Trigger Jenkins
+        uses: stefanbesler/build-jenkins-job@e54f55e1a31c7d4f2adcc17f714e37b4f6d04837
+        with:
+          jenkins-url: https://www.infiniteautomation.at:8883
+          jenkins-token: ${{ secrets.JENKINS_TOKEN }}
+          jenkins-user: ${{ secrets.JENKINS_USER }}
+          jenkins-job: stefanbesler/Struckig/main
+          jenkins-job-params: '{"TC_VERSIONS":"TC3.1.4024.17","VERSION":"","REVISION":""}'
+          jenkins-wait-job: wait
+          jenkins-ssl-verify: false
