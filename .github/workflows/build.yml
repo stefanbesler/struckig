@@ -15,7 +15,8 @@ jobs:
       JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
     steps:
       - name: Trigger Jenkins
-        uses: stefanbesler/build-jenkins-job@fa4b3db315c0d797482a6e2dbb18e51d28749948
+        id: trigger-jenkins
+        uses: stefanbesler/build-jenkins-job@45a70c6ec7da141b0569f5144a8bec9210325438
         with:
           jenkins-url: https://www.infiniteautomation.at:8883
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
@@ -24,3 +25,9 @@ jobs:
           jenkins-job-params: '{"TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":""}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
+      - name: Download Artifact
+        run: |
+          apt-get update
+          apt-get install unzip curl
+          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.infiniteautomation.at:8883/job/stefanbesler/job/Struckig/job/main/{{ jobs.trigger-jenkins.output.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
+          unzip archive.zip
