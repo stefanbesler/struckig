@@ -1,1 +1,22 @@
+name: Build/Test
 
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  Build:
+    name: Jenkins proxy
+    runs-on: self-hosted
+    steps:
+    - name: Trigger Struckig
+      uses: toptal/jenkins-job-trigger-action@master
+      with:
+        jenkins_url: "https://infiniteautomation.at:8883/"
+        jenkins_user: ${{ secrets.JENKINS_USER }}
+        jenkins_token: ${{ secrets.JENKINS_TOKEN }}
+        job_name: "stefanbesler/Struckig/main"
+        job_params: '{"TCVERSIONS":"TC3.1.4024.17"}'
+        job_timeout: "1800" #s
