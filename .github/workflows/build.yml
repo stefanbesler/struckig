@@ -15,7 +15,7 @@ jobs:
       JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
     steps:
       - name: Trigger Jenkins
-        uses: stefanbesler/build-jenkins-job@3f9f45d61b1f9a106e405f852f4bdc68d1ab0180
+        uses: stefanbesler/build-jenkins-job@3e5026259460d61f26c3274385197e4f67733a38
         with:
           jenkins-url: https://www.infiniteautomation.at:8883
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
