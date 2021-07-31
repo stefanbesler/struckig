@@ -31,3 +31,9 @@ jobs:
           apt-get install unzip curl
           curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.infiniteautomation.at:8883/job/stefanbesler/job/Struckig/job/main/{{ jobs.trigger-jenkins.output.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
+      - name: Test Report
+        uses: mikepenz/action-junit-report@v2
+        with:
+          report_paths: 'archive/test/TcUnit_xUnit_results.xml'
+          summary: true
+          require_tests: false
