@@ -21,6 +21,6 @@ jobs:
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
           jenkins-job: stefanbesler/Struckig/main
-          jenkins-job-params: '{"TC_VERSIONS":"TC3.1.4024.17","VERSION":"","REVISION":""}'
+          jenkins-job-params: '{"TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":""}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
