@@ -1,35 +1,32 @@
 name: Build/Test
-
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
     branches: [ main ]
   workflow_dispatch:
 jobs:
   Build:
-    name: Build via proxy
+    name: Build/Test
     runs-on: ubuntu-latest
-    env:
-      JENKINS_USER: ${{ secrets.JENKINS_USER }}
-      JENKINS_TOKEN: ${{ secrets.JENKINS_TOKEN }}
     steps:
-      - name: Trigger Jenkins
+      - name: Build
         id: trigger-jenkins
-        uses: stefanbesler/build-jenkins-job@45a70c6ec7da141b0569f5144a8bec9210325438
+        uses: iadonkey/build-jenkins-job@1.1.0
         with:
-          jenkins-url: https://www.infiniteautomation.at:8883
+          jenkins-url: http://www.infiniteautomation.at:8888
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
           jenkins-job: Iaf/build_library/main
           jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":"${{ github.sha }}"}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
-      - name: Download Artifact
+      - name: Copy Artifact
         run: |
           curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.infiniteautomation.at:8883/job/Iaf/job/build_library/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
-      - name: Publish Unit Test Results
+      - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
           files: archive/test/TcUnit_xUnit_results.xml
