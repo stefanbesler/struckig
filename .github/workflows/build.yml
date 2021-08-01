@@ -21,13 +21,13 @@ jobs:
           jenkins-url: https://www.infiniteautomation.at:8883
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
-          jenkins-job: stefanbesler/Struckig/main
-          jenkins-job-params: '{"TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":""}'
+          jenkins-job: Iaf/build_library/main
+          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.github_repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":"${{ github.sha }}"}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
       - name: Download Artifact
         run: |
-          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.infiniteautomation.at:8883/job/stefanbesler/job/Struckig/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
+          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.infiniteautomation.at:8883/job/Iaf/job/build_library/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
       - name: Publish Unit Test Results
         uses: EnricoMi/publish-unit-test-result-action@v1
