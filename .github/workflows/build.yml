@@ -22,7 +22,7 @@ jobs:
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
           jenkins-job: Iaf/build_library/main
-          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.github.repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":"${{ github.sha }}"}'
+          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":"${{ github.sha }}"}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
       - name: Download Artifact
