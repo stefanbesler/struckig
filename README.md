@@ -48,8 +48,8 @@ Please note, that not all unittests from the [original](https://www.github.com/p
 # Continuous integration
 
 Continuous integration has not really arrived in Operational technology (OT) -- yet. Some colleguages from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publically available. Luckily, they agreed with me to let me try their tools as an
-alpha/beta tester with this project. For more information on this topic, please contact info[at]infiniteautomation.at ; In the meantime I
-thank pfurma and seehma for letting me use their build environment in this early development stage of their DevOps tools.
+alpha/beta tester with this project. For more information on this topic, please contact info[at]zeugwerk.at ; In the meantime I
+thank @pfurma and @seehma for letting me use their build environment in this early development stage of their DevOps tools.
 
 # Example
 

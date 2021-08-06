@@ -15,7 +15,7 @@ jobs:
         id: trigger-jenkins
         uses: iadonkey/build-jenkins-job@1.1.0
         with:
-          jenkins-url: http://www.infiniteautomation.at:8888
+          jenkins-url: http://www.zeugwerk.at:8888
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
           jenkins-job: Iaf/build_library/main
