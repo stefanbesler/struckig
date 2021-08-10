@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="DebuggedExamplesTest" Id="{e15861f7-5c4d-40dd-bbe1-0b0b2e41287f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK DebuggedExamplesTest EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Lissajous_Step2_TimeVel();
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="Test_Lissajous_Step2_TimeVel" Id="{2a0d14ac-5940-4c69-9724-05c45794e7d8}">
+      <Declaration><![CDATA[METHOD Test_Lissajous_Step2_TimeVel
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(2) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity :=         [ 1000.0, 1000.0 ],
+    MaxAcceleration :=     [ 50000.0, 50000.0 ],
+    MaxJerk :=             [ 500000.0, 500000.0 ],
+    CurrentPosition :=     [ 127.69838649916392, 136.9220970012496 ],
+    CurrentVelocity :=     [ -814.34434721941739, 291.58745096856461 ],
+    CurrentAcceleration := [ 0.0, 0.0 ],
+    TargetPosition :=      [ 18.837155858793942, 168.86558510040302 ],
+    TargetVelocity :=      [ -898.22405558544438, 214.33071799159862 ],
+    TargetAcceleration :=  [ 0.0, 0.0 ]
+  );
+  output : Struckig.OutputParameter;
+  state, expectedState : TrajectoryState;
+  expectedLimit : ProfileLimits;
+END_VAR
+VAR
+  arr6 : ARRAY[0..6] OF LREAL; 
+  arr7 : ARRAY[0..7] OF LREAL;   
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Lissajous_Step2_TimeVel');
+
+state := ruckig.update(input, output);
+expectedState := TrajectoryState.Busy;
+AssertEquals(Expected := expectedState, Actual := state, Message := '');
+AssertEquals_LREAL(Expected := 0.11389076484846114, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+
+// Profile 0
+expectedLimit := ProfileLimits.Vel;
+AssertEquals(Expected := expectedLimit, Actual := output.Trajectory.Profiles[0].Limits, Message := 'Profile[0] limit incorrect');
+arr6[0] := 0.019269439679481217;
+arr6[1] := 0.00000000000000000;
+arr6[2] := 0.019269439679481217; 
+arr6[3] := 0.046817563080924759; 
+arr6[4] := 0.014267161204286971; 
+arr6[5] := 0.00000000000000000;
+arr6[6] := 0.014267161204286971;
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[0].t), DELTA := 1E-8, Message := 'Profile[0] durations incorrect');
+
+arr6[0] := -500000.00000000000;
+arr6[1] := 0;
+arr6[2] := 500000.00000000000; 
+arr6[3] := 0; 
+arr6[4] := 500000.00000000000; 
+arr6[5] := 0.00000000000000000;
+arr6[6] := -500000.00000000000;
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[0].j), DELTA := 1E-8, Message := 'Profile[0] jerk incorrect');
+
+arr7[0] := 0;
+arr7[1] := -9634.7198397406082;
+arr7[2] := -9634.7198397406082; 
+arr7[3] := 0; 
+arr7[4] := 0; 
+arr7[5] := 7133.5806021434855;
+arr7[6] := 7133.5806021434855;
+arr7[7] := 0;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].a), DELTA := 1E-8, Message := 'Profile[0] acceleraton incorrect');
+
+arr7[0] := -814.34434721941739;
+arr7[1] := -907.17217360970869;
+arr7[2] := -907.17217360970869; 
+arr7[3] := -1000.0000000000000; 
+arr7[4] := -1000.0000000000000; 
+arr7[5] := -949.11202779272219;
+arr7[6] := -949.11202779272219;
+arr7[7] := -898.22405558544438;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].v), DELTA := 1E-8, Message := 'Profile[0] velocity incorrect');
+
+arr7[0] := 127.69838649916392;
+arr7[1] := 111.41018048835782;
+arr7[2] := 111.41018048835782;
+arr7[3] := 92.736987542611629;
+arr7[4] := 45.919424461686873;
+arr7[5] := 31.894272225013403;
+arr7[6] := 31.894272225013403;
+arr7[7] := 18.837155858793942;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].p), DELTA := 1E-8, Message := 'Profile[0] position incorrect');
+
+
+// Profile 1
+expectedLimit := ProfileLimits.Vel;
+AssertEquals(Expected := expectedLimit, Actual := output.Trajectory.Profiles[1].Limits, Message := 'Profile[1] limit incorrect');
+arr6[0] := 0.0025639897110806198;
+arr6[1] := 0.00000000000000000;
+arr6[2] := 0.0025639897110806198;
+arr6[3] := 0.084436715236858723;
+arr6[4] := 0.012163035094720590;
+arr6[5] := 0.00000000000000000;
+arr6[6] := 0.012163035094720590;
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[1].t), DELTA := 1E-8, Message := 'Profile[1] durations incorrect');
+
+arr6[0] := -500000.00000000000;
+arr6[1] := 0;
+arr6[2] := 500000.00000000000; 
+arr6[3] := 0; 
+arr6[4] := -500000.00000000000; 
+arr6[5] := 0.00000000000000000;
+arr6[6] := 500000.00000000000;
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[1].j), DELTA := 1E-8, Message := 'Profile[1] jerk incorrect');
+
+arr7[0] := 0.00000000000000000;
+arr7[1] := -1281.9948555403098;
+arr7[2] := -1281.9948555403098;
+arr7[3] := 0.00000000000000000;
+arr7[4] := 0.00000000000000000;
+arr7[5] := -6081.5175473602949;
+arr7[6] := -6081.5175473602949;
+arr7[7] := 0.00000000000000000;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].a), DELTA := 1E-8, Message := 'Profile[1] acceleraton incorrect');
+
+arr7[0] := 291.58745096856461;
+arr7[1] := 289.94394015893278;
+arr7[2] := 289.94394015893278;
+arr7[3] := 288.30042934930094;
+arr7[4] := 288.30042934930094;
+arr7[5] := 251.31557367044977;
+arr7[6] := 251.31557367044977;
+arr7[7] := 214.33071799159859;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].v), DELTA := 1E-8, Message := 'Profile[1] velocity incorrect');
+
+arr7[0] := 136.92209700124960;
+arr7[1] := 137.66831957714459;
+arr7[2] := 137.66831957714459;
+arr7[3] := 138.40892355996496;
+arr7[4] := 162.75206481559599;
+arr7[5] := 166.10872368972954;
+arr7[6] := 166.10872368972954;
+arr7[7] := 168.86558510040302;
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].p), DELTA := 1E-8, Message := 'Profile[1] position incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
