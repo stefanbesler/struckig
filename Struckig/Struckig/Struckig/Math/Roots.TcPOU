@@ -293,10 +293,10 @@ a := polynom[0];
 b := polynom[1];
 c := polynom[2];
 d := polynom[3];
-
-IF (ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilonSqrt AND_THEN ABS(c) < Constants.DoubleEpsilonSqrt AND_THEN ABS(d) < Constants.DoubleEpsilon)
-THEN  
-  e0 := cbrt(c * c);
+e0 := cbrt(c * c);
+IF (ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilonSqrt AND_THEN ABS(c) < Constants.DoubleEpsilonSqrt AND_THEN ABS(d) < Constants.DoubleEpsilon) AND_THEN
+   ABS(e0) > Constants.DoubleEpsilon
+THEN
   e1 := (b * b + 12 * d)/(9*e0);
   q1 := -(4 * b)/3 - e0 - e1;
   p1 := SQRT(-q1 - 2 * b);
