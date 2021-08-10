@@ -23,6 +23,9 @@
     <Compile Include="POUs\DebuggedExamplesTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\GeneratedTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\SecondaryFeaturesTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>

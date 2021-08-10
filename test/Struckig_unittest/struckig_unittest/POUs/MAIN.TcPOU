@@ -6,6 +6,7 @@ VAR
   knownExamplesTest : KnownExamplesTest;
   secondaryFeaturesTest : SecondaryFeaturesTest;
   debuggedExamplesTest : DebuggedExamplesTest;  
+  generatedTest : GeneratedTest;    
 END_VAR
 ]]></Declaration>
     <Implementation>
