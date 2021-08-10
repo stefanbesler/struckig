@@ -841,6 +841,10 @@ DO
 
   // Single Newton step (regarding pd)
   h1 := (ad_ad + 2*jMax*(af*t + (jMax*t - a0)*(t - tf) - vd))*0.5;
+  IF h1 < 0
+  THEN
+    CONTINUE;
+  END_IF
   h2 := (-ad + jMax*(-2*t + tf));
   orig := (af_p3 - a0_p3 + 3*af*jMax*t*(af + jMax*t) + 3*a0_a0*(af + jMax*t) - 3*a0*(af_af + 2*af*jMax*t + jMax_jMax*(t*t - tf_tf)) + 3*jMax_jMax*(-2*pd + jMax*t*(t - tf)*tf + 2*tf*v0))/(6*jMax_jMax) - Power(h1,1.5)/(jMax*ABS(jMax)) + ((-ad - jMax*t)*h1)/(jMax_jMax);
   deriv := (6*jMax*h2*SQRT(h1)/ABS(jMax) + 2*(-ad - jMax*tf)*h2 - 2*(3*ad_ad + af*jMax*(8*t - 2*tf) + 4*a0*jMax*(-2*t + tf) + 2*jMax*(jMax*t*(3*t - 2*tf) - vd)))/(4*jMax);
@@ -1257,7 +1261,12 @@ DO
 	END_IF
   
   t := t - orig / deriv_newton;
-  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd))/ABS(jMax);
+  h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
+  IF h1 < 0
+  THEN
+    CONTINUE;
+  END_IF
+  h1 := SQRT(h1)/ABS(jMax);  
   orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
   IF (ABS(orig) > 1E-9)
   THEN
@@ -1271,7 +1280,12 @@ DO
     t := t - orig / deriv_newton;           
   END_IF
 
-  h1 := SQRT((af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd))/ABS(jMax);
+  h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
+  IF h1 < 0
+  THEN
+    CONTINUE;
+  END_IF
+  h1 := SQRT(h1)/ABS(jMax);
   Profile.t[0] := t;
   Profile.t[1] := 0;
   Profile.t[2] := Profile.t[0] + a0/jMax;

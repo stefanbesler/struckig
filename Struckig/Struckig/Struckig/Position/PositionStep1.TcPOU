@@ -441,11 +441,12 @@ THEN
   END_IF
 END_IF
 
+// TODO: recheck this
 h0 := 3*(af_af - a0_a0 + 2*jMax*(v0 + vf));
-h1 := SQRT(2*(2*Power2(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af - a0)*jMax*vf - 3*a0*af_af) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf) + 8*a0*(af_p3 + 3*jMax_jMax*pd_ + 3*af*jMax*vf) - 3*(af_p4 + 4*af_af*jMax*vf + 4*jMax_jMax*(vf_vf - v0_v0))))) * ABS(jMax) / jMax;
+h1 := 2*(2*Power2(a0_p3 + 2*af_p3 + 6*jMax_jMax*pd_ + 6*(af - a0)*jMax*vf - 3*a0*af_af) + h0*(a0_p4 - 6*a0_a0*(af_af + 2*jMax*vf) + 8*a0*(af_p3 + 3*jMax_jMax*pd_ + 3*af*jMax*vf) - 3*(af_p4 + 4*af_af*jMax*vf + 4*jMax_jMax*(vf_vf - v0_v0))));
 IF h1 >= 0 AND_THEN ABS(h0) > Constants.DoubleEpsilon
 THEN
-  h1 := SQRT(h1);
+  h1 := SQRT(h1) * ABS(jMax) / jMax;
   
   // Three step
   Profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0*af_af + 12*jMax_jMax*pd_ + 12*(af - a0)*jMax*vf + h1)/(2*jMax*h0);

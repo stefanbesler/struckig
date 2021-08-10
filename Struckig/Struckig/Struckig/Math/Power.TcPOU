@@ -9,7 +9,7 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Power := EXPT(v, e);]]></ST>
+      <ST><![CDATA[Power := SEL(v < 0, 1.0, -1.0) * EXPT(ABS(v), e);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
