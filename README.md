@@ -31,7 +31,7 @@ The original project, `ruckig` is a submodule of this repository. The commit-has
     - [x] SecondaryFeatures (otg-test.cpp)
     - [ ] Randomized trajectories (otg-test.cpp)
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
-    - [ ] run unit tests to find more issues that sneaked in while porting
+    - [x] run unit tests to find more issues that sneaked in while porting
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Refactor (coding conventions)
 - [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler :-(
@@ -48,15 +48,15 @@ Please note, that not all unittests from the [original](https://www.github.com/p
 # Continuous integration
 
 Continuous integration has not really arrived in Operational technology (OT) -- yet. Some colleguages from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publically available. Luckily, they agreed with me to let me try their tools as an
-alpha/beta tester with this project. For more information on this topic, please contact info[at]zeugwerk.at ; In the meantime I
-thank @pfurma and @seehma for letting me use their build environment in this early development stage of their DevOps tools.
+alpha/beta tester with this project. For more information on this topic, please contact [Zeugwerk](mailto:info@zeugwerk.at); In the meantime I
+thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build environment in this early development stage of their DevOps tools.
 
 # Example
 
 The following (advanced) examples shows how to use (st)ruckig to calculate a 2-step positioning profile for a single axis.
  - The first step moves the axis from a start position (47mm) to a target position (18mm) with a *high* velocity and an end-velocity of -50mm/s.
  - From that point the profile is *switched* such that the axis continues to moves "slowly" (speed: 50mm/s) to its final destination (9mm) 
-   where the axis stops    moving.
+   where the axis stops moving.
 ```
 
 PROGRAM Example02_PositionProfile_2Steps
