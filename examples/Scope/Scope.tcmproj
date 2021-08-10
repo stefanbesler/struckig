@@ -15,5 +15,8 @@
     <Content Include="Example03.tcscopex">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="Example04.tcscopex">
+      <SubType>Content</SubType>
+    </Content>
   </ItemGroup>
 </Project>

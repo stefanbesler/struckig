@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.6">
   <Task Name="PlcTask" Id="{01918838-c2f2-49c8-a69c-6d14f582fbd7}">
     <!--CycleTime in micro seconds.-->
     <CycleTime>1000</CycleTime>
@@ -12,6 +12,9 @@
     </PouCall>
     <PouCall>
       <Name>Example03_2DoFs_Synchronized_Waypoints</Name>
+    </PouCall>
+    <PouCall>
+      <Name>Example04_2DoFs_Synchronized_Waypoints_2</Name>
     </PouCall>
     <TaskFBGuid>{b38c5c12-9f71-4574-9b93-4808a2de6770}</TaskFBGuid>
     <Fb_init>{ea737a3f-6d0f-4a32-b129-c0f41697a9e1}</Fb_init>
