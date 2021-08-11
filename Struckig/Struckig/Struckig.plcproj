@@ -54,6 +54,9 @@
     <Compile Include="Struckig\Brake\Brake.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Math\BubbleSortLreal.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Math\Power.TcPOU">
       <SubType>Code</SubType>
     </Compile>

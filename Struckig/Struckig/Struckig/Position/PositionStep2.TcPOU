@@ -20,6 +20,7 @@ VAR
   
   d_extremasCount : INT;
   d_extremas : ARRAY[0..6] OF LREAL;
+  indices : ARRAY[0..6] OF INT;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -1070,18 +1071,13 @@ Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
 // Solve 4th order derivative analytically
 Roots.SolveQuartMonic(ADR(deriv[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 
-// TODO: just for testing, sort extremas!!
-d_extremas[2] := d_extremas[0];
-d_extremas[0] := d_extremas[1];
-d_extremas[1] := d_extremas[2];
-
 tz_min := 0.0;
 tz_max := tf;
 tz_current := tz_min;
-
+BubbleSortLreal(data:=ADR(d_extremas), d_extremasCount, indicesSorted:=ADR(indices));
 FOR i:=0 TO d_extremasCount
 DO
-  tz := d_extremas[i];
+  tz := d_extremas[indices[i]];
   IF (tz <= 0.0 OR_ELSE tz >= tz_max)
   THEN
     CONTINUE;

@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="BubbleSortLreal" Id="{019830ac-0aa6-4391-9a8a-478037ed79fe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION BubbleSortLreal : BOOL
+VAR_INPUT
+  data : POINTER TO LREAL; // input unsorted array
+  size : INT; // elements in the data array
+  indicesSorted : POINTER TO INT; // actual output, sorted indices
+END_VAR
+VAR
+  i, j, h : INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[FOR i:=0 TO size
+DO
+  indicesSorted[i] := i;
+END_FOR
+
+// Bubblesort possible_t_syncs from best to worst
+FOR i:=0 TO size-1
+DO
+  FOR j:=0 TO size-1-i
+  DO  
+    IF data[indicesSorted[j]] > data[indicesSorted[j+1]]
+    THEN
+      h := indicesSorted[j];
+      indicesSorted[j] := indicesSorted[j+1];
+      indicesSorted[j+1] := h;     
+		END_IF
+  END_FOR
+END_FOR
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
