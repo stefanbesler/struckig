@@ -88,19 +88,46 @@ TEST_FINISHED();]]></ST>
 """)
 
 from ruckig import InputParameter, OutputParameter, Result, Ruckig
+#import sys
+#    
+#otg = Ruckig(3, 0.001)
+#inp = InputParameter(3)
+#inp.current_position = [ 14.0885808545, -33.9152203952, 70.8304765594 ]
+#inp.current_velocity = [ 94.9432603820, -555.1227229095, -441.9205790714 ]
+#inp.current_acceleration = [ 5028.6398970234, 4367.9597618504, 6063.8211734920 ]
+#inp.target_position = [ -18.1406321446, -21.9844574895, 8.5010665680 ]
+#inp.target_velocity = [ 711.7005183980, -389.8180727062, -335.3533430373 ]
+#inp.target_acceleration = [ 0.0000000000, 0.0000000000, 0.0000000000 ]
+#inp.max_velocity = [2000, 2000, 2000]
+#inp.max_acceleration = [20000, 20000, 20000]
+#inp.max_jerk = [800000, 800000, 800000]
+#out = OutputParameter(3)
+#
+# runtime errors and other errors
+#res = otg.update(inp, out)
+#            
+#sys.exit(-1)
 
 if __name__ == '__main__':
     random_uniform_tuple = lambda x: (random.uniform(-x, x), random.uniform(-x, x), random.uniform(-x, x))
-    fmt = lambda x: '{:10.10f}'.format(x)
+    fmt = lambda x: '{:0.20f}'.format(x)
     
     tests = list()
     i = 0
-    while i < 80:
-        
+    count = 0
+    while i < 70:
+        print(f"Trajectory {i}/{count}")
+        count+=1
         target_velocity = random.choice([(0,0,0), random_uniform_tuple(1000) ])
         target_acceleration = random.choice([(0,0,0), random_uniform_tuple(1000) ])
         
-        i = i + 1
+        try:
+            del(otg)
+            del(inp)
+            del(out)
+        except:
+            pass
+        
         otg = Ruckig(3, 0.001)
         inp = InputParameter(3)
         inp.current_position = random_uniform_tuple(100)
@@ -124,6 +151,7 @@ if __name__ == '__main__':
             print(e)
             continue
         
+        i += 1
         target_velocity_suffix = '_HasTargetVelocity' if target_velocity != (0,0,0) else ''
         target_acceleration_suffix = '_HasTargetAcceleration' if target_acceleration != (0,0,0) else ''
     
@@ -145,9 +173,28 @@ if __name__ == '__main__':
             t_min=list(map(fmt, [x.t_min for x in out.trajectory.position_extrema])),\
             t_max=list(map(fmt, [x.t_max for x in out.trajectory.position_extrema]))
         )
-        
+              
         print(t)
         tests.append(t)
 
+    print("re-run")
+    for t in tests:
+
+        # second run
+        otg = Ruckig(3, 0.001)
+        inp = InputParameter(3)
+        inp.current_position = list(map(float, t.current_position.split(', ')))
+        inp.current_velocity = list(map(float, t.current_velocity.split(', ')))
+        inp.current_acceleration = list(map(float, t.current_acceleration.split(', ')))
+        inp.target_position = list(map(float, t.target_position.split(', ')))
+        inp.target_velocity = list(map(float, t.target_velocity.split(', ')))
+        inp.target_acceleration = list(map(float, t.target_acceleration.split(', ')))
+        inp.max_velocity = [2000, 2000, 2000]
+        inp.max_acceleration = [20000, 20000, 20000]
+        inp.max_jerk = [800000, 800000, 800000]
+        out = OutputParameter(3)
+        
+        print(t)
+        
     with open('Struckig_unittest/struckig_unittest/POUs/GeneratedTest.TcPOU', 'w') as f:
         f.write(tmpl.render(methods=tests).strip())
