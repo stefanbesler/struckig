@@ -93,18 +93,14 @@ if __name__ == '__main__':
     random_uniform_tuple = lambda x: (random.uniform(-x, x), random.uniform(-x, x), random.uniform(-x, x))
     fmt = lambda x: '{:10.10f}'.format(x)
     
-    target_cases_velocities =  [(0,0,0) for _ in range(4)] + \
-        [random_uniform_tuple(1000) for _ in range(4)]
-    
-    target_cases_accelerations = [(0,0,0) for _ in range(4)] + \
-        [random_uniform_tuple(10000) for _ in range(4)]
-    
-    testcases = itertools.product(target_cases_velocities, target_cases_accelerations)
     tests = list()
-    errors = 0
-    testcaseCount = 0
-    for i, (target_velocity, target_acceleration) in enumerate(testcases):
-        testcaseCount = testcaseCount + 1
+    i = 0
+    while i < 80:
+        
+        target_velocity = random.choice([(0,0,0), random_uniform_tuple(1000) ])
+        target_acceleration = random.choice([(0,0,0), random_uniform_tuple(1000) ])
+        
+        i = i + 1
         otg = Ruckig(3, 0.001)
         inp = InputParameter(3)
         inp.current_position = random_uniform_tuple(100)
@@ -118,11 +114,14 @@ if __name__ == '__main__':
         inp.max_jerk = [800000, 800000, 800000]
         out = OutputParameter(3)
         
-        # todo: this can be tested as well
+        # runtime errors and other errors
         try:
             res = otg.update(inp, out)
+            if res != Result.Working:
+              print('invalid state')
+              continue
         except RuntimeError as e:
-            errors = errors + 1
+            print(e)
             continue
         
         target_velocity_suffix = '_HasTargetVelocity' if target_velocity != (0,0,0) else ''
@@ -147,8 +146,8 @@ if __name__ == '__main__':
             t_max=list(map(fmt, [x.t_max for x in out.trajectory.position_extrema]))
         )
         
+        print(t)
         tests.append(t)
-    
-    print(f"RuntimeErrors in {errors}/{testcaseCount} test caes")
-    with open('GeneratedTest.TcPOU', 'w') as f:
+
+    with open('Struckig_unittest/struckig_unittest/POUs/GeneratedTest.TcPOU', 'w') as f:
         f.write(tmpl.render(methods=tests).strip())
