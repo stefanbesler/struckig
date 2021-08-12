@@ -1,0 +1,6 @@
+- name: User guide
+  href: userguide/
+- name: API Reference
+  href: reference/
+- name: Notes
+  href: notes/

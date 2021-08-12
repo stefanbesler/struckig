@@ -1,0 +1,6 @@
+- name: Examples
+  items: 
+  - name: Single axis trajectory
+    href: single_axis_trajectory.md
+  - name: Synchronized trajectory
+    href: synchronized_trajectory.md
