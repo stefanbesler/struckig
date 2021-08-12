@@ -1,0 +1,994 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="TargetPosVelTest" Id="{595e8be0-a7c8-4989-9d9e-b9c1ba34def6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TargetPosVelTest EXTENDS TcUnit.FB_TestSuite
+VAR
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 48.86656216713086564596, 31.55963588984187140341, -13.09422790776093847853 ],
+    CurrentVelocity := [ -274.21841080128081102885, -440.94461360926254656079, -764.75678162210920163488 ],
+    CurrentAcceleration := [ -1478.09700836416959646158, 686.79611869591644790489, -9263.72976579731221136171 ],
+    TargetPosition := [ 25.57994474955607699940, -15.83091418217283319336, -38.97164514571973370494 ],
+    TargetVelocity := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;  
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Trajectory_HasTargetVelocity_3();
+Test_Trajectory_HasTargetVelocity_4();
+Test_Trajectory_HasTargetVelocity_9();
+Test_Trajectory_HasTargetVelocity_14();
+Test_Trajectory_HasTargetVelocity_15();
+Test_Trajectory_HasTargetVelocity_19();
+Test_Trajectory_HasTargetVelocity_20();
+Test_Trajectory_HasTargetVelocity_21();
+Test_Trajectory_HasTargetVelocity_22();
+Test_Trajectory_HasTargetVelocity_27();
+Test_Trajectory_HasTargetVelocity_34();
+Test_Trajectory_HasTargetVelocity_35();
+Test_Trajectory_HasTargetVelocity_36();
+Test_Trajectory_HasTargetVelocity_44();
+Test_Trajectory_HasTargetVelocity_45();
+Test_Trajectory_HasTargetVelocity_54();
+Test_Trajectory_HasTargetVelocity_55();
+Test_Trajectory_HasTargetVelocity_69();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_Trajectory_HasTargetVelocity_14" Id="{1b2f96ff-0b2b-480c-b682-78b947430ae4}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_14
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -11.76337652905456820918, 33.14803985732422120236, 86.65785487127322994638 ],
+    CurrentVelocity := [ 271.37440980320343442145, -405.04035428607960511727, -583.37082347654734348907 ],
+    CurrentAcceleration := [ 1571.32061037071616738103, 6539.21833642809360753745, -6969.97966259226996044163 ],
+    TargetPosition := [ 39.42489592371239837121, -50.65299900321387127633, -42.47174531332036195863 ],
+    TargetVelocity := [ 952.72298352870916460233, 549.10216965310678460810, -199.96235985481098396122 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_14');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.18100561066533815691, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.18100561066533815691, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(39.42489592371239837121, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-11.76337652905456820918, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(33.14803985732422120236, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.15600561066533816246, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-62.29721991120820234755, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(86.65785487127322994638, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.18100561066533815691, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-42.47174531332036195863, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_15" Id="{1ca279fb-fe55-4b4a-9181-928660ce1ecd}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_15
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -23.07515641447260179575, 60.68392399418829086244, -39.17377356735885030048 ],
+    CurrentVelocity := [ 541.45099216081393933564, -955.24690185624820060184, -765.04814896218658759608 ],
+    CurrentAcceleration := [ -9271.11300057422886311542, 4376.93095597828869358636, -2587.84193708146085555200 ],
+    TargetPosition := [ -27.59745181479642894828, 97.62295145618037395252, -4.50546434605880108393 ],
+    TargetVelocity := [ -636.72291881275850755628, 616.09073381933080781891, -82.52656519014260538825 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_15');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.18561602058648316027, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.13645534129957551106, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(-9.75706058924097519025, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.18561602058648316027, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-27.59745181479642894828, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.18561602058648316027, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(97.62295145618037395252, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.07177100934221260220, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(33.68002966797480723926, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.17125230195322679871, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(-3.71520543795192104142, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.02823480242135182477, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-58.80508937654931855832, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_17" Id="{39c5fb36-69a9-42d1-8e3e-10160ca64824}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_17
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 29.09201686409977583025, 26.79555889099025023370, -2.56405583533239678218 ],
+    CurrentVelocity := [ -865.74515531652343725000, -446.66804096341445529106, 715.70430296883705523214 ],
+    CurrentAcceleration := [ -419.53152796798531198874, 3725.90159379652868665289, 3083.71115629947962588631 ],
+    TargetPosition := [ -5.98395477362167582669, 85.98880639059657937651, -77.56683653164213865239 ],
+    TargetVelocity := [ -487.77111778150026566436, 597.93719815311010279402, -19.66112295679818089411 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_17');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.20727577661691312660, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(29.09201686409977583025, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.20727577661691309885, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-5.98395477362167582669, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.20727577661691312660, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(85.98880639059657937651, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.03742622748756373185, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(19.01299187494276665689, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.02885463894537435015, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(16.16785534073141050726, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.20727577661691312660, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-77.56683653164213865239, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_19" Id="{7e13fd3b-dd54-4f4d-9f0f-7027b5822cad}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_19
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 80.71252725401120642346, 44.88025621959243949277, -12.15149697459605704353 ],
+    CurrentVelocity := [ -948.15980924147334008012, -489.88340864146471176355, -827.37383618723242761916 ],
+    CurrentAcceleration := [ -3514.54219608491530379979, -6906.59296787188577582128, 1315.32694212922615406569 ],
+    TargetPosition := [ 59.95790772621657538366, -72.33902659712904892331, -15.83444921441858355138 ],
+    TargetVelocity := [ -459.58488479420384464902, 187.24245841899073639070, 921.25657886294084164547 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_19');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.18063360611716061666, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(80.71252725401120642346, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.07992076514931607811, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(44.57478735687137572086, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(44.88025621959243949277, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.15899784530207772271, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-75.03978196031663117083, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(-12.15149697459605704353, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.12139203206320470230, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-48.06891878044748267484, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_20" Id="{8a75c42d-f179-45c8-a564-37d7f971f993}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_20
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 83.23209059023531608545, -91.01412900146218021291, -45.02313424428616883688 ],
+    CurrentVelocity := [ 478.85135262944709211297, 941.48041828651457763044, 233.77464784894095828349 ],
+    CurrentAcceleration := [ 4901.95944988452902180143, -711.94018044516997179016, -6268.14311607610761711840 ],
+    TargetPosition := [ -60.31306848800090847362, -76.05388552166272120303, -77.88363097381802901964 ],
+    TargetVelocity := [ -28.42585943091080480372, 112.61218905881105456501, -518.94659889602689872845 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_20');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.23417815197351798950, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.03112744931235566018, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(96.49098387500299622843, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.23417815197351798950, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-60.31306848800090847362, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.05967434054652072384, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-58.39013538569540884282, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-91.01412900146218021291, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.01824400060866057660, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(-42.59202121085846926007, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.23417815197351793399, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-77.88363097381802901964, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_21" Id="{1de2dc83-e0e5-436c-8cc4-af94faf6cf45}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_21
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -90.18105588355366819542, 11.40426253106177512109, -96.96426550769332664004 ],
+    CurrentVelocity := [ 268.68366267133455949079, -230.39092451139003969729, 217.37624370386924965715 ],
+    CurrentAcceleration := [ 6950.36478944877671892755, -1973.79956680386658263160, 9973.29839097329022479244 ],
+    TargetPosition := [ 56.23264204687242795444, 89.78670651839811966965, 35.61941562712866016227 ],
+    TargetVelocity := [ -748.79294734560005508683, 279.58550802373474652995, 329.97469268802092301485 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_21');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.22811513995984869507, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.20311513995984870062, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(72.86913239717907231352, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-90.18105588355366819542, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.22811513995984869507, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(89.78670651839811966965, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.02659326510902134191, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(7.08705215721043568777, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.22811513995984869507, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(35.61941562712866016227, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-96.96426550769332664004, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_22" Id="{db750288-e1a0-4ff9-83ba-0d04a07fa847}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_22
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -67.41063214653675572663, -34.84504669460216064181, 71.90844709145784463544 ],
+    CurrentVelocity := [ -627.45307756820307076850, -697.56722522760969695810, -660.83791164052786371030 ],
+    CurrentAcceleration := [ -7277.38846981411006709095, -2750.24172428648398636142, -978.85332476885741925798 ],
+    TargetPosition := [ -57.66574268409263481772, -88.27667420321476754452, 96.97655926730644182499 ],
+    TargetVelocity := [ -610.75498065854083051818, -654.20857948874163412256, 336.03100506981877515500 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_22');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.20245104517991782678, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.17745104517991783233, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(-44.48020150096243696680, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.03409673558726764031, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-87.74964255933160472978, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-34.84504669460216064181, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.20245104517991779902, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-88.27667420321476754452, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.20245104517991782678, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(96.97655926730644182499, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.04944613992821229875, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(52.48505260032155916861, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_27" Id="{d01ebf51-ff5f-4649-adbb-335265efb9b5}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_27
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -29.47354331486815226526, 27.93495185982479256381, 25.04726746624395161689 ],
+    CurrentVelocity := [ -230.41514646826715306815, -990.61050993041703804920, -730.89168845843755661917 ],
+    CurrentAcceleration := [ 8742.55847153794820769690, 5915.09847409233043435961, 4511.30118221045631798916 ],
+    TargetPosition := [ -46.00476070479609091990, -93.63874889974350423927, -84.98442462304464584122 ],
+    TargetVelocity := [ 6.00636834947817987995, -353.84810777792165481515, -981.55918901141831156565 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_27');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.12586715797260131233, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(-29.47354331486815226526, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.12199211979553833962, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-46.02027730923590809198, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(27.93495185982479256381, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.12586715797260131233, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-93.63874889974350423927, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(25.04726746624395161689, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.12586715797260131233, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-84.98442462304464584122, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_3" Id="{b4dcb073-306c-4c14-8f1c-621f1db08191}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_3
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 26.53957997779905042535, -93.07095602825359037524, -22.16503543192527558858 ],
+    CurrentVelocity := [ -978.47395774087203790259, 118.42434690487039006257, -240.97450183146906965703 ],
+    CurrentAcceleration := [ 6077.24253675401814689394, 6138.16243012785889732186, -287.73427625073964009061 ],
+    TargetPosition := [ -74.88074053142992170251, -34.02780494232007413302, 79.44667149152985530236 ],
+    TargetVelocity := [ 90.05732775263027178880, 511.77846374302612275642, 384.28752753365688477061 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_3');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.16528629612631601242, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(26.53957997779905042535, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.15028151957411181594, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-75.78160058464112580623, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.16528629612631601242, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-34.02780494232007413302, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-93.07095602825359037524, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.16528629612631601242, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(79.44667149152985530236, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.02490687981607753870, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-26.19606685654071753788, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_34" Id="{74e6a37b-1f5d-41d3-aa18-f1e0af2b5838}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_34
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 52.72619781679460970736, -25.78201897219773286452, 80.53760009793651875043 ],
+    CurrentVelocity := [ -120.69783207836667315860, 178.50171370384009605914, -265.96277737557261389156 ],
+    CurrentAcceleration := [ 9869.62339068779328954406, 8236.73224664633380598389, 4587.35631399299018085003 ],
+    TargetPosition := [ -7.31302355801524583967, 98.53124939615054245223, -70.22704739896117587250 ],
+    TargetVelocity := [ 648.92680228108224582684, 640.55767309494626715605, -28.66025813343185291160 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_34');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.19340758597333415625, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(52.72619781679460970736, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.16840758597333416180, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-21.45286028170894354616, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.19340758597333415625, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(98.53124939615054245223, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-25.78201897219773286452, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(80.53760009793651875043, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.19340758597333415625, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-70.22704739896117587250, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_35" Id="{de0a4944-8e68-4c0d-91b0-2f368efac3bf}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_35
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ -34.17551015513085133080, -36.11913195800440234962, 51.20006403327516864010 ],
+    CurrentVelocity := [ -436.11356880285654824547, -175.40667275745920505869, 746.11367552095180144534 ],
+    CurrentAcceleration := [ -9866.78282408208724518772, -2137.40956356850620068144, 2870.77810427219810662791 ],
+    TargetPosition := [ 94.89098874895094581916, -43.87608688101931875281, 99.33475834942979076914 ],
+    TargetVelocity := [ 945.80038372223793885496, -169.18944510068342879094, 349.24092684862353053177 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_35');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.19433376507479860340, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.19433376507479860340, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(94.89098874895094581916, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.03733347853010261091, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-50.39525451816182055609, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-36.11913195800440234962, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.19433376507479860340, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-43.87608688101931875281, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.19433376507479860340, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(99.33475834942979076914, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(51.20006403327516864010, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_36" Id="{c89e164e-4852-43c3-ae8f-97f6c167392f}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_36
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 64.35804589046725254775, -17.92542582379405757820, 1.48297994216896711350 ],
+    CurrentVelocity := [ 464.92943892208950273925, -779.25597761349285974575, 998.42982599227457285451 ],
+    CurrentAcceleration := [ 4749.41918638301285682246, -6355.94416374630964128301, 521.38908747176901670173 ],
+    TargetPosition := [ 90.33897695077399703223, -51.53109090258827507114, -18.12118447758692241223 ],
+    TargetVelocity := [ 651.93427968717173826008, 22.75188801650608638738, 576.72189974234174769663 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_36');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.22796271730102146691, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.22796271730102146691, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(90.33897695077399703223, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(64.35804589046725254775, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-17.92542582379405757820, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.21997970156554483290, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-51.64657663770686468752, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.09985417258924977890, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(25.50333501341721742506, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.20296271730102147246, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-30.45589863781214745586, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_4" Id="{f9cb4fbc-1aa0-41a2-bf14-0ef1c574adb7}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_4
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 39.65544040447574047903, -16.66018211442579399773, -58.50720512248746274508 ],
+    CurrentVelocity := [ 152.61039713388095151458, -842.85004717237586646661, -233.59739104574180146301 ],
+    CurrentAcceleration := [ -6325.89065787396975792944, -1505.68574067445842956658, -3102.88067432900697895093 ],
+    TargetPosition := [ -66.91581266696782392955, -93.61689817230509902402, 29.78308499537988041084 ],
+    TargetVelocity := [ 439.82482428242337846314, -284.79407434788117825519, -482.50326392108468098741 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_4');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.21237444505671645989, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.01316518724815633583, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(40.81213387351741772591, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.18737444505671646544, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-75.82809994069509684778, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-16.66018211442579399773, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.21237444505671648765, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-93.61689817230509902402, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.18737444505671646544, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(39.76233326007365320720, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.02835383367352977552, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-63.33854775889894028751, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_44" Id="{a352a649-657e-4878-9a3c-c02ce91c9bf2}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_44
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 33.20927605983496277986, 90.97207853642058239529, -55.08094735406923092569 ],
+    CurrentVelocity := [ -992.30424733188726804656, -901.32445813848187299300, 586.66877088523051497759 ],
+    CurrentAcceleration := [ -2055.28947681546742387582, -6947.94625488244855660014, 5257.19066749439298291691 ],
+    TargetPosition := [ 67.40661968603291143154, 85.00720295179675645159, 88.22002633481628208756 ],
+    TargetVelocity := [ -402.53524157043091236119, -775.84245093694903516734, -256.32808117758236221562 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_44');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.23151950260302325835, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.20651950260302323614, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(75.38666739196018795610, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.10082888716067818502, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(6.96062616300369274569, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.20651950260302326390, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(102.31993089188715373439, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.09899354847148797432, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(59.91000069944395534094, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.20651950260302326390, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(92.54489503092254665262, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-55.08094735406923092569, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_45" Id="{a90abc82-4edd-4f5b-9021-d3f57d6e6320}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_45
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 94.90826698124541849211, 98.68601680143464704997, -94.06931326171563512162 ],
+    CurrentVelocity := [ -430.89473663668559311191, -312.79662986488631304383, -992.83444762482452006225 ],
+    CurrentAcceleration := [ -5676.65368720607239083620, -3762.56637347724063147325, 6550.62068049420850002207 ],
+    TargetPosition := [ -39.76061431821072034154, -54.28480859989317508507, 99.44666750072161676144 ],
+    TargetVelocity := [ -859.34940974039534467011, 795.33260348280805374088, -780.22698676244044690975 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_45');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.33133845625565350179, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(94.90826698124541849211, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.33133845625565355730, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-39.76061431821072034154, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(98.68601680143464704997, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.25596921475835221482, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-74.18217506467304644957, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.30633845625565347959, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(116.86900883644932491734, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.01681172414938223933, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-109.20131569941064242357, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_54" Id="{590bb98b-6f0a-4699-a1bf-6397f323d47b}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_54
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 97.11911830820099567063, -34.96974423375549179127, -12.00449667266771314189 ],
+    CurrentVelocity := [ 732.45673588056706648786, -364.10592093846560146631, 417.20885103824889483803 ],
+    CurrentAcceleration := [ -7499.05473487195013149176, -3391.82282403053886810085, -1045.80444633833030820824 ],
+    TargetPosition := [ -34.58240005713176401514, -14.14677543732022968470, -36.27520430827089370496 ],
+    TargetVelocity := [ -912.82558763807946888846, 208.36586640296604855394, -568.50539307151495904691 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_54');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.18808008069304424370, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.01562618158141006186, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(107.14032815468360126943, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.18808008069304424370, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-34.58240005713176401514, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.18808008069304424370, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-14.14677543732022968470, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.03540881837579783198, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-44.10216499913330778782, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.03261360243271873433, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(-3.46659095127397254288, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.18808008069304424370, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-36.27520430827089370496, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_55" Id="{f0543c96-eb50-405c-a1f1-9a806d72c87a}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_55
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 93.14320777040134657909, -89.74312540741888710727, -99.44513086937998025405 ],
+    CurrentVelocity := [ 358.10280009786106347747, 608.03888639331830745505, 352.36242097628496594552 ],
+    CurrentAcceleration := [ 2330.07739343047796864994, 9276.80286875897945719771, 5318.79396039618404756766 ],
+    TargetPosition := [ 90.69471017690091230179, -41.60077247517397580623, 88.58596356723177223103 ],
+    TargetVelocity := [ -791.02326773343907007074, -519.34342102358630199888, -658.93165900614667407353 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_55');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.24005299536906613000, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.18612405983992955094, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(115.79065190073221458533, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.24005299536906613000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(90.69471017690091230179, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.20158118915996722786, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(-28.88685866039741512168, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-89.74312540741888710727, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.21505299536906613556, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(102.97592170905214459253, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-99.44513086937998025405, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_69" Id="{0b74d1d1-efda-4e1a-8965-52548f866b20}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_69
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 57.27064181935406850243, 60.77262566521827125143, 62.27255646349433959585 ],
+    CurrentVelocity := [ 537.97467176664963517396, -420.66138587481805188872, -215.06636530667026363517 ],
+    CurrentAcceleration := [ -1444.96134368556158733554, -9785.35194497229167609476, -7380.59859225371474167332 ],
+    TargetPosition := [ -63.84344825014372304395, -56.97669545923665168630, -22.85605311820776819332 ],
+    TargetVelocity := [ -201.51935759086109101190, 630.98179272467473310826, 276.24214614430115943833 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_69');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.20486873141224784534, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.02319379832039304701, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(67.69603683932946580626, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.20486873141224784534, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-63.84344825014372304395, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(60.77262566521827125143, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.17986873141224785089, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-70.66790694402018857545, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(62.27255646349433959585, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.17986873141224782313, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-27.67877343848196147746, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_HasTargetVelocity_9" Id="{00948214-053c-4c1c-8dfc-a58c28470f70}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_9
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(3) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
+    CurrentPosition := [ 51.69848597185645644458, 7.44342383280722685868, 34.92442688172334896990 ],
+    CurrentVelocity := [ -421.44916669967597044888, -275.10229321522490408825, 914.94627896365750530094 ],
+    CurrentAcceleration := [ 8837.53563716822463902645, -8661.28092822574944875669, -64.93681698721775319427 ],
+    TargetPosition := [ 85.87288052559532047781, -50.28620894086743930984, -15.14712281129145310388 ],
+    TargetVelocity := [ 635.15347000890233175596, 546.48145876800276710128, 277.88896365954042266821 ],
+    TargetAcceleration := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ]
+  );
+  output : Struckig.OutputParameter;
+  positionExtrema : Struckig.PositionExtremaDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_HasTargetVelocity_9');
+
+ruckig.update(input, output);
+
+// Check total duration of profiles
+AssertEquals_LREAL(Expected := 0.21938772367288389420, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check duration for each phase
+positionExtrema := output.trajectory.profiles[0].positionExtrema();
+AssertEquals_LREAL(0.21938772367288389420, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(85.87288052559532047781, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.02559956417752039248, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(45.80781253564739330386, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[1].positionExtrema();
+AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(7.44342383280722685868, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0.17034751041817919326, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-63.21307103826610074293, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+
+positionExtrema := output.trajectory.profiles[2].positionExtrema();
+AssertEquals_LREAL(0.02491882897876597849, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(55.64054914337343404895, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.19438772367288389975, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(-20.01101356944660381032, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+   
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

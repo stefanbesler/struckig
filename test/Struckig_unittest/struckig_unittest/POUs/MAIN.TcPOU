@@ -5,8 +5,12 @@
 VAR
   knownExamplesTest : KnownExamplesTest;
   secondaryFeaturesTest : SecondaryFeaturesTest;
-  debuggedExamplesTest : DebuggedExamplesTest;  
-  generatedTest : GeneratedTest;    
+  debuggedExamplesTest : DebuggedExamplesTest;
+  targetPosTest : TargetPosTest;
+  targetPosAccTest : TargetPosAccTest;
+  targetPosVelTest : TargetPosVelTest;
+  targetPosVelAccTest : TargetPosVelAccTest;
+  // generatedTest : GeneratedTest;
 END_VAR
 ]]></Declaration>
     <Implementation>
