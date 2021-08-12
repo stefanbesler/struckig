@@ -3,6 +3,10 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Struckig/**'
+      - 'test/**'
+      - 'example/**'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
