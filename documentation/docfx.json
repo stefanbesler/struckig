@@ -3,10 +3,10 @@
     "content": [
       {
         "files": [
-          "userguide/**.md",
-          "userguide/**/toc.yml",      
-          "struckig/**.md",
-          "struckig/**/toc.yml",
+          "userguide/*.md",
+          "userguide/toc.yml",      
+          "struckig/*.md",
+          "struckig/toc.yml",
           "toc.yml",
           "*.md"
         ]
