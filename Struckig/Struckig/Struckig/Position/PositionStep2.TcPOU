@@ -1198,7 +1198,7 @@ DO
     
 END_FOR
 
-IF (Roots.PolyEval(ADR(deriv), 4, dd_tz_current) * Roots.PolyEval(ADR(deriv), 4, tz_max) < 0)
+IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz_max) < 0)
 THEN
   dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current; 
   dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz_max;

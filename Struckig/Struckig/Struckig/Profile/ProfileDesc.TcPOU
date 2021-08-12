@@ -98,8 +98,8 @@ END_FOR
 THIS^.JerkSigns := jerkSigns;
 THIS^.Limits := limits;
 
-aUppLim := SEL((aMax > 0), aMin, aMax) + 1E-12;
-aLowLim := SEL((aMax > 0), aMax, aMin) - 1E-12;
+aUppLim := SEL((aMax > 0), aMin, aMax) + 5E-12;
+aLowLim := SEL((aMax > 0), aMax, aMin) - 5E-12;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
 CheckForVelocity := ABS(v[7] - vf) < 1E-8
@@ -314,8 +314,8 @@ END_FOR
 THIS^.JerkSigns := jerkSigns;
 THIS^.Limits := limits;
 
-aUppLim := SEL(aMax > 0, aMin, aMax) + 5E-12; // todo: ruckig here uses 1E-12
-aLowLim := SEL(aMax > 0, aMax, aMin) - 5E-12;
+aUppLim := SEL(aMax > 0, aMin, aMax) + 5E-11; // todo: ruckig here uses 1E-12
+aLowLim := SEL(aMax > 0, aMax, aMin) - 5E-11;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
 CheckVel := ABS(p[7] - pf) < 1E-8
