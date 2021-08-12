@@ -1,6 +1,12 @@
+- name: Introduction
+  href: introduction.md
 - name: Examples
   items: 
   - name: Single axis trajectory
     href: single_axis_trajectory.md
   - name: Synchronized trajectory
     href: synchronized_trajectory.md
+- name: License
+  href: license.md
+- name: Notices
+  href: notices.md  
