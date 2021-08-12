@@ -20,7 +20,8 @@
     <Title>Struckig</Title>
     <ProjectVersion>0.3.3.0</ProjectVersion>
     <DefaultNamespace>Struckig</DefaultNamespace>
-    <Author></Author>
+    <Author>
+    </Author>
     <Company>Struckig</Company>
   </PropertyGroup>
   <ItemGroup>
@@ -123,11 +124,6 @@
     <Compile Include="Struckig\_DataTypes\TrajectoryState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Struckig.tmc">
-      <SubType>Content</SubType>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <LibraryReference Include="Tc2_System,3.4.24.0,Beckhoff Automation GmbH">
