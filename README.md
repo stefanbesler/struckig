@@ -51,6 +51,10 @@ Continuous integration has not really arrived in Operational technology (OT) -- 
 alpha/beta tester with this project. For more information on this topic, please contact [Zeugwerk](mailto:info@zeugwerk.at); In the meantime I
 thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build environment in this early development stage of their DevOps tools.
 
+# Documentation
+
+The source code and usage documentation of this library is (will be) hosted on [https://stefanbesler.github.io/struckig/](xref:https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
+
 # Example
 
 The following (advanced) examples shows how to use (st)ruckig to calculate a 2-step positioning profile for a single axis.
