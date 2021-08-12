@@ -53,7 +53,7 @@ thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build en
 
 # Documentation
 
-The source code and usage documentation of this library is (will be) hosted on [https://stefanbesler.github.io/struckig/](xref:https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
+The source code and usage documentation of this library is (will be) hosted on [https://stefanbesler.github.io/struckig/](https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
 
 # Example
 
