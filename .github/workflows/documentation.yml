@@ -24,7 +24,7 @@ jobs:
           jenkins-ssl-verify: false
       - name: Copy Artifact
         run: |
-          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.zeugwerk.at:8883/job/job/job/doc/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
+          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://www.zeugwerk.at:8883/job/jobs/job/doc/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
       - name: deploy
         uses: peaceiris/actions-gh-pages@v3
