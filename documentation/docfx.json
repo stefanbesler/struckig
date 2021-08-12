@@ -4,11 +4,9 @@
       {
         "files": [
           "userguide/**.md",
-          "userguide/**/toc.yml",
-          "notes/**.md",
-          "notes/**/toc.yml",          
-          "reference/**.md",
-          "reference/**/toc.yml",
+          "userguide/**/toc.yml",      
+          "struckig/**.md",
+          "struckig/**/toc.yml",
           "toc.yml",
           "*.md"
         ]
