@@ -1,0 +1,38 @@
+{{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
+      
+<script type="text/javascript" src="{{_rel}}styles/docfx.vendor.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/main.js"></script>
+
+<!-- mermaid & highlight support -->
+<script type="text/javascript" src="{{_rel}}styles/mermaid.min.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/highlight.pack.js"></script>
+<script type="text/javascript" src="{{_rel}}styles/highlight-iecst.min.js"></script>
+<script>    
+    mermaid.initialize({
+        startOnLoad:false,
+        flowchart:{
+            useMaxWidth:true,
+            htmlLabels:true
+        },
+        sequence:{
+            useMaxWidth:true
+        },        
+    });
+
+    window.onload = function () {
+        hljs.highlightAll(); 
+    
+        const elements = document.getElementsByClassName("lang-mermaid");
+        let index = 0;
+
+        while (elements.length != 0) {
+            let element = elements[0];
+            mermaid.render('graph'+index, element.innerText, (svgGraph) => {                    
+                element.parentElement.outerHTML = "<div class='mermaid'>" + svgGraph + "</div>";
+            });
+            $('#graph'+index).height("100%");
+            ++index;
+        }
+    }
+</script>

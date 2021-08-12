@@ -20,7 +20,7 @@
     "dest": "html",
     "fileMetadataFiles": [],
     "template": [
-      "statictoc"
+      "statictoc", "template"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
