@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'dodumentation/**'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
