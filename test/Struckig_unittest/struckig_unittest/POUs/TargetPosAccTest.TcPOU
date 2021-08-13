@@ -20,8 +20,7 @@ VAR
   positionExtrema : Struckig.PositionExtremaDesc;  
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test_Trajectory_HasTargetAcceleration_1();
-Test_Trajectory_HasTargetAcceleration_8();
+      <ST><![CDATA[Test_Trajectory_HasTargetAcceleration_8();
 Test_Trajectory_HasTargetAcceleration_18();
 Test_Trajectory_HasTargetAcceleration_26();
 Test_Trajectory_HasTargetAcceleration_29();
@@ -34,56 +33,6 @@ Test_Trajectory_HasTargetAcceleration_63();
 Test_Trajectory_HasTargetAcceleration_67();
 ]]></ST>
     </Implementation>
-    <Method Name="Test_Trajectory_HasTargetAcceleration_1" Id="{4db84db9-5d5b-4b74-9f1e-f0d328e02657}">
-      <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetAcceleration_1
-VAR_INST
-  ruckig : Struckig.Ruckig(0.001);
-  input : Struckig.InputParameter(3) := (
-    Synchronization := SynchronizationType.TimeSync,        
-    MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
-    MaxAcceleration := [ 20000.00000000000000000000, 20000.00000000000000000000, 20000.00000000000000000000 ],
-    MaxJerk := [ 800000.00000000000000000000, 800000.00000000000000000000, 800000.00000000000000000000 ],
-    CurrentPosition := [ 25.86378287162919775710, 39.97874579948185669309, 66.37850532037469974966 ],
-    CurrentVelocity := [ 108.55224855824349106115, 850.67115953704592357099, -900.01891765084087637661 ],
-    CurrentAcceleration := [ -4974.58899060919702606043, 128.05989999893972708378, 9868.96321801586236688308 ],
-    TargetPosition := [ -21.36275651230414496240, -98.13914545695496371991, -58.44346444717753996656 ],
-    TargetVelocity := [ 0.00000000000000000000, 0.00000000000000000000, 0.00000000000000000000 ],
-    TargetAcceleration := [ 168.16084634060302960279, -985.57063173038272907434, -918.48462244327140524547 ]
-  );
-  output : Struckig.OutputParameter;
-  positionExtrema : Struckig.PositionExtremaDesc;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[TEST('Trajectory_HasTargetAcceleration_1');
-
-ruckig.update(input, output);
-
-// Check total duration of profiles
-AssertEquals_LREAL(Expected := 0.25340816376238173291, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
-
-// Check duration for each phase
-positionExtrema := output.trajectory.profiles[0].positionExtrema();
-AssertEquals_LREAL(0.01138991764879995067, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
-AssertEquals_LREAL(26.58049122869438463113, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
-AssertEquals_LREAL(0.25340816376238173291, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
-AssertEquals_LREAL(-21.36275651230414496240, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
-
-positionExtrema := output.trajectory.profiles[1].positionExtrema();
-AssertEquals_LREAL(0.02516007487499867176, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
-AssertEquals_LREAL(59.29861986755942382388, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
-AssertEquals_LREAL(0.25094423718305564064, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
-AssertEquals_LREAL(-98.14014267936222779554, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
-
-positionExtrema := output.trajectory.profiles[2].positionExtrema();
-AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
-AssertEquals_LREAL(66.37850532037469974966, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
-AssertEquals_LREAL(0.25111195220627335889, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
-AssertEquals_LREAL(-58.44427157893569813041, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
-   
-
-TEST_FINISHED();]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="Test_Trajectory_HasTargetAcceleration_18" Id="{899bd83d-eafc-4d45-b9e6-82dade2f59d6}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetAcceleration_18
 VAR_INST
