@@ -5,15 +5,13 @@
     {
       "name": "struckig_unittest",
       "version": "0.3.3.0",
-      "type": "Library",
+      "type": "Application",
       "iaf_references": {
-        "version": "0.3.3.0",
-        "references": [
-            "Struckig"
-        ]
+        "references": []
       },
       "system_references": {
         "TC3.1.4024.17": [
+          "Struckig=0.3.3.0",
           "Tc3_Module=*",
           "TcUnit=*"
         ]
