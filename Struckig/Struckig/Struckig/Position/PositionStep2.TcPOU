@@ -852,7 +852,13 @@ DO
   
   t := t - orig / deriv;
   
-  h1 := SQRT(2*ad_ad + 4*jMax*(ad*t + a0*tf + jMax*t*(t - tf) - vd))/ABS(jMax);
+  h1 := 2*ad_ad + 4*jMax*(ad*t + a0*tf + jMax*t*(t - tf) - vd);
+  IF h1 < 0
+  THEN
+    CONTINUE;
+	END_IF
+  
+  h1 := SQRT(h1)/ABS(jMax);
   
   // Solution 2 with aPlat
   Profile.t[0] := 0;
