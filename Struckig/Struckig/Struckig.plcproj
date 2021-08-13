@@ -58,6 +58,12 @@
     <Compile Include="Struckig\Math\BubbleSortLreal.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Math\LrealBits.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Math\LrealFromBits.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Math\Power.TcPOU">
       <SubType>Code</SubType>
     </Compile>

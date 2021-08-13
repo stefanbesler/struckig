@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="MathTest" Id="{db8e1fc4-323a-4e57-889c-7de3202bf79d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MathTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Cbrt();
+Test_LrealFromBits();]]></ST>
+    </Implementation>
+    <Method Name="Test_Cbrt" Id="{fb4f66a2-1f91-4a1e-b1d2-83e0fdba8205}">
+      <Declaration><![CDATA[METHOD Test_Cbrt
+VAR
+  actual : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Cbrt');
+
+actual := Struckig.Cbrt(8);
+AssertEquals_LREAL(2, actual, 1E-20, message:='');
+
+actual := Struckig.Cbrt(-8);
+AssertEquals_LREAL(-2, actual, 1E-20, message:='');
+
+actual := Struckig.Cbrt(5E-18);
+AssertEquals_LREAL(1.70997594667669698E-6, actual, 1E-18, message:='');
+
+actual := Struckig.Cbrt(0.5);
+AssertEquals_LREAL(0.793700525984099737, actual, 1E-18, message:='');
+
+actual := Struckig.Cbrt(3.5353238602192074E-08);
+AssertEquals_LREAL(0.0032820339420509366, actual, 1E-18, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_LrealFromBits" Id="{65953fc4-9b2c-43c4-9a3b-522ec2add867}">
+      <Declaration><![CDATA[METHOD Test_LrealFromBits
+VAR
+  actual : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('LrealFromBits');
+
+actual := Struckig.LrealFromBits(1);
+AssertEquals_LREAL(4.94065645841247E-324, actual, 0, message:=''); // Epsilon
+
+actual := Struckig.LrealFromBits(0);
+AssertEquals_LREAL(0, actual, 0, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

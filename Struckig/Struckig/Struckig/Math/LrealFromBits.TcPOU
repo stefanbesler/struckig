@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="LrealFromBits" Id="{26af1350-f1f7-4775-a258-be47fc01563f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION LrealFromBits : LREAL
+VAR_INPUT
+  b : ULINT;
+END_VAR
+VAR
+  x : POINTER TO LREAL := ADR(b);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[LrealFromBits := x^;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

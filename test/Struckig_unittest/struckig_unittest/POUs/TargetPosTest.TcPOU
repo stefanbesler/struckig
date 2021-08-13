@@ -25,7 +25,7 @@ Test_Trajectory_5();
 Test_Trajectory_6();
 Test_Trajectory_7();
 Test_Trajectory_12();
-// Test_Trajectory_16(); // struckig time_vel instead of a two step profile in step1 for profile[0], because cbrt(a*srqt(b*c)) deviates in the 10e-16 digit
+Test_Trajectory_16(); // this test required to do a more precise implementation of cbrt
 Test_Trajectory_30();
 Test_Trajectory_32();
 Test_Trajectory_33();

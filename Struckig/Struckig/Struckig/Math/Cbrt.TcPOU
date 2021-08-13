@@ -1,18 +1,100 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Cbrt" Id="{e2df428d-5876-4ac5-a001-8b2714e1a509}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION INTERNAL Cbrt : LREAL
+    <Declaration><![CDATA[/// The TwinCAT code is a modified version of the original C code from
+/// http://www.netlib.org/fdlibm/s_cbrt.c and came with this notice.
+///
+/// ====================================================
+/// Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+///
+/// Developed at SunSoft, a Sun Microsystems, Inc. business.
+/// Permission to use, copy, modify, and distribute this
+/// software is freely granted, provided that this notice
+/// is preserved.
+/// ====================================================
+///
+///
+/// Small modifications ragarding rounding have been made:
+/// The original code as cited above said
+/// ---
+/// chop to 22 bits, make larger than cbrt(x)
+/// t := LrealFromBits((LrealBits(t) AND SHL(H, 28)) + SHL(J, 30));
+/// ---
+/// Modern compilers seem to round t away from 0 to 23 bits and bits,
+/// see https://github.com/stdlib-js/math-base-special-cbrt/blob/main/src/cbrt.c
+FUNCTION Cbrt : LREAL
 VAR_INPUT
   x : LREAL;
 END_VAR
+VAR CONSTANT
+  B1 : ULINT := 715094163;                   // (682-0.03306235651)*2**20
+  B2 : ULINT := 696219795;                   // (664-0.03306235651)*2**20
+  C : LREAL := 5.42857142857142815906E-01;  // 19/35     = 0x3FE15F15F15F15F1
+  D : LREAL := -7.05306122448979611050E-01; // -864/1225 = 0xBFE691DE2532C834
+  E : LREAL := 1.41428571428571436819E+00;  // 99/70     = 0x3FF6A0EA0EA0EA0F
+  F : LREAL := 1.60714285714285720630E+00;  // 45/28     = 0x3FF9B6DB6DB6DB6E
+  G : LREAL := 3.57142857142857150787E-01;  // 5/14      = 0x3FD6DB6DB6DB6DB7
+  H : ULINT := 16#FFFFFFFFC;
+  J : ULINT := 1;
+  A : ULINT := ULINT#16#FFFFFFFFC0000000;
+  SmallestNormal : LREAL := 2.22507385850720138309E-308; // 2**-1022  = 0x0010000000000000  
+END_VAR
 VAR
-  xn : LREAL;
-  h : LREAL;
+  sign : BOOL;
+  t, r1, s1, w : LREAL;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Cbrt := SEL(x < 0, 1.0, -1.0) * EXPT(ABS(x), 1.0 / 3.0);]]></ST>
+      <ST><![CDATA[// test x=0 and x=NaN
+IF x = 0 OR_ELSE x <> x
+THEN
+  Cbrt := x;
+  RETURN;
+END_IF
+
+sign := FALSE;
+IF x < 0
+THEN
+  x := -x;
+  sign := TRUE;  
+END_IF
+
+// rough cbrt to 5 bits
+t := LrealFromBits(LrealBits(x)/3 + SHL(B1, 32));
+IF x < SmallestNormal
+THEN
+  // subnormal number
+  t := LrealFromBits(SHL(J, 54)); // set t= 2**54
+  t := t * x;
+  t := LrealFromBits(LrealBits(t)/3 + SHL(B2, 32));
+END_IF
+
+// new cbrt to 23 bits
+r1 := t * t / x;
+s1 := C + r1*t;
+t := t * (G + F/(s1+E+D/s1));
+
+// see https://github.com/stdlib-js/math-base-special-cbrt/blob/main/src/cbrt.c
+t := LrealFromBits((LrealBits(t) + 16#80000000) AND A);
+
+// one step newton iteration to 53 bits with error less than 0.667ulps
+s1 := t * t; // t*t is exact
+r1 := x / s1;
+w := t + t;
+r1 := (r1 - t) / (w + r1); // r-s is exact
+t := t + t*r1;
+
+// restore the sign bit
+IF sign
+THEN
+  t := -t;
+END_IF
+
+Cbrt := t;
+    
+// this one is a bit more prone to numerical errors
+// Cbrt := SEL(x < 0, 1.0, -1.0) * EXPT(ABS(x), 1.0 / 3.0);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>
