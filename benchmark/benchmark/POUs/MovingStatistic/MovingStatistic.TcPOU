@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="MovingStatistic" Id="{a616a9ff-8bf6-4181-86f8-8c26b3d6a7d5}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MovingStatistic
+VAR_OUTPUT
+  Mean : LREAL;
+  Sigma : LREAL;
+  Size : DINT;
+  Maximum : LREAL;
+  Minimum : LREAL;
+END_VAR
+VAR
+  _meanMem : LREAL;
+  _varianceSum : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Append" Id="{4bd6172d-f398-4fb0-93f2-dad2680a0417}">
+      <Declaration><![CDATA[METHOD Append
+VAR_INPUT
+  value : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Size := Size + 1;
+_meanMem := Mean;
+Mean := (Mean + (value - Mean) / DINT_TO_LREAL(Size)); 
+
+IF Size > 1
+THEN
+  _varianceSum := _varianceSum + (value - Mean) * (value - _meanMem);
+  Sigma := SQRT(_varianceSum / (DINT_TO_LREAL(Size) - 1.0));
+END_IF
+
+IF value < Minimum
+THEN
+  Minimum := value;
+END_IF
+
+IF value > Maximum
+THEN
+  Maximum := value;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{bd0c2bc0-4e57-4a5a-9aa5-0082c2428c31}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{e0f598c3-4bbc-4797-84d3-300414613adf}">
+      <Declaration><![CDATA[METHOD FINAL Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Mean := 0;
+Sigma := 0;
+Size := 0;
+Minimum := 1.7976931348623157E+308;
+Maximum := -1.7976931348623157E+308;
+_varianceSum := 0;
+
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

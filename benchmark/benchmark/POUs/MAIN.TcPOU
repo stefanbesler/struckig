@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="MAIN" Id="{c24cf36f-30d9-4bef-a3e5-6c8b5a1b2c55}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR CONSTANT
+  Dofs : INT := 7;
+  IterationCount : INT := 5;
+  TrajactoryCount : DINT := 64 * 1024;
+END_VAR
+VAR
+  _positionDist : RandomGaussian(seed:=42, mu:=0, sigma:=4);
+  _dynamicDist : RandomGaussian(seed:=43, mu:=0, sigma:=0.8);
+  _limitDist : RandomUniform(seed:=44, lowerBound:=0, upperBound:=4);
+  
+  _p : Randomizer(_positionDist);
+  _d : Randomizer(_dynamicDist);
+  _l : Randomizer(_limitDist);
+  
+  _otg : Struckig.Ruckig(Dofs);
+  _input : Struckig.InputParameter(Dofs);
+  _output : Struckig.OutputParameter;
+  
+  _step : INT := 0;
+  _it, _jt : DINT := 0;
+  
+  _trajectoryStatistic, _itStatistic, _worstStatistic : MovingStatistic;
+  
+  _averageMean, _worstMean : LREAL; 
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[REPEAT
+  CASE _step
+  OF
+    // setup ****************************************************
+    0: 
+    // **********************************************************
+    
+      _averageMean := 0;
+      _worstMean := 0;    
+      _trajectoryStatistic.Reset();
+      _itStatistic.Reset();
+      _worstStatistic.Reset();
+      
+      _p.Fill(ADR(_input.CurrentPosition), Dofs);
+      _p.Fill(ADR(_input.TargetPosition), Dofs);
+      _l.FillMax(ADR(_input.maxVelocity), Dofs, ADR(_input.TargetVelocity));
+      _l.FillMax(ADR(_input.maxAcceleration), Dofs, ADR(_input.TargetAcceleration));
+      _l.Fill(ADR(_input.maxJerk), Dofs);
+      CheckCalculation(_otg, _input);  
+    
+      _step := 1;
+  
+    // iterate start ********************************************
+    1: 
+    // **********************************************************
+    
+      _trajectoryStatistic.Reset();
+      _step := 2;
+      
+    // iterate loop *********************************************
+    2: 
+    // **********************************************************
+    
+      _p.Fill(ADR(_input.CurrentPosition), Dofs);
+      _d.FillOrZero(ADR(_input.CurrentVelocity), Dofs, 0.9);
+      _d.FillOrZero(ADR(_input.CurrentAcceleration), Dofs, 0.8);
+      _p.Fill(ADR(_input.TargetPosition), Dofs);
+      _d.FillOrZero(ADR(_input.TargetVelocity), Dofs, 0.7);
+      _d.FillOrZero(ADR(_input.TargetAcceleration), Dofs, 0.6);
+      _l.FillMax(ADR(_input.MaxVelocity), Dofs, ADR(_input.TargetVelocity));
+      _l.FillMax(ADR(_input.MaxAcceleration), Dofs, ADR(_input.TargetAcceleration));
+      _l.Fill(ADR(_input.MaxJerk), Dofs);
+  
+      IF NOT _otg.ValidateInput(_input)
+      THEN
+        RETURN;
+      END_IF
+  
+      _trajectoryStatistic.Append(CheckCalculation(_otg, _input));
+      _jt := _jt + 1;
+      IF _jt > TrajactoryCount
+      THEN
+        _it := _it + 1;
+        _jt := 0;        
+        _step := 1;
+        _itStatistic.Append(_trajectoryStatistic.Mean);
+        _worstStatistic.Append(_trajectoryStatistic.Maximum);
+      END_IF
+      
+      IF _it > IterationCount
+      THEN
+        _step := 3;
+      END_IF
+      
+    // iterate end **********************************************
+    3: 
+    // **********************************************************
+    
+      _averageMean := _itStatistic.Mean;
+      _worstMean := _itStatistic.Mean;    
+      
+  END_CASE
+UNTIL _step = 3 
+AND_THEN TRUE // wtf, fix this already Beckhoff - no breakpoints without an additional condition!!!! 
+END_REPEAT]]></ST>
+    </Implementation>
+    <Method Name="CheckCalculation" Id="{829178d5-91bc-4df1-995d-bbe41aca5758}">
+      <Declaration><![CDATA[METHOD CheckCalculation : LREAL;
+VAR_INPUT
+  otg : REFERENCE TO Struckig.Ruckig;
+  input : REFERENCE TO Struckig.InputParameter;
+END_VAR
+VAR
+  output : Struckig.OutputParameter;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[otg.update(input, output);
+CheckCalculation := output.CalculationDuration;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
