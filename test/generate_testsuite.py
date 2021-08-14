@@ -13,7 +13,8 @@ class Test:
     
     name: str
     guid: str
-    profile_count : int   
+    profile_count : int
+    minimum_duration: str
     max_velocity: List[str]
     max_acceleration: List[str]
     max_jerk: List[str]     
@@ -48,7 +49,8 @@ tmpl = jinja2.Template("""
 VAR_INST
   ruckig : Struckig.Ruckig(0.001);
   input : Struckig.InputParameter({{m.profile_count}}) := (
-    Synchronization := SynchronizationType.TimeSync,        
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := {{ m.minimum_duration }},
     MaxVelocity := [ {{ m.max_velocity }} ],
     MaxAcceleration := [ {{ m.max_acceleration }} ],
     MaxJerk := [ {{ m.max_jerk }} ],
@@ -69,6 +71,11 @@ ruckig.update(input, output);
 
 // Check total duration of profiles
 AssertEquals_LREAL(Expected := {{ m.duration }}, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Check minimum duration
+{%- if m.minimum_duration != 0 %}
+AssertEquals_LREAL(Expected := input.MinDuration, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Minimum duration not equals duration');
+{%- endif %}
 
 // Check duration for each phase
 {%- for i in range(m.profile_count) %}
@@ -110,16 +117,18 @@ from ruckig import InputParameter, OutputParameter, Result, Ruckig
 
 if __name__ == '__main__':
     random_uniform_tuple = lambda x: (random.uniform(-x, x), random.uniform(-x, x), random.uniform(-x, x))
-    fmt = lambda x: '{:0.20f}'.format(x)
+    fmt = lambda x: f"{x}"
     
     tests = list()
     i = 0
     count = 0
-    while i < 70:
+    while i < 20:
         print(f"Trajectory {i}/{count}")
         count+=1
         target_velocity = random.choice([(0,0,0), random_uniform_tuple(1000) ])
         target_acceleration = random.choice([(0,0,0), random_uniform_tuple(1000) ])
+        minimum_duration = random.randint(1, 10)
+        #minimum_duration = 0
         
         try:
             del(otg)
@@ -130,6 +139,7 @@ if __name__ == '__main__':
         
         otg = Ruckig(3, 0.001)
         inp = InputParameter(3)
+        inp.minimum_duration = minimum_duration
         inp.current_position = random_uniform_tuple(100)
         inp.current_velocity = random_uniform_tuple(1000)
         inp.current_acceleration = random_uniform_tuple(10000)
@@ -152,12 +162,14 @@ if __name__ == '__main__':
             continue
         
         i += 1
+        min_duration_suffix = '_HasMinDuration' if minimum_duration != 0 else ''        
         target_velocity_suffix = '_HasTargetVelocity' if target_velocity != (0,0,0) else ''
         target_acceleration_suffix = '_HasTargetAcceleration' if target_acceleration != (0,0,0) else ''
     
-        t = Test(name=f'Test_Trajectory{target_velocity_suffix}{target_acceleration_suffix}_{i}', 
+        t = Test(name=f'Test_Trajectory{min_duration_suffix}{target_velocity_suffix}{target_acceleration_suffix}_{i}', 
             guid=str(uuid.uuid4()),
             profile_count=3,
+            minimum_duration=fmt(inp.minimum_duration),\
             current_position=', '.join(map(fmt, inp.current_position)),\
             current_velocity=', '.join(map(fmt, inp.current_velocity)),\
             current_acceleration=', '.join(map(fmt, inp.current_acceleration)),\
