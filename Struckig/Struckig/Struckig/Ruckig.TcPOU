@@ -97,18 +97,9 @@ END_IF]]></ST>
 VAR_INPUT
   input : REFERENCE TO InputParameter;
   output : REFERENCE TO  OutputParameter;  
-END_VAR
-VAR
-  cpucounter : Tc2_System.GETCPUCOUNTER;
-  cpuCntHiDW : LWORD;
-  cpuCntLoDW : LWORD;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[cpucounter();
-cpuCntHiDW := cpucounter.cpuCntHiDW;
-cpuCntLoDW := cpucounter.cpuCntLoDW;
-
-output.NewCalculation := FALSE;
+        <ST><![CDATA[output.NewCalculation := FALSE;
 
 IF HasChanged(input, _currentInput)
 THEN
@@ -127,9 +118,6 @@ END_IF
 
 output.CurrentTime := output.CurrentTime + _dt;
 output.Trajectory.AtTime(output.CurrentTime, input._dofs, ADR(output.NewPosition), ADR(output.NewVelocity), ADR(output.NewAcceleration));
-
-cpucounter();
-output.CalculationDuration := ULINT_TO_REAL(SHL(ULINT_TO_LWORD(cpucounter.cpuCntHiDW - cpuCntHiDW), 32) + cpucounter.cpuCntLoDW - cpuCntLoDW) * 0.1; // us
 
 _currentInput.CurrentPosition := output.NewPosition;
 _currentInput.CurrentVelocity := output.NewVelocity;

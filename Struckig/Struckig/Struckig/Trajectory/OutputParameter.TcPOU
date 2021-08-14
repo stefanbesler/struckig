@@ -5,7 +5,6 @@
 VAR_INPUT
   NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   NewCalculation : BOOL;
-  CalculationDuration : REAL; // us
   Trajectory : TrajectoryDesc;
   CurrentTime : LREAL;
 END_VAR]]></Declaration>

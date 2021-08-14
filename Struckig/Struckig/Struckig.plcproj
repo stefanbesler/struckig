@@ -131,12 +131,6 @@
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <LibraryReference Include="Tc2_System,3.4.24.0,Beckhoff Automation GmbH">
-      <Namespace>Tc2_System</Namespace>
-      <QualifiedOnly>true</QualifiedOnly>
-    </LibraryReference>
-  </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
