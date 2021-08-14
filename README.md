@@ -29,15 +29,16 @@ The original project, `ruckig` is a submodule of this repository. The commit-has
 - [x] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
     - [x] KnownExamples (otg-test.cpp)
     - [x] SecondaryFeatures (otg-test.cpp)
-    - [ ] Randomized trajectories (otg-test.cpp)
+    - [x] Randomized trajectories (~otg-test.cpp) implemented python script that generates radomized Unittests to compare the cpp implementaion with the port
     - [ ] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
     - [x] run unit tests to find more issues that sneaked in while porting
 - [ ] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
 - [ ] Refactor (coding conventions)
-- [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler :-(
+- [ ] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler
+- [x] CI - using [Zeugwerk](http://zeugwerk.at) tool chain paired with GitHub actions for continuous integration
 - [x] Examples
   - [x] Position.cpp
-- [ ] Documentation
+- [ ] Documentation - gh-pages generated from CI
 
 # Unittests
 
