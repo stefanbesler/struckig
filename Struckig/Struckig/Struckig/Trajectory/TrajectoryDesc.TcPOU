@@ -462,24 +462,8 @@ THEN
   END_FOR
 END_IF
 
-FOR i:=0 TO 3*dofs-1
-DO
-  idx[i] := i;
-END_FOR
-
 // Bubblesort possible_t_syncs from best to worst
-FOR i:=0 TO 3*dofs - 2
-DO
-  FOR j:=0 TO 3*dofs - 2 - i
-  DO  
-    IF possible_t_syncs[idx[j]] > possible_t_syncs[idx[j+1]]
-    THEN
-      h := idx[j];
-      idx[j] := idx[j+1];
-      idx[j+1] := h;     
-		END_IF
-  END_FOR
-END_FOR
+BubbleSortLreal(ADR(possible_t_syncs), 3*DOFs, indicesSorted:=ADR(idx));
 
 // Start at last tmin (or worse)
 FOR i:=dofs-1 TO 3*dofs-1

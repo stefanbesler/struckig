@@ -4,6 +4,7 @@
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
   mathTest : MathTest;
+  minDurationTest : MinDurationTest;
   knownExamplesTest : KnownExamplesTest;
   secondaryFeaturesTest : SecondaryFeaturesTest;
   debuggedExamplesTest : DebuggedExamplesTest;

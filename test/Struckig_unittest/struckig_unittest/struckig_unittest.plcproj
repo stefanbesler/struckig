@@ -26,6 +26,9 @@
     <Compile Include="POUs\GeneratedTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\MinDurationTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\MathTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -86,6 +89,27 @@
     <None Include="struckig_unittest.tmc">
       <SubType>Content</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_13" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_14" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_19" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_7" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_8" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_11" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_17" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_2" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_3" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_4" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetAcceleration_6" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_16" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_5" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_9" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_10" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_12" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_15" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_18" />
+    <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20" />
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
