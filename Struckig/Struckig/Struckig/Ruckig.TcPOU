@@ -143,7 +143,7 @@ Update := _state;]]></ST>
       </Implementation>
     </Method>
     <Method Name="ValidateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
-      <Declaration><![CDATA[METHOD PRIVATE ValidateInput : BOOL
+      <Declaration><![CDATA[METHOD ValidateInput : BOOL
 VAR_INPUT
   input : REFERENCE TO InputParameter;
 END_VAR
