@@ -56,7 +56,44 @@ thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build en
 
 The source code and usage documentation of this library is (will be) hosted on [https://stefanbesler.github.io/struckig/](https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
 
-# Example
+# Example: Create time-based profile for 1 axis
+
+This examples shows how to create a single-axis trajectory from point A=0mm to point B=100mm.
+The initial state assumes that the trajectory is in stillstand and target velocity and acceleration is set to
+0. The `MinDuration` parameter is set to `10s` - `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would
+allow a shorter travel time, but `MinDuration` "overrules" this parameters if Synchronization = SynchronizationType.TimeSync
+
+```
+PROGRAM Example05_1DoFs_MinDuration
+VAR
+  ruckig : Struckig.Ruckig(0.001);
+  input : Struckig.InputParameter(1) := (
+    Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
+    MinDuration := 10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
+    MaxVelocity := [ 2000.0 ],
+    MaxAcceleration := [ 20000.0 ],
+    MaxJerk := [ 800000.0 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 100 ],
+    TargetVelocity := [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+  );
+  output : Struckig.OutputParameter;
+END_VAR
+
+// =====================================================================================================================
+
+state := ruckig.update(input, output);
+input.CurrentPosition := output.NewPosition;
+input.CurrentVelocity := output.NewVelocity;
+input.CurrentAcceleration := output.NewAcceleration;
+moving := state = TrajectoryState.Busy;
+```
+
+
+# Example: Create a two-step profile for 1 axis
 
 The following (advanced) examples shows how to use (st)ruckig to calculate a 2-step positioning profile for a single axis.
  - The first step moves the axis from a start position (47mm) to a target position (18mm) with a *high* velocity and an end-velocity of -50mm/s.
