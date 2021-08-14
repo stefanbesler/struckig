@@ -3,7 +3,7 @@
   <GVL Name="ParameterList" Id="{6cef246a-2041-4266-a931-0bae0d434120}" ParameterList="True">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
-  MaxDoFs : INT := 6;
+  MaxDoFs : INT := 7;
   MaxIterations : BYTE := 127; // Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
 END_VAR]]></Declaration>
   </GVL>
