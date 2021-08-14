@@ -60,8 +60,9 @@ The source code and usage documentation of this library is (will be) hosted on [
 
 This examples shows how to create a single-axis trajectory from point A=0mm to point B=100mm.
 The initial state assumes that the trajectory is in stillstand and target velocity and acceleration is set to
-0. The `MinDuration` parameter is set to `10s` - `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would
-allow a shorter travel time, but `MinDuration` "overrules" this parameters if Synchronization = SynchronizationType.TimeSync
+0. The `MinDuration` parameter is set to `10s`. Please not that `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would
+allow for a shorter travel time, but  if `MinDuration` together with Synchronization = SynchronizationType.TimeSync is set,
+the `MinDuration` parameter is considered instead.
 
 ```
 PROGRAM Example05_1DoFs_MinDuration
@@ -69,16 +70,16 @@ VAR
   ruckig : Struckig.Ruckig(0.001);
   input : Struckig.InputParameter(1) := (
     Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
-    MinDuration := 10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
-    MaxVelocity := [ 2000.0 ],
-    MaxAcceleration := [ 20000.0 ],
-    MaxJerk := [ 800000.0 ],
-    CurrentPosition := [ 0 ],
-    CurrentVelocity := [ 0 ],
+    MinDuration :=         10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
+    MaxVelocity :=         [ 2000.0 ],
+    MaxAcceleration :=     [ 20000.0 ],
+    MaxJerk :=             [ 800000.0 ],
+    CurrentPosition :=     [ 0 ],
+    CurrentVelocity :=     [ 0 ],
     CurrentAcceleration := [ 0 ],
-    TargetPosition := [ 100 ],
-    TargetVelocity := [ 0.0, 0.0, 0.0 ],
-    TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+    TargetPosition :=      [ 100 ],
+    TargetVelocity :=      [ 0.0 ],
+    TargetAcceleration :=  [ 0.0 ]
   );
   output : Struckig.OutputParameter;
 END_VAR
@@ -86,11 +87,18 @@ END_VAR
 // =====================================================================================================================
 
 state := ruckig.update(input, output);
+
+// Update the current values, these should be send to a drive as well
+// so that it can follow the trajectory.
 input.CurrentPosition := output.NewPosition;
 input.CurrentVelocity := output.NewVelocity;
 input.CurrentAcceleration := output.NewAcceleration;
+
 moving := state = TrajectoryState.Busy;
 ```
+
+![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
+
 
 
 # Example: Create a two-step profile for 1 axis
