@@ -3,7 +3,7 @@
   <POU Name="MAIN" Id="{c24cf36f-30d9-4bef-a3e5-6c8b5a1b2c55}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR CONSTANT
-  Dofs : INT := 7;
+  Dofs : ARRAY [0..3] OF INT := [1, 3, 6, 7];
   IterationCount : INT := 5;
   TrajactoryCount : DINT := 64 * 1024;
 END_VAR
@@ -16,16 +16,18 @@ VAR
   _d : Randomizer(_dynamicDist);
   _l : Randomizer(_limitDist);
   
-  _otg : Struckig.Ruckig(Dofs);
-  _input : Struckig.InputParameter(Dofs);
+  _otg : Struckig.Ruckig(0.001);
+  _input : Struckig.InputParameter(0);
   _output : Struckig.OutputParameter;
   
   _step : INT := 0;
-  _it, _jt : DINT := 0;
+  _dt, _it, _jt : DINT := 0;
   
   _trajectoryStatistic, _itStatistic, _worstStatistic : MovingStatistic;
   
-  _averageMean, _worstMean : LREAL; 
+  _averageMean, _worstMean, _averageSigma, _worstSigma : ARRAY[0..3] OF LREAL; 
+  
+  _cpucounter : Tc2_System.GETCPUACCOUNT;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[REPEAT
@@ -34,18 +36,17 @@ END_VAR]]></Declaration>
     // setup ****************************************************
     0: 
     // **********************************************************
-    
-      _averageMean := 0;
-      _worstMean := 0;    
+      
+      _input.FB_init(TRUE, TRUE, dofs:=Dofs[_dt]);
       _trajectoryStatistic.Reset();
       _itStatistic.Reset();
       _worstStatistic.Reset();
       
-      _p.Fill(ADR(_input.CurrentPosition), Dofs);
-      _p.Fill(ADR(_input.TargetPosition), Dofs);
-      _l.FillMax(ADR(_input.maxVelocity), Dofs, ADR(_input.TargetVelocity));
-      _l.FillMax(ADR(_input.maxAcceleration), Dofs, ADR(_input.TargetAcceleration));
-      _l.Fill(ADR(_input.maxJerk), Dofs);
+      _p.Fill(ADR(_input.CurrentPosition), Dofs[_dt]);
+      _p.Fill(ADR(_input.TargetPosition), Dofs[_dt]);
+      _l.FillMax(ADR(_input.maxVelocity), Dofs[_dt], ADR(_input.TargetVelocity));
+      _l.FillMax(ADR(_input.maxAcceleration), Dofs[_dt], ADR(_input.TargetAcceleration));
+      _l.Fill(ADR(_input.maxJerk), Dofs[_dt]);
       CheckCalculation(_otg, _input);  
     
       _step := 1;
@@ -61,15 +62,15 @@ END_VAR]]></Declaration>
     2: 
     // **********************************************************
     
-      _p.Fill(ADR(_input.CurrentPosition), Dofs);
-      _d.FillOrZero(ADR(_input.CurrentVelocity), Dofs, 0.9);
-      _d.FillOrZero(ADR(_input.CurrentAcceleration), Dofs, 0.8);
-      _p.Fill(ADR(_input.TargetPosition), Dofs);
-      _d.FillOrZero(ADR(_input.TargetVelocity), Dofs, 0.7);
-      _d.FillOrZero(ADR(_input.TargetAcceleration), Dofs, 0.6);
-      _l.FillMax(ADR(_input.MaxVelocity), Dofs, ADR(_input.TargetVelocity));
-      _l.FillMax(ADR(_input.MaxAcceleration), Dofs, ADR(_input.TargetAcceleration));
-      _l.Fill(ADR(_input.MaxJerk), Dofs);
+      _p.Fill(ADR(_input.CurrentPosition), Dofs[_dt]);
+      _d.FillOrZero(ADR(_input.CurrentVelocity), Dofs[_dt], 0.9);
+      _d.FillOrZero(ADR(_input.CurrentAcceleration), Dofs[_dt], 0.8);
+      _p.Fill(ADR(_input.TargetPosition), Dofs[_dt]);
+      _d.FillOrZero(ADR(_input.TargetVelocity), Dofs[_dt], 0.7);
+      _d.FillOrZero(ADR(_input.TargetAcceleration), Dofs[_dt], 0.6);
+      _l.FillMax(ADR(_input.MaxVelocity), Dofs[_dt], ADR(_input.TargetVelocity));
+      _l.FillMax(ADR(_input.MaxAcceleration), Dofs[_dt], ADR(_input.TargetAcceleration));
+      _l.Fill(ADR(_input.MaxJerk), Dofs[_dt]);
   
       IF NOT _otg.ValidateInput(_input)
       THEN
@@ -96,13 +97,25 @@ END_VAR]]></Declaration>
     3: 
     // **********************************************************
     
-      _averageMean := _itStatistic.Mean;
-      _worstMean := _itStatistic.Mean;    
-      
+      _it := 0;
+      _jt := 0;
+      _averageMean[_dt] := _itStatistic.Mean;
+      _averageSigma[_dt] := _itStatistic.Sigma;
+      _worstMean[_dt] := _worstStatistic.Mean;
+      _worstSigma[_dt] := _worstStatistic.Sigma;      
+      _dt := _dt + 1;
+      _step := SEL(_dt > 3, 0, 4);
+
+    // done******* **********************************************
+    4: 
+    // **********************************************************
+      ; 
   END_CASE
-UNTIL _step = 3 
+UNTIL _step = 4 
 AND_THEN TRUE // wtf, fix this already Beckhoff - no breakpoints without an additional condition!!!! 
-END_REPEAT]]></ST>
+END_REPEAT
+
+_step := 4;]]></ST>
     </Implementation>
     <Method Name="CheckCalculation" Id="{829178d5-91bc-4df1-995d-bbe41aca5758}">
       <Declaration><![CDATA[METHOD CheckCalculation : LREAL;
