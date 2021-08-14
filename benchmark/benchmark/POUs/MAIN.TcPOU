@@ -125,11 +125,15 @@ VAR_INPUT
 END_VAR
 VAR
   output : Struckig.OutputParameter;
+  cpuAccount : UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[otg.update(input, output);
-CheckCalculation := output.CalculationDuration;]]></ST>
+        <ST><![CDATA[_cpucounter(cpuAccountDW => cpuAccount);
+otg.update(input, output);
+_cpucounter();
+CheckCalculation := (_cpucounter.cpuAccountDW - cpuAccount) * 0.1; // us  
+]]></ST>
       </Implementation>
     </Method>
   </POU>
