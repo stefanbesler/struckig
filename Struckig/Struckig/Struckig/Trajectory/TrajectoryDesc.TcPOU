@@ -116,7 +116,7 @@ DO
   p.vf := inp.CurrentVelocity[dof];
   p.af := inp.CurrentAcceleration[dof];
   
-  IF NOT inp.Enabled[dof]
+  IF NOT inp._enabled[dof]
   THEN
     p.t_sum[6] := 0.0;
     CONTINUE;
@@ -199,7 +199,7 @@ END_IF
 
 IF (inp.Synchronization = SynchronizationType.None) THEN
   FOR dof:=0 TO inp._dofs-1 DO
-    IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
+    IF (NOT inp._enabled[dof] OR_ELSE dof = limiting_dof) THEN
       CONTINUE;
     END_IF
   
@@ -212,7 +212,7 @@ IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = Interfa
   IF (IsPhaseSynchronizable(inp, inp.MaxVelocity, inp_min_velocity, inp.MaxAcceleration, inp_min_acceleration, inp.MaxJerk, Profiles[limiting_dof].Direction, limiting_dof, new_max_velocity, new_min_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO inp._dofs-1 DO
-      IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
+      IF (NOT inp._enabled[dof] OR_ELSE dof = limiting_dof) THEN
         CONTINUE;
       END_IF
 
@@ -248,7 +248,7 @@ END_IF
 // The general case
 FOR dof:=0 TO inp._dofs-1
 DO
-  IF (NOT inp.Enabled[dof] OR_ELSE dof = limiting_dof) THEN
+  IF (NOT inp._enabled[dof] OR_ELSE dof = limiting_dof) THEN
       continue;
   END_IF
   

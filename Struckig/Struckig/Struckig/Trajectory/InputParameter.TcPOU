@@ -11,11 +11,10 @@ VAR_INPUT
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  
-  Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
   MinDuration : LREAL;
 END_VAR
 VAR
+  _enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;	
   _dofs : INT;
 END_VAR]]></Declaration>
     <Implementation>
@@ -35,7 +34,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[_dofs := dofs;
 FOR i:=0 TO ParameterList.MaxDoFs
 DO
-  Enabled[i] := i < dofs;
+  _enabled[i] := i < dofs;
 END_FOR]]></ST>
       </Implementation>
     </Method>

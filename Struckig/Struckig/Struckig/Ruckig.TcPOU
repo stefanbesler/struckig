@@ -73,7 +73,7 @@ DO
      lhs.MaxVelocity[i] <> rhs.MaxVelocity[i] OR_ELSE
      lhs.MaxAcceleration[i] <> rhs.MaxAcceleration[i] OR_ELSE
      lhs.MaxJerk[i] <> rhs.MaxJerk[i] OR_ELSE
-     lhs.Enabled[i] <> rhs.Enabled[i] OR_ELSE
+     lhs._enabled[i] <> rhs._enabled[i] OR_ELSE
      lhs.MinVelocity[i] <> rhs.MinVelocity[i] OR_ELSE
      lhs.MinAcceleration[i] <> rhs.MinAcceleration[i]
   THEN
