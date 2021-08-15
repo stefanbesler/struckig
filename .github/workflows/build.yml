@@ -28,7 +28,7 @@ jobs:
           jenkins-ssl-verify: false
       - name: Copy Artifact
         run: |
-          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' http://ci.zeugwerk.at:8888/job/Iaf/job/build_library/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
+          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://ci.zeugwerk.at:8883/job/Iaf/job/build_library/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
