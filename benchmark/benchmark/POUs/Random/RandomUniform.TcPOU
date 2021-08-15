@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="RandomUniform" Id="{fa774a23-5e02-49ec-9016-716b5ff60699}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK RandomUniform IMPLEMENTS IRandom
+VAR
+  _lowerBound : LREAL;
+  _upperBound : LREAL;  
+  _rnd : Tc2_System.DRAND;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{9a9c39d2-635b-448a-bc73-f477997a62a2}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  seed : INT;      
+  lowerBound : LREAL;
+  upperBound : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetSeed(seed);
+SetBounds(lowerBound, upperBound);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Next" Id="{fc1d4962-bd25-43e6-8b66-8b256f2ef9e4}">
+      <Declaration><![CDATA[METHOD Next : LREAL]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_rnd();
+Next := _rnd.Num * (_upperBound-_lowerBound) + _lowerBound;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetBounds" Id="{205ca8e8-8f72-4eda-a540-2e345c889383}">
+      <Declaration><![CDATA[METHOD FINAL SetBounds
+VAR_INPUT
+  lowerBound : LREAL;
+  upperBound : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_lowerBound := lowerBound;
+_upperBound := upperBound;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetSeed" Id="{14683bec-6f11-44ca-94c8-c6276f35f8ea}">
+      <Declaration><![CDATA[METHOD FINAL SetSeed
+VAR_INPUT
+  seed : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_rnd.Seed := seed;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

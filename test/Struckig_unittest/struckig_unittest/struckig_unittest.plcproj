@@ -47,7 +47,7 @@
     <Compile Include="POUs\SecondaryFeaturesTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\run_and_return_duration.TcPOU">
+    <Compile Include="POUs\CheckCalculation.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\KnownExamplesTest.TcPOU">

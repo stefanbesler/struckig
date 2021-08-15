@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="RandomGaussianTest" Id="{bc3199c5-8097-4b5a-868b-3c0d4c1cc097}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK RandomGaussianTest EXTENDS RandomGaussian]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Next();]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{b234f449-1c5b-41cf-bdab-555b674dd9d7}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  seed : INT; // not used, set to 0
+  mu : LREAL; // not used, set to 0
+  sigma : LREAL; // not used, set to 0
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetSeed(0);
+SetMean(50);
+SetSigma(4);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Next" Id="{e899277c-5618-4cfd-8a5c-e9d994ee8a5c}">
+      <Declaration><![CDATA[METHOD Test_Next
+VAR_OUTPUT
+  expected : INT;
+  actual : INT;
+  message : STRING;
+END_VAR
+VAR_INST
+  vals : ARRAY[0..99] OF DINT;
+  v : LREAL;
+  i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// create random numbers
+FOR i:=0 TO 5000
+DO
+  v := Next();
+  vals[LREAL_TO_INT(v)] := vals[LREAL_TO_INT(v)] + 1;
+  i := i+1;
+END_FOR
+
+// check if the mean got the most counts
+actual := 0;
+FOR i:=0 TO 99
+DO
+  IF vals[i] > vals[actual]
+  THEN
+    actual := i;
+	END_IF
+END_FOR
+
+expected := 50;
+message := 'The index with the most counts is not the mean value of the distribution';
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

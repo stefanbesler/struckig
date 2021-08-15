@@ -3,15 +3,15 @@
   <POU Name="InputParameter" Id="{0a019405-401a-4d00-873d-f46c1ea6dfef}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK InputParameter
 VAR_INPUT
-  Intrf : InterfaceType;
-  Synchronization : SynchronizationType;
+  Intrf : InterfaceType := InterfaceType.Position;
+  Synchronization : SynchronizationType := SynchronizationType.TimeSync;
   Discretization : DiscretizationType;
   
   CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  MinDuration : LREAL;
+  MinDuration : LREAL := 0; // disabled
 END_VAR
 VAR
   _enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;	
