@@ -51,7 +51,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -101,7 +101,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -157,7 +157,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -193,7 +193,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -240,7 +240,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..6] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
