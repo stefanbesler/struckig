@@ -212,6 +212,7 @@ VAR_INPUT
   vMin : LREAL;  
   aMax : LREAL;
   aMin : LREAL;
+  setLimits : BOOL;
 END_VAR
 VAR
   i : INT;
@@ -299,7 +300,18 @@ DO
     THEN
      a[3] := 0.0;
     END_IF
-  END_IF 
+  END_IF
+  
+  IF setLimits
+  THEN
+    IF limits = ProfileLimits.Acc1
+    THEN
+      IF i = 2
+      THEN
+        a[3] := aMin;
+      END_IF
+    END_IF
+  END_IF
   
   IF (i > 1 AND_THEN a[i+1] * a[i] < -Constants.Epsilon) 
   THEN
@@ -344,7 +356,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every Profile has a: tf - ... equation
-CheckWithTiming := CheckVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
+CheckWithTiming := CheckVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE); // && (std::abs(t_sum[6] - tf) < 1e-8)]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckWithTiming2" Id="{c707d6dc-e662-4300-aebc-c29e90e74532}">

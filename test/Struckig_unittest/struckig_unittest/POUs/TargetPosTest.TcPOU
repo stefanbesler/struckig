@@ -114,26 +114,26 @@ END_VAR]]></Declaration>
 ruckig.update(input, output);
 
 // Check total duration of profiles
-AssertEquals_LREAL(Expected := 0.25458567912226787167, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 0.16787256653000462436, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 // Check duration for each phase
 positionExtrema := output.trajectory.profiles[0].positionExtrema();
-AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
-AssertEquals_LREAL(8.21667911707363884943, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
-AssertEquals_LREAL(0.25458567912226787167, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
-AssertEquals_LREAL(-91.18523630560480341956, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
+AssertEquals_LREAL(0, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
+AssertEquals_LREAL(8.2166791170736388494, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
+AssertEquals_LREAL(0.16787256653000462436, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
+AssertEquals_LREAL(-91.18523630560480342, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[1].positionExtrema();
-AssertEquals_LREAL(0.25458567912226787167, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
-AssertEquals_LREAL(39.65724384459844031880, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
-AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
-AssertEquals_LREAL(-42.91905125747626215116, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
+AssertEquals_LREAL(0.16787256609842091115, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
+AssertEquals_LREAL(39.657243844598482951, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
+AssertEquals_LREAL(0, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
+AssertEquals_LREAL(-42.919051257476262151, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
 positionExtrema := output.trajectory.profiles[2].positionExtrema();
-AssertEquals_LREAL(0.25458567912226787167, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
-AssertEquals_LREAL(80.00859285567460688071, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
-AssertEquals_LREAL(0.05149542234051582984, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
-AssertEquals_LREAL(27.20307271065990661896, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
+AssertEquals_LREAL(0.16787256609842091115, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
+AssertEquals_LREAL(80.008592855674606881, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
+AssertEquals_LREAL(0.027488973122684470102, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');
+AssertEquals_LREAL(31.797392745296477301, positionExtrema.Minimum, 1E-9, message:='Profile[2] minimum incorrect');
    
 
 TEST_FINISHED();]]></ST>
