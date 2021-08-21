@@ -293,7 +293,8 @@ DO
   v[i+1] := v[i] + t[i] * (a[i] + t[i] * j[i] / 2);
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * (a[i] / 2 + t[i] * j[i] / 6));
 
-  IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel THEN
+  IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Acc1 OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel
+  THEN
     IF i = 2
     THEN
      a[3] := 0.0;
