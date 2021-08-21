@@ -103,7 +103,7 @@ aLowLim := SEL((aMax > 0), aMax, aMin) - 5E-12;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
 CheckForVelocity := ABS(v[7] - vf) < 1E-8
-    AND_THEN ABS(a[7] - af) < 1E-12 // This is not really needed, but we want to double check
+    AND_THEN ABS(a[7] - af) < 1E-10 // This is not really needed, but we want to double check
     AND_THEN a[1] >= aLowLim AND_THEN a[3] >= aLowLim AND_THEN a[5] >= aLowLim
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim;]]></ST>
       </Implementation>
