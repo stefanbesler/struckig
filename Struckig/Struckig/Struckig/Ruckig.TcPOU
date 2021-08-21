@@ -82,7 +82,7 @@ DO
 	END_IF
 END_FOR
 
-IF lhs.Intrf <> rhs.Intrf OR_ELSE
+IF lhs.ControlInterface <> rhs.ControlInterface OR_ELSE
    lhs.Synchronization <> rhs.Synchronization OR_ELSE
    lhs.Discretization <> rhs.Discretization OR_ELSE
    lhs.MinDuration <> rhs.MinDuration   
@@ -142,15 +142,15 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR dof:=0 TO input._dofs-1
 DO
-  IF (input.Intrf = InterfaceType.position AND_THEN input.CurrentPosition[dof] <> input.CurrentPosition[dof]) THEN // isnan
+  IF (input.ControlInterface = ControlInterfaceType.position AND_THEN input.CurrentPosition[dof] <> input.CurrentPosition[dof]) THEN // isnan
     RETURN;
   END_IF
   
-  IF (input.Intrf = InterfaceType.position AND_THEN input.MaxVelocity[dof] <> input.MaxVelocity[dof]) THEN // isnan
+  IF (input.ControlInterface = ControlInterfaceType.position AND_THEN input.MaxVelocity[dof] <> input.MaxVelocity[dof]) THEN // isnan
     RETURN;
   END_IF  
 
-  IF (input.Intrf = InterfaceType.position AND_THEN input.MaxVelocity[dof] <= Constants.Minimum) THEN
+  IF (input.ControlInterface = ControlInterfaceType.position AND_THEN input.MaxVelocity[dof] <= Constants.Minimum) THEN
     RETURN;
   END_IF
 
@@ -174,11 +174,11 @@ DO
     RETURN;
   END_IF
 
-  IF (input.Intrf = InterfaceType.position AND_THEN input.TargetPosition[dof] <> input.TargetPosition[dof]) THEN
+  IF (input.ControlInterface = ControlInterfaceType.position AND_THEN input.TargetPosition[dof] <> input.TargetPosition[dof]) THEN
     RETURN;
   END_IF
 
-  IF (input.Intrf = InterfaceType.position) THEN
+  IF (input.ControlInterface = ControlInterfaceType.position) THEN
     IF (input.MinVelocity[dof] <> 0) THEN
       IF (input.TargetVelocity[dof] > input.MaxVelocity[dof] OR_ELSE input.TargetVelocity[dof] < input.MinVelocity[dof]) THEN
           RETURN;
@@ -203,7 +203,7 @@ DO
   END_IF
 
   // Target acceleration needs to be accessible from "above" and "below"
-  IF (input.Intrf = InterfaceType.position) THEN
+  IF (input.ControlInterface = ControlInterfaceType.position) THEN
     min_velocity := SEL(input.MinVelocity[dof] <> 0, -input.MaxVelocity[dof], input.MinVelocity[dof]);
     v_diff := MIN(ABS(input.MaxVelocity[dof] - input.TargetVelocity[dof]), ABS(min_velocity - input.TargetVelocity[dof]));
     max_target_acceleration := SQRT(2 * input.MaxJerk[dof] * v_diff);

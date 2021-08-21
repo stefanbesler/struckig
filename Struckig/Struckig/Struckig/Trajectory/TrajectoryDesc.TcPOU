@@ -125,12 +125,12 @@ DO
   inp_min_velocity[dof] := SEL(ABS(inp.MinVelocity[dof]) < Constants.Epsilon, inp.MinVelocity[dof], -inp.MaxVelocity[dof]);
   inp_min_acceleration[dof] := SEL(ABS(inp.MinAcceleration[dof]) < Constants.Epsilon, inp.MinAcceleration[dof], -inp.MaxAcceleration[dof]);
   
-  CASE inp.Intrf
+  CASE inp.ControlInterface
   OF
-    InterfaceType.Position:
+    ControlInterfaceType.Position:
       Brake.PositionBrakeTrajectory(inp.CurrentVelocity[dof], inp.CurrentAcceleration[dof], inp.MaxVelocity[dof], inp_min_velocity[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof], p.t_brakes, p.j_brakes);
       
-    InterfaceType.Velocity:
+    ControlInterfaceType.Velocity:
       Brake.VelocityBrakeTrajectory(inp.CurrentVelocity[dof], inp.CurrentAcceleration[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof], p.t_brakes, p.j_brakes);
 	END_CASE
   
@@ -155,12 +155,12 @@ DO
 	END_FOR
 
   // TODO:
-  CASE inp.Intrf
+  CASE inp.ControlInterface
   OF
-    InterfaceType.Position:
+    ControlInterfaceType.Position:
       _positionStep1.Set(p0s[dof], v0s[dof], a0s[dof], inp.TargetPosition[dof], inp.TargetVelocity[dof], inp.TargetAcceleration[dof], inp.MaxVelocity[dof], inp_min_velocity[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof]);
       found_profile := _positionStep1.Get(p, blocks[dof]);
-    InterfaceType.Velocity:
+    ControlInterfaceType.Velocity:
       _velocityStep1.Set(p0s[dof], v0s[dof], a0s[dof], inp.TargetVelocity[dof], inp.TargetAcceleration[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof]);
       found_profile := _velocityStep1.Get(p, blocks[dof]);
 	END_CASE
@@ -208,7 +208,7 @@ IF (inp.Synchronization = SynchronizationType.None) THEN
   RETURN;
 END_IF
 
-IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.Intrf = InterfaceType.Position) THEN
+IF (inp.Synchronization = SynchronizationType.Phase AND_THEN inp.ControlInterface = ControlInterfaceType.Position) THEN
   IF (IsPhaseSynchronizable(inp, inp.MaxVelocity, inp_min_velocity, inp.MaxAcceleration, inp_min_acceleration, inp.MaxJerk, Profiles[limiting_dof].Direction, limiting_dof, new_max_velocity, new_min_velocity, new_max_acceleration, new_min_acceleration, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO inp._dofs-1 DO
@@ -274,13 +274,13 @@ DO
       continue;
   END_IF
   
-  CASE (inp.Intrf)
+  CASE (inp.ControlInterface)
   OF  
-    InterfaceType.Position: 
+    ControlInterfaceType.Position: 
       _positionStep2.Set(t_profile, p0s[dof], v0s[dof], a0s[dof], inp.TargetPosition[dof], inp.TargetVelocity[dof], inp.TargetAcceleration[dof], inp.MaxVelocity[dof], inp_min_velocity[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof]);
       found_time_synchronization := _positionStep2.Get(p);
 
-    InterfaceType.Velocity: 
+    ControlInterfaceType.Velocity: 
       _velocityStep2.Set(t_profile, p0s[dof], v0s[dof], a0s[dof], inp.TargetVelocity[dof], inp.TargetAcceleration[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof]);
 
   END_CASE

@@ -112,7 +112,7 @@
     <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\InterfaceType.TcDUT">
+    <Compile Include="Struckig\Trajectory\_DataTypes\ControlInterfaceType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Trajectory\_DataTypes\SynchronizationType.TcDUT">

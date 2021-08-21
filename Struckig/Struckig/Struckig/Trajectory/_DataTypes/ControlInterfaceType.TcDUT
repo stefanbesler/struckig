@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
-  <DUT Name="InterfaceType" Id="{fa41777e-c926-434f-898a-1e6e98888ce1}">
+  <DUT Name="ControlInterfaceType" Id="{fa41777e-c926-434f-898a-1e6e98888ce1}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE InterfaceType :
+TYPE ControlInterfaceType :
 (
   Position, // Position-control: Full control over the entire kinematic state (Default)
   Velocity // Velocity-control: Ignores the current position, target position, and velocity limits

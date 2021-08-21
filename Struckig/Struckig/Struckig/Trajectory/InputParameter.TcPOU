@@ -3,9 +3,9 @@
   <POU Name="InputParameter" Id="{0a019405-401a-4d00-873d-f46c1ea6dfef}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK InputParameter
 VAR_INPUT
-  Intrf : InterfaceType := InterfaceType.Position;
-  Synchronization : SynchronizationType := SynchronizationType.TimeSync;
-  Discretization : DiscretizationType;
+  ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; // The default position interface controls the full kinematic state.
+  Synchronization : SynchronizationType := SynchronizationType.TimeSync; // Synchronization behavior of multiple DoFs
+  Discretization : DiscretizationType; // Whether the duration should be a discrete multiple of the control cycle (off by default)
   
   CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Target state
