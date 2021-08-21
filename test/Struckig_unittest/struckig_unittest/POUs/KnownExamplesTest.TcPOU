@@ -392,7 +392,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TEST('Example-12');
 
-AssertEquals_LREAL(Expected := 1.4939456041,
+AssertEquals_LREAL(Expected := 1.493945569142519636,
              Actual := CheckCalculation(ruckig, input, output),
              DELTA := 1E-8,
              Message := '');
