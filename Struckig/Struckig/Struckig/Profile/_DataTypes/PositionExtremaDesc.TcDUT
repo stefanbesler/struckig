@@ -3,8 +3,8 @@
   <DUT Name="PositionExtremaDesc" Id="{b615dcba-8544-436f-9a57-30985945064e}">
     <Declaration><![CDATA[TYPE PositionExtremaDesc :
 STRUCT
-  Minimum, Maximum : LREAL;
-  Tmin, Tmax : LREAL;  
+  Minimum, Maximum : LREAL; // The extreme position
+  Tmin, Tmax : LREAL;  // Time when the positions are reached
 END_STRUCT
 END_TYPE
 ]]></Declaration>

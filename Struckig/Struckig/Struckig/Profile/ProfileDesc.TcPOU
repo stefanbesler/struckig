@@ -310,6 +310,13 @@ DO
       THEN
         a[3] := aMin;
       END_IF
+    ELSIF limits = ProfileLimits.Acc0Acc1
+    THEN
+      CASE i
+      OF
+      0: a[1] := aMax;
+      4: a[5] := aMin;
+      END_CASE  
     END_IF
   END_IF
   

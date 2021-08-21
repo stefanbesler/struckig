@@ -34,12 +34,12 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckAll := time_acc0_acc1_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_vel(Profile, vMax, vMin, aMax, aMin, jMax)
             OR_ELSE time_acc0_vel(Profile, vMax, vMin, aMax, aMin, jMax)
             OR_ELSE time_acc1_vel(Profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_vel(Profile, vMax, vMin, aMax, aMin, jMax)
+            OR_ELSE time_acc0_acc1(Profile, vMax, vMin, aMax, aMin, jMax)
             OR_ELSE time_acc0(Profile, vMax, vMin, aMax, aMin, jMax)
             OR_ELSE time_acc1(Profile, vMax, vMin, aMax, aMin, jMax)
-            OR_ELSE time_acc0_acc1(Profile, vMax, vMin, aMax, aMin, jMax)
             OR_ELSE time_none(Profile, vMax, vMin, aMax, aMin, jMax);]]></ST>
       </Implementation>
     </Method>
@@ -254,17 +254,15 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU, Solution 1
-
-h0 := af_af - 2*af*aMin + (aMin - aMax)*aMin + 2*jMax*(aMin*tf - vd);
-h1 := aMax*aMin*(a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*a0_a0*aMax*(aMin + aMax) + 2*a0*(2*aMax - a0)*h0 - 2*af_af*(aMax*aMax - aMin*aMin - 2*aMax*(aMin + jMax*tf) + 2*jMax*vd) + 4*af*aMin*(aMax*aMax - aMax*(aMin + 2*jMax*tf) + 2*jMax*vd) + aMax*aMax*aMax*aMin - 2*aMax*aMax*(aMin*aMin + 2*jMax*(aMin*tf - vd)) + 4*jMax*(2*aMin*jMax*g1 - aMin*aMin*vd + jMax*vd_vd) + aMax*(aMin*aMin*aMin + 4*aMin*aMin*jMax*tf + 4*aMin*jMax_jMax*tf_tf - 8*jMax_jMax*(-pd + tf*vf)));
+h1 := (a0_p4 + af_p4 - 4*a0_p3*(2*aMax + aMin)/3 - 4*af_p3*(aMax + 2*aMin)/3 + 2*(a0_a0 - af_af)*aMax*aMax + (4*a0*aMax - 2*a0_a0)*(af_af - 2*af*aMin + (aMin - aMax)*aMin + 2*jMax*(aMin*tf - vd)) + 2*af_af*(aMin*aMin + 2*jMax*(aMax*tf - vd)) + 4*jMax*(2*aMin*(af*vd + jMax*g1) + (aMax*aMax - aMin*aMin)*vd + jMax*vd_vd) + 8*aMax*jMax_jMax*(pd - tf*vf))/(aMax*aMin) + 4*af_af + 2*a0_a0 + (4*af + aMax - aMin)*(aMax - aMin) + 4*jMax*(aMin - aMax + jMax*tf - 2*af)*tf;
 IF h1 >= 0
 THEN
   h1 := SQRT(h1) * ABS(jMax)/jMax;
   
   Profile.t[0] := (-a0 + aMax)/jMax;
-  Profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax - 2*ad*aMin - 3*aMax*aMin + aMin*aMin + 2*jMax*(aMin*tf - vd)) - h1/aMax)/(2*(aMax - aMin)*jMax);
+  Profile.t[1] := (-(af_af - a0_a0 + 2*aMax*aMax + aMin*(aMin - 2*ad - 3*aMax) + 2*jMax*(aMin*tf - vd)) + aMin*h1)/(2*(aMax - aMin)*jMax);
   Profile.t[2] := aMax/jMax;
-  Profile.t[3] := (aMin - aMax - h1/(aMax*aMin))/(2*jMax);
+  Profile.t[3] := (aMin - aMax + h1)/(2*jMax);
   Profile.t[4] := -aMin/jMax;
   Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] + af/jMax);
   Profile.t[6] := Profile.t[4] + af/jMax;
@@ -326,7 +324,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf - aMax/jMax
+  IF t > tf - aMax/jMax OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
   END_IF
@@ -374,10 +372,10 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf - aMax/jMax
+  IF t > tf - aMax/jMax OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
-	END_IF
+  END_IF
 
   // Single Newton step (regarding pd)
   h1 := jMax*t*t - vd;
@@ -387,7 +385,7 @@ DO
   IF ABS(deriv) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
-	END_IF    
+  END_IF    
   
   t := t - orig / deriv;
   
@@ -552,7 +550,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf + aMin/jMax
+  IF t > tf + aMin/jMax OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
   END_IF
@@ -606,7 +604,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf - aMax/jMax
+  IF t > tf - aMax/jMax OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
 	END_IF
@@ -699,7 +697,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf * 0.5
+  IF t > tf * 0.5 OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
   END_IF
@@ -745,7 +743,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf
+  IF t > tf OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
   END_IF
@@ -830,7 +828,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > MIN(tf, (ad/jMax + tf) / 2)
+  IF t > MIN(tf, (ad/jMax + tf) / 2) OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
 	END_IF
@@ -906,7 +904,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > MIN(tf, (ad/jMax + tf) / 2)
+  IF t > MIN(tf, (ad/jMax + tf) * 0.5) OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
   END_IF
@@ -967,7 +965,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_e
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf
+  IF t > tf OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
 	END_IF
@@ -1126,47 +1124,84 @@ VAR
   i : INT;  
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[// Profile UDDU
-p1 := af_af - 2*jMax*(-2*af*tf + jMax*tf_tf + 3*vd);
-ph1 := af_p3 - 3*jMax_jMax*g1 - 3*af*jMax*vd;
-ph2 := af_p4 + 8*af_p3*jMax*tf + 12*jMax*(3*jMax*vd_vd - af_af*vd + 2*af*jMax*(g1 - tf*vd) - 2*jMax_jMax*tf*g1);
-ph3 := a0*(af - jMax*tf);
-ph4 := jMax*(-ad + jMax*tf);
+        <ST><![CDATA[tz_min := MAX(0.0, -a0/jMax);
+tz_max := MIN(tf, (aMax - a0)/jMax);
 
-// Find root of 5th order polynom
-polynom[0] := 1.0;
-polynom[1] := (15*a0_a0 + af_af + 4*af*jMax*tf - 16*ph3 - 2*jMax*(jMax*tf_tf + 3*vd))/(4*ph4);
-polynom[2] := (29*a0_p3 - 2*af_p3 - 33*a0*ph3 + 6*jMax_jMax*g1 + 6*af*jMax*vd + 6*a0*p1)/(6*jMax*ph4);
-polynom[3] := (61*a0_p4 - 76*a0_a0*ph3 - 16*a0*ph1 + 30*a0_a0*p1 + ph2)/(24*jMax_jMax*ph4);
-polynom[4] := (a0*(7*a0_p4 - 10*a0_a0*ph3 - 4*a0*ph1 + 6*a0_a0*p1 + ph2))/(12*jMax_jMax*jMax*ph4);
-polynom[5] := (7*a0_p6 + af_p6 - 12*a0_p4*ph3 + 48*af_p3*jMax_jMax*g1 - 8*a0_p3*ph1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd + 9*a0_p4*p1 + 3*a0_a0*ph2)/(144*jMax_jMax*jMax_jMax*ph4);
+IF (ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
+THEN
+  polynom[0] := 1;
+  polynom[1] := -tf/2;
+  polynom[2] := 0;
+  polynom[3] := pd/(2*jMax);
+  Roots.SolveCub(ADR(polynom), rootCount:=rootCount, roots:=root);
 
-Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
-Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
+  FOR i:=0 TO rootCount
+  DO
+    t := root[i];
+    IF (t > tf/4) THEN
+      CONTINUE;
+    END_IF
+    
+    // Single Newton step (regarding pd)
+    IF t > Constants.DoubleEpsilon THEN
+      orig := -pd + jMax*t*t*(tf - 2*t);
+      ph2 := 2*jMax*t*(tf - 3*t);
+      t := t - orig / ph2;
+    END_IF
+    
+    profile.t[0] := t;
+    profile.t[1] := 0;
+    profile.t[2] := t;
+    profile.t[3] := tf - 4*t;
+    profile.t[4] := t;
+    profile.t[5] := 0;
+    profile.t[6] := t;
+    
+    IF (profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin)) THEN
+      RETURN;
+    END_IF
+  END_FOR      
 
-// Solve 4th order derivative analytically
-Roots.SolveQuartMonic(ADR(deriv[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
-
-tz_min := 0.0;
-tz_max := tf;
-tz_current := tz_min;
-BubbleSortLreal(data:=ADR(d_extremas), d_extremasCount, indicesSorted:=ADR(indices));
-FOR i:=0 TO d_extremasCount
-DO
-  tz := d_extremas[indices[i]];
-  IF (tz = 0.0 OR_ELSE tz >= tz_max)
-  THEN
-    CONTINUE;
-	END_IF
-
-    IF (ABS(Roots.PolyEval(ADR(deriv), 4, tz)) > Constants.Tolerance)
+ELSE
+  
+  // Profile UDDU
+  p1 := af_af - 2*jMax*(-2*af*tf + jMax*tf_tf + 3*vd);
+  ph1 := af_p3 - 3*jMax_jMax*g1 - 3*af*jMax*vd;
+  ph2 := af_p4 + 8*af_p3*jMax*tf + 12*jMax*(3*jMax*vd_vd - af_af*vd + 2*af*jMax*(g1 - tf*vd) - 2*jMax_jMax*tf*g1);
+  ph3 := a0*(af - jMax*tf);
+  ph4 := jMax*(-ad + jMax*tf);
+  
+  // Find root of 5th order polynom
+  polynom[0] := 1.0;
+  polynom[1] := (15*a0_a0 + af_af + 4*af*jMax*tf - 16*ph3 - 2*jMax*(jMax*tf_tf + 3*vd))/(4*ph4);
+  polynom[2] := (29*a0_p3 - 2*af_p3 - 33*a0*ph3 + 6*jMax_jMax*g1 + 6*af*jMax*vd + 6*a0*p1)/(6*jMax*ph4);
+  polynom[3] := (61*a0_p4 - 76*a0_a0*ph3 - 16*a0*ph1 + 30*a0_a0*p1 + ph2)/(24*jMax_jMax*ph4);
+  polynom[4] := (a0*(7*a0_p4 - 10*a0_a0*ph3 - 4*a0*ph1 + 6*a0_a0*p1 + ph2))/(12*jMax_jMax*jMax*ph4);
+  polynom[5] := (7*a0_p6 + af_p6 - 12*a0_p4*ph3 + 48*af_p3*jMax_jMax*g1 - 8*a0_p3*ph1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd + 9*a0_p4*p1 + 3*a0_a0*ph2)/(144*jMax_jMax*jMax_jMax*ph4);
+  
+  Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
+  Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
+  
+  // Solve 4th order derivative analytically
+  Roots.SolveQuartMonic(ADR(deriv[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+  
+  tz_current := tz_min;
+  BubbleSortLreal(data:=ADR(d_extremas), d_extremasCount, indicesSorted:=ADR(indices));
+  FOR i:=0 TO d_extremasCount
+  DO
+    tz := d_extremas[indices[i]];
+    IF tz >= tz_max
     THEN
-      tz := tz - Roots.PolyEval(ADR(deriv), 4, tz) / Roots.PolyEval(ADR(dderiv), 3, tz);   
-		END_IF
-
-    res := 64 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance;
+      CONTINUE;
+    END_IF
+  
+    orig := Roots.PolyEval(ADR(deriv), 4, tz);
+    IF (ABS(orig) > Constants.Tolerance) THEN
+      tz := tz - orig / Roots.PolyEval(ADR(dderiv), 3, tz);
+    END_IF
+    
     val_new := Roots.PolyEval(ADR(polynom), 5, tz);
-    IF (ABS(val_new) < res)
+    IF (ABS(val_new) < 64 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance)
     THEN
       root[rootCount+1] := tz;
       rootCount := rootCount + 1;
@@ -1175,214 +1210,215 @@ DO
       root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz);
       rootCount := rootCount + 1;
     END_IF
-
+    
     tz_current := tz;
-END_FOR
-
-IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
-THEN
-  root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
-  rootCount := rootCount + 1;
-END_IF
-
-FOR i:=0 TO rootCount
-DO
-  t := root[i];
-  IF t < 0.0
-  THEN
-    CONTINUE;
-	END_IF
+  END_FOR
   
-  h1 := (a0_a0 + af_af)*0.5 + jMax*(2*a0*t + jMax*t*t - vd);
-  IF h1 < 0
+  IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
   THEN
-    CONTINUE;
-	END_IF
-  
-  h1 := SQRT(h1)/ABS(jMax);
-  orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0*jMax*t*(af + jMax*(h1 + t - tf)) + 6*a0_a0*(af + jMax*(2*t - tf)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf) - tf*v0 - h1*vd))/(12*jMax_jMax);
-  deriv_newton := -(a0 + jMax*t)*(3*(h1 + t) - 2*tf + (a0 + 2*af)/jMax);
-  
-  IF ABS(deriv_newton) < Constants.DoubleEpsilon
-  THEN
-    CONTINUE;
-	END_IF
-  
-  t := t - orig / deriv_newton;
-
-  IF t > tf OR_ELSE t <> t (*isnan*)
-  THEN
-    CONTINUE;
+    root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
+    rootCount := rootCount + 1;
   END_IF
-
-  h1 := (a0_a0 + af_af)/(2*jMax_jMax) + (t*(2*a0 + jMax*t) - vd)/jMax;
-  IF h1 >= 0
-  THEN
-    h1 := SQRT(h1);
   
-    Profile.t[0] := t;
-    Profile.t[1] := 0;
-    Profile.t[2] := Profile.t[0] + a0/jMax;
-    Profile.t[3] := tf - 2*(t + h1) - (a0 + af)/jMax;
-    Profile.t[4] := h1;
-    Profile.t[5] := 0;
-    Profile.t[6] := Profile.t[4] + af/jMax;
-  
-    time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
-    IF time_vel
+  FOR i:=0 TO rootCount
+  DO
+    t := root[i];
+    IF t < 0.0
     THEN
-      RETURN;
+      CONTINUE;
     END_IF
-	END_IF
-END_FOR
-
-// Profile UDUD
-ph1 := af_af - 2*jMax*(2*af*tf + jMax*tf_tf - 3*vd);
-ph2 := af_p3 - 3*jMax_jMax*g1 + 3*af*jMax*vd;
-ph3 := 2*jMax*tf*g1 + 3*vd_vd;
-ph4 := af_p4 - 8*af_p3*jMax*tf + 12*jMax*(jMax*ph3 + af_af*vd + 2*af*jMax*(g1 - tf*vd));
-ph5 := af + jMax*tf;
-
-// Find root of 6th order polynom
-polynom[0] := 1.0;
-polynom[1] := (5*a0 - ph5)/jMax;
-polynom[2] := (39*a0_a0 - ph1 - 16*a0*ph5)/(4*jMax_jMax);
-polynom[3] := (55*a0_p3 - 33*a0_a0*ph5 - 6*a0*ph1 + 2*ph2)/(6*jMax_jMax*jMax);
-polynom[4] := (101*a0_p4 + ph4 - 76*a0_p3*ph5 - 30*a0_a0*ph1 + 16*a0*ph2)/(24*jMax_jMax*jMax_jMax);
-polynom[5] := (a0*(11*a0_p4 + ph4 - 10*a0_p3*ph5 - 6*a0_a0*ph1 + 4*a0*ph2))/(12*jMax_jMax*jMax_jMax*jMax);
-polynom[6] := (11*a0_p6 - af_p6 - 12*a0_p5*ph5 - 48*af_p3*jMax_jMax*g1 - 9*a0_p4*ph1 + 72*jMax_jMax*jMax*(jMax*g1*g1 - vd_vd*vd - 2*af*g1*vd) - 6*af_p4*jMax*vd - 36*af_af*jMax_jMax*vd_vd + 8*a0_p3*ph2 + 3*a0_a0*ph4)/(144*jMax_jMax*jMax_jMax*jMax_jMax);
-
-Roots.PolyMonicDeri(ADR(polynom), 6, out:=ADR(deriv));
-Roots.PolyMonicDeri(ADR(deriv), 5, out:=ADR(dderiv));
-Roots.SolveQuartMonic(ADR(dderiv[1]), 4, rootCount:=rootCount, roots:=root);
-
-tz_min := 0.0;
-tz_max := tf;
-dd_tz_current := tz_min;
-
-FOR i:=0 TO rootCount
-DO
-  tz := root[i];
-  IF (tz <= 0.0 OR_ELSE tz >= tz_max)
+    
+    h1 := (a0_a0 + af_af)*0.5 + jMax*(2*a0*t + jMax*t*t - vd);
+    IF h1 < 0
+    THEN
+      CONTINUE;
+    END_IF
+    
+    h1 := SQRT(h1)/ABS(jMax);
+    orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0*jMax*t*(af + jMax*(h1 + t - tf)) + 6*a0_a0*(af + jMax*(2*t - tf)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf) - tf*v0 - h1*vd))/(12*jMax_jMax);
+    deriv_newton := -(a0 + jMax*t)*(3*(h1 + t) - 2*tf + (a0 + 2*af)/jMax);
+    
+    IF ABS(deriv_newton) < Constants.DoubleEpsilon
+    THEN
+      CONTINUE;
+    END_IF
+    
+    t := t - orig / deriv_newton;
+  
+    IF t > tf OR_ELSE t <> t (*isnan*)
+    THEN
+      CONTINUE;
+    END_IF
+  
+    h1 := (a0_a0 + af_af)/(2*jMax_jMax) + (t*(2*a0 + jMax*t) - vd)/jMax;
+    IF h1 >= 0
+    THEN
+      h1 := SQRT(h1);
+    
+      Profile.t[0] := t;
+      Profile.t[1] := 0;
+      Profile.t[2] := t + a0/jMax;
+      Profile.t[3] := tf - 2*(t + h1) - (a0 + af)/jMax;
+      Profile.t[4] := h1;
+      Profile.t[5] := 0;
+      Profile.t[6] := h1 + af/jMax;
+    
+      time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
+      IF time_vel
+      THEN
+        RETURN;
+      END_IF
+    END_IF
+  END_FOR
+  
+  // Profile UDUD
+  ph1 := af_af - 2*jMax*(2*af*tf + jMax*tf_tf - 3*vd);
+  ph2 := af_p3 - 3*jMax_jMax*g1 + 3*af*jMax*vd;
+  ph3 := 2*jMax*tf*g1 + 3*vd_vd;
+  ph4 := af_p4 - 8*af_p3*jMax*tf + 12*jMax*(jMax*ph3 + af_af*vd + 2*af*jMax*(g1 - tf*vd));
+  ph5 := af + jMax*tf;
+  
+  // Find root of 6th order polynom
+  polynom[0] := 1.0;
+  polynom[1] := (5*a0 - ph5)/jMax;
+  polynom[2] := (39*a0_a0 - ph1 - 16*a0*ph5)/(4*jMax_jMax);
+  polynom[3] := (55*a0_p3 - 33*a0_a0*ph5 - 6*a0*ph1 + 2*ph2)/(6*jMax_jMax*jMax);
+  polynom[4] := (101*a0_p4 + ph4 - 76*a0_p3*ph5 - 30*a0_a0*ph1 + 16*a0*ph2)/(24*jMax_jMax*jMax_jMax);
+  polynom[5] := (a0*(11*a0_p4 + ph4 - 10*a0_p3*ph5 - 6*a0_a0*ph1 + 4*a0*ph2))/(12*jMax_jMax*jMax_jMax*jMax);
+  polynom[6] := (11*a0_p6 - af_p6 - 12*a0_p5*ph5 - 48*af_p3*jMax_jMax*g1 - 9*a0_p4*ph1 + 72*jMax_jMax*jMax*(jMax*g1*g1 - vd_vd*vd - 2*af*g1*vd) - 6*af_p4*jMax*vd - 36*af_af*jMax_jMax*vd_vd + 8*a0_p3*ph2 + 3*a0_a0*ph4)/(144*jMax_jMax*jMax_jMax*jMax_jMax);
+  
+  Roots.PolyMonicDeri(ADR(polynom), 6, out:=ADR(deriv));
+  Roots.PolyMonicDeri(ADR(deriv), 5, out:=ADR(dderiv));
+  Roots.SolveQuartMonic(ADR(dderiv[1]), 4, rootCount:=rootCount, roots:=root);
+  
+  tz_min := 0.0;
+  tz_max := tf;
+  dd_tz_current := tz_min;
+  
+  FOR i:=0 TO rootCount
+  DO
+    tz := root[i];
+    IF tz >= tz_max
+    THEN
+      CONTINUE;
+    END_IF
+    
+    orig := Roots.PolyEval(ADR(dderiv), 4, tz);
+    IF (ABS(orig) > Constants.Tolerance)
+    THEN
+      Roots.PolyMonicDeri(ADR(dderiv), 4, out:=ADR(ddderiv));   
+      tz := tz - Roots.PolyEval(ADR(dderiv), 4, tz) / Roots.PolyEval(ADR(ddderiv), 3, tz);
+    END_IF  
+  
+    IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz) < 0)
+    THEN
+      dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current;
+      dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz;
+      dd_tz_intervalCount := dd_tz_intervalCount + 1;
+    END_IF
+  
+    dd_tz_current := tz;
+      
+  END_FOR
+  
+  IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz_max) < 0)
   THEN
-    CONTINUE;
-	END_IF
-
-  IF (ABS(Roots.PolyEval(ADR(dderiv), 4, tz)) > Constants.Tolerance)
-  THEN
-    Roots.PolyMonicDeri(ADR(dderiv), 4, out:=ADR(ddderiv));  
-    tz := tz - Roots.PolyEval(ADR(dderiv), 4, tz) / Roots.PolyEval(ADR(ddderiv), 3, tz);
-  END_IF
-
-  IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz) < 0)
-  THEN
-    dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current;
-    dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz;
+    dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current; 
+    dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz_max;
     dd_tz_intervalCount := dd_tz_intervalCount + 1;
   END_IF
-
-  dd_tz_current := tz;
+  
+  rootCount := -1;
+  tz_current := tz_min;
+  FOR i:=0 TO dd_tz_intervalCount
+  DO
+    tz := Roots.ShrinkInterval(ADR(deriv), 5, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
+    IF tz >= tz_max
+    THEN
+      CONTINUE;
+    END_IF
     
-END_FOR
-
-IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz_max) < 0)
-THEN
-  dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current; 
-  dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz_max;
-  dd_tz_intervalCount := dd_tz_intervalCount + 1;
-END_IF
-
-rootCount := -1;
-tz_current := tz_min;
-FOR i:=0 TO dd_tz_intervalCount
-DO
-  tz := Roots.ShrinkInterval(ADR(deriv), 5, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
-  IF (tz = 0.0 OR_ELSE tz >= tz_max)
-  THEN
-    CONTINUE;
-	END_IF
+    p_val := Roots.PolyEval(ADR(polynom), 6, tz);
+    IF (ABS(p_val) < 64 * ABS(Roots.PolyEval(ADR(dderiv), 4, tz)) * Constants.Tolerance)
+    THEN
+      root[rootCount+1] := tz;
+      rootCount := rootCount + 1;
+    ELSIF (Roots.PolyEval(ADR(polynom), 6, tz_current) * p_val < 0)
+    THEN
+      root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 6, tz_current, tz);
+      rootCount := rootCount + 1;
+    END_IF
+    tz_current := tz;
+  END_FOR
   
-  res := 64 * ABS(Roots.PolyEval(ADR(dderiv), 4, tz)) * Constants.Tolerance;
-  p_val := Roots.PolyEval(ADR(polynom), 6, tz);
-  IF (ABS(p_val) < res)
+  IF (Roots.PolyEval(ADR(polynom), 6, tz_current) * Roots.PolyEval(ADR(polynom), 6, tz_max) < 0)
   THEN
-    root[rootCount+1] := tz;
-    rootCount := rootCount + 1;
-  ELSIF (Roots.PolyEval(ADR(polynom), 6, tz_current) * p_val < 0)
-  THEN
-    root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 6, tz_current, tz);
+    root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 6, tz_current, tz_max);
     rootCount := rootCount + 1;
   END_IF
-  tz_current := tz;
-END_FOR
-
-IF (Roots.PolyEval(ADR(polynom), 6, tz_current) * Roots.PolyEval(ADR(polynom), 6, tz_max) < 0)
-THEN
-  root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 6, tz_current, tz_max);
-  rootCount := rootCount + 1;
-END_IF
-
-
-FOR i:=0 TO rootCount
-DO
-  t := root[i];
   
-  // Double Newton step (regarding pd)
-  h1 := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0 + jMax*t)*t - vd)/jMax;
-  IF h1 < 0
-  THEN
-    CONTINUE;
-	END_IF
   
-  h1 := SQRT(h1);
-  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
-  deriv_newton := (a0 + jMax*t)*(2*(af + jMax*tf) - 3*jMax*(h1 + t) - a0)/jMax;
-
-  IF ABS(deriv_newton) <= Constants.DoubleEpsilon
-  THEN
-    CONTINUE;
-	END_IF
-  
-  t := t - orig / deriv_newton;
-  h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
-  IF h1 < 0
-  THEN
-    CONTINUE;
-  END_IF
-  h1 := SQRT(h1)/ABS(jMax);  
-  orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
-  IF (ABS(orig) > 1E-9)
-  THEN
+  FOR i:=0 TO rootCount
+  DO
+    t := root[i];
+    
+    // Double Newton step (regarding pd)
+    h1 := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0 + jMax*t)*t - vd)/jMax;
+    IF h1 < 0
+    THEN
+      CONTINUE;
+    END_IF
+    
+    h1 := SQRT(h1);
+    orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
     deriv_newton := (a0 + jMax*t)*(2*(af + jMax*tf) - 3*jMax*(h1 + t) - a0)/jMax;
-    
+  
     IF ABS(deriv_newton) <= Constants.DoubleEpsilon
     THEN
       CONTINUE;
     END_IF
     
-    t := t - orig / deriv_newton;           
-  END_IF
-
-  h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
-  IF h1 < 0
-  THEN
-    CONTINUE;
-  END_IF
-  h1 := SQRT(h1)/ABS(jMax);
-  Profile.t[0] := t;
-  Profile.t[1] := 0;
-  Profile.t[2] := Profile.t[0] + a0/jMax;
-  Profile.t[3] := tf - 2*(t + h1) + ad/jMax;
-  Profile.t[4] := h1;
-  Profile.t[5] := 0;
-  Profile.t[6] := Profile.t[4] - af/jMax;
-
-  time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
-  IF time_vel
-  THEN
-    RETURN;
-	END_IF
-END_FOR]]></ST>
+    t := t - orig / deriv_newton;
+    h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
+    IF h1 < 0
+    THEN
+      CONTINUE;
+    END_IF
+    h1 := SQRT(h1)/ABS(jMax);  
+    orig := -pd + (af_p3 - a0_p3 + 3*a0_a0*jMax*(tf - 2*t))/(6*jMax_jMax) + (2*a0 + jMax*t)*t*(tf - t) + (jMax*h1 - af)*h1*h1 + tf*v0;
+    IF (ABS(orig) > 1E-9)
+    THEN
+      deriv_newton := (a0 + jMax*t)*(2*(af + jMax*tf) - 3*jMax*(h1 + t) - a0)/jMax;
+      
+      IF ABS(deriv_newton) <= Constants.DoubleEpsilon
+      THEN
+        CONTINUE;
+      END_IF
+      
+      t := t - orig / deriv_newton;           
+    END_IF
+  
+    h1 := (af_af - a0_a0)*0.5 - jMax*((2*a0 + jMax*t)*t - vd);
+    IF h1 < 0
+    THEN
+      CONTINUE;
+    END_IF
+    h1 := SQRT(h1)/ABS(jMax);
+    Profile.t[0] := t;
+    Profile.t[1] := 0;
+    Profile.t[2] := t + a0/jMax;
+    Profile.t[3] := tf - 2*(t + h1) + ad/jMax;
+    Profile.t[4] := h1;
+    Profile.t[5] := 0;
+    Profile.t[6] := h1 - af/jMax;
+  
+    time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    IF time_vel
+    THEN
+      RETURN;
+    END_IF
+  END_FOR
+END_IF]]></ST>
       </Implementation>
     </Method>
   </POU>
