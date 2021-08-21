@@ -428,7 +428,9 @@ END_VAR
 VAR
   possible_t_syncs : ARRAY [0..3*ParameterList.MaxDoFs] OF LREAL;
   idx : ARRAY [0..3*ParameterList.MaxDoFs] OF INT;  
+  idx_end : INT;
   possible_t_sync : REFERENCE TO LREAL;
+  any_interval : BOOL;
   dof : INT;
   i,j, h : INT;
   b : INT;
@@ -446,14 +448,17 @@ THEN
 END_IF
 
 // Possible t_syncs are the start times of the intervals and optional Tmin
+any_interval := FALSE;
 FOR dof := 0 TO dofs-1 
 DO
-  possible_t_syncs[3 * dof] := blocks[dof].Tmin;
-  possible_t_syncs[3 * dof + 1] := SEL(blocks[dof].a.IsUsed, Constants.Infinity, blocks[dof].a.Right);
-  possible_t_syncs[3 * dof + 2] := SEL(blocks[dof].b.IsUsed, Constants.Infinity, blocks[dof].b.Right);      
+  possible_t_syncs[dof] := blocks[dof].Tmin;
+  possible_t_syncs[DoFs + dof] := SEL(blocks[dof].a.IsUsed, Constants.Infinity, blocks[dof].a.Right);
+  possible_t_syncs[2 * DoFs + dof] := SEL(blocks[dof].b.IsUsed, Constants.Infinity, blocks[dof].b.Right);
+  any_interval := any_interval OR_ELSE blocks[dof].a.IsUsed OR_ELSE blocks[dof].b.IsUsed;
 END_FOR
 
-possible_t_syncs[3 * DOFs] := SEL(Tmin = 0, Tmin,  Constants.Infinity);
+possible_t_syncs[3 * DOFs] := SEL(Tmin = 0, Tmin, Constants.Infinity);
+any_interval := any_interval OR_ELSE Tmin > 0;
 IF (discrete_duration)
 THEN
   FOR i:=0 TO 3*dofs-1
@@ -463,10 +468,11 @@ THEN
 END_IF
 
 // Bubblesort possible_t_syncs from best to worst
-BubbleSortLreal(ADR(possible_t_syncs), 3*DOFs, indicesSorted:=ADR(idx));
+idx_end := SEL(any_interval, DOFs, 3*DOFs);
+BubbleSortLreal(ADR(possible_t_syncs), idx_end, indicesSorted:=ADR(idx));
 
 // Start at last tmin (or worse)
-FOR i:=dofs-1 TO 3*dofs-1
+FOR i:=dofs-1 TO idx_end
 DO  
   possible_t_sync REF= possible_t_syncs[idx[i]];
   IF possible_t_sync < Tmin
@@ -496,9 +502,8 @@ DO
     Synchronize := TRUE;    
   END_IF
 
-    
-  limiting_dof := DINT_TO_INT(TRUNC(idx[i] / 3));
-  CASE (idx[i] MOD 3)
+  limiting_dof := DINT_TO_INT(TRUNC(idx[i] / DoFs));
+  CASE (idx[i] MOD DoFs)
   OF
     0: Profiles[limiting_dof] := blocks[limiting_dof].p_min;
     1: Profiles[limiting_dof] := blocks[limiting_dof].a.Profile;

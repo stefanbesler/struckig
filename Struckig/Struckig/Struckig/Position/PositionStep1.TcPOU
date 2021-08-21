@@ -21,6 +21,7 @@ VAR
   t : LREAL;
   i : INT;
   h0, h1, h2, h2_h2, h3 : LREAL;
+  t_min, t_max : LREAL;
   
   has_up_vel, has_down_vel : BOOL;
   validProfiles : ARRAY[0..5] OF ProfileDesc; // Max 5 valid profiles + 1 spare for numerical issues
@@ -205,15 +206,95 @@ END_VAR]]></Declaration>
 validProfileCounter := -1;
 has_up_vel := has_down_vel := FALSE;
 
-IF (ABS(pf - p0) < Constants.DoubleEpsilon AND_THEN ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
-THEN 
-  IF (pf >= p0)
+IF (ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon) THEN
+  vMax := SEL(pd >= 0, vMin, vMax);
+  vMin := SEL(pd >= 0, vMax, vMin);
+  aMax := SEL(pd >= 0, aMin, aMax);
+  aMin := SEL(pd >= 0, aMax, aMin);
+  jMax :=SEL (pd >= 0,-jMax, jMax);
+
+  IF ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(pd) < Constants.DoubleEpsilon
   THEN
     time_none(Profilefile, vMax, vMin, aMax, aMin, jMax);
   ELSE
-    time_none(Profilefile, vMin, vMax, aMin, aMax, -jMax);        
+    // There is no blocked interval when vf==0 && af==0, so return after first found profile
+    time_acc0_acc1_vel(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_vel(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc1_vel(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0_vel(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_none(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc1(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0_acc1(Profilefile, vMax, vMin, aMax, aMin, jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0_acc1_vel(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_vel(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc1_vel(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0_vel(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_none(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc1(Profilefile, vMin, vMax, aMin, aMax, -jMax);
+    IF (validProfileCounter > 0) THEN
+      Get := CalculateBlock(block);
+      RETURN;
+    END_IF
+    time_acc0_acc1(Profilefile, vMin, vMax, aMin, aMax, -jMax);          
   END_IF
-
 ELSE 
   time_acc0_acc1_vel(Profilefile, vMax, vMin, aMax, aMin, jMax);
   time_acc0_acc1_vel(Profilefile, vMin, vMax, aMin, aMax, -jMax);
@@ -326,13 +407,18 @@ polynom[2] := h2/jMax_jMax;
 polynom[3] := 0;
 polynom[4] := h0/(12*jMax_jMax*jMax_jMax);
 
+t_min := -(af - aMax)/jMax;
+t_max := (aMax - aMin)/jMax;
+    
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF (t > (aMax - aMin)/jMax) THEN
+  IF t < t_min OR_ELSE t > t_max
+  THEN
     CONTINUE;
   END_IF
+  
   // Single Newton step (regarding pd)
   IF t > Constants.DoubleEpsilon
   THEN
@@ -351,7 +437,7 @@ DO
 	END_IF
   
   Profile.t[0] := (-a0 + aMax)/jMax;
-  Profile.t[1] := (a0_a0 - af_af + 2*jMax*((-2*aMax + jMax*t)*t + vf - v0))/(2*aMax*jMax);
+  Profile.t[1] := (a0_a0 - af_af)/(2*aMax*jMax) + (vf - v0)/aMax - 2*t + jMax*t*t/aMax;
   Profile.t[2] := t;
   Profile.t[3] := 0;
   Profile.t[4] := 0;
@@ -383,32 +469,38 @@ THEN
   h3 := -af_af/(2*aMin*jMax) - (aMax - 2*aMin)/(2*jMax) + vf/aMin;
   
   // UDDU: Solution 2
-  profile.t[0] := (-a0 + aMax)/jMax;
-  profile.t[1] := h2 - h1/aMax;
-  profile.t[2] := aMax/jMax;
-  profile.t[3] := 0;
-  profile.t[4] := -aMin/jMax;
-  profile.t[5] := h3 + h1/aMin;
-  profile.t[6] := profile.t[4] + af/jMax;
-
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+  IF h2 > h1/aMax AND_THEN h3 > -h1/aMin
   THEN
-    AddProfile(Profile, jMax);            
+    profile.t[0] := (-a0 + aMax)/jMax;
+    profile.t[1] := h2 - h1/aMax;
+    profile.t[2] := aMax/jMax;
+    profile.t[3] := 0;
+    profile.t[4] := -aMin/jMax;
+    profile.t[5] := h3 + h1/aMin;
+    profile.t[6] := profile.t[4] + af/jMax;
+  
+    IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+    THEN
+      AddProfile(Profile, jMax);            
+    END_IF
   END_IF
   
   // UDDU: Solution 1  
-  Profile.t[0] := (-a0 + aMax)/jMax;
-  Profile.t[1] := h2 + h1/aMax;
-  Profile.t[2] := aMax/jMax;
-  Profile.t[3] := 0;
-  Profile.t[4] := -aMin/jMax;
-  Profile.t[5] := h3 - h1/aMin;
-  Profile.t[6] := Profile.t[4] + af/jMax;
-
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+  IF h2 > -h1/aMax AND_THEN h3 > h1/aMin
   THEN
-    AddProfile(Profile, jMax);              
-  END_IF
+    Profile.t[0] := (-a0 + aMax)/jMax;
+    Profile.t[1] := h2 + h1/aMax;
+    Profile.t[2] := aMax/jMax;
+    Profile.t[3] := 0;
+    Profile.t[4] := -aMin/jMax;
+    Profile.t[5] := h3 - h1/aMin;
+    Profile.t[6] := Profile.t[4] + af/jMax;
+  
+    IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+    THEN
+      AddProfile(Profile, jMax);              
+    END_IF
+	END_IF  
 END_IF
 
 
@@ -535,11 +627,14 @@ polynom[2] := (5*a0_a0 + aMin*(aMin - 6*a0) + 2*jMax*v0)/jMax_jMax;
 polynom[3] := 2*(a0 - aMin)*h2/(jMax_jMax*jMax);
 polynom[4] := h0/(12*jMax_jMax*jMax_jMax);
 
+t_min := -(a0 - aMin)/jMax;
+t_max := (aMax - a0)/jMax;
+    
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF (t > (aMax - a0)/jMax) THEN
+  IF (t < t_min OR_ELSE t > t_max) THEN
     CONTINUE;
   END_IF 
 
@@ -713,13 +808,17 @@ h2 := (a0_a0 - af_af)/(2*jMax) + (vf - v0);
 h2_h2 := h2*h2;
 polynom[1] := 0.0;
 polynom[2] := (-2*(a0_a0 + af_af - 2*jMax*(v0 + vf)))/jMax_jMax;
-polynom[3] := (4*(a0_p3 - af_p3 + 3*jMax*(af*vf - a0*v0 - jMax*pd)))/(3*jMax*jMax_jMax);
+polynom[3] := 4*(a0_p3 - af_p3 + 3*jMax*(af*vf - a0*v0))/(3*jMax*jMax_jMax) - 4*pd/jMax;
 polynom[4] := -h2_h2/jMax_jMax;
+
+t_min := (a0 - af)/jMax;
+t_max := (aMax - aMin)/jMax;
+        
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF t = 0 OR_ELSE t > (aMax - aMin)/jMax
+  IF t < t_min OR_ELSE t > t_max
   THEN
     CONTINUE;
 	END_IF
