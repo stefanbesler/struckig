@@ -7,11 +7,11 @@ VAR_INPUT
   Synchronization : SynchronizationType := SynchronizationType.TimeSync;
   Discretization : DiscretizationType;
   
-  CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  MinDuration : LREAL := 0; // disabled
+  CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
+  TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Target state
+  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Kinematic constraints
+  MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Optional kindematic constraints
+  MinDuration : LREAL := 0; // Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
 END_VAR
 VAR
   _enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;	

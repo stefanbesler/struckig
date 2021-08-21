@@ -3,10 +3,26 @@
 <div align="center">
   <h1 align="center">(ST)Ruckig</h1>
   <h3 align="center">
-    Online Trajectory Generation. Real-time. Time-optimal. Jerk-constrained.<br/>
+    Online Trajectory Generation. Real-time. Jerk-constrained. Time-optimal<br/>
     "Full" port from C++ to Structured Text, TwinCAT 3.
   </h3>
 </div>
+
+<p align="center">
+  <a href="https://github.com/stefanbesler/ruckig/actions">
+    <img src="https://github.com/stefanbesler/ruckig/workflows/CI/badge.svg" alt="CI">
+  </a>
+  <a href="https://github.com/stefanbesler/ruckig/issues">
+    <img src="https://img.shields.io/github/issues/stefanbesler/ruckig.svg" alt="Issues">
+  </a>
+  <a href="https://github.com/stefanbesler/ruckig/releases">
+    <img src="https://img.shields.io/github/v/release/stefanbesler/ruckig.svg?include_prereleases&sort=semver" alt="Releases">
+  </a>
+
+  <a href="https://github.com/stefanbesler/ruckig/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT">
+  </a>
+</p>
 
 This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online
 Trajectory Generation to TwinCAT 3. Please note, that while this port aims to be a full port, it will probably never reach the performance 
