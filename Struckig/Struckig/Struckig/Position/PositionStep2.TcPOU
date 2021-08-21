@@ -367,7 +367,7 @@ polynom[3] := 0;
 polynom[4] := (3*(a0_p4 + af_p4) - 4*(af_p3 + 2*a0_p3)*aMax + 6*a0_a0*(af_af + aMax*aMax + 2*jMax*vd) - 12*a0*aMax*(af_af + 2*jMax*vd) + 6*af_af*(aMax*aMax - 2*aMax*jMax*tf + 2*jMax*vd) - ph1)/(12*jMax_jMax*jMax_jMax);
 
 t_min := af/jMax;
-t_max := MIN(tf - aMax/jMax, aMax/jMax);
+t_max := MIN(tf - (2*aMax - a0)/jMax, -aMin/jMax);
         
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 FOR i:=0 TO d_extremasCount
@@ -546,11 +546,11 @@ polynom[1] := (2*(2*a0 - aMin))/jMax;
 polynom[2] := (4*a0_a0 + ph1 - 3*a0*aMin)/jMax_jMax;
 polynom[3] := (2*a0*ph1)/(jMax_jMax*jMax);
 polynom[4] := (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMin + 6*af_af*(aMin*aMin - 2*jMax*vd) + 12*jMax*ph2 + 6*a0_a0*ph3)/(12*jMax_jMax*jMax_jMax);
-Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 
 t_min := -a0/jMax;
-t_max := MIN(tf + aMin/jMax, (aMax - a0)/jMax);
-        
+t_max := MIN((tf + 2*aMin/jMax - (a0 + af)/jMax)/2, (aMax - a0)/jMax);
+
+Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
@@ -604,11 +604,14 @@ polynom[2] := (4*a0_a0 - 3*a0*aMax + ph1)/jMax_jMax;
 polynom[3] := (2*a0*ph1)/(jMax_jMax*jMax);
 polynom[4] := (3*(a0_p4 + af_p4) - 4*(a0_p3 + 2*af_p3)*aMax - 24*af*aMax*jMax*vd + 12*jMax*ph4 - 6*a0_a0*ph3 + 6*af_af*ph2)/(12*jMax_jMax*jMax_jMax);
 
+t_min := -a0/jMax;
+t_max := MIN((tf + ad/jMax - 2*aMax/jMax)/2, (aMax - a0)/jMax);
+        
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t > tf - aMax/jMax OR_ELSE t > (aMax - a0)/jMax
+  IF t > t_max OR_ELSE t < t_min
   THEN
     CONTINUE;
 	END_IF
@@ -617,7 +620,7 @@ DO
 
   Profile.t[0] := t;
   Profile.t[1] := 0;
-  Profile.t[2] := Profile.t[0] + a0/jMax;
+  Profile.t[2] := t + a0/jMax;
   Profile.t[3] := tf + (h1 + ad - aMax)/jMax - 2*t;
   Profile.t[4] := aMax/jMax;
   Profile.t[5] := -(h1 + aMax)/jMax;

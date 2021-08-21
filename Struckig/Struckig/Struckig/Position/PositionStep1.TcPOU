@@ -399,7 +399,10 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h0 := 3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af*vf - a0*v0) - 6*a0_a0*(aMax*aMax - 2*jMax*v0) + 6*af_af*(aMax*aMax - 2*jMax*vf) + 12*jMax*(jMax*(vf_vf - v0_v0 - 2*aMax*pd) - aMax*aMax*(vf - v0));
+        <ST><![CDATA[h3 := (a0_a0 - af_af)/(2*aMax*jMax) + (vf - v0)/aMax;
+t_max := (aMax - aMin)/jMax;
+
+h0 := 3*(af_p4 - a0_p4) + 8*(a0_p3 - af_p3)*aMax + 24*aMax*jMax*(af*vf - a0*v0) - 6*a0_a0*(aMax*aMax - 2*jMax*v0) + 6*af_af*(aMax*aMax - 2*jMax*vf) + 12*jMax*(jMax*(vf_vf - v0_v0 - 2*aMax*pd) - aMax*aMax*(vf - v0));
 h2 := -af_af + aMax*aMax + 2*jMax*vf;
     
 polynom[1] := (-2*aMax)/jMax;
@@ -407,8 +410,7 @@ polynom[2] := h2/jMax_jMax;
 polynom[3] := 0;
 polynom[4] := h0/(12*jMax_jMax*jMax_jMax);
 
-t_min := -(af - aMax)/jMax;
-t_max := (aMax - aMin)/jMax;
+t_min := (aMax - af)/jMax;
     
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
@@ -437,7 +439,7 @@ DO
 	END_IF
   
   Profile.t[0] := (-a0 + aMax)/jMax;
-  Profile.t[1] := (a0_a0 - af_af)/(2*aMax*jMax) + (vf - v0)/aMax - 2*t + jMax*t*t/aMax;
+  Profile.t[1] := h3 - 2*t + jMax/aMax*t*t;
   Profile.t[2] := t;
   Profile.t[3] := 0;
   Profile.t[4] := 0;
@@ -618,7 +620,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h0 := 3*(a0_p4 - af_p4) + 8*(af_p3 - a0_p3)*aMin + 6*(a0_a0 - af_af)*aMin*aMin + 12*jMax*(af_af*vf + a0_a0*v0 + 2*aMin*(jMax*pd - a0*v0 - af*vf) + aMin*aMin*(v0 + vf) + jMax*(v0_v0 - vf_vf));
+        <ST><![CDATA[h3 := -(a0_a0 + af_af)/(2*jMax*aMin) + aMin/jMax + (vf - v0)/aMin;
+t_max := (aMax - a0)/jMax;
+
+h0 := 3*(a0_p4 - af_p4) + 8*(af_p3 - a0_p3)*aMin + 6*(a0_a0 - af_af)*aMin*aMin + 12*jMax*(af_af*vf + a0_a0*v0 + 2*aMin*(jMax*pd - a0*v0 - af*vf) + aMin*aMin*(v0 + vf) + jMax*(v0_v0 - vf_vf));
 h2 := a0_a0 - a0*aMin + 2*jMax*v0;
 
 polynom[0] := 1.0;
@@ -628,7 +633,6 @@ polynom[3] := 2*(a0 - aMin)*h2/(jMax_jMax*jMax);
 polynom[4] := h0/(12*jMax_jMax*jMax_jMax);
 
 t_min := -(a0 - aMin)/jMax;
-t_max := (aMax - a0)/jMax;
     
 Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
@@ -668,7 +672,7 @@ DO
   Profile.t[2] := (a0 - aMin)/jMax + t;
   Profile.t[3] := 0;
   Profile.t[4] := 0;
-  Profile.t[5] := -((a0_a0 + af_af)*0.5 - aMin*aMin + jMax*t*(2*a0 + jMax*t) - jMax*(vf - v0))/(aMin*jMax);
+  Profile.t[5] :=  h3 - 2*a0/aMin*t - jMax/aMin*t*t;
   Profile.t[6] := (af - aMin)/jMax;
   
   IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
@@ -824,21 +828,24 @@ DO
 	END_IF
             
   // Single Newton-step (regarding pd)
-  h1 := (a0_a0 - af_af)/(2*jMax) + (vf - v0);
-  IF h1 = 0
+  IF (t > Constants.DoubleEpsilon)
   THEN
-    CONTINUE;
-	END_IF
+    h1 := (a0_a0 - af_af)/(2*jMax) + (vf - v0);
+    IF h1 = 0
+    THEN
+      CONTINUE;
+    END_IF
+    
+    orig := -h2_h2/(4*jMax*t) + h2*(af/jMax + t) + (4*a0_p3 + 2*af_p3 - 6*a0_a0*(af + 2*jMax*t) + 12*(af - a0)*jMax*v0 + 3*jMax_jMax*(-4*pd + (h1 + 8*v0)*t))/(12*jMax_jMax);
+    deriv := h2 + 2*v0 - a0_a0/jMax + h2_h2/(4*h1) + (3*h1)/4;
+    IF ABS(deriv) < Constants.DoubleEpsilon
+    THEN
+      CONTINUE;
+    END_IF
+    
+    t := t - orig / deriv;
+  END_IF
   
-  orig := -h2_h2/(4*jMax*t) + h2*(af/jMax + t) + (4*a0_p3 + 2*af_p3 - 6*a0_a0*(af + 2*jMax*t) + 12*(af - a0)*jMax*v0 + 3*jMax_jMax*(-4*pd + (h1 + 8*v0)*t))/(12*jMax_jMax);
-  deriv := h2 + 2*v0 - a0_a0/jMax + h2_h2/(4*h1) + (3*h1)/4;
-  IF ABS(deriv) < Constants.DoubleEpsilon
-  THEN
-    CONTINUE;
-	END_IF
-  
-  t := t - orig / deriv;
-
   h0 := h2/(2*jMax*t);
   Profile.t[0] := h0 + t*0.5 - a0/jMax;
   Profile.t[1] := 0;
