@@ -5,6 +5,7 @@
 VAR_GLOBAL CONSTANT
   MaxDoFs : INT := 7;
   MaxIterations : BYTE := 127; // Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
+  NumericalRobust : BOOL := TRUE;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>
