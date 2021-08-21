@@ -327,10 +327,6 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF t < 0.0
-  THEN
-    CONTINUE;
-	END_IF
 
   // Single Newton step (regarding pd)
   IF t > Constants.DoubleEpsilon
@@ -535,10 +531,6 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF t < 0.0
-  THEN
-    CONTINUE;
-	END_IF
 
   IF t > Constants.DoubleEpsilon
   THEN
@@ -715,7 +707,7 @@ Roots.SolveQuartMonic(ADR(polynom[1]), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
 DO
   t := root[i];
-  IF t <= 0.0
+  IF t = 0
   THEN
     CONTINUE;
 	END_IF

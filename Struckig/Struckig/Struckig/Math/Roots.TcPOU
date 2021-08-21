@@ -2,6 +2,14 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
   <POU Name="Roots" Id="{551d5993-d7b8-4037-a2a7-4cae14a4c1a9}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL Roots
+VAR
+  a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w, h : LREAL;
+  discriminant : LREAL;
+  e0, e1, q1, q2, p1, p2, dd, sqrtD  : LREAL;
+  a3, b3, c3 : LREAL;
+  x3 : ARRAY[0..2] OF LREAL;
+  iZeroes : INT;  
+END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -158,10 +166,6 @@ END_VAR
 VAR_IN_OUT
   rootCount : INT;
   roots : ARRAY[0..6] OF LREAL;
-END_VAR
-VAR
-  a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w : LREAL;
-  discriminant : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[rootCount := -1;
@@ -188,9 +192,10 @@ THEN
   IF (ABS(b) < Constants.DoubleEpsilon)
   THEN
     // Linear equation
-    IF (ABS(c) > Constants.DoubleEpsilon)
+    h := (-d / c);
+    IF ABS(c) > Constants.DoubleEpsilon AND_THEN h >= 0
     THEN
-      roots[rootCount+1] := (-d / c);
+      roots[rootCount+1] := h;
       rootCount := rootCount + 1;
     END_IF
   ELSE
@@ -200,9 +205,21 @@ THEN
     THEN
       inv2b := 1.0 / (2 * b);
       y := SQRT(discriminant);
-      roots[rootCount+1] := ((-c + y) * inv2b);
-      roots[rootCount+2] := ((-c - y) * inv2b);
-      rootCount := rootCount + 2;
+      
+      h := ((-c + y) * inv2b);
+      IF h >= 0
+      THEN
+        roots[rootCount+1] := h;
+        rootCount := rootCount + 1;
+			END_IF
+      
+      h := ((-c - y) * inv2b);
+      IF h >= 0
+      THEN      
+        roots[rootCount+1] := ((-c - y) * inv2b);
+        rootCount := rootCount + 1;
+      END_IF
+      
     END_IF
   END_IF
 
@@ -224,8 +241,14 @@ ELSE
     vvv := -halfq - y;
     www := SEL(ABS(uuu) > ABS(vvv), vvv, uuu);
     w := cbrt(www);
-    roots[rootCount+1] := (w - p / (3.0 * w) - bover3a);
-    rootCount := rootCount + 1;
+    
+    h := (w - p / (3.0 * w) - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;    
+		END_IF
+
   ELSIF (yy < -Constants.DoubleEpsilon) THEN
     // Sqrt is negative: three real solutions
     x := -halfq;
@@ -248,21 +271,47 @@ ELSE
     ux := COS(theta) * rr;
     uyi := SIN(theta) * rr;
     // First solution
-    roots[rootCount+1] := (ux + ux - bover3a);
+    h := (ux + ux - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
+    
     // Second solution, rotate +120 degrees
-    roots[rootCount+2] := (2 * (ux * Constants.Cos120 - uyi * Constants.Sin120) - bover3a);
+    h := (2 * (ux * Constants.Cos120 - uyi * Constants.Sin120) - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
+    
     // Third solution, rotate -120 degrees
-    roots[rootCount+3] := (2 * (ux * Constants.Cos120 + uyi * Constants.Sin120) - bover3a);
-    rootCount := rootCount + 3;
+    h := (2 * (ux * Constants.Cos120 + uyi * Constants.Sin120) - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
   ELSE
     // Sqrt is zero: two real solutions
     www := -halfq;
     w := cbrt(www);
     // First solution
-    roots[rootCount+1] := (w + w - bover3a);
+    h := (w + w - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
+    
     // Second solution, rotate +120 degrees
-    roots[rootCount+2] := (2 * w * Constants.Cos120 - bover3a);
-    rootCount := rootCount + 2;
+    h := (2 * w * Constants.Cos120 - bover3a);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
   END_IF
 END_IF]]></ST>
       </Implementation>
@@ -277,13 +326,6 @@ END_VAR
 VAR_IN_OUT
   rootCount : INT;
   roots : ARRAY[0..6] OF LREAL;
-END_VAR
-VAR
-  a, b, c, d : LREAL;
-  e0, e1, q1, q2, p1, p2, dd, sqrtD, y  : LREAL;
-  a3, b3, c3 : LREAL;
-  x3 : ARRAY[0..2] OF LREAL;
-  iZeroes : INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -306,18 +348,40 @@ THEN
   IF (dd > 0.0)
   THEN  
     sqrtD := SQRT(dd);
-    roots[0] := ((p1 + sqrtD) * 0.5);
-    roots[1] := ((p1 - sqrtD) * 0.5);
-    rootCount := 1;
+    
+    h := ((p1 + sqrtD) * 0.5);
+    IF h >= 0
+    THEN
+      roots[0] := h;
+      rootCount := 0;
+		END_IF
+    
+    h := ((p1 - sqrtD) * 0.5);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
   END_IF
   
   dd := q1 + q2;
   IF (dd > 0.0)
   THEN  
     sqrtD := SQRT(dd);
-    roots[rootCount+1] := ((-p1 + sqrtD) * 0.5);
-    roots[rootCount+2] := ((-p1 - sqrtD) * 0.5);
-    rootCount := rootCount + 2;
+    
+    h := ((-p1 + sqrtD) * 0.5);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
+    
+    h := ((-p1 - sqrtD) * 0.5);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
   END_IF
   RETURN;
 END_IF
@@ -330,14 +394,28 @@ THEN
   dd := a * a - 4 * b;
   IF (ABS(dd) < Constants.DoubleEpsilon)
   THEN
-    roots[rootCount+1] := (-a / 2);
-    rootCount := rootCount+1;
+    h := (-a / 2);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
   ELSIF (dd > 0)
   THEN
     sqrtD := SQRT(dd);
-    roots[rootCount+1] := ((-a - sqrtD) / 2);
-    roots[rootCount+2] := ((-a + sqrtD) / 2);
-    rootCount := rootCount+2;    
+    h := ((-a - sqrtD) / 2);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF
+    
+    h := ((-a + sqrtD) / 2);
+    IF h >= 0
+    THEN
+      roots[rootCount+1] := h;
+      rootCount := rootCount + 1;
+		END_IF  
   END_IF
   RETURN;
 END_IF
@@ -386,25 +464,55 @@ END_IF
 // Solve the quadratic equation: x^2 + p1*x + q1 = 0
 dd := p1 * p1 - 4 * q1;
 IF (ABS(dd) < Constants.Epsilon16) THEN
-  roots[rootCount+1] := (-p1 * 0.5);
-  rootCount := rootCount + 1;  
+  
+  h:= (-p1 * 0.5);
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF
+  
 ELSIF (dd > 0.0)  THEN
   sqrtD := SQRT(dd);
-  roots[rootCount+1] := ((-p1 + sqrtD) * 0.5);
-  roots[rootCount+2] := ((-p1 - sqrtD) * 0.5);
-  rootCount := rootCount + 2;  
+  h := ((-p1 + sqrtD) * 0.5);
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF
+    
+  h := ((-p1 - sqrtD) * 0.5);
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF
 END_IF
 
 // Solve the quadratic equation: x^2 + p2*x + q2 = 0
 dd := p2 * p2 - 4 * q2;
 IF (ABS(dd) < Constants.Epsilon16) THEN
-  roots[rootCount+1] := (-p2 * 0.5);
-  rootCount := rootCount + 1;    
+  h := (-p2 * 0.5);
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF  
 ELSIF (dd > 0.0) THEN
   sqrtD := SQRT(dd);
-  roots[rootCount+1] := ((-p2 + sqrtD) * 0.5);
-  roots[rootCount+2] := ((-p2 - sqrtD) * 0.5);
-  rootCount := rootCount + 2;  
+  h := ((-p2 + sqrtD) * 0.5); 
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF
+  
+  h := ((-p2 - sqrtD) * 0.5);
+  IF h >= 0
+  THEN
+    roots[rootCount+1] := h;
+    rootCount := rootCount + 1;
+  END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
