@@ -40,11 +40,11 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (t >= Duration) THEN
-    {// Keep constant acceleration}
-    FOR dof:=0 TO dofs-1 DO
-      Profiles[0].Integrate(t - Duration, Profiles[dof].pf, Profiles[dof].vf, Profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
-    END_FOR
-    RETURN;
+  {// Keep constant acceleration}
+  FOR dof:=0 TO dofs-1 DO
+    Profiles[0].Integrate(t - Duration, Profiles[dof].pf, Profiles[dof].vf, Profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+  END_FOR
+  RETURN;
 END_IF
 
 FOR dof:=0 TO dofs-1 DO
@@ -468,7 +468,7 @@ THEN
 END_IF
 
 // Bubblesort possible_t_syncs from best to worst
-idx_end := SEL(any_interval, DOFs, 3*DOFs);
+idx_end := SEL(any_interval, DOFs-1, 3*DOFs);
 BubbleSortLreal(ADR(possible_t_syncs), idx_end, indicesSorted:=ADR(idx));
 
 // Start at last tmin (or worse)
@@ -499,11 +499,12 @@ DO
   IF (idx[i] = 3*dofs)  // Optional Tmin
   THEN
     limiting_dof := -1;
-    Synchronize := TRUE;    
+    Synchronize := TRUE;
+    RETURN;
   END_IF
 
-  limiting_dof := DINT_TO_INT(TRUNC(idx[i] / DoFs));
-  CASE (idx[i] MOD DoFs)
+  limiting_dof := (idx[i] MOD DoFs);
+  CASE TRUNC(idx[i] / DoFs)
   OF
     0: Profiles[limiting_dof] := blocks[limiting_dof].p_min;
     1: Profiles[limiting_dof] := blocks[limiting_dof].a.Profile;

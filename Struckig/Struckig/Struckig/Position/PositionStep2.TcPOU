@@ -5,7 +5,7 @@
 VAR
   p0, v0, a0 : LREAL;
   tf, pf, vf, af : LREAL;
-  vMax, vMin, aMax, aMin, jMax : LREAL;
+  _vMax, _vMin, _aMax, _aMin, _jMax : LREAL;
   
   // Pre-calculated expressions
   pd : LREAL;
@@ -32,16 +32,19 @@ END_VAR]]></Declaration>
 VAR_INPUT
   Profile : REFERENCE TO ProfileDesc;
 END_VAR
+VAR_INST
+  vMax, vMin, aMax, aMin, jMax : LREAL;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[Profile.SetBoundaryPosition(p0, v0, a0, pf, vf, af);
 
 up_first := (pd > tf * v0);
-vMax := SEL(up_first, vMin, vMax);
-vMin := SEL(up_first, vMax, vMin);
-aMax := SEL(up_first, aMin, aMax);
-aMin := SEL(up_first, aMax, aMin);
-jMax := SEL(up_first, -jMax, jMax);
+vMax := SEL(up_first, _vMin, _vMax);
+vMin := SEL(up_first, _vMax, _vMin);
+aMax := SEL(up_first, _aMin, _aMax);
+aMin := SEL(up_first, _aMax, _aMin);
+jMax := SEL(up_first, -_jMax, _jMax);
 
 Get := time_acc0_acc1_vel(profile, vMax, vMin, aMax, aMin, jMax)
     OR_ELSE time_vel(profile, vMax, vMin, aMax, aMin, jMax)
@@ -80,11 +83,11 @@ THIS^.tf := tf;
 THIS^.pf := pf;
 THIS^.vf := vf;
 THIS^.af := af;
-THIS^.vMax := vMax;
-THIS^.vMin := vMin;
-THIS^.aMax := aMax;
-THIS^.aMin := aMin;
-THIS^.jMax := jMax;
+THIS^._vMax := vMax;
+THIS^._vMin := vMin;
+THIS^._aMax := aMax;
+THIS^._aMin := aMin;
+THIS^._jMax := jMax;
 
 pd := pf - p0;
 tf_tf := tf * tf;
@@ -1169,7 +1172,8 @@ THEN
     profile.t[5] := 0;
     profile.t[6] := t;
     
-    IF (profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin)) THEN
+    time_vel := profile.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    IF time_vel THEN
       RETURN;
     END_IF
   END_FOR      

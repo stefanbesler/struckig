@@ -199,8 +199,7 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
-  
+  output : Struckig.OutputParameter;	
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -324,7 +323,6 @@ VAR_INST
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
-  
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -386,13 +384,12 @@ VAR_INST
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
   output : Struckig.OutputParameter;
-  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-12');
 
-AssertEquals_LREAL(Expected := 1.493945569142519636,
+AssertEquals_LREAL(Expected := 1.4939455945092736666,
              Actual := CheckCalculation(ruckig, input, output),
              DELTA := 1E-8,
              Message := '');

@@ -16,7 +16,7 @@
 ///
 /// Small modifications were made, while the original code said
 /// ```
-/// chop to 22 bits, make larger than cbrt(x)
+/// chop to 20 bits, make larger than cbrt(x)
 /// t := LrealFromBits((LrealBits(t) AND SHL(H, 28)) + SHL(J, 30));
 /// ```
 /// Modern compilers seem to round t away from 0 to 23 bits.
@@ -35,6 +35,7 @@ VAR CONSTANT
   G : LREAL := 3.57142857142857150787E-01;  // 5/14      = 0x3FD6DB6DB6DB6DB7
   J : ULINT := 1;
   Mask : ULINT := ULINT#16#FFFFFFFFC0000000;
+  AMask : ULINT := ULINT#16#80000000;
   SmallestNormal : LREAL := 2.22507385850720138309E-308; // 2**-1022  = 0x0010000000000000  
 END_VAR
 VAR
@@ -74,7 +75,7 @@ s1 := C + r1*t;
 t := t * (G + F/(s1+E+D/s1));
 
 // see https://github.com/stdlib-js/math-base-special-cbrt/blob/main/src/cbrt.c
-t := LrealFromBits((LrealBits(t) + 16#80000000) AND Mask);
+t := LrealFromBits((LrealBits(t) + AMask) AND Mask);
 
 // one step newton iteration to 53 bits with error less than 0.667ulps
 s1 := t * t; // t*t is exact

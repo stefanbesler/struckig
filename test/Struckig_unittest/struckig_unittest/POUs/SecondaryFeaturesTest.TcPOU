@@ -3,22 +3,6 @@
   <POU Name="SecondaryFeaturesTest" Id="{78a4d410-064c-404a-a1d2-ebb5b6bc814b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK SecondaryFeaturesTest EXTENDS TcUnit.FB_TestSuite
 VAR
-  otg : Struckig.Ruckig(0.005);
-  input : Struckig.InputParameter(3) := (
-    Synchronization := SynchronizationType.None,
-    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
-    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
-    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
-    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
-    TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
-    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
-    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
-    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
-    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
-  );
-  output : Struckig.OutputParameter;  
-END_VAR
-VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..2] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
@@ -47,7 +31,7 @@ VAR_INST
     MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
     MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   );
-  output : Struckig.OutputParameter;  
+  output : Struckig.OutputParameter; 
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
