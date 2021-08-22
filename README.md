@@ -10,10 +10,10 @@
 
 <p align="center">
   <a href="https://github.com/stefanbesler/struckig/actions">
-    <img src="https://github.com/stefanbesler/struckig/workflows/CI/badge.svg" alt="CI">
+    <img src="https://github.com/stefanbesler/struckig/workflows/Build/badge.svg" alt="CI">
   </a>
   <a href="https://github.com/stefanbesler/struckig/issues">
-    <img src="https://img.shields.io/github/issues/stefanbesler/ruckig.svg" alt="Issues">
+    <img src="https://img.shields.io/github/issues/stefanbesler/struckig.svg" alt="Issues">
   </a>
   <a href="https://github.com/stefanbesler/struckig/releases">
     <img src="https://img.shields.io/github/v/release/stefanbesler/ruckig.svg?include_prereleases&sort=semver" alt="Releases">
