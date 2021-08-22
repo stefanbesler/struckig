@@ -10,8 +10,11 @@
 
 <p align="center">
   <a href="https://github.com/stefanbesler/struckig/actions">
-    <img src="https://github.com/stefanbesler/struckig/workflows/Build/badge.svg" alt="CI">
+    <img src="https://github.com/stefanbesler/struckig/workflows/build/badge.svg" alt="Build/Test">
   </a>
+  <a href="https://github.com/stefanbesler/struckig/actions">
+    <img src="https://github.com/stefanbesler/struckig/workflows/documentation/badge.svg" alt="Documentation">
+  </a>  
   <a href="https://github.com/stefanbesler/struckig/issues">
     <img src="https://img.shields.io/github/issues/stefanbesler/struckig.svg" alt="Issues">
   </a>
