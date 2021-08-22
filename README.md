@@ -10,10 +10,10 @@
 
 <p align="center">
   <a href="https://github.com/stefanbesler/struckig/actions">
-    <img src="https://github.com/stefanbesler/struckig/workflows/build.yml/badge.svg" alt="Build/Test">
+    <img src="https://github.com/stefanbesler/struckig/actions/workflows/build.yml/badge.svg" alt="Build/Test">
   </a>
-  <a href="https://github.com/stefanbesler/struckig/actions">
-    <img src="https://github.com/stefanbesler/struckig/workflows/documentation.yml/badge.svg" alt="Documentation">
+  <a href="https://stefanbesler.github.io/struckig/struckig/Constants.html">
+    <img src="https://github.com/stefanbesler/struckig/actions/workflows/documentation.yml/badge.svg" alt="Documentation">
   </a>  
   <a href="https://github.com/stefanbesler/struckig/issues">
     <img src="https://img.shields.io/github/issues/stefanbesler/struckig.svg" alt="Issues">
