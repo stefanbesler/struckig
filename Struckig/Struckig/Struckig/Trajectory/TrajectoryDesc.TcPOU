@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="TrajectoryDesc" Id="{6ae710e9-e92b-4222-9a89-21e6ad9f95fa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TrajectoryDesc
 VAR_INPUT

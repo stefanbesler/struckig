@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="LrealBits" Id="{2ba3985e-b034-4f38-8371-b63f2efef357}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION LrealBits : ULINT
 VAR_INPUT

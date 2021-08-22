@@ -6,7 +6,7 @@
     <ProjectGuid>{63b92d35-739b-4514-b8c2-b7baed341740}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
-    <WriteProductVersion>true</WriteProductVersion>
+    <WriteProductVersion>false</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>Struckig</Name>
     <ProgramVersion>3.1.4024.12</ProgramVersion>

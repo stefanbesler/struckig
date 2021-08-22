@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <DUT Name="ProfileLimits" Id="{bd5b0c3f-6bf6-4746-af09-80103c0606f6}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}

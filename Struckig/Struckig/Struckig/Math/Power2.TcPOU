@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="Power2" Id="{0e3e86d0-3b11-44f2-b301-06ab88dcd5f9}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION INTERNAL Power2 : LREAL
 VAR_INPUT

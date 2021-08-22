@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="Cbrt" Id="{e2df428d-5876-4ac5-a001-8b2714e1a509}" SpecialFunc="None">
     <Declaration><![CDATA[/// The TwinCAT code is a modified version of the original C code from
 /// http://www.netlib.org/fdlibm/s_cbrt.c and came with this notice.

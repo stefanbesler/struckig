@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="BubbleSortLreal" Id="{019830ac-0aa6-4391-9a8a-478037ed79fe}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION BubbleSortLreal : BOOL
 VAR_INPUT
