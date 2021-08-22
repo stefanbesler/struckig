@@ -186,7 +186,7 @@ END_IF
 IF (j <> 0) 
 THEN
   d := a * a - 2 * j * v;
-  IF (ABS(d) < Constants.Epsilon)
+  IF (ABS(d) < Constants.DoubleEpsilon)
   THEN
     CheckPositionExtremum(-a / j, t_sum, t, p, v, a, j, ext:=ext);
    ELSIF (d > 0) 

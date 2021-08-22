@@ -69,7 +69,7 @@ THEN
   block.p_min := ValidProfiles[0];
   block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
   CalculateBlock := TRUE;
-
+  RETURN;
 // Only happens due to numerical issues
 ELSIF (ValidProfileCount = 3) 
 THEN
@@ -136,6 +136,7 @@ THEN
   END_IF
   
   CalculateBlock := TRUE;
+  RETURN;
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -275,20 +276,20 @@ THEN
     AddProfile(Profile, jMax);
     RETURN;
   END_IF
-END_IF
 
+  // Solution 2
+  Profile.t[0] := (-a0 + h1)/jMax;
+  Profile.t[1] := 0;
+  Profile.t[2] := (-af + h1)/jMax;
+  Profile.t[3] := 0;
+  Profile.t[4] := 0;
+  Profile.t[5] := 0;
+  Profile.t[6] := 0;
+  
+  IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+    AddProfile(Profile, jMax);
+  END_IF
 
-// Solution 2
-Profile.t[0] := (-a0 + h1)/jMax;
-Profile.t[1] := 0;
-Profile.t[2] := (-af + h1)/jMax;
-Profile.t[3] := 0;
-Profile.t[4] := 0;
-Profile.t[5] := 0;
-Profile.t[6] := 0;
-
-IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
-  AddProfile(Profile, jMax);
 END_IF
     ]]></ST>
       </Implementation>

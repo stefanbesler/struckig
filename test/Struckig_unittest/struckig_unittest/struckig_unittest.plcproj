@@ -23,7 +23,7 @@
     <Compile Include="POUs\DebuggedExamplesTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="POUs\GeneratedTest.TcPOU">
+    <Compile Include="POUs\VelocityInterfaceTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="POUs\MinDurationTest.TcPOU">

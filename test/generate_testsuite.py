@@ -14,6 +14,7 @@ class Test:
     name: str
     guid: str
     profile_count : int
+    control_interface : str
     minimum_duration: str
     max_velocity: List[str]
     max_acceleration: List[str]
@@ -49,6 +50,7 @@ tmpl = jinja2.Template("""
 VAR_INST
   ruckig : Struckig.Ruckig(0.001);
   input : Struckig.InputParameter({{m.profile_count}}) := (
+    ControlInterface := {{ m.control_interface }},
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := {{ m.minimum_duration }},
     MaxVelocity := [ {{ m.max_velocity }} ],
@@ -94,7 +96,11 @@ TEST_FINISHED();]]></ST>
 </TcPlcObject>
 """)
 
-from ruckig import InputParameter, OutputParameter, Result, Ruckig
+# Path to the build directory including a file similar to 'ruckig.cpython-37m-x86_64-linux-gnu'.
+build_path = Path(__file__).parent.absolute().parent / 'ruckig' / 'build'
+path.insert(0, str(build_path))
+
+from ruckig import InputParameter, OutputParameter, Result, Ruckig, ControlInterface
 #import sys
 #    
 #otg = Ruckig(3, 0.001)
@@ -122,12 +128,14 @@ if __name__ == '__main__':
     tests = list()
     i = 0
     count = 0
-    while i < 20:
+    while i < 40:
         print(f"Trajectory {i}/{count}")
         count+=1
         target_velocity = random.choice([(0,0,0), random_uniform_tuple(1000) ])
         target_acceleration = random.choice([(0,0,0), random_uniform_tuple(1000) ])
         minimum_duration = random.randint(1, 10)
+        control_interface = random.choice([ControlInterface.Position, ControlInterface.Velocity ])
+        control_interface = ControlInterface.Velocity
         #minimum_duration = 0
         
         try:
@@ -139,6 +147,7 @@ if __name__ == '__main__':
         
         otg = Ruckig(3, 0.001)
         inp = InputParameter(3)
+        inp.control_interface = control_interface
         inp.minimum_duration = minimum_duration
         inp.current_position = random_uniform_tuple(100)
         inp.current_velocity = random_uniform_tuple(1000)
@@ -162,13 +171,15 @@ if __name__ == '__main__':
             continue
         
         i += 1
+        control_interface_suffix = '_PosIntrf' if control_interface == ControlInterface.Position else '_VelIntrf'
         min_duration_suffix = '_HasMinDuration' if minimum_duration != 0 else ''        
         target_velocity_suffix = '_HasTargetVelocity' if target_velocity != (0,0,0) else ''
         target_acceleration_suffix = '_HasTargetAcceleration' if target_acceleration != (0,0,0) else ''
     
-        t = Test(name=f'Test_Trajectory{min_duration_suffix}{target_velocity_suffix}{target_acceleration_suffix}_{i}', 
+        t = Test(name=f'Test_Trajectory{control_interface_suffix}{min_duration_suffix}{target_velocity_suffix}{target_acceleration_suffix}_{i:02d}', 
             guid=str(uuid.uuid4()),
             profile_count=3,
+            control_interface=str(inp.control_interface).replace('ControlInterface', 'ControlInterfaceType'),\
             minimum_duration=fmt(inp.minimum_duration),\
             current_position=', '.join(map(fmt, inp.current_position)),\
             current_velocity=', '.join(map(fmt, inp.current_velocity)),\
@@ -188,25 +199,6 @@ if __name__ == '__main__':
               
         print(t)
         tests.append(t)
-
-    print("re-run")
-    for t in tests:
-
-        # second run
-        otg = Ruckig(3, 0.001)
-        inp = InputParameter(3)
-        inp.current_position = list(map(float, t.current_position.split(', ')))
-        inp.current_velocity = list(map(float, t.current_velocity.split(', ')))
-        inp.current_acceleration = list(map(float, t.current_acceleration.split(', ')))
-        inp.target_position = list(map(float, t.target_position.split(', ')))
-        inp.target_velocity = list(map(float, t.target_velocity.split(', ')))
-        inp.target_acceleration = list(map(float, t.target_acceleration.split(', ')))
-        inp.max_velocity = [2000, 2000, 2000]
-        inp.max_acceleration = [20000, 20000, 20000]
-        inp.max_jerk = [800000, 800000, 800000]
-        out = OutputParameter(3)
-        
-        print(t)
         
     with open('Struckig_unittest/struckig_unittest/POUs/GeneratedTest.TcPOU', 'w') as f:
         f.write(tmpl.render(methods=tests).strip())

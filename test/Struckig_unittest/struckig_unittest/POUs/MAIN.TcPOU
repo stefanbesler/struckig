@@ -5,6 +5,7 @@
 VAR
   mathTest : MathTest;
   minDurationTest : MinDurationTest;
+  velocityInterfaceTest : VelocityInterfaceTest;
   knownExamplesTest : KnownExamplesTest;
   secondaryFeaturesTest : SecondaryFeaturesTest;
   debuggedExamplesTest : DebuggedExamplesTest;

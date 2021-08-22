@@ -282,7 +282,7 @@ DO
 
     ControlInterfaceType.Velocity: 
       _velocityStep2.Set(t_profile, p0s[dof], v0s[dof], a0s[dof], inp.TargetVelocity[dof], inp.TargetAcceleration[dof], inp.MaxAcceleration[dof], inp_min_acceleration[dof], inp.MaxJerk[dof]);
-
+      found_time_synchronization := _velocityStep2.Get(p);
   END_CASE
 
   IF (NOT found_time_synchronization) THEN
