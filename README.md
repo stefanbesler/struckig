@@ -9,17 +9,17 @@
 </div>
 
 <p align="center">
-  <a href="https://github.com/stefanbesler/ruckig/actions">
-    <img src="https://github.com/stefanbesler/ruckig/workflows/CI/badge.svg" alt="CI">
+  <a href="https://github.com/stefanbesler/struckig/actions">
+    <img src="https://github.com/stefanbesler/struckig/workflows/CI/badge.svg" alt="CI">
   </a>
-  <a href="https://github.com/stefanbesler/ruckig/issues">
+  <a href="https://github.com/stefanbesler/struckig/issues">
     <img src="https://img.shields.io/github/issues/stefanbesler/ruckig.svg" alt="Issues">
   </a>
-  <a href="https://github.com/stefanbesler/ruckig/releases">
+  <a href="https://github.com/stefanbesler/struckig/releases">
     <img src="https://img.shields.io/github/v/release/stefanbesler/ruckig.svg?include_prereleases&sort=semver" alt="Releases">
   </a>
 
-  <a href="https://github.com/stefanbesler/ruckig/blob/master/LICENSE">
+  <a href="https://github.com/stefanbesler/struckig/blob/master/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="MIT">
   </a>
 </p>
