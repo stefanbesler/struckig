@@ -3,9 +3,9 @@
   <DUT Name="ProfileJerkSigns" Id="{b8a5c43f-13de-4042-9633-9e96e9516e46}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE ProfileJerkSigns :
+TYPE INTERNAL ProfileJerkSigns :
 (
-	Uddu,
+  Uddu,
   Udud 
 );
 END_TYPE

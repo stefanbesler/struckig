@@ -190,17 +190,20 @@ THEN
   h1 := 2*aMin*(-pd + tf*v0) + vd_vd + aMax*(2*pd + aMin*tf_tf - 2*tf*vf);
   h2 := ((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf - vd)));
 
-  jf := h2/h1;
-  Profile.t[0] := aMax/jf;
-  Profile.t[1] := (-2*aMax*h1 + aMin*aMin*(-2*pd + tf*(v0 + vf)))/h2;
-  Profile.t[2] := Profile.t[0];
-  Profile.t[3] := 0;
-  Profile.t[4] := -aMin/jf;
-  Profile.t[5] := tf - (2*Profile.t[0] + Profile.t[1] + 2*Profile.t[4]);
-  Profile.t[6] := Profile.t[4];
+  IF h1 <> 0
+  THEN
+    jf := h2/h1;
+    Profile.t[0] := aMax/jf;
+    Profile.t[1] := (-2*aMax*h1 + aMin*aMin*(-2*pd + tf*(v0 + vf)))/h2;
+    Profile.t[2] := Profile.t[0];
+    Profile.t[3] := 0;
+    Profile.t[4] := -aMin/jf;
+    Profile.t[5] := tf - (2*Profile.t[0] + Profile.t[1] + 2*Profile.t[4]);
+    Profile.t[6] := Profile.t[4];
 
-  time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
-  RETURN;   
+    time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
+    RETURN;
+  END_IF
 END_IF
 
 h1 := 144*Power2((aMax - aMin)*(-aMin*vd + aMax*(aMin*tf - vd)) - af_af*(aMax*tf - vd) + 2*af*aMin*(aMax*tf - vd) + a0_a0*(aMin*tf + v0 - vf) - 2*a0*aMax*(aMin*tf - vd)) + 48*ad*(3*a0_p3 - 3*af_p3 + 12*aMax*aMin*(-aMax + aMin) + 4*af_af*(aMax + 2*aMin) + a0*(-3*af_af - 8*af*aMax + 6*aMax*aMax + 8*af*aMin + 12*aMax*aMin - 6*aMin*aMin) + 6*af*(aMax*aMax - 2*aMax*aMin - aMin*aMin) + a0_a0*(3*af - 4*(2*aMax + aMin)))*(2*aMin*(-pd + tf*v0) + vd*vd + aMax*(2*pd + aMin*tf*tf - 2*tf*vf));
@@ -881,7 +884,7 @@ END_FOR
   h1 := 3*jMax*(ad_ad + 2*jMax*(a0*tf - vd));
   h2 := ad_ad + 2*jMax*(a0*tf - vd);
   h0 := 4*Power2(2*(a0_p3 - af_p3) - 6*a0_a0*(af - jMax*tf) + 6*jMax_jMax*(-pd + tf*v0) + 3*a0*(2*af_af - 2*jMax*af*tf + jMax_jMax*tf_tf) + 6*ad*jMax*vd) - 18*h2*h2*h2;
-  IF h0 >= 0
+  IF h0 >= 0 AND_THEN h1 <> 0
   THEN
     h0 := SQRT(h0)/h1 * ABS(jMax)/jMax;
     

@@ -3,7 +3,6 @@
   <POU Name="Example05_1DoFs_MinDuration" Id="{efbb6da3-0884-4a0a-870d-ac8c54688b54}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example05_1DoFs_MinDuration
 VAR
-  ruckig : Struckig.Ruckig(0.001);
   input : Struckig.InputParameter(1) := (
     Synchronization := SynchronizationType.TimeSync, // one axis -> no synchronistation is required
     MinDuration := 10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
@@ -17,15 +16,16 @@ VAR
     TargetVelocity := [ 0.0, 0.0, 0.0 ],
     TargetAcceleration := [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  otg : Struckig.Ruckig(0.001, 1) := (Input := input);  
   state : TrajectoryState;
   moving : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[state := ruckig.update(input, output);
-input.CurrentPosition := output.NewPosition;
-input.CurrentVelocity := output.NewVelocity;
-input.CurrentAcceleration := output.NewAcceleration;
+      <ST><![CDATA[otg();
+state := otg.State;
+otg.Input.CurrentPosition := otg.NewPosition;
+otg.Input.CurrentVelocity := otg.NewVelocity;
+otg.Input.CurrentAcceleration := otg.NewAcceleration;
 moving := state = TrajectoryState.Busy;]]></ST>
     </Implementation>
     <Method Name="Waypoint" Id="{be7dccfa-366d-41aa-b1a4-150735bdd376}">

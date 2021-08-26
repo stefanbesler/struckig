@@ -3,8 +3,7 @@
   <POU Name="Example04_2DoFs_Synchronized_Waypoints_2" Id="{130c9296-914b-47cf-a456-2f87beca5147}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example04_2DoFs_Synchronized_Waypoints_2
 VAR
-  ruckig : Ruckig(0.001);
-  input: InputParameter(2) := (Synchronization := SynchronizationType.TimeSync,
+  input : InputParameter(2) := (Synchronization := SynchronizationType.TimeSync,
                                MaxVelocity :=         [ 10.0, 10.0 ],
                                MaxAcceleration :=     [ 50000.0, 50000.0 ],
                                MaxJerk :=             [ 500000.0, 500000.0 ],
@@ -14,8 +13,7 @@ VAR
                                TargetPosition :=      [ 0.0, 0.0 ],
                                TargetVelocity :=      [ 0.0, 0.0 ],
                                TargetAcceleration :=  [ 0.0, 0.0 ]);
-  output : OutputParameter;
-  
+  otg : Ruckig(0.001, 2) := (Input := input);							   
   waypoints : INT := 50;
   a : LREAL := 300;
   b : LREAL := 200;
@@ -33,32 +31,33 @@ END_VAR
 IF firstRun
 THEN
   firstRun := FALSE;
-  Waypoint(currentWaypoint, px := input.CurrentPosition[0], py := input.CurrentPosition[1],
-                            vx := input.CurrentVelocity[0], 
-                            vy := input.CurrentVelocity[1],
-                            ax := input.CurrentAcceleration[0], 
-                            ay := input.CurrentAcceleration[1]
+  Waypoint(currentWaypoint, px := otg.Input.CurrentPosition[0], py := otg.Input.CurrentPosition[1],
+                            vx := otg.Input.CurrentVelocity[0], 
+                            vy := otg.Input.CurrentVelocity[1],
+                            ax := otg.Input.CurrentAcceleration[0], 
+                            ay := otg.Input.CurrentAcceleration[1]
 							);
-  input.TargetPosition := input.CurrentPosition;
-  input.TargetVelocity := input.CurrentVelocity;
-  input.TargetAcceleration := input.CurrentAcceleration;  
+  otg.Input.TargetPosition := otg.Input.CurrentPosition;
+  otg.Input.TargetVelocity := otg.Input.CurrentVelocity;
+  otg.Input.TargetAcceleration := otg.Input.CurrentAcceleration;  
 END_IF
 
 // increment waypoints
-IF ruckig.update(input, output) = TrajectoryState.Idle
+otg();
+IF otg.State = TrajectoryState.Idle
 THEN
-  Waypoint(currentWaypoint, px := input.TargetPosition[0], py := input.TargetPosition[1],
-                            vx := input.TargetVelocity[0], 
-                            vy := input.TargetVelocity[1],
-                            ax := dump, //input.TargetAcceleration[0], 
-                            ay := dump //input.TargetAcceleration[1]);
+  Waypoint(currentWaypoint, px := otg.Input.TargetPosition[0], py := otg.Input.TargetPosition[1],
+                            vx := otg.Input.TargetVelocity[0], 
+                            vy := otg.Input.TargetVelocity[1],
+                            ax := dump, //otg.Input.TargetAcceleration[0], 
+                            ay := dump //otg.Input.TargetAcceleration[1]);
 							);
   currentWaypoint := SEL(currentWaypoint + 1 < waypoints, 0, currentWaypoint+1);                    
 END_IF
 
-input.CurrentPosition := output.NewPosition;
-input.CurrentVelocity := output.NewVelocity;
-input.CurrentAcceleration := output.NewAcceleration;]]></ST>
+otg.Input.CurrentPosition := otg.NewPosition;
+otg.Input.CurrentVelocity := otg.NewVelocity;
+otg.Input.CurrentAcceleration := otg.NewAcceleration;]]></ST>
     </Implementation>
     <Method Name="Waypoint" Id="{d23aed48-98fa-4e0a-8baa-7c4cbff31b88}">
       <Declaration><![CDATA[METHOD Waypoint

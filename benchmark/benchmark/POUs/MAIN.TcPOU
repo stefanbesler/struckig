@@ -3,7 +3,7 @@
   <POU Name="MAIN" Id="{c24cf36f-30d9-4bef-a3e5-6c8b5a1b2c55}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR CONSTANT
-  Dofs : ARRAY [0..3] OF INT := [1, 3, 6, 7];
+  Dofs : ARRAY [0..3] OF SINT := [1, 3, 6, 7];
   IterationCount : INT := 5;
   TrajactoryCount : DINT := 64 * 1024;
 END_VAR
@@ -16,9 +16,7 @@ VAR
   _d : Randomizer(_dynamicDist);
   _l : Randomizer(_limitDist);
   
-  _otg : Struckig.Ruckig(0.001);
-  _input : Struckig.InputParameter(0);
-  _output : Struckig.OutputParameter;
+  _otg : Struckig.Ruckig(0.001, 0);
   
   _step : INT := 0;
   _dt, _it, _jt : DINT := 0;
@@ -37,17 +35,17 @@ END_VAR]]></Declaration>
     0: 
     // **********************************************************
       
-      _input.FB_init(TRUE, TRUE, dofs:=Dofs[_dt]);
+      _otg.FB_init(TRUE, TRUE, 0.001, dofs:=Dofs[_dt]);
       _trajectoryStatistic.Reset();
       _itStatistic.Reset();
       _worstStatistic.Reset();
       
-      _p.Fill(ADR(_input.CurrentPosition), Dofs[_dt]);
-      _p.Fill(ADR(_input.TargetPosition), Dofs[_dt]);
-      _l.FillMax(ADR(_input.maxVelocity), Dofs[_dt], ADR(_input.TargetVelocity));
-      _l.FillMax(ADR(_input.maxAcceleration), Dofs[_dt], ADR(_input.TargetAcceleration));
-      _l.Fill(ADR(_input.maxJerk), Dofs[_dt]);
-      CheckCalculation(_otg, _input);  
+      _p.Fill(ADR(_otg.Input.CurrentPosition), Dofs[_dt]);
+      _p.Fill(ADR(_otg.Input.TargetPosition), Dofs[_dt]);
+      _l.FillMax(ADR(_otg.Input.maxVelocity), Dofs[_dt], ADR(_otg.Input.TargetVelocity));
+      _l.FillMax(ADR(_otg.Input.maxAcceleration), Dofs[_dt], ADR(_otg.Input.TargetAcceleration));
+      _l.Fill(ADR(_otg.Input.maxJerk), Dofs[_dt]);
+      CheckCalculation(_otg, _otg.Input);  
     
       _step := 1;
   
@@ -62,22 +60,22 @@ END_VAR]]></Declaration>
     2: 
     // **********************************************************
     
-      _p.Fill(ADR(_input.CurrentPosition), Dofs[_dt]);
-      _d.FillOrZero(ADR(_input.CurrentVelocity), Dofs[_dt], 0.9);
-      _d.FillOrZero(ADR(_input.CurrentAcceleration), Dofs[_dt], 0.8);
-      _p.Fill(ADR(_input.TargetPosition), Dofs[_dt]);
-      _d.FillOrZero(ADR(_input.TargetVelocity), Dofs[_dt], 0.7);
-      _d.FillOrZero(ADR(_input.TargetAcceleration), Dofs[_dt], 0.6);
-      _l.FillMax(ADR(_input.MaxVelocity), Dofs[_dt], ADR(_input.TargetVelocity));
-      _l.FillMax(ADR(_input.MaxAcceleration), Dofs[_dt], ADR(_input.TargetAcceleration));
-      _l.Fill(ADR(_input.MaxJerk), Dofs[_dt]);
+      _p.Fill(ADR(_otg.Input.CurrentPosition), Dofs[_dt]);
+      _d.FillOrZero(ADR(_otg.Input.CurrentVelocity), Dofs[_dt], 0.9);
+      _d.FillOrZero(ADR(_otg.Input.CurrentAcceleration), Dofs[_dt], 0.8);
+      _p.Fill(ADR(_otg.Input.TargetPosition), Dofs[_dt]);
+      _d.FillOrZero(ADR(_otg.Input.TargetVelocity), Dofs[_dt], 0.7);
+      _d.FillOrZero(ADR(_otg.Input.TargetAcceleration), Dofs[_dt], 0.6);
+      _l.FillMax(ADR(_otg.Input.MaxVelocity), Dofs[_dt], ADR(_otg.Input.TargetVelocity));
+      _l.FillMax(ADR(_otg.Input.MaxAcceleration), Dofs[_dt], ADR(_otg.Input.TargetAcceleration));
+      _l.Fill(ADR(_otg.Input.MaxJerk), Dofs[_dt]);
   
-      IF NOT _otg.ValidateInput(_input)
+      IF NOT _otg.ValidateInput(_otg.Input)
       THEN
         RETURN;
       END_IF
   
-      _trajectoryStatistic.Append(CheckCalculation(_otg, _input));
+      _trajectoryStatistic.Append(CheckCalculation(_otg, _otg.Input));
       _jt := _jt + 1;
       IF _jt > TrajactoryCount
       THEN
@@ -96,7 +94,7 @@ END_VAR]]></Declaration>
     // iterate end **********************************************
     3: 
     // **********************************************************
-    
+
       _it := 0;
       _jt := 0;
       _averageMean[_dt] := _itStatistic.Mean;
@@ -124,13 +122,12 @@ VAR_INPUT
   input : REFERENCE TO Struckig.InputParameter;
 END_VAR
 VAR
-  output : Struckig.OutputParameter;
   cpuAccount : UDINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[_cpucounter(cpuAccountDW => cpuAccount);
-otg.update(input, output);
+otg();
 _cpucounter();
 CheckCalculation := (_cpucounter.cpuAccountDW - cpuAccount) * 0.1; // us  
 ]]></ST>

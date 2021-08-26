@@ -25,11 +25,11 @@
   <IsTemplate>false</IsTemplate>
   <Layout>&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;Layout&gt;
-  &lt;Window Guid="48604ba2-8e18-48e4-b00f-729e5ee6a6d6" LastFocused="132730542788204685" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
+  &lt;Window Guid="48604ba2-8e18-48e4-b00f-729e5ee6a6d6" LastFocused="132744711569984414" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
   &lt;Window Guid="e6b7d21f-ff6e-4553-8783-18e44297a381" LastFocused="132730543208896594" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="1" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
   &lt;DocumentContainer Dock="5"&gt;
     &lt;SplitLayoutSystem WorkingSize="250, 400" SplitMode="0"&gt;
-      &lt;ControlLayoutSystem WorkingSize="250, 400" Guid="2100c557-32fc-425a-8ca9-42158f0dbb9d" Collapsed="0" SelectedControl="e6b7d21f-ff6e-4553-8783-18e44297a381"&gt;
+      &lt;ControlLayoutSystem WorkingSize="250, 400" Guid="2100c557-32fc-425a-8ca9-42158f0dbb9d" Collapsed="0" SelectedControl="48604ba2-8e18-48e4-b00f-729e5ee6a6d6"&gt;
         &lt;Controls&gt;
           &lt;Control Guid="48604ba2-8e18-48e4-b00f-729e5ee6a6d6" /&gt;
           &lt;Control Guid="e6b7d21f-ff6e-4553-8783-18e44297a381" /&gt;
@@ -58,7 +58,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -75,11 +75,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>1</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>2aa173a4-a922-4881-b83a-82ce7a9372f2</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454336</IndexOffset>
+          <IndexOffset>464016</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[0]</Name>
@@ -125,7 +125,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentPosition[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -140,7 +140,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -157,11 +157,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>2</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>673ffd66-5450-445b-b809-afebd9456af2</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454344</IndexOffset>
+          <IndexOffset>464024</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[1]</Name>
@@ -207,7 +207,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentPosition[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -222,7 +222,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -239,11 +239,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>3</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>ef474f5b-c0fd-415b-83f5-6a0d842eccab</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454392</IndexOffset>
+          <IndexOffset>464080</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[0]</Name>
@@ -289,7 +289,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentVelocity[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -304,7 +304,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -321,11 +321,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>4</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>f7718a5e-c45b-4c9b-92dc-ab0f2e8012ee</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454400</IndexOffset>
+          <IndexOffset>464088</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[1]</Name>
@@ -371,7 +371,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentVelocity[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -386,7 +386,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -403,11 +403,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>5</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>13af0b7d-2497-4d2c-a3d0-8f8a40bd4ef1</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454448</IndexOffset>
+          <IndexOffset>464144</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[0]</Name>
@@ -453,7 +453,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentAcceleration[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -468,7 +468,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -485,11 +485,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>6</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>a0af6fdd-17e4-4533-8293-da567a07e042</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454456</IndexOffset>
+          <IndexOffset>464152</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[1]</Name>
@@ -535,7 +535,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.CurrentAcceleration[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -550,7 +550,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -567,11 +567,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>7</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>9be6e443-8d25-4c97-b5ab-f690adf780a7</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454504</IndexOffset>
+          <IndexOffset>464208</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[0]</Name>
@@ -617,7 +617,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetPosition[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -632,7 +632,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -649,11 +649,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>8</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>e6f48e90-bab1-4138-95fd-51938ea7f369</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454512</IndexOffset>
+          <IndexOffset>464216</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[1]</Name>
@@ -699,7 +699,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetPosition[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -714,7 +714,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -731,11 +731,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>9</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>fc4c9928-a4bb-440c-a0d1-9a9a1da9bfea</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454560</IndexOffset>
+          <IndexOffset>464272</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[0]</Name>
@@ -781,7 +781,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetVelocity[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -796,7 +796,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -813,11 +813,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>10</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>eea91025-4066-49a9-93be-142297d1ad98</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454568</IndexOffset>
+          <IndexOffset>464280</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[1]</Name>
@@ -863,7 +863,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetVelocity[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -878,7 +878,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -895,11 +895,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>11</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>78efb7f5-6d37-471b-ad1d-e7e58318059e</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454616</IndexOffset>
+          <IndexOffset>464336</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[0]</Name>
@@ -945,7 +945,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetAcceleration[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -960,7 +960,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -977,11 +977,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>0</FileHandle>
+          <FileHandle>12</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>bc5e66c0-59bb-45b5-a5d8-e1cc6ecdc43e</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>454624</IndexOffset>
+          <IndexOffset>464344</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[1]</Name>
@@ -1027,7 +1027,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.input.TargetAcceleration[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>

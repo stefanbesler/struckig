@@ -34,16 +34,19 @@ SetSigma(sigma);]]></ST>
 METHOD Next : LREAL
 VAR
   u1, u2 : LREAL;
+END_VAR
+VAR CONSTANT
+  Pi : LREAL := 3.14159265358979323846;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[//create two random numbers, make sure u1 is greater than epsilon
 REPEAT
   _rnd(Num => u1);
   _rnd(Num => u2);  
-UNTIL u1 > Struckig.Constants.Epsilon END_REPEAT
+UNTIL u1 > 1E-8 END_REPEAT
 
 //compute z0 and z1
-Next  := (_sigma * SQRT(-2.0 * LOG(u1))) * COS(2*Struckig.Constants.Pi * u2) + _mu;
+Next  := (_sigma * SQRT(-2.0 * LOG(u1))) * COS(2*Pi * u2) + _mu;
 
 // we do not need the 2nd randomly distributed variable
 // z1 := mag * SIN(2*Struckig.Constants.Pi  * u2) + mu;]]></ST>

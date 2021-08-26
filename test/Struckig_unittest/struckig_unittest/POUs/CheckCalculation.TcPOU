@@ -3,19 +3,17 @@
   <POU Name="CheckCalculation" Id="{7705c60f-b3f4-4b53-bef5-2ced749a7c74}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CheckCalculation : LREAL
 VAR_INPUT
-  ruckig : REFERENCE TO Struckig.Ruckig;
-  input : REFERENCE TO Struckig.InputParameter;
-  output : REFERENCE TO Struckig.OutputParameter;  
+  otg : REFERENCE TO Struckig.Ruckig;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[WHILE(ruckig.update(input, output) = Struckig.TrajectoryState.busy)
-DO
-  input.CurrentPosition := output.NewPosition;
-  input.CurrentVelocity := output.NewVelocity;
-  input.CurrentAcceleration := output.NewAcceleration;
-END_WHILE
+      <ST><![CDATA[REPEAT 
+  otg();
+  otg.Input.CurrentPosition := otg.NewPosition;
+  otg.Input.CurrentVelocity := otg.NewVelocity;
+  otg.Input.CurrentAcceleration := otg.NewAcceleration;
+UNTIL otg.State <> Struckig.TrajectoryState.busy END_REPEAT
 
-CheckCalculation := output.trajectory.duration;]]></ST>
+CheckCalculation := otg.Trajectory.duration;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

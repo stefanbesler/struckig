@@ -25,7 +25,7 @@
   <IsTemplate>false</IsTemplate>
   <Layout>&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;Layout&gt;
-  &lt;Window Guid="083a97ad-bb97-428d-8acb-df20aa9c1a74" LastFocused="132734300847631853" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
+  &lt;Window Guid="083a97ad-bb97-428d-8acb-df20aa9c1a74" LastFocused="132744711088222391" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
   &lt;DocumentContainer Dock="5"&gt;
     &lt;SplitLayoutSystem WorkingSize="250, 400" SplitMode="0"&gt;
       &lt;ControlLayoutSystem WorkingSize="250, 400" Guid="2100c557-32fc-425a-8ca9-42158f0dbb9d" Collapsed="0" SelectedControl="083a97ad-bb97-428d-8acb-df20aa9c1a74"&gt;
@@ -56,7 +56,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -77,7 +77,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>a42f7f67-81eb-4169-b141-fc66074ac4ae</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708344</IndexOffset>
+          <IndexOffset>489424</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[0]</Name>
@@ -123,7 +123,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.CurrentPosition[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -138,7 +138,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -159,7 +159,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>0fc1f96b-ae6e-4d27-ae6f-ad34e083a4e3</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708400</IndexOffset>
+          <IndexOffset>489488</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[0]</Name>
@@ -205,7 +205,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.CurrentVelocity[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -220,7 +220,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Current state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -241,7 +241,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>40bd0011-56cc-4cc1-87a6-8bfbb290bdd8</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708456</IndexOffset>
+          <IndexOffset>489552</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[0]</Name>
@@ -287,7 +287,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.CurrentAcceleration[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -302,7 +302,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -323,7 +323,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>9f0345cf-de77-4027-84cc-8e723b603752</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708512</IndexOffset>
+          <IndexOffset>489616</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[0]</Name>
@@ -369,7 +369,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.TargetPosition[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -384,7 +384,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -405,7 +405,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>0b647e4a-02cc-4d0b-8b1c-2c514a2678a9</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708568</IndexOffset>
+          <IndexOffset>489680</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[0]</Name>
@@ -451,7 +451,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.TargetVelocity[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -466,7 +466,7 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment></Comment>
+          <Comment> Target state</Comment>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -487,7 +487,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>db316f6a-9096-42f8-9f24-2ffc055cd7aa</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>708624</IndexOffset>
+          <IndexOffset>489744</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[0]</Name>
@@ -533,7 +533,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.input.TargetAcceleration[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -817,7 +817,7 @@
               <Guid>500e523d-b007-4c06-8731-15fffda003cb</Guid>
               <IsFileBased>false</IsFileBased>
               <Name>TargetPosition[0]</Name>
-              <SortPriority>12</SortPriority>
+              <SortPriority>11</SortPriority>
               <SubMember>
                 <AcquisitionInterpreter AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                   <AcquisitionGUID>9f0345cf-de77-4027-84cc-8e723b603752</AcquisitionGUID>
@@ -1155,7 +1155,7 @@
               <Guid>787090e5-2875-4b5e-ae1d-8d14c6de68f5</Guid>
               <IsFileBased>false</IsFileBased>
               <Name>TargetVelocity[0]</Name>
-              <SortPriority>12</SortPriority>
+              <SortPriority>11</SortPriority>
               <SubMember>
                 <AcquisitionInterpreter AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                   <AcquisitionGUID>0b647e4a-02cc-4d0b-8b1c-2c514a2678a9</AcquisitionGUID>
@@ -1457,7 +1457,7 @@
               <Guid>cfe0b045-cf98-4ea7-b7e4-e957ed99d482</Guid>
               <IsFileBased>false</IsFileBased>
               <Name>TargetAcceleration[0]</Name>
-              <SortPriority>12</SortPriority>
+              <SortPriority>11</SortPriority>
               <SubMember>
                 <AcquisitionInterpreter AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                   <AcquisitionGUID>db316f6a-9096-42f8-9f24-2ffc055cd7aa</AcquisitionGUID>

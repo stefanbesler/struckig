@@ -2,24 +2,61 @@
 <TcPlcObject Version="1.1.0.1">
   <POU Name="Ruckig" Id="{1c5850a2-5b12-4229-9d95-591ad970a07b}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Ruckig
+VAR_INPUT
+  Input : InputParameter(0);
+END_VAR
+VAR_OUTPUT
+  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  NewCalculation : BOOL;
+  Trajectory : TrajectoryDesc;
+  CurrentTime : LREAL;
+  State : TrajectoryState;  
+END_VAR
 VAR
   _currentInput : InputParameter(0);
   _dt : LREAL; // Time step between updates (cycle time) in [s]
-  _state : TrajectoryState;
   _errorId : INT;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[NewCalculation := FALSE;
+
+IF HasChanged(input, _currentInput)
+THEN
+  State := TrajectoryState.Busy;
+  _errorId := Calculate(input, Trajectory);
+  IF _errorId <> 0 THEN
+    State := State := TrajectoryState.Error;
+    RETURN;
+  END_IF
+  
+  State := State;  
+  _currentInput := input;
+  CurrentTime := 0.0;
+  NewCalculation := TRUE;  
+END_IF
+
+CurrentTime := CurrentTime + _dt;
+Trajectory.AtTime(CurrentTime, input._dofs, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration));
+
+_currentInput.CurrentPosition := NewPosition;
+_currentInput.CurrentVelocity := NewVelocity;
+_currentInput.CurrentAcceleration := NewAcceleration;
+
+IF (CurrentTime > Trajectory.Duration) THEN
+  State := TrajectoryState.Idle;
+END_IF
+
+State := State;]]></ST>
     </Implementation>
     <Method Name="Calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
       <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
 VAR_INPUT
   input : REFERENCE TO InputParameter;
-  output : REFERENCE TO OutputParameter;
+  trajectory : REFERENCE TO TrajectoryDesc;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_state := TrajectoryState.Busy;
+        <ST><![CDATA[State := TrajectoryState.Busy;
 
 IF NOT ValidateInput(input)
 THEN
@@ -27,7 +64,7 @@ THEN
   RETURN;
 END_IF
 
-Calculate := output.Trajectory.Calculate(input, _dt);
+Calculate := trajectory.Calculate(input, _dt);
 IF (Calculate <> 0) THEN
   RETURN;
 END_IF]]></ST>
@@ -39,10 +76,12 @@ VAR_INPUT
 	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
 	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
   deltaTime : LREAL;
+  dofs : SINT;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_dt := deltaTime;]]></ST>
+        <ST><![CDATA[Input.FB_init(bInitRetains, bInCopyCode, dofs);
+_dt := deltaTime;]]></ST>
       </Implementation>
     </Method>
     <Method Name="HasChanged" Id="{412a3b6e-c01a-46d6-b769-48dae1ba53ec}">
@@ -90,44 +129,6 @@ THEN
   HasChanged := TRUE;
   RETURN;
 END_IF]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="Update" Id="{6c3982fb-7e79-4dd7-bf3c-9a685156d3bb}">
-      <Declaration><![CDATA[METHOD Update : TrajectoryState;
-VAR_INPUT
-  input : REFERENCE TO InputParameter;
-  output : REFERENCE TO  OutputParameter;  
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[output.NewCalculation := FALSE;
-
-IF HasChanged(input, _currentInput)
-THEN
-  _state := TrajectoryState.Busy;
-  _errorId := Calculate(input, output);
-  IF _errorId <> 0 THEN
-    Update := _state := TrajectoryState.Error;
-    RETURN;
-  END_IF
-  
-  Update := _state;  
-  _currentInput := input;
-  output.CurrentTime := 0.0;
-  output.NewCalculation := TRUE;  
-END_IF
-
-output.CurrentTime := output.CurrentTime + _dt;
-output.Trajectory.AtTime(output.CurrentTime, input._dofs, ADR(output.NewPosition), ADR(output.NewVelocity), ADR(output.NewAcceleration));
-
-_currentInput.CurrentPosition := output.NewPosition;
-_currentInput.CurrentVelocity := output.NewVelocity;
-_currentInput.CurrentAcceleration := output.NewAcceleration;
-
-IF (output.CurrentTime > output.Trajectory.Duration) THEN
-  _state := TrajectoryState.Idle;
-END_IF
-
-Update := _state;]]></ST>
       </Implementation>
     </Method>
     <Method Name="ValidateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">

@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="BubbleSortLreal" Id="{019830ac-0aa6-4391-9a8a-478037ed79fe}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION BubbleSortLreal : BOOL
+    <Declaration><![CDATA[{attribute 'hide'}
+FUNCTION BubbleSortLreal : BOOL
 VAR_INPUT
   data : POINTER TO LREAL; // input unsorted array
   size : INT; // elements in the data array

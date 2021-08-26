@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <DUT Name="Block" Id="{4be6a195-68c0-418b-ad15-0b28c6e2cb63}">
-    <Declaration><![CDATA[TYPE Block :
+    <Declaration><![CDATA[TYPE INTERNAL Block :
 STRUCT
-  p_min : ProfileDesc; // Save min Profile so that it doesn't need to be recalculated in Step2
+  Pmin : ProfileDesc; // Save min Profile so that it doesn't need to be recalculated in Step2
   Tmin : LREAL; // [s]
-  a, b : BlockInterval; // Max. 2 intervals can be blocked: called a and b with corresponding profiles, order does not matter  
+  A, B : BlockInterval; // Max. 2 intervals can be blocked: called a and b with corresponding profiles, order does not matter  
 END_STRUCT
 END_TYPE
 ]]></Declaration>

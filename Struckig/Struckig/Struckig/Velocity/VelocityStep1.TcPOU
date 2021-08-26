@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="VelocityStep1" Id="{0bad3140-2221-4abc-b516-4f31ef4a9048}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK VelocityStep1 
+    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep1 
 VAR
   p0, v0, a0 : LREAL;
   vf, af : LREAL;
@@ -66,8 +66,8 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (ValidProfileCount = 0) OR_ELSE (ValidProfileCount = 1 AND_THEN ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[1].t_sum[6]) < 8*Constants.Epsilon)
 THEN
-  block.p_min := ValidProfiles[0];
-  block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
+  block.Pmin := ValidProfiles[0];
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
   CalculateBlock := TRUE;
   RETURN;
 // Only happens due to numerical issues
@@ -107,15 +107,15 @@ DO
   END_FOR
 END_FOR
 
-block.p_min := ValidProfiles[idx_min];
-block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
+block.Pmin := ValidProfiles[idx_min];
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
 
 IF (ValidProfileCount = 2)
 THEN
   idx_else_1 := (idx_min + 1) MOD 3;
   idx_else_2 := (idx_min + 2) MOD 3;
   
-  AddInterval(block.a, ValidProfiles[idx_else_1], ValidProfiles[idx_else_2]);
+  AddInterval(block.A, ValidProfiles[idx_else_1], ValidProfiles[idx_else_2]);
   CalculateBlock := TRUE;
   RETURN;
 
@@ -128,11 +128,11 @@ THEN
   
   IF (ValidProfiles[idx_else_1].Direction = ValidProfiles[idx_else_2].Direction)
   THEN
-    AddInterval(block.a, ValidProfiles[idx_else_1], ValidProfiles[idx_else_2]);
-    AddInterval(block.b, ValidProfiles[idx_else_3], ValidProfiles[idx_else_4]);
+    AddInterval(block.A, ValidProfiles[idx_else_1], ValidProfiles[idx_else_2]);
+    AddInterval(block.B, ValidProfiles[idx_else_3], ValidProfiles[idx_else_4]);
   ELSE 
-    AddInterval(block.a, ValidProfiles[idx_else_1], ValidProfiles[idx_else_4]);
-    AddInterval(block.b, ValidProfiles[idx_else_2], ValidProfiles[idx_else_3]);
+    AddInterval(block.A, ValidProfiles[idx_else_1], ValidProfiles[idx_else_4]);
+    AddInterval(block.B, ValidProfiles[idx_else_2], ValidProfiles[idx_else_3]);
   END_IF
   
   CalculateBlock := TRUE;

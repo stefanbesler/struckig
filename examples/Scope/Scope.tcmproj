@@ -9,9 +9,6 @@
     <Name>Scope</Name>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Example02.tcscopex">
-      <SubType>Content</SubType>
-    </Content>
     <Content Include="Example03.tcscopex">
       <SubType>Content</SubType>
     </Content>

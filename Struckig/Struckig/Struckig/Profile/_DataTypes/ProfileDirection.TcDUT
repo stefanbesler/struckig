@@ -3,9 +3,9 @@
   <DUT Name="ProfileDirection" Id="{2ff73edb-5bff-447c-9ade-9d123b5bb840}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE ProfileDirection :
+TYPE INTERNAL ProfileDirection :
 (
-	Up,
+  Up,
   Down
 );
 END_TYPE

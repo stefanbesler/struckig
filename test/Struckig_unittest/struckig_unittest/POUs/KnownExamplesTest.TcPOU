@@ -33,7 +33,7 @@ example21();
     <Method Name="example01" Id="{e63245db-0c87-42fd-8c9c-5b8ef1846274}">
       <Declaration><![CDATA[METHOD example01
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -46,14 +46,15 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-01');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 0.0,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -63,7 +64,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example02" Id="{3d024e2f-045e-41d5-afe1-10b2f9dc1698}">
       <Declaration><![CDATA[METHOD example02
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -76,14 +77,15 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;  
+    
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-02');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := (*1E-18*)6.8399037867067934E-06,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              Delta := 1E-19,
              Message := '');
  
@@ -93,7 +95,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example03" Id="{c4fb8de0-0810-4b7f-89b7-5d18b1207555}">
       <Declaration><![CDATA[METHOD example03
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -106,15 +108,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-03');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 3.1748021039,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -124,7 +127,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example04" Id="{ecd2ca2f-26a8-4bc0-8f82-360135b2e964}">
       <Declaration><![CDATA[METHOD example04
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -137,15 +140,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-04');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.5615528128,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -155,7 +159,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example05" Id="{9a23d7f8-b1dc-4571-8f89-9113608544cf}">
       <Declaration><![CDATA[METHOD example05
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -168,15 +172,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-05');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.7666666667,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -186,7 +191,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example06" Id="{9538c878-3ff7-4a42-be69-b82162ad302a}">
       <Declaration><![CDATA[METHOD example06
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
@@ -199,14 +204,15 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;	
+  	
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-06');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 3.394427191,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -216,7 +222,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example07" Id="{5d21e693-52b1-4a27-b006-a796cc02d372}">
       <Declaration><![CDATA[METHOD example07
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -229,15 +235,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-07');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.2319602829,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -247,7 +254,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example08" Id="{63af5e8a-3ae8-470d-86d7-ef161f3ee77a}">
       <Declaration><![CDATA[METHOD example08
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -260,15 +267,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-08');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.410315834,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -278,7 +286,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example09" Id="{0bba80a6-44ca-4252-acc1-bff433e54793}">
       <Declaration><![CDATA[METHOD example09
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -291,15 +299,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-09');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.7666666667,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -309,7 +318,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example10" Id="{429e6937-b1d8-4827-8e66-784a4adb2276}">
       <Declaration><![CDATA[METHOD example10
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
@@ -322,14 +331,15 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-10');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 2.7338531701,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -339,7 +349,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example11" Id="{1e352ae4-7bde-4dd2-a814-185a3be9d037}">
       <Declaration><![CDATA[METHOD example11
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
@@ -352,15 +362,16 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-11');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 5.6053274785,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -370,7 +381,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example12" Id="{0c23ba69-6e49-4902-b866-e3838ab35036}">
       <Declaration><![CDATA[METHOD example12
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 3.0, 3.0, 3.0 ],
@@ -383,14 +394,15 @@ VAR_INST
     TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
     TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-12');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 1.4939455945092736666,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -400,7 +412,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example13" Id="{4c2316f6-1de4-4e19-84c4-ea5a6e1687a5}">
       <Declaration><![CDATA[METHOD example13
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 12.9892953062198, 3.74169932927481, 1.42398447457303 ],
@@ -413,15 +425,16 @@ VAR_INST
     TargetVelocity :=      [ -1.59453676324393, 0.0, -0.0693173526513803 ],
     TargetAcceleration :=  [ -0.664429703711622, 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-13');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 1921.0797627836,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -431,7 +444,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example14" Id="{47840f6e-c938-48f4-bd1d-5caf30f0b4f6}">
       <Declaration><![CDATA[METHOD example14
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 8.65978706670502, 5.94921088330542, 10.7652253566829 ],
@@ -444,15 +457,16 @@ VAR_INST
     TargetVelocity :=      [ -0.544559915133859, 0.298517792372943, 1.6058847848484 ],
     TargetAcceleration :=  [ -1.31832055647831, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-14');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 4.6277455678,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -462,7 +476,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example15" Id="{90fcdf7e-96a6-43f5-bb79-bce3da217a5b}">
       <Declaration><![CDATA[METHOD example15
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 7.97399137456765, 2.68591430972239, 9.54987666746364 ],
@@ -475,15 +489,16 @@ VAR_INST
     TargetVelocity :=      [ 0.555084596169823, 0, -1.24631524923535 ],
     TargetAcceleration :=  [ 0.463000173872542, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-15');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 8.8739464323,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -493,7 +508,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example16" Id="{16a12324-dfbf-4dae-b099-7a5fcc7de151}">
       <Declaration><![CDATA[METHOD example16
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.1241065584614779, 1, 1 ],
@@ -506,15 +521,16 @@ VAR_INST
     TargetVelocity :=      [ 0, 0, 0 ],
     TargetAcceleration :=  [ 0.217242176687843, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-16');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 38.3409477609,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -524,7 +540,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example17" Id="{ed9b9e5f-7e2f-4410-bf5b-c0dcca3365ee}">
       <Declaration><![CDATA[METHOD example17
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,    
     MaxVelocity :=         [ 1.863775561344568, 0.4357836109021987, 6.260907804906162 ],
@@ -537,15 +553,16 @@ VAR_INST
     TargetVelocity :=      [ 0.7537566830764975, 0, 0.02507782261105568 ],
     TargetAcceleration :=  [ -0.8610296259045267, -0.07876324073516261, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-17');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 1135.0135089249,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -555,7 +572,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example18" Id="{2e6c6a48-90d6-425a-ae57-013d63da4fa1}">
       <Declaration><![CDATA[METHOD example18
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 6.144314006624488, 2.93258338415229, 0.1820021269527196 ],
@@ -568,15 +585,16 @@ VAR_INST
     TargetVelocity :=      [ 0.1097319156272965, -0.9272874846270881, 0 ],
     TargetAcceleration :=  [ 0.03089046366221739, -0.9744054582899561, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-18');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 7295.4375633935,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -586,7 +604,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example19" Id="{86ea15a9-bcc7-4c6c-9c52-2686c5495108}">
       <Declaration><![CDATA[METHOD example19
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1, 1, 1 ],
@@ -599,15 +617,16 @@ VAR_INST
     TargetVelocity :=      [ 0, 0, 0 ],
     TargetAcceleration :=  [ 0, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-19');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 1.403613276,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -617,7 +636,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example20" Id="{43d3b3f8-bc82-46c0-9aaa-3c876692e06d}">
       <Declaration><![CDATA[METHOD example20
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1, 1, 1 ],
@@ -630,15 +649,16 @@ VAR_INST
     TargetVelocity :=      [ 0.37, 0, 0 ],
     TargetAcceleration :=  [ 0.5, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-20');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 0.9,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  
@@ -648,7 +668,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example21" Id="{4ad6cce6-8abe-4583-9a30-738f6d405c8e}">
       <Declaration><![CDATA[METHOD example21
 VAR_INST
-  ruckig : Struckig.Ruckig(0.005);
+  otg : Struckig.Ruckig(0.005, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1800, 18000, 180000 ],
@@ -661,15 +681,16 @@ VAR_INST
     TargetVelocity :=      [ 0, 0, 0 ],
     TargetAcceleration :=  [ 0, 0, 0 ]
   );
-  output : Struckig.OutputParameter;
+  
   
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Example-21');
 
+otg(Input:=input);
 AssertEquals_LREAL(Expected := 0.4119588818,
-             Actual := CheckCalculation(ruckig, input, output),
+             Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
  

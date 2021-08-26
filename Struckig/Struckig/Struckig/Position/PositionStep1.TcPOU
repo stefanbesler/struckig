@@ -85,8 +85,8 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF validProfileCounter = 0
 THEN
-  block.p_min := validProfiles[0];
-  block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
+  block.Pmin := validProfiles[0];
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
   CalculateBlock := TRUE;
 
 ELSIF validProfileCounter = 1 
@@ -94,8 +94,8 @@ THEN
 
   IF ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*Constants.Epsilon
   THEN
-    block.p_min := validProfiles[0];
-    block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
+    block.Pmin := validProfiles[0];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
     CalculateBlock := TRUE;
     RETURN;
 	END_IF
@@ -105,10 +105,10 @@ THEN
     idx_min := SEL(validProfiles[0].t_sum[6] < validProfiles[1].t_sum[6], 1, 0);
     idx_else_1 := (idx_min + 1) MOD 2;
 
-    block.p_min := validProfiles[idx_min];
-    block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;
+    block.Pmin := validProfiles[idx_min];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;
     
-    AddInterval(block.a, validProfiles[idx_min], validProfiles[idx_else_1]);
+    AddInterval(block.A, validProfiles[idx_min], validProfiles[idx_else_1]);
     CalculateBlock := TRUE;
     RETURN; 
 	END_IF
@@ -150,17 +150,17 @@ DO
   END_FOR
 END_FOR
 
-block.a.IsUsed := FALSE;
-block.b.IsUsed := FALSE;
-block.p_min := validProfiles[idx_min];
-block.Tmin := block.p_min.t_sum[6] + block.p_min.t_brake;  
+block.A.IsUsed := FALSE;
+block.B.IsUsed := FALSE;
+block.Pmin := validProfiles[idx_min];
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
 
 IF (validProfileCounter = 2)
 THEN
   idx_else_1 := (idx_min + 1) MOD 3;
   idx_else_2 := (idx_min + 2) MOD 3;
   
-  AddInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+  AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_2]);
   CalculateBlock := TRUE;
   RETURN;
 
@@ -173,11 +173,11 @@ THEN
   
   IF (validProfiles[idx_else_1].Direction = validProfiles[idx_else_2].Direction)
   THEN
-    AddInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_2]);
-    AddInterval(block.b, validProfiles[idx_else_3], validProfiles[idx_else_4]);
+    AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+    AddInterval(block.B, validProfiles[idx_else_3], validProfiles[idx_else_4]);
   ELSE 
-    AddInterval(block.a, validProfiles[idx_else_1], validProfiles[idx_else_4]);
-    AddInterval(block.b, validProfiles[idx_else_2], validProfiles[idx_else_3]);
+    AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_4]);
+    AddInterval(block.B, validProfiles[idx_else_2], validProfiles[idx_else_3]);
   END_IF
   
   CalculateBlock := TRUE;

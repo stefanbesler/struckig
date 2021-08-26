@@ -13,7 +13,7 @@ Test_Trajectory_HasTargetVelocity_HasTargetAcceleration();
     <Method Name="Test_Lissajous_Step2_TimeVel" Id="{2a0d14ac-5940-4c69-9724-05c45794e7d8}">
       <Declaration><![CDATA[METHOD Test_Lissajous_Step2_TimeVel
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001);
+  ruckig : Struckig.Ruckig(0.001, 0);
   input : Struckig.InputParameter(2) := (
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity :=         [ 1000.0, 1000.0 ],
@@ -26,9 +26,8 @@ VAR_INST
     TargetVelocity :=      [ -898.22405558544438, 214.33071799159862 ],
     TargetAcceleration :=  [ 0.0, 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  
   state, expectedState : TrajectoryState;
-  expectedLimit : ProfileLimits;
 END_VAR
 VAR
   arr6 : ARRAY[0..6] OF LREAL; 
@@ -38,15 +37,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TEST('Lissajous_Step2_TimeVel');
 
-state := ruckig.update(input, output);
+ruckig(Input:=input);
 expectedState := TrajectoryState.Busy;
-AssertEquals(Expected := expectedState, Actual := state, Message := '');
-AssertEquals_LREAL(Expected := 0.11389076484846114, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals(Expected := expectedState, Actual := ruckig.State, Message := '');
+AssertEquals_LREAL(Expected := 0.11389076484846114, Actual := ruckig.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 
 // Profile 0
-expectedLimit := ProfileLimits.Vel;
-AssertEquals(Expected := expectedLimit, Actual := output.Trajectory.Profiles[0].Limits, Message := 'Profile[0] limit incorrect');
 arr6[0] := 0.019269439679481217;
 arr6[1] := 0.00000000000000000;
 arr6[2] := 0.019269439679481217; 
@@ -54,7 +51,7 @@ arr6[3] := 0.046817563080924759;
 arr6[4] := 0.014267161204286971; 
 arr6[5] := 0.00000000000000000;
 arr6[6] := 0.014267161204286971;
-AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[0].t), DELTA := 1E-8, Message := 'Profile[0] durations incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (ruckig.Trajectory._profiles[0].t), DELTA := 1E-8, Message := 'Profile[0] durations incorrect');
 
 arr6[0] := -500000.00000000000;
 arr6[1] := 0;
@@ -63,7 +60,7 @@ arr6[3] := 0;
 arr6[4] := 500000.00000000000; 
 arr6[5] := 0.00000000000000000;
 arr6[6] := -500000.00000000000;
-AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[0].j), DELTA := 1E-8, Message := 'Profile[0] jerk incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (ruckig.Trajectory._profiles[0].j), DELTA := 1E-8, Message := 'Profile[0] jerk incorrect');
 
 arr7[0] := 0;
 arr7[1] := -9634.7198397406082;
@@ -73,7 +70,7 @@ arr7[4] := 0;
 arr7[5] := 7133.5806021434855;
 arr7[6] := 7133.5806021434855;
 arr7[7] := 0;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].a), DELTA := 1E-8, Message := 'Profile[0] acceleraton incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[0].a), DELTA := 1E-8, Message := 'Profile[0] acceleraton incorrect');
 
 arr7[0] := -814.34434721941739;
 arr7[1] := -907.17217360970869;
@@ -83,7 +80,7 @@ arr7[4] := -1000.0000000000000;
 arr7[5] := -949.11202779272219;
 arr7[6] := -949.11202779272219;
 arr7[7] := -898.22405558544438;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].v), DELTA := 1E-8, Message := 'Profile[0] velocity incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[0].v), DELTA := 1E-8, Message := 'Profile[0] velocity incorrect');
 
 arr7[0] := 127.69838649916392;
 arr7[1] := 111.41018048835782;
@@ -93,12 +90,10 @@ arr7[4] := 45.919424461686873;
 arr7[5] := 31.894272225013403;
 arr7[6] := 31.894272225013403;
 arr7[7] := 18.837155858793942;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[0].p), DELTA := 1E-8, Message := 'Profile[0] position incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[0].p), DELTA := 1E-8, Message := 'Profile[0] position incorrect');
 
 
 // Profile 1
-expectedLimit := ProfileLimits.Vel;
-AssertEquals(Expected := expectedLimit, Actual := output.Trajectory.Profiles[1].Limits, Message := 'Profile[1] limit incorrect');
 arr6[0] := 0.0025639897110806198;
 arr6[1] := 0.00000000000000000;
 arr6[2] := 0.0025639897110806198;
@@ -106,7 +101,7 @@ arr6[3] := 0.084436715236858723;
 arr6[4] := 0.012163035094720590;
 arr6[5] := 0.00000000000000000;
 arr6[6] := 0.012163035094720590;
-AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[1].t), DELTA := 1E-8, Message := 'Profile[1] durations incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (ruckig.Trajectory._profiles[1].t), DELTA := 1E-8, Message := 'Profile[1] durations incorrect');
 
 arr6[0] := -500000.00000000000;
 arr6[1] := 0;
@@ -115,7 +110,7 @@ arr6[3] := 0;
 arr6[4] := -500000.00000000000; 
 arr6[5] := 0.00000000000000000;
 arr6[6] := 500000.00000000000;
-AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (output.Trajectory.Profiles[1].j), DELTA := 1E-8, Message := 'Profile[1] jerk incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr6), Actuals := (ruckig.Trajectory._profiles[1].j), DELTA := 1E-8, Message := 'Profile[1] jerk incorrect');
 
 arr7[0] := 0.00000000000000000;
 arr7[1] := -1281.9948555403098;
@@ -125,7 +120,7 @@ arr7[4] := 0.00000000000000000;
 arr7[5] := -6081.5175473602949;
 arr7[6] := -6081.5175473602949;
 arr7[7] := 0.00000000000000000;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].a), DELTA := 1E-8, Message := 'Profile[1] acceleraton incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[1].a), DELTA := 1E-8, Message := 'Profile[1] acceleraton incorrect');
 
 arr7[0] := 291.58745096856461;
 arr7[1] := 289.94394015893278;
@@ -135,7 +130,7 @@ arr7[4] := 288.30042934930094;
 arr7[5] := 251.31557367044977;
 arr7[6] := 251.31557367044977;
 arr7[7] := 214.33071799159859;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].v), DELTA := 1E-8, Message := 'Profile[1] velocity incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[1].v), DELTA := 1E-8, Message := 'Profile[1] velocity incorrect');
 
 arr7[0] := 136.92209700124960;
 arr7[1] := 137.66831957714459;
@@ -145,7 +140,7 @@ arr7[4] := 162.75206481559599;
 arr7[5] := 166.10872368972954;
 arr7[6] := 166.10872368972954;
 arr7[7] := 168.86558510040302;
-AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (output.Trajectory.Profiles[1].p), DELTA := 1E-8, Message := 'Profile[1] position incorrect');
+AssertArrayEquals_LREAL(Expecteds := (arr7), Actuals := (ruckig.Trajectory._profiles[1].p), DELTA := 1E-8, Message := 'Profile[1] position incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -153,7 +148,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration" Id="{53ec57f4-9f8e-4639-b25f-deb391855d1e}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001);
+  ruckig : Struckig.Ruckig(0.001, 0);
   input : Struckig.InputParameter(3) := (
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -166,31 +161,31 @@ VAR_INST
     TargetVelocity := [ -104.33706621689987059654, -659.36109838358197521302, 811.33117925934993763804 ],
     TargetAcceleration := [ 523.43053514200096287823, 100.75104632855459385610, 320.80199262854853259341 ]
   );
-  output : Struckig.OutputParameter;
+  
   positionExtrema : Struckig.PositionExtremaDesc;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Trajectory_Profile[1]_Step2_TimeVel');
 
-ruckig.update(input, output);
+ruckig(Input:=input);
 
 // Check total duration of profiles
-AssertEquals_LREAL(Expected := 0.22338925049474450679, Actual := output.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 0.22338925049474450679, Actual := ruckig.Trajectory.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 // Check duration for each phase
-positionExtrema := output.trajectory.profiles[0].positionExtrema();
+positionExtrema := ruckig.Trajectory._profiles[0].positionExtrema();
 AssertEquals_LREAL(0.20657109030979783904, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
 AssertEquals_LREAL(-29.15176131633907630203, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
 AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
 AssertEquals_LREAL(-54.94342725690739825950, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
-positionExtrema := output.trajectory.profiles[1].positionExtrema();
+positionExtrema := ruckig.Trajectory._profiles[1].positionExtrema();
 AssertEquals_LREAL(0.19826331168683380968, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
 AssertEquals_LREAL(55.81702313192161568622, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
 AssertEquals_LREAL(0.01113968648909354625, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
 AssertEquals_LREAL(-71.74511835894615785492, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
-positionExtrema := output.trajectory.profiles[2].positionExtrema();
+positionExtrema := ruckig.Trajectory._profiles[2].positionExtrema();
 AssertEquals_LREAL(0.22338925049474447904, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
 AssertEquals_LREAL(94.47974487226861128875, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
 AssertEquals_LREAL(0.02606362117094545780, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');

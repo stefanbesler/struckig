@@ -21,6 +21,7 @@
 /// ```
 /// Modern compilers seem to round t away from 0 to 23 bits.
 /// see https://github.com/stdlib-js/math-base-special-cbrt/blob/main/src/cbrt.c
+{attribute 'hide'}
 FUNCTION Cbrt : LREAL
 VAR_INPUT
   x : LREAL;

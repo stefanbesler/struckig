@@ -84,94 +84,33 @@ allow for a shorter travel time, but  if `MinDuration` together with Synchroniza
 the `MinDuration` parameter is considered instead.
 
 ```
-PROGRAM Example05_1DoFs_MinDuration
+PROGRAM Example
 VAR
-  ruckig : Struckig.Ruckig(0.001);
   input : Struckig.InputParameter(1) := (
     Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
     MinDuration :=         10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
     MaxVelocity :=         [ 2000.0 ],
     MaxAcceleration :=     [ 20000.0 ],
     MaxJerk :=             [ 800000.0 ],
-    CurrentPosition :=     [ 0 ],
-    CurrentVelocity :=     [ 0 ],
-    CurrentAcceleration := [ 0 ],
-    TargetPosition :=      [ 100 ],
+    CurrentPosition :=     [ 0.0 ],
+    CurrentVelocity :=     [ 0.0 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition :=      [ 100.0 ],
     TargetVelocity :=      [ 0.0 ],
     TargetAcceleration :=  [ 0.0 ]
   );
-  output : Struckig.OutputParameter;
+  otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (Input := input);
 END_VAR
 
 // =====================================================================================================================
 
-state := ruckig.update(input, output);
+otg();
 
 // Update the current values, these should be send to a drive as well
 // so that it can follow the trajectory.
-input.CurrentPosition := output.NewPosition;
-input.CurrentVelocity := output.NewVelocity;
-input.CurrentAcceleration := output.NewAcceleration;
-
-moving := state = TrajectoryState.Busy;
+otg.Input.CurrentPosition := otg.NewPosition;
+otg.Input.CurrentVelocity := otg.NewVelocity;
+otg.Input.CurrentAcceleration := otg.NewAcceleration;
 ```
 
 ![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
-
-
-
-# Example: Create a two-step profile for 1 axis
-
-The following (advanced) examples shows how to use (st)ruckig to calculate a 2-step positioning profile for a single axis.
- - The first step moves the axis from a start position (47mm) to a target position (18mm) with a *high* velocity and an end-velocity of -50mm/s.
- - From that point the profile is *switched* such that the axis continues to moves "slowly" (speed: 50mm/s) to its final destination (9mm) 
-   where the axis stops moving.
-```
-
-PROGRAM Example02_PositionProfile_2Steps
-VAR
-  ruckig : Ruckig(0.001);
-  input_step1 : InputParameter(1) := (synchronizationType := SynchronizationTypeEnum.none,
-                                      max_velocity :=         [ 1200.0 ],
-                                      max_acceleration :=     [ 25000.0 ],
-                                      max_jerk :=             [ 25000.0 / 0.008 ], // ~ s-time = 8ms
-                                      current_position :=     [ 47.0 ],
-                                      current_velocity :=     [ 0.0 ],
-                                      current_acceleration := [ 0.0 ],
-                                      target_position :=      [ 18.0 ],
-                                      target_velocity :=      [ -50.0 ],
-                                      target_acceleration :=  [ 0.0 ]);
-  input_step2 : InputParameter(1) := (max_velocity :=         [ 50.0 ], // limit velocity to end-velocity of first step
-                                      target_position :=      [ 9.0 ],
-                                      target_velocity :=      [ 0.0 ],
-                                      target_acceleration :=  [ 0.0 ]);
-  input : REFERENCE TO InputParameter REF= input_step1;                                    
-  output : OutputParameter;    
-  run : BOOL;
-  switched : BOOL;
-END_VAR
-
-// =====================================================================================================================
-
-IF run
-THEN
-  ruckig.update(input, output);
-  
-  // switch to second profile
-  IF NOT ruckig.isBusy() AND_THEN NOT switched
-  THEN
-    switched := TRUE;
-    input.max_velocity := input_step2.max_velocity;    
-    input.target_position := input_step2.target_position;
-    input.target_velocity := input_step2.target_velocity;    
-    input.target_acceleration := input_step2.target_acceleration;
-  END_IF
-  
-  input.current_position := output.new_position;
-  input.current_velocity := output.new_velocity;
-  input.current_acceleration := output.new_acceleration;
-END_IF
-```
-
-![image](https://user-images.githubusercontent.com/11271989/126785368-205a491b-0acb-4a52-8b90-a6e3f1283a18.png)
-

@@ -3,7 +3,6 @@
   <POU Name="Example02_PositionProfile_2Steps" Id="{9bcc5091-27e8-40b3-85e4-3119402a5bb6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
 VAR
-  ruckig : Ruckig(0.001);
   input_step1 : InputParameter(1) := (Synchronization := SynchronizationType.None,
                                       MaxVelocity :=         [ 1200.0 ],
                                       MaxAcceleration :=     [ 25000.0 ],
@@ -18,8 +17,8 @@ VAR
                                       TargetPosition :=      [ 9.0 ],
                                       TargetVelocity :=      [ 0.0 ],
                                       TargetAcceleration :=  [ 0.0 ]);
-  input : REFERENCE TO InputParameter REF= input_step1;                                    
-  output : OutputParameter;    
+  input : REFERENCE TO InputParameter REF= input_step1; 
+  otg : Ruckig(0.001, 1) := (Input := input);                                   
   run : BOOL;
   switched : BOOL;
 END_VAR
@@ -31,18 +30,19 @@ THEN
   ;
   
   // switch to second profile
-  IF ruckig.update(input, output) = Struckig.TrajectoryState.Idle AND_THEN NOT switched
+  otg();
+  IF otg.State = TrajectoryState.Idle AND_THEN NOT switched
   THEN
     switched := TRUE;
-    input.MaxVelocity := input_step2.MaxVelocity;    
-    input.TargetPosition := input_step2.TargetPosition;
-    input.TargetVelocity := input_step2.TargetVelocity;    
-    input.TargetAcceleration := input_step2.TargetAcceleration;
+    otg.Input.MaxVelocity := input_step2.MaxVelocity;    
+    otg.Input.TargetPosition := input_step2.TargetPosition;
+    otg.Input.TargetVelocity := input_step2.TargetVelocity;    
+    otg.Input.TargetAcceleration := input_step2.TargetAcceleration;
 	END_IF
   
-  input.CurrentPosition := output.NewPosition;
-  input.CurrentVelocity := output.NewVelocity;
-  input.CurrentAcceleration := output.NewAcceleration;
+  otg.Input.CurrentPosition := otg.NewPosition;
+  otg.Input.CurrentVelocity := otg.NewVelocity;
+  otg.Input.CurrentAcceleration := otg.NewAcceleration;
 END_IF]]></ST>
     </Implementation>
   </POU>
