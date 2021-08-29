@@ -79,7 +79,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>669b903d-db9e-4db6-9a80-1cddf48152c4</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438616</IndexOffset>
+          <IndexOffset>435448</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[0]</Name>
@@ -125,7 +125,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentPosition[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -161,7 +161,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>7f1b3840-1395-472c-9155-9f05aecb8814</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438624</IndexOffset>
+          <IndexOffset>435456</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[1]</Name>
@@ -207,7 +207,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentPosition[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -243,7 +243,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>071c8858-a18b-44da-b35f-20097c78f0b2</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438680</IndexOffset>
+          <IndexOffset>435512</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[0]</Name>
@@ -289,7 +289,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentVelocity[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -325,7 +325,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>d78c5ec6-f355-48f4-bc1e-706d068d1394</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438688</IndexOffset>
+          <IndexOffset>435520</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[1]</Name>
@@ -371,7 +371,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentVelocity[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -407,7 +407,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>3524ca66-616a-4f93-a941-ad87075aea9c</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438744</IndexOffset>
+          <IndexOffset>435576</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[0]</Name>
@@ -453,7 +453,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentAcceleration[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -489,7 +489,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>006ec6e5-a2c5-4ec8-a969-e890f7c4d75d</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438752</IndexOffset>
+          <IndexOffset>435584</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[1]</Name>
@@ -535,7 +535,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.CurrentAcceleration[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.CurrentAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -571,7 +571,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>0dc1d48b-f20c-4aed-9862-feee5a62f5ff</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438808</IndexOffset>
+          <IndexOffset>435640</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[0]</Name>
@@ -617,7 +617,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetPosition[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -653,7 +653,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>7ba2a9d4-b94b-4926-aed5-c7326d632004</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438816</IndexOffset>
+          <IndexOffset>435648</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[1]</Name>
@@ -699,7 +699,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetPosition[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -735,7 +735,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>4b03e521-c3d8-4800-ab58-9efe17368a1b</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438872</IndexOffset>
+          <IndexOffset>435704</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[0]</Name>
@@ -781,7 +781,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetVelocity[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -817,7 +817,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>abbafb6a-c623-4cb1-bd77-3c652669b8d7</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438880</IndexOffset>
+          <IndexOffset>435712</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[1]</Name>
@@ -863,7 +863,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetVelocity[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -899,7 +899,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>d07ee59b-bd9c-499e-838f-2f7227edef8a</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438936</IndexOffset>
+          <IndexOffset>435768</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[0]</Name>
@@ -945,7 +945,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetAcceleration[0]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -981,7 +981,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>6b9b414f-fbd5-4d4b-83ec-80e7385ea4d3</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>438944</IndexOffset>
+          <IndexOffset>435776</IndexOffset>
           <IsFileBased>false</IsFileBased>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[1]</Name>
@@ -1027,7 +1027,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.Input.TargetAcceleration[1]</SymbolName>
+          <SymbolName>Example03_2DoFs_Synchronized_Waypoints.otg.TargetAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>

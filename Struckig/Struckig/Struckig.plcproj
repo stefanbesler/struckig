@@ -33,9 +33,7 @@
     <Folder Include="Struckig\Velocity" />
     <Folder Include="Struckig\Position" />
     <Folder Include="Struckig\Profile\_DataTypes" />
-    <Folder Include="Struckig\Trajectory" />
     <Folder Include="Struckig\Profile" />
-    <Folder Include="Struckig\Trajectory\_DataTypes" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.TcGVL">
@@ -100,25 +98,19 @@
     <Compile Include="Struckig\Ruckig.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Trajectory\TrajectoryDesc.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\InputParameter.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\DiscretizationType.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\ControlInterfaceType.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Struckig\Trajectory\_DataTypes\SynchronizationType.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Struckig\Velocity\VelocityStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Velocity\VelocityStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\_DataTypes\ControlInterfaceType.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\_DataTypes\DiscretizationType.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\_DataTypes\SynchronizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\_DataTypes\TrajectoryErrorCode.TcDUT">

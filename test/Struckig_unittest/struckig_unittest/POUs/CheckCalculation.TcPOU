@@ -8,12 +8,12 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[REPEAT 
   otg();
-  otg.Input.CurrentPosition := otg.NewPosition;
-  otg.Input.CurrentVelocity := otg.NewVelocity;
-  otg.Input.CurrentAcceleration := otg.NewAcceleration;
+  otg.CurrentPosition := otg.NewPosition;
+  otg.CurrentVelocity := otg.NewVelocity;
+  otg.CurrentAcceleration := otg.NewAcceleration;
 UNTIL otg.State <> Struckig.TrajectoryState.busy END_REPEAT
 
-CheckCalculation := otg.Trajectory.duration;]]></ST>
+CheckCalculation := otg.Duration;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

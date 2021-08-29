@@ -125,7 +125,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentPosition[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -207,7 +207,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentPosition[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -289,7 +289,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentVelocity[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -371,7 +371,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentVelocity[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -453,7 +453,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentAcceleration[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -535,7 +535,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.CurrentAcceleration[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.CurrentAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -617,7 +617,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetPosition[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -699,7 +699,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetPosition[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetPosition[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -781,7 +781,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetVelocity[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -863,7 +863,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetVelocity[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetVelocity[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -945,7 +945,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetAcceleration[0]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -1027,7 +1027,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.Input.TargetAcceleration[1]</SymbolName>
+          <SymbolName>Example04_2DoFs_Synchronized_Waypoints_2.otg.TargetAcceleration[1]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>

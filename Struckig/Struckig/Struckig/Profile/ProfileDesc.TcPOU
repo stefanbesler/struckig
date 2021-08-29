@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1">
   <POU Name="ProfileDesc" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
     <Declaration><![CDATA[/// The state Profile for position, velocity, acceleration and jerk for a single DoF
-FUNCTION_BLOCK ProfileDesc
+FUNCTION_BLOCK INTERNAL ProfileDesc
 VAR_INPUT
   Limits : ProfileLimits;
   Direction : ProfileDirection;

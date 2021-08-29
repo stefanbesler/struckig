@@ -3,22 +3,16 @@
   <POU Name="Example02_PositionProfile_2Steps" Id="{9bcc5091-27e8-40b3-85e4-3119402a5bb6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
 VAR
-  input_step1 : InputParameter(1) := (Synchronization := SynchronizationType.None,
-                                      MaxVelocity :=         [ 1200.0 ],
-                                      MaxAcceleration :=     [ 25000.0 ],
-                                      MaxJerk :=             [ 25000.0 / 0.008 ],
-                                      CurrentPosition :=     [ 47.0 ],
-                                      CurrentVelocity :=     [ 0.0 ],
-                                      CurrentAcceleration := [ 0.0 ],
-                                      TargetPosition :=      [ 18.0 ],
-                                      TargetVelocity :=      [ -10.0 ],
-                                      TargetAcceleration :=  [ 0.0 ]);
-  input_step2 : InputParameter(1) := (MaxVelocity :=         [ 10.0 ], // limit velocity to end-velocity of first step
-                                      TargetPosition :=      [ 9.0 ],
-                                      TargetVelocity :=      [ 0.0 ],
-                                      TargetAcceleration :=  [ 0.0 ]);
-  input : REFERENCE TO InputParameter REF= input_step1; 
-  otg : Ruckig(0.001, 1) := (Input := input);                                   
+  otg : Ruckig(0.001, 1) := (Synchronization := SynchronizationType.None,
+                             MaxVelocity :=         [ 1200.0 ],
+                             MaxAcceleration :=     [ 25000.0 ],
+                             MaxJerk :=             [ 25000.0 / 0.008 ],
+                             CurrentPosition :=     [ 47.0 ],
+                             CurrentVelocity :=     [ 0.0 ],
+                             CurrentAcceleration := [ 0.0 ],
+                             TargetPosition :=      [ 18.0 ],
+                             TargetVelocity :=      [ -10.0 ],
+                             TargetAcceleration :=  [ 0.0 ]);                                  
   run : BOOL;
   switched : BOOL;
 END_VAR
@@ -26,23 +20,21 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF run
-THEN
-  ;
-  
+THEN  
   // switch to second profile
   otg();
   IF otg.State = TrajectoryState.Idle AND_THEN NOT switched
   THEN
     switched := TRUE;
-    otg.Input.MaxVelocity := input_step2.MaxVelocity;    
-    otg.Input.TargetPosition := input_step2.TargetPosition;
-    otg.Input.TargetVelocity := input_step2.TargetVelocity;    
-    otg.Input.TargetAcceleration := input_step2.TargetAcceleration;
-	END_IF
+	otg.MaxVelocity[0] :=  10.0;
+	otg.TargetPosition[0] :=  9.0;
+	otg.TargetVelocity[0] :=  0.0;
+	otg.TargetAcceleration[0] :=  0.0;
+  END_IF
   
-  otg.Input.CurrentPosition := otg.NewPosition;
-  otg.Input.CurrentVelocity := otg.NewVelocity;
-  otg.Input.CurrentAcceleration := otg.NewAcceleration;
+  otg.CurrentPosition := otg.NewPosition;
+  otg.CurrentVelocity := otg.NewVelocity;
+  otg.CurrentAcceleration := otg.NewAcceleration;
 END_IF]]></ST>
     </Implementation>
   </POU>

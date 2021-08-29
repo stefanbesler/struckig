@@ -34,7 +34,7 @@ v_at_a0 := VelocityAtTime(v0, a0, -jMax, t_to_a_zero);
 
 IF (v_at_a0 > vMax AND_THEN jMax > 0) OR_ELSE (v_at_a0 < vMax AND_THEN jMax < 0)
 THEN
-  velocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
+  VelocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
 
 ELSIF (v_at_a_max < vMin AND_THEN jMax > 0) OR_ELSE (v_at_a_max > vMin AND_THEN jMax < 0)
 THEN
@@ -74,10 +74,10 @@ THEN
   AccelerationBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);
 ELSIF ((v0 > vMax AND_THEN VelocityAtZeroAcceleration(v0, a0, -jMax) > vMin) OR_ELSE (a0 > 0 AND_THEN VelocityAtZeroAcceleration(v0, a0, jMax) > vMax))
 THEN
-  velocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
+  VelocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax, t_brake, j_brake);
 ELSIF ((v0 < vMin AND_THEN VelocityAtZeroAcceleration(v0, a0, jMax) < vMax) OR_ELSE (a0 < 0 AND_THEN VelocityAtZeroAcceleration(v0, a0, -jMax) < vMin))
 THEN
-  velocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);      
+  VelocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax, t_brake, j_brake);      
 END_IF
 ]]></ST>
       </Implementation>
@@ -106,7 +106,7 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="velocityBrake" Id="{c8d0a7a0-928d-4c6d-8096-2b92af8cd1a4}">
-      <Declaration><![CDATA[METHOD velocityBrake
+      <Declaration><![CDATA[METHOD VelocityBrake
 VAR_INPUT
   v0, a0 : LREAL;
   vMax, vMin : LREAL;
@@ -120,8 +120,16 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[j_brake[0] := -jMax;
 t_to_a_min := (a0 - aMin)/jMax;
-t_to_v_max := a0/jMax + SQRT(a0*a0 + 2 * jMax * (v0 - vMax)) / ABS(jMax);
-t_to_v_min := a0/jMax + SQRT(a0*a0 / 2 + jMax * (v0 - vMin)) / ABS(jMax);
+t_to_v_max := a0*a0 + 2 * jMax * (v0 - vMax);
+t_to_v_min := a0*a0 / 2 + jMax * (v0 - vMin);
+
+IF t_to_v_max < 0 OR_ELSE t_to_v_min < 0
+THEN
+  RETURN;
+END_IF
+
+t_to_v_max := a0/jMax + SQRT(t_to_v_max) / ABS(jMax);
+t_to_v_min := a0/jMax + SQRT(t_to_v_min) / ABS(jMax);
 t_min_to_v_max := MIN(t_to_v_max, t_to_v_min);
 
 IF (t_to_a_min < t_min_to_v_max)

@@ -3,7 +3,7 @@
   <POU Name="Example01_6DoFs" Id="{c00a71d8-f00f-4c7d-a99b-aab97ff59a30}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example01_6DoFs
 VAR
-  input : InputParameter(6) := (Synchronization := SynchronizationType.None,
+  otg : Ruckig(0.001, 6) := (Synchronization := SynchronizationType.None,
                                 MaxVelocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
                                 MaxAcceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
                                 MaxJerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
@@ -12,16 +12,15 @@ VAR
                                 CurrentAcceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
                                 TargetPosition :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
                                 TargetVelocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
-                                TargetAcceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);
-  otg : Ruckig(0.001, 6) := (Input := input);								
+                                TargetAcceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);								
 END_VAR
 
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[otg();
-otg.Input.CurrentPosition := otg.NewPosition;
-otg.Input.CurrentVelocity := otg.NewVelocity;
-otg.Input.CurrentAcceleration := otg.NewAcceleration;]]></ST>
+otg.CurrentPosition := otg.NewPosition;
+otg.CurrentVelocity := otg.NewVelocity;
+otg.CurrentAcceleration := otg.NewAcceleration;]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

@@ -123,7 +123,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentPosition[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -205,7 +205,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentVelocity[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -287,7 +287,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.CurrentAcceleration[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_192</Title>
@@ -369,7 +369,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetPosition[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -451,7 +451,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetVelocity[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
@@ -533,7 +533,7 @@
           <SubMember />
           <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
-          <SymbolName>Example05_1DoFs_MinDuration.otg.Input.TargetAcceleration[0]</SymbolName>
+          <SymbolName>Example05_1DoFs_MinDuration.otg.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
           <TimeOffset>0</TimeOffset>
           <Title>AdsAcquisition_129</Title>
