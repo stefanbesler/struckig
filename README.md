@@ -86,7 +86,7 @@ the `MinDuration` parameter is considered instead.
 ```
 PROGRAM Example
 VAR
-  input : Struckig.InputParameter(1) := (
+  otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (
     Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
     MinDuration :=         10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
     MaxVelocity :=         [ 2000.0 ],
@@ -99,7 +99,6 @@ VAR
     TargetVelocity :=      [ 0.0 ],
     TargetAcceleration :=  [ 0.0 ]
   );
-  otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (Input := input);
 END_VAR
 
 // =====================================================================================================================
@@ -108,9 +107,9 @@ otg();
 
 // Update the current values, these should be send to a drive as well
 // so that it can follow the trajectory.
-otg.Input.CurrentPosition := otg.NewPosition;
-otg.Input.CurrentVelocity := otg.NewVelocity;
-otg.Input.CurrentAcceleration := otg.NewAcceleration;
+otg.CurrentPosition := otg.NewPosition;
+otg.CurrentVelocity := otg.NewVelocity;
+otg.CurrentAcceleration := otg.NewAcceleration;
 ```
 
 ![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
