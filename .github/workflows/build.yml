@@ -15,6 +15,9 @@ jobs:
     name: Build/Test
     runs-on: ubuntu-latest
     steps:
+      - name: "Determine Branch"
+        id: branches
+        uses: transferwise/sanitize-branch-name@v1
       - name: Build
         id: trigger-jenkins
         uses: iadonkey/build-jenkins-job@1.1.0
@@ -22,13 +25,13 @@ jobs:
           jenkins-url: http://ci.zeugwerk.at:8888
           jenkins-token: ${{ secrets.JENKINS_TOKEN }}
           jenkins-user: ${{ secrets.JENKINS_USER }}
-          jenkins-job: Iaf/build_library/main
-          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":"","REVISION":"${{ github.sha }}"}'
+          jenkins-job: Jobs/build
+          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.repository }}.git","TC_VERSION":"TC3.1.4024.17","VERSION":","BRANCH":"${{ steps.branches.outputs.branch-name }}","REVISION":"${{ github.sha }}"}'
           jenkins-wait-job: wait
           jenkins-ssl-verify: false
       - name: Copy Artifact
         run: |
-          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://ci.zeugwerk.at:8883/job/Iaf/job/build_library/job/main/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
+          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://ci.zeugwerk.at:8883/job/jobs/job/build/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
           unzip archive.zip
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
