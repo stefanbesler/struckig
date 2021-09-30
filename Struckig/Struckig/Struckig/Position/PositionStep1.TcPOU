@@ -269,23 +269,68 @@ ELSE
   time_acc0_acc1(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);  
 END_IF
 
-IF (validProfileCounter = -1 OR_ELSE validProfileCounter = 1 OR_ELSE validProfileCounter = 3)
+IF (validProfileCounter = -1)
 THEN
   time_none_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
-  time_none_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
-
-  IF validProfileCounter = -1 OR_ELSE validProfileCounter = 1
+  IF validProfileCounter >= 0
   THEN
-    time_acc0_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
-    time_acc0_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
-    time_vel_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
-    time_vel_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
-    time_acc1_vel_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
-    time_acc1_vel_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax); 
-  END_IF
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_none_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+
+  time_acc0_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_acc0_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_vel_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_vel_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_acc1_vel_two_step(Profilefile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_acc1_vel_two_step(Profilefile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  IF validProfileCounter >= 0
+  THEN
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF  
 END_IF
 
-Get := CalculateBlock(block);]]></ST>
+Get := CalculateBlock(block);
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="RemoveProfile" Id="{bd3a75f9-6643-430d-baa6-3b74a1498442}">
@@ -658,12 +703,7 @@ THEN
   //Profile.t[4] := -aMin/jMax;
   //Profile.t[5] := -(af_af*0.5 - aMin*aMin + jMax*(vMax - vf))/(aMin*jMax);
   //Profile.t[6] := Profile.t[4] + af/jMax;
-  
-  IF (ABS(Profile.t[0]) < Constants.DoubleEpsilon AND_THEN Profile.t[0] < 0.0) 
-  THEN
-    Profile.t[0] := 0;  
-  END_IF
-      
+        
   IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
   THEN
     AddProfile(Profile, jMax); 

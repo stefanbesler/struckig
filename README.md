@@ -3,8 +3,9 @@
 <div align="center">
   <h1 align="center">(ST)Ruckig</h1>
   <h3 align="center">
-    Online Trajectory Generation. Real-time. Jerk-constrained. Time-optimal<br/>
-    "Full" port from C++ to Structured Text, TwinCAT 3.
+    Instantaneous Motion Generation for Robots and Machines.<br>
+    Real-time. Jerk-constrained. Time-optimal.<br/>
+    "Full" port of the Ruckig (Community version) to Structured Text, TwinCAT 3.
   </h3>
 </div>
 
