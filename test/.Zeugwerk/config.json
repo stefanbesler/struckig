@@ -4,14 +4,14 @@
   "plcprojects": [
     {
       "name": "struckig_unittest",
-      "version": "0.3.3.0",
+      "version": "0.4.0.0",
       "type": "Application",
       "iaf_references": {
         "references": []
       },
       "system_references": {
         "TC3.1.4024.17": [
-          "Struckig=0.3.3.0",
+          "Struckig=0.4.0.0",
           "Tc3_Module=*",
           "TcUnit=*"
         ]
