@@ -2,8 +2,7 @@
   <h1 align="center">(ST)Ruckig</h1>
   <h3 align="center">
     Instantaneous Motion Generation for Robots and Machines.<br>
-    Real-time. Jerk-constrained. Time-optimal.<br/>
-    "Full" port of the Ruckig (Community version) to Structured Text, TwinCAT 3.
+    Port of ruckig to Structured Text, TwinCAT 3.
   </h3>
 </div>
 
@@ -26,15 +25,14 @@
   </a>
 </p>
 
-This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online
-Trajectory Generation to TwinCAT 3. Please note, that while this port aims to be a full port, it will probably never reach the performance 
-of the original C++ code for the following reasons. 
-- the original code uses templates and C++17 features to reduce load during runtime. 
-- the codesys compiler , in contrast to C++ compilers, does not come with a lot of compile time optimizations. Even simple loop unwrapping optimizations are not performed - probably to make debugging easier (?)
-- while some optimizations could be done by hand, I would rather have the port as close to the original as possible, only changing the architecture where it is required, because of limitiations of the programming language of the port.
+This repository ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online-Trajectory-Generation to TwinCAT 3.
+I am developing and maintaining this port in my spare time and have no interest in making this a commercial product. So, only the Community Version is ported
+and pro features are not available.
+Anyway, if you want to motivate, donate a coffee and star this repository.
 
-If you are looking for best possible performance of Ruckig, I suggest you look into making pantor/ruckig a TwinCAT C++ module. However,
-if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
+<p align="center">
+  <a href="https://www.paypal.com/donate?hosted_button_id=PWRUSMDGJNQ2A"><img alt="Donate" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" /></a>
+</p>
 
 # Porting progress
 
@@ -72,7 +70,7 @@ thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build en
 
 # Documentation
 
-The source code and usage documentation of this library is (will be) hosted on [https://stefanbesler.github.io/struckig/](https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
+The source code and usage documentation of this library is hosted on [https://stefanbesler.github.io/struckig/](https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
 
 # Example: Create time-based profile for 1 axis
 
