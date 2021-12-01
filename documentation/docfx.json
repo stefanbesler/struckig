@@ -5,7 +5,8 @@
         "files": [
           "userguide/*.md",
           "userguide/toc.yml",      
-          "reference/**.md",
+          "reference/**/*.md",
+          "reference/toc.yml",
           "reference/**/toc.yml",
           "toc.yml",
           "*.md"
