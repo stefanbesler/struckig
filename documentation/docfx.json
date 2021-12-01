@@ -5,8 +5,8 @@
         "files": [
           "userguide/*.md",
           "userguide/toc.yml",      
-          "struckig/*.md",
-          "struckig/toc.yml",
+          "reference/*.md",
+          "reference/toc.yml",
           "toc.yml",
           "*.md"
         ]
