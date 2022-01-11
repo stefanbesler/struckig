@@ -8,7 +8,6 @@ VAR_INPUT
   ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; // The default position interface controls the full kinematic state.
   Synchronization : SynchronizationType := SynchronizationType.TimeSync; // Synchronization behavior of multiple DoFs
   Discretization : DiscretizationType; // Whether the duration should be a discrete multiple of the control cycle (off by default)
-  
   CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Target state
   MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Kinematic constraints
@@ -17,7 +16,8 @@ VAR_INPUT
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  NewCalculation : BOOL;
+  NewCalculation : BOOL; /// Was a new trajectory calculation performed in the last cycle?
+  NewSection : INT; /// Index of the current section between two intermediate positions
   Duration : LREAL;
   CurrentTime : LREAL;
   State : TrajectoryState;  
@@ -83,7 +83,7 @@ THEN
 END_IF
 
 CurrentTime := CurrentTime + _dt;
-AtTime(CurrentTime, Dofs, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration));
+AtTime(CurrentTime, Dofs, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 
 _currentPosition := NewPosition;
 _currentVelocity := NewVelocity;
@@ -101,6 +101,7 @@ VAR_INPUT
   new_position : POINTER TO LREAL;
   new_velocity : POINTER TO LREAL;
   new_acceleration : POINTER TO LREAL;
+  new_section : POINTER TO INT;
 END_VAR
 VAR
   dof : INT;
@@ -110,13 +111,15 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (t >= Duration) THEN
-  {// Keep constant acceleration}
+  // Keep constant acceleration
+  new_section := 1;
   FOR dof:=0 TO _dofsEnd DO
     _profiles[0].Integrate(t - Duration, _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
   END_FOR
   RETURN;
 END_IF
 
+new_section := 0;
 FOR dof:=0 TO _dofsEnd DO
   p REF= _profiles[dof];
 
