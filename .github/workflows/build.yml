@@ -18,8 +18,8 @@ jobs:
       - name: Build
         uses: Zeugwerk/zkbuild-action@1.0.0
         with:
-          username: ${{ secrets.ZEUGWERK_API_USERNAME }}
-          password: ${{ secrets.ZEUGWERK_API_PASSWORD }}
+          username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
+          password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
