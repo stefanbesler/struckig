@@ -10,26 +10,17 @@ on:
     branches: [ main ]
   workflow_dispatch:
 jobs:
-  Documentation:
-    name: Build
+  Build:
+    name: Documentation
     runs-on: ubuntu-latest
     steps:
-      - name: Generate
-        id: trigger-jenkins
-        uses: iadonkey/build-jenkins-job@1.1.0
+      - name: Build
+        uses: Zeugwerk/zkdoc-action@1.0.0
         with:
-          jenkins-url: http://ci.zeugwerk.at:8888
-          jenkins-token: ${{ secrets.JENKINS_TOKEN }}
-          jenkins-user: ${{ secrets.JENKINS_USER }}
-          jenkins-job: jobs/doc
-          jenkins-job-params: '{"SCM":"${{ github.server_url }}/${{ github.repository }}.git", "REVISION":"${{ github.sha }}"}'
-          jenkins-wait-job: wait
-          jenkins-ssl-verify: false
-      - name: Copy Artifact
-        run: |
-          curl --insecure -u '${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}' https://ci.zeugwerk.at:8883/job/jobs/job/doc/${{ steps.trigger-jenkins.outputs.job_build_number }}/artifact/\*zip\*/archive.zip -o archive.zip
-          unzip archive.zip
-      - name: deploy
+          username: ${{ secrets.API_USERNAME }}
+          password: ${{ secrets.API_PASSWORD }}
+          filepath: "."
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
