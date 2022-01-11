@@ -5,6 +5,7 @@
 {attribute 'strict'}
 TYPE ControlInterfaceType :
 (
+  Undefined,
   Position, // Position-control: Full control over the entire kinematic state (Default)
   Velocity // Velocity-control: Ignores the current position, target position, and velocity limits
 );

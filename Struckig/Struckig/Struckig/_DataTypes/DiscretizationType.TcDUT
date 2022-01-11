@@ -5,8 +5,8 @@
 {attribute 'strict'}
 TYPE DiscretizationType :
 (
-  Continuous, // Every trajectory duration is allowed (Default)
-  Discrete // The trajectory duration must be a multiple of the control cycle
+  Continuous, /// Every trajectory synchronization duration is allowed (Default)
+  Discrete /// The trajectory synchronization duration must be a multiple of the control cycle
 );
 END_TYPE
 ]]></Declaration>
