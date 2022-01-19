@@ -21,11 +21,8 @@ VAR
   moving : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[otg();
+      <ST><![CDATA[otg(EnableAutoPropagate := TRUE);
 state := otg.State;
-otg.CurrentPosition := otg.NewPosition;
-otg.CurrentVelocity := otg.NewVelocity;
-otg.CurrentAcceleration := otg.NewAcceleration;
 moving := state = TrajectoryState.Busy;]]></ST>
     </Implementation>
     <Method Name="Waypoint" Id="{be7dccfa-366d-41aa-b1a4-150735bdd376}">

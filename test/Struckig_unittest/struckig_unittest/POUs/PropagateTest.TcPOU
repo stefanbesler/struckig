@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+  <POU Name="PropagateTest" Id="{7374ab56-ac7a-4638-bd0e-44ffdd482237}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PropagateTest EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_AutoPropagate();
+Test_ManualPropagate();
+Test_NoPropagate();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_AutoPropagate" Id="{154f5c93-a738-40d9-9255-b30310218a2d}">
+      <Declaration><![CDATA[METHOD Test_AutoPropagate
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001, 3) := (
+  
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000, 2000, 2000 ],
+    MaxAcceleration := [ 20000, 20000, 20000 ],
+    MaxJerk := [ 8000, 80000, 800000 ],
+    CurrentPosition := [ 0,0,0  ],
+    CurrentVelocity := [ 0,0,0 ],
+    CurrentAcceleration := [ 0,0,0 ],
+    TargetPosition := [ 1, 10, 100 ],
+    TargetVelocity := [ 0,0,0 ],
+    TargetAcceleration := [ 0,0,0 ]
+  );
+  
+  StartPosition, StartVelocity, StartAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
+  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_AutoPropagate');
+
+StartPosition := ruckig.CurrentPosition;
+StartVelocity := ruckig.CurrentVelocity;
+StartAcceleration := ruckig.CurrentAcceleration;
+
+ruckig();
+AssertTrue(0 = ruckig.CurrentPosition[0], Message:=''); 
+
+NewPosition := ruckig.NewPosition;
+NewVelocity := ruckig.NewVelocity;
+NewAcceleration := ruckig.NewAcceleration;
+
+ruckig(EnableAutoPropagate := TRUE);
+
+AssertTrue(0 <> ruckig.CurrentPosition[0], Message:=''); 
+AssertArrayEquals_LREAL(Expecteds:=NewPosition, Actuals:=ruckig.CurrentPosition, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=NewVelocity, Actuals:=ruckig.CurrentVelocity, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=NewAcceleration, Actuals:=ruckig.CurrentAcceleration, Delta:=1E-6, Message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_ManualPropagate" Id="{72c4587a-1b38-43e2-8e8a-c11eb6cd53b0}">
+      <Declaration><![CDATA[METHOD Test_ManualPropagate
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001, 3) := (
+  
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000, 2000, 2000 ],
+    MaxAcceleration := [ 20000, 20000, 20000 ],
+    MaxJerk := [ 8000, 80000, 800000 ],
+    CurrentPosition := [ 0,0,0  ],
+    CurrentVelocity := [ 0,0,0 ],
+    CurrentAcceleration := [ 0,0,0 ],
+    TargetPosition := [ 1, 10, 100 ],
+    TargetVelocity := [ 0,0,0 ],
+    TargetAcceleration := [ 0,0,0 ]
+  );
+  
+  StartPosition, StartVelocity, StartAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
+  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_ManualPropagate');
+
+StartPosition := ruckig.CurrentPosition;
+StartVelocity := ruckig.CurrentVelocity;
+StartAcceleration := ruckig.CurrentAcceleration;
+
+ruckig();
+AssertTrue(0 = ruckig.CurrentPosition[0], Message:=''); 
+
+NewPosition := ruckig.NewPosition;
+NewVelocity := ruckig.NewVelocity;
+NewAcceleration := ruckig.NewAcceleration;
+
+ruckig.PassOutputToInput();
+
+AssertTrue(0 <> ruckig.CurrentPosition[0], Message:=''); 
+AssertArrayEquals_LREAL(Expecteds:=NewPosition, Actuals:=ruckig.CurrentPosition, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=NewVelocity, Actuals:=ruckig.CurrentVelocity, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=NewAcceleration, Actuals:=ruckig.CurrentAcceleration, Delta:=1E-6, Message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_NoPropagate" Id="{4d2d51a2-7801-499d-b92a-22b9f1d3b883}">
+      <Declaration><![CDATA[METHOD Test_NoPropagate
+VAR_INST
+  ruckig : Struckig.Ruckig(0.001, 3) := (
+  
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 2000, 2000, 2000 ],
+    MaxAcceleration := [ 20000, 20000, 20000 ],
+    MaxJerk := [ 8000, 80000, 800000 ],
+    CurrentPosition := [ 0,0,0  ],
+    CurrentVelocity := [ 0,0,0 ],
+    CurrentAcceleration := [ 0,0,0 ],
+    TargetPosition := [ 1, 10, 100 ],
+    TargetVelocity := [ 0,0,0 ],
+    TargetAcceleration := [ 0,0,0 ]
+  );
+  
+  StartPosition, StartVelocity, StartAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
+  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_NoPropagate');
+
+StartPosition := ruckig.CurrentPosition;
+StartVelocity := ruckig.CurrentVelocity;
+StartAcceleration := ruckig.CurrentAcceleration;
+
+AssertArrayEquals_LREAL(Expecteds:=StartPosition, Actuals:=ruckig.CurrentPosition, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=StartVelocity, Actuals:=ruckig.CurrentVelocity, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=StartAcceleration, Actuals:=ruckig.CurrentAcceleration, Delta:=1E-6, Message:='');
+
+ruckig();
+
+AssertArrayEquals_LREAL(Expecteds:=StartPosition, Actuals:=ruckig.CurrentPosition, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=StartVelocity, Actuals:=ruckig.CurrentVelocity, Delta:=1E-6, Message:='');
+AssertArrayEquals_LREAL(Expecteds:=StartAcceleration, Actuals:=ruckig.CurrentAcceleration, Delta:=1E-6, Message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

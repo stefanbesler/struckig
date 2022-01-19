@@ -43,7 +43,7 @@ THEN
 END_IF
 
 // increment waypoints
-otg();
+otg(EnableAutoPropagate := TRUE);
 IF otg.State = TrajectoryState.Idle
 THEN
   Waypoint(currentWaypoint, px := otg.TargetPosition[0], py := otg.TargetPosition[1],
@@ -54,10 +54,7 @@ THEN
 							);
   currentWaypoint := SEL(currentWaypoint + 1 < waypoints, 0, currentWaypoint+1);                    
 END_IF
-
-otg.CurrentPosition := otg.NewPosition;
-otg.CurrentVelocity := otg.NewVelocity;
-otg.CurrentAcceleration := otg.NewAcceleration;]]></ST>
+]]></ST>
     </Implementation>
     <Method Name="LissajousCurve" Id="{41997914-621e-4b15-83c0-980183ab3918}">
       <Declaration><![CDATA[METHOD LissajousCurve

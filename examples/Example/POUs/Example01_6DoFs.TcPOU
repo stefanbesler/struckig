@@ -17,10 +17,8 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[otg();
-otg.CurrentPosition := otg.NewPosition;
-otg.CurrentVelocity := otg.NewVelocity;
-otg.CurrentAcceleration := otg.NewAcceleration;]]></ST>
+      <ST><![CDATA[otg(EnableAutoPropagate := TRUE);
+]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

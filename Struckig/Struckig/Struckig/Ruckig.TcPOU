@@ -15,6 +15,7 @@ VAR_INPUT
   MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Kinematic constraints
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Optional kindematic constraints
   MinDuration : LREAL := 0; // Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
+  EnableAutoPropagate : BOOL; /// If set to true, PassOutputToInput is automatically called internally after calling the function block's body
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
@@ -96,6 +97,11 @@ _currentAcceleration := NewAcceleration;
 
 IF (CurrentTime > Duration) THEN
   State := TrajectoryState.Idle;
+END_IF
+
+IF EnableAutoPropagate
+THEN
+  PassOutputToInput();
 END_IF]]></ST>
     </Implementation>
     <Method Name="AtTime" Id="{bf1093a4-cb3c-415c-bc2d-e44ec3ea9553}">
@@ -586,6 +592,24 @@ END_FOR
 IsPhaseSynchronizable := TRUE;
 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="PassOutputToInput" Id="{94fb36df-eba6-444f-9aba-af59065260ef}">
+      <Declaration><![CDATA[METHOD PassOutputToInput
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CurrentPosition := NewPosition;
+CurrentVelocity := NewVelocity;
+CurrentAcceleration := NewAcceleration;
+
+// Remove first intermediate waypoint if section did change
+// not supported in Struckig, this is a Ruckig Pro Feature
+//IF HasSectionChanged AND_THEN IntermediatePositionCount > 0
+//THEN
+//  IntermediatePositionIndex := IntermediatePositionIndex + 1;
+//END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Synchronize" Id="{190d7ca7-bc21-4bc2-982d-9be9e1cca821}">

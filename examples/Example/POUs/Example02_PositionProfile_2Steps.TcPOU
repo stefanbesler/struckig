@@ -22,7 +22,7 @@ END_VAR
       <ST><![CDATA[IF run
 THEN  
   // switch to second profile
-  otg();
+  otg(EnableAutoPropagate := TRUE);
   IF otg.State = TrajectoryState.Idle AND_THEN NOT switched
   THEN
     switched := TRUE;
@@ -31,10 +31,6 @@ THEN
 	otg.TargetVelocity[0] :=  0.0;
 	otg.TargetAcceleration[0] :=  0.0;
   END_IF
-  
-  otg.CurrentPosition := otg.NewPosition;
-  otg.CurrentVelocity := otg.NewVelocity;
-  otg.CurrentAcceleration := otg.NewAcceleration;
 END_IF]]></ST>
     </Implementation>
   </POU>

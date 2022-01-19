@@ -13,6 +13,7 @@ VAR
   targetPosAccTest : TargetPosAccTest;
   targetPosVelTest : TargetPosVelTest;
   targetPosVelAccTest : TargetPosVelAccTest;
+  propagateTest : PropagateTest;
   // generatedTest : GeneratedTest;
 END_VAR
 ]]></Declaration>

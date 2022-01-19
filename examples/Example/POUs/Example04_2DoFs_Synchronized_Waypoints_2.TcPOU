@@ -42,7 +42,7 @@ THEN
 END_IF
 
 // increment waypoints
-otg();
+otg(EnableAutoPropagate := TRUE);
 IF otg.State = TrajectoryState.Idle
 THEN
   Waypoint(currentWaypoint, px := otg.TargetPosition[0], py := otg.TargetPosition[1],
@@ -51,12 +51,9 @@ THEN
                             ax := dump, //otg.Input.TargetAcceleration[0], 
                             ay := dump //otg.Input.TargetAcceleration[1]);
 							);
-  currentWaypoint := SEL(currentWaypoint + 1 < waypoints, 0, currentWaypoint+1);                    
+  currentWaypoint := SEL(currentWaypoint + 1 < waypoints, 0, currentWaypoint+1);
 END_IF
-
-otg.CurrentPosition := otg.NewPosition;
-otg.CurrentVelocity := otg.NewVelocity;
-otg.CurrentAcceleration := otg.NewAcceleration;]]></ST>
+]]></ST>
     </Implementation>
     <Method Name="Waypoint" Id="{d23aed48-98fa-4e0a-8baa-7c4cbff31b88}">
       <Declaration><![CDATA[METHOD Waypoint
