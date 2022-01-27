@@ -68,7 +68,8 @@ END_VAR
       <Implementation>
         <ST><![CDATA[Profile.Direction := SEL((jMax > 0), ProfileDirection.Down, ProfileDirection.Up);
 validProfileCounter := validProfileCounter + 1;
-validProfiles[validProfileCounter] := Profile;]]></ST>
+validProfiles[validProfileCounter] := Profile;
+validProfiles[validProfileCounter].Direction := SEL(jMax > 0, ProfileDirection.Down, ProfileDirection.Up);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CalculateBlock" Id="{50e177a8-dca6-48ec-aabe-f9c22fb4f02a}">

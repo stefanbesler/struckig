@@ -3,12 +3,19 @@
   <POU Name="Roots" Id="{551d5993-d7b8-4037-a2a7-4cae14a4c1a9}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL Roots
 VAR
+  a2, aover3, q, r2, q3, aa, t : LREAL;
   a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w, h : LREAL;
   discriminant : LREAL;
   e0, e1, q1, q2, p1, p2, dd, sqrtD  : LREAL;
   a3, b3, c3 : LREAL;
   x3 : ARRAY[0..2] OF LREAL;
   iZeroes : INT;  
+  deriv : ARRAY[0 .. 10] OF LREAL;
+  fl, fh, temp : LREAL;
+  dxold, dx, f,df : LREAL;
+  j : INT;
+  xn : LREAL;
+  iterations : BYTE;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -21,13 +28,10 @@ VAR_INPUT
   coeffsCount : BYTE;
   out : POINTER TO LREAL;
 END_VAR
-VAR
-  i : BYTE;
-END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR i:=0 TO coeffsCount DO
-  out[i] := (coeffsCount - i) * coeffs[i];
+        <ST><![CDATA[FOR j:=0 TO coeffsCount DO
+  out[j] := (coeffsCount - j) * coeffs[j];
 END_FOR
 ]]></ST>
       </Implementation>
@@ -38,25 +42,21 @@ VAR_INPUT
   polynom : POINTER TO LREAL;
   degree : INT;
   x : LREAL;
-END_VAR
-VAR
-  i : INT;
-  xn : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF degree > 0 THEN
   IF (ABS(x) < Constants.DoubleEpsilon) THEN
       PolyEval := polynom[degree];
   ELSIF (x = 1.0) THEN
-    FOR i:= degree TO 0 BY -1
+    FOR j:= degree TO 0 BY -1
     DO
-      PolyEval := PolyEval + polynom[i];
+      PolyEval := PolyEval + polynom[j];
     END_FOR
   ELSE
     xn := 1.0;
-    FOR i:= degree TO 0 BY -1 
+    FOR j:= degree TO 0 BY -1 
     DO
-      PolyEval := PolyEval + polynom[i] * xn;
+      PolyEval := PolyEval + polynom[j] * xn;
       xn := xn * x;
     END_FOR
   END_IF
@@ -90,14 +90,7 @@ VAR_INPUT
   p : POINTER TO LREAL;
   degree : BYTE;  
   l, h : LREAL;
-END_VAR
-VAR
-  deriv : ARRAY[0 .. 10] OF LREAL; // todo: put parameter in parameterlist
-  fl, fh, temp : LREAL;
-  dxold, dx, f,df : LREAL;
-  j : BYTE := 127;
-END_VAR
-]]></Declaration>
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[PolyDeri(p, degree, out:=ADR(deriv));
 fl := PolyEval(p, degree, l);
@@ -120,15 +113,15 @@ THEN
   h := temp;
 END_IF
 
-ShrinkInterval := 0.5 * (l + h);
+ShrinkInterval := (l + h) / 2;
 dxold := ABS(h - l);
 dx := dxold;
 f := PolyEval(p, degree, ShrinkInterval);
 df := PolyEval(ADR(deriv), degree-1, ShrinkInterval);
-FOR j:=0 TO ParameterList.MaxIterations DO
+FOR iterations:=0 TO ParameterList.MaxIterations DO
   IF ((((ShrinkInterval - h) * df - f) * ((ShrinkInterval - l) * df - f) > 0.0) OR_ELSE (ABS(2 * f) > ABS(dxold * df))) THEN
     dxold := dx;
-    dx := 0.5 * (h - l);
+    dx := (h - l) / 2;
     ShrinkInterval := l + dx;
     IF (l = ShrinkInterval) THEN
       RETURN;
@@ -229,11 +222,11 @@ ELSE
   inva := 1.0 / a;
   invaa := inva * inva;
   bb := b * b;
-  bover3a := b * (1.0 / 3.0) * inva;
-  p := (3.0 * a * c - bb) * (1.0 / 3.0) * invaa;
-  halfq := (2 * bb * b - 9.0 * a * b * c + 27.0 * a * a * d) * (0.5 / 27.0) * invaa * inva;
-  yy := p * p * p / 27.0 + halfq * halfq;
-  
+  bover3a := b * inva / 3;
+  p := (a * c - bb / 3) * invaa;
+  halfq := (2 * bb * b - 9 * a * b * c + 27 * a * a * d) * (0.5 / 27) * invaa * inva;
+  yy := p * p * p / 27 + halfq * halfq;  
+    
   IF (yy > Constants.DoubleEpsilon) THEN
     // Sqrt is positive: one real solution}
     y := SQRT(yy);
@@ -242,7 +235,7 @@ ELSE
     www := SEL(ABS(uuu) > ABS(vvv), vvv, uuu);
     w := cbrt(www);
     
-    h := (w - p / (3.0 * w) - bover3a);
+    h := (w - p / (3 * w) - bover3a);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -265,13 +258,13 @@ ELSE
     END_IF
     
     // Calculate cube root
-    theta := theta / 3.0;
-    rr := cbrt(rr);
+    theta := theta / 3;
+    rr := 2 * cbrt(rr);
     // Convert to complex coordinate
     ux := COS(theta) * rr;
     uyi := SIN(theta) * rr;
     // First solution
-    h := (ux + ux - bover3a);
+    h := (ux - bover3a);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -279,7 +272,7 @@ ELSE
 		END_IF
     
     // Second solution, rotate +120 degrees
-    h := (2 * (ux * Constants.Cos120 - uyi * Constants.Sin120) - bover3a);
+    h := ux * Constants.Cos120 - uyi * Constants.Sin120 - bover3a;
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -287,7 +280,7 @@ ELSE
 		END_IF
     
     // Third solution, rotate -120 degrees
-    h := (2 * (ux * Constants.Cos120 + uyi * Constants.Sin120) - bover3a);
+    h := ux * Constants.Cos120 + uyi * Constants.Sin120 - bover3a;
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -296,9 +289,9 @@ ELSE
   ELSE
     // Sqrt is zero: two real solutions
     www := -halfq;
-    w := cbrt(www);
+    w := 2 * cbrt(www);
     // First solution
-    h := (w + w - bover3a);
+    h := (w - bover3a);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -306,7 +299,7 @@ ELSE
 		END_IF
     
     // Second solution, rotate +120 degrees
-    h := (2 * w * Constants.Cos120 - bover3a);
+    h := (w * Constants.Cos120 - bover3a);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -339,8 +332,8 @@ e0 := cbrt(c * c);
 IF (ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilonSqrt AND_THEN ABS(c) < Constants.DoubleEpsilonSqrt AND_THEN ABS(d) < Constants.DoubleEpsilon) AND_THEN
    ABS(e0) > Constants.DoubleEpsilon
 THEN
-  e1 := (b * b + 12 * d)/(9*e0);
-  q1 := -(4 * b)/3 - e0 - e1;
+  e1 := (b * b + 12 * d)/(9 * e0);
+  q1 := -(4 * b) / 3 - e0 - e1;
   p1 := SQRT(-q1 - 2 * b);
   q2 := 2 * c / p1;
   
@@ -349,14 +342,14 @@ THEN
   THEN  
     sqrtD := SQRT(dd);
     
-    h := ((p1 + sqrtD) * 0.5);
+    h := ((p1 + sqrtD) / 2);
     IF h >= 0
     THEN
       roots[0] := h;
       rootCount := 0;
 		END_IF
     
-    h := ((p1 - sqrtD) * 0.5);
+    h := ((p1 - sqrtD) / 2);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -369,14 +362,14 @@ THEN
   THEN  
     sqrtD := SQRT(dd);
     
-    h := ((-p1 + sqrtD) * 0.5);
+    h := ((-p1 + sqrtD) / 2);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
       rootCount := rootCount + 1;
 		END_IF
     
-    h := ((-p1 - sqrtD) * 0.5);
+    h := ((-p1 - sqrtD) / 2);
     IF h >= 0
     THEN
       roots[rootCount+1] := h;
@@ -442,20 +435,20 @@ END_IF
 // h1 + h2 = y AND_THEN h1*h2 = d  <=>  h^2 - y*h + d = 0    (h === q)
 dd := y * y - 4 * d;
 IF (ABS(dd) < Constants.DoubleEpsilon) THEN
-  q1 := q2 := y * 0.5;
+  q1 := q2 := y / 2;
   // g1 + g2 = a AND_THEN g1 + g2 = b - y   <=>   g^2 - a*g + b - y = 0    (p === g)}
-  dd := a * a - 4.0 * (b - y);
+  dd := a * a - 4 * (b - y);
   IF (ABS(dd) < Constants.DoubleEpsilon) THEN
-    p1 := p2 := a * 0.5;
+    p1 := p2 := a / 2;
   ELSE
     sqrtD := SQRT(dd);
-    p1 := (a + sqrtD) * 0.5;
-    p2 := (a - sqrtD) * 0.5;
+    p1 := (a + sqrtD) / 2;
+    p2 := (a - sqrtD) / 2;
   END_IF
 ELSE
   sqrtD := SQRT(dd);
-  q1 := (y + sqrtD) * 0.5;
-  q2 := (y - sqrtD) * 0.5;
+  q1 := (y + sqrtD) / 2;
+  q2 := (y - sqrtD) / 2;
   // g1 + g2 = a AND_THEN g1*h2 + g2*h1 = c   ( AND_THEN g === p )  Krammer
   p1 := (a * q1 - c) / (q1 - q2);
   p2 := (c - a * q2) / (q1 - q2);
@@ -465,7 +458,7 @@ END_IF
 dd := p1 * p1 - 4 * q1;
 IF (ABS(dd) < Constants.Epsilon16) THEN
   
-  h:= (-p1 * 0.5);
+  h:= (-p1 / 2);
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
@@ -474,14 +467,14 @@ IF (ABS(dd) < Constants.Epsilon16) THEN
   
 ELSIF (dd > 0.0)  THEN
   sqrtD := SQRT(dd);
-  h := ((-p1 + sqrtD) * 0.5);
+  h := ((-p1 + sqrtD) / 2);
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
     rootCount := rootCount + 1;
   END_IF
     
-  h := ((-p1 - sqrtD) * 0.5);
+  h := ((-p1 - sqrtD) / 2);
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
@@ -500,14 +493,14 @@ IF (ABS(dd) < Constants.Epsilon16) THEN
   END_IF  
 ELSIF (dd > 0.0) THEN
   sqrtD := SQRT(dd);
-  h := ((-p2 + sqrtD) * 0.5); 
+  h := ((-p2 + sqrtD) / 2); 
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
     rootCount := rootCount + 1;
   END_IF
   
-  h := ((-p2 - sqrtD) * 0.5);
+  h := ((-p2 - sqrtD) / 2);
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
@@ -524,14 +517,12 @@ METHOD SolveResolvent : INT
 VAR_INPUT
   x : POINTER TO LREAL;
   a,b,c : LREAL;
-END_VAR
-VAR
-  a2, q, rr, r2, q3, aa, bb, t : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[a2 := a * a;
-q := (a2 - 3.0 * b) / 9.0;
-rr := (a * (2 * a2 - 9.0 * b) + 27.0 * c) / 54.0;
+        <ST><![CDATA[aover3 := a / 3;
+a2 := a * a;
+q := (a2 - 3 * b) / 9;
+rr := a * (2 * a2 - 9 * b) / 54 + c / 2;
 r2 := rr * rr;
 q3 := q * q * q;
 
@@ -545,12 +536,13 @@ IF (r2 < q3) THEN
       t := 1.0;
   END_IF
   
-  t := ACOS(t);
-  a := a / 3.0;
   q := -2 * SQRT(q);
-  x[0] := q * COS(t / 3.0) - a;
-  x[1] := q * COS((t + Constants.Pi * 2) / 3.0) - a;
-  x[2] := q * COS((t - Constants.Pi * 2) / 3.0) - a;
+  theta := ACOS(t) / 3;
+  ux := COS(theta) * q;
+  uyi := SIN(theta) * q;
+  x[0] := ux - aover3;
+  x[1] := ux * Constants.Cos120 - uyi * Constants.Sin120 - aover3;
+  x[2] := ux * Constants.Cos120 + uyi * Constants.Sin120 - aover3;
   SolveResolvent := 3;
   RETURN;
 
@@ -561,10 +553,9 @@ ELSE
   END_IF
   bb := SEL(0.0 = aa, q / aa, 0.0);
   
-  a := a / 3.0;
-  x[0] := (aa + bb) - a;
-  x[1] := -0.5 * (aa + bb) - a;
-  x[2] := 0.5 * SQRT(3.0) * (aa - bb);
+  x[0] := (aa + bb) - aover3;
+  x[1] := -(aa + bb) / 2 - aover3;
+  x[2] := SQRT(3) * (aa - bb) / 2;
   IF (ABS(x[2]) < Constants.DoubleEpsilon) THEN
     x[2] := x[1];
     SolveResolvent := 2;
