@@ -60,14 +60,13 @@ END_IF]]></ST>
     </Method>
     <Method Name="AddProfile" Id="{443ac9a1-c2c8-4422-873c-d80f090e8e87}">
       <Declaration><![CDATA[METHOD AddProfile
-VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+VAR_IN_OUT CONSTANT
+  Profile : ProfileDesc;
   jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Profile.Direction := SEL((jMax > 0), ProfileDirection.Down, ProfileDirection.Up);
-validProfileCounter := validProfileCounter + 1;
+        <ST><![CDATA[validProfileCounter := validProfileCounter + 1;
 validProfiles[validProfileCounter] := Profile;
 validProfiles[validProfileCounter].Direction := SEL(jMax > 0, ProfileDirection.Down, ProfileDirection.Up);]]></ST>
       </Implementation>
