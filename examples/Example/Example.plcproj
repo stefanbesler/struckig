@@ -35,6 +35,9 @@
     <Compile Include="POUs\Example05_1DoFs_MinDuration.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\Example06_PhaseSynchronization.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />

@@ -19,6 +19,9 @@
     <PouCall>
       <Name>Example05_1DoFs_MinDuration</Name>
     </PouCall>
+    <PouCall>
+      <Name>Example06_PhaseSynchronization</Name>
+    </PouCall>
     <TaskFBGuid>{b38c5c12-9f71-4574-9b93-4808a2de6770}</TaskFBGuid>
     <Fb_init>{ea737a3f-6d0f-4a32-b129-c0f41697a9e1}</Fb_init>
     <Fb_exit>{a3b5c4da-f29a-454e-802f-011d2c15b6d2}</Fb_exit>

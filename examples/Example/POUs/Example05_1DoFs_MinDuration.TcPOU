@@ -16,43 +16,9 @@ VAR
     TargetVelocity := [ 0.0, 0.0, 0.0 ],
     TargetAcceleration := [ 0.0, 0.0, 0.0 ]
   );
-
-  state : TrajectoryState;
-  moving : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[otg(EnableAutoPropagate := TRUE);
-state := otg.State;
-moving := state = TrajectoryState.Busy;]]></ST>
+      <ST><![CDATA[otg(EnableAutoPropagate := TRUE);]]></ST>
     </Implementation>
-    <Method Name="Waypoint" Id="{be7dccfa-366d-41aa-b1a4-150735bdd376}">
-      <Declaration><![CDATA[METHOD Waypoint
-VAR_INPUT
-  w : INT;
-END_VAR
-VAR_IN_OUT
-  px, py : LREAL;
-  vx, vy : LREAL;
-  ax, ay : LREAL;
-END_VAR
-VAR
-  offsetx : LREAL;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[offsetx := 10 * TRUNC(ABS(w-1)/2);
-w := w MOD 2;
-CASE w
-OF
-  0:
-    px := offsetx; py := 0;
-    vx := 0; vy := 0;
-    ax := 0; ay := 0;
-  1:
-    px := 100 + offsetx; py := 10;
-    vx := 0; vy := 0;
-    ax := 0; ay := 0;
-END_CASE]]></ST>
-      </Implementation>
-    </Method>
   </POU>
 </TcPlcObject>

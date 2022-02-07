@@ -6,13 +6,15 @@ VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..2] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
-  rtime, rvel, racc : LREAL;
+  rtime, rvel, racc : LREAL; 
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_AtTime();
 Test_FirstStateAtTime();
 Test_IndependentMinDurations();
 Test_InvalidInput();
+Test_PerDofSettings();
+Test_PhaseSynchronization();
 Test_PositionExtrema();]]></ST>
     </Implementation>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
@@ -216,7 +218,6 @@ TEST_FINISHED();]]></ST>
       <Declaration><![CDATA[METHOD Test_PerDofSettings
 VAR_INST
   otg : Struckig.Ruckig(0.005, 3) := (
-  
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
     CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
     CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
@@ -283,12 +284,11 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.5;
-values[0] := -1.5643167673;
-values[0] := 1.0;
+values[1] := -1.5643167673;
+values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
-
 
 otg.ControlInterface := ControlInterfaceType.Position;
 otg.PerDofControlInterface[0] := ControlInterfaceType.Undefined;
@@ -296,16 +296,85 @@ otg.PerDofControlInterface[1] := ControlInterfaceType.Undefined;
 otg.PerDofControlInterface[2] := ControlInterfaceType.Undefined;
 otg.PerDofSynchronization[0] := SynchronizationType.None;
 otg.PerDofSynchronization[1] := SynchronizationType.TimeSync;
-otg.PerDofSynchronization[2] := SynchronizationType.None;
+otg.PerDofSynchronization[2] := SynchronizationType.TimeSync;
 otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.7482143874;
-values[0] := -2.6871268303;
-values[0] := 1.0;
+values[1] := -2.6871268303;
+values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PhaseSynchronization" Id="{df39aa3d-ca70-4d91-9685-7c579cd985d7}">
+      <Declaration><![CDATA[METHOD Test_PhaseSynchronization
+VAR_INST
+  otg : Struckig.Ruckig(0.005, 3) := (
+    Synchronization := SynchronizationType.Phase,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
+  ); 
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+  busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
+  NewSection : INT;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  positionExtrema : Struckig.PositionExtremaDesc;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('PhaseSynchronization');
+
+otg();
+result := otg.State;
+AssertEquals(busy, result, Message := '');
+AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := ''); 
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+values[0] := 0.0833333333;
+values[1] := -2.0833333333;
+values[2] := 0.1666666667;
+AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
+
+
+
+
+otg.CurrentPosition[0] := 0.0;
+otg.CurrentPosition[1] := -2.0;
+otg.CurrentPosition[2] := 0.0;
+
+otg.TargetPosition[0] := 10.0;
+otg.TargetPosition[1] := -3.0;
+otg.TargetPosition[2] := 2.0;
+
+otg.MaxVelocity[0] := 10.0;
+otg.MaxVelocity[1] := 2.0;
+otg.MaxVelocity[2] := 1.0;
+
+otg.MaxAcceleration[0] := 10.0;
+otg.MaxAcceleration[1] := 2.0;
+otg.MaxAcceleration[2] := 1.0;
+
+otg.MaxJerk[0] := 10.0;
+otg.MaxJerk[1] := 2.0;
+otg.MaxJerk[2] := 1.0;
+
+otg();
+result := otg.State;
+AssertEquals(busy, result, Message := '');
+AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := ''); 
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+values[0] := 0.8333333333;
+values[1] := -2.0833333333;
+values[2] := 0.1666666667;
+AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -314,19 +383,14 @@ TEST_FINISHED();]]></ST>
       <Declaration><![CDATA[METHOD Test_PositionExtrema
 VAR_INST
   otg : Struckig.Ruckig(0.005, 3) := (
-  
     Synchronization := SynchronizationType.TimeSync,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
-    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
-    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
     TargetPosition :=      [ 1.0, -3.0, 2.0 ],
     TargetVelocity :=      [ 0.0, 0.3, 0.0 ],
-    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
     MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
     MaxJerk :=             [ 1.0, 1.0, 1.0 ]
-  );
-    
+  );     
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
