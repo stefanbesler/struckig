@@ -128,7 +128,7 @@ END_VAR]]></Declaration>
   // Keep constant acceleration
   new_section := 1;
   FOR dof:=0 TO _dofsEnd DO
-    _profiles[0].Integrate(t - Duration, _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    _profiles[0].Integrate(t - (_profiles[dof].t_brake + _profiles[dof].t_sum[6]), _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
   END_FOR
   RETURN;
 END_IF
@@ -202,12 +202,11 @@ FOR dof:=0 TO _dofsEnd
 DO
   p REF=_profiles[dof];
   
-  p.pf := CurrentPosition[dof];
-  p.vf := CurrentVelocity[dof];
-  p.af := CurrentAcceleration[dof];
-  
   IF NOT Enabled[dof]
   THEN
+    p.pf := CurrentPosition[dof];
+    p.vf := CurrentVelocity[dof];
+    p.af := CurrentAcceleration[dof];  
     p.t_sum[6] := 0.0;
     CONTINUE;
 	END_IF

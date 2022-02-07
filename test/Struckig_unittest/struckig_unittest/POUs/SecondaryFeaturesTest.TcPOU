@@ -15,7 +15,8 @@ Test_IndependentMinDurations();
 Test_InvalidInput();
 Test_PerDofSettings();
 Test_PhaseSynchronization();
-Test_PositionExtrema();]]></ST>
+Test_PositionExtrema();
+Test_EnabledDof();]]></ST>
     </Implementation>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
       <Declaration><![CDATA[METHOD Test_AtTime
@@ -68,6 +69,49 @@ values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-9, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_EnabledDof" Id="{214ba0d0-4f01-4d0c-830d-5b3789ab7356}">
+      <Declaration><![CDATA[METHOD Test_EnabledDof
+VAR_INST
+  otg : Struckig.Ruckig(0.005, 3) := (
+    Enabled := [TRUE, FALSE, FALSE],
+    Synchronization := SynchronizationType.TimeSync,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.1, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, -0.2 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
+  );
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+  busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewSection : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('EnabledDof');
+
+otg(EnableAutoPropagate := FALSE);
+result := otg.State;
+AssertEquals(busy, result, Message := '');
+AssertEquals_LREAL(otg.Duration, 3.1748021039, 1E-6, Message := ''); 
+
+otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-6, '');
+AssertArrayEquals_LREAL(otg.CurrentVelocity, NewVelocity, 1E-6, '');
+AssertArrayEquals_LREAL(otg.CurrentAcceleration, NewAcceleration, 1E-6, '');
+
+otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+values[0] := otg.TargetPosition[0];
+values[1] := -1.6825197896;
+values[2] := -1.0079368399;
+AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
