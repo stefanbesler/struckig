@@ -5,22 +5,22 @@
 VAR_INPUT
   Dofs : INT;
   Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
-  ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; // The default position interface controls the full kinematic state.
-  Synchronization : SynchronizationType := SynchronizationType.TimeSync; // Synchronization behavior of multiple DoFs
-  PerDofControlInterface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; /// Per-DoF control interface (overwrites global ControlInterface)
-  PerDofSynchronization: ARRAY[0..ParameterList.MaxDoFs] OF SynchronizationType; /// Per-DoF synchronization (overwrites global Synchronization)
-  Discretization : DiscretizationType; // Whether the duration should be a discrete multiple of the control cycle (off by default)
-  CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
-  TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Target state
-  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Kinematic constraints
-  MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Optional kindematic constraints
-  MinDuration : LREAL := 0; // Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
-  EnableAutoPropagate : BOOL; /// If set to true, PassOutputToInput is automatically called internally after calling the function block's body
+  ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; //< The default position interface controls the full kinematic state.
+  Synchronization : SynchronizationType := SynchronizationType.TimeSync; //< Synchronization behavior of multiple DoFs
+  PerDofControlInterface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface (overwrites global ControlInterface)
+  PerDofSynchronization: ARRAY[0..ParameterList.MaxDoFs] OF SynchronizationType; //< Per-DoF synchronization (overwrites global Synchronization)
+  Discretization : DiscretizationType; //< Whether the duration should be a discrete multiple of the control cycle (off by default)
+  CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
+  TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
+  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
+  MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
+  EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  NewCalculation : BOOL; /// Was a new trajectory calculation performed in the last cycle?
-  NewSection : INT; /// Index of the current section between two intermediate positions
+  NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
+  NewSection : INT; //< Index of the current section between two intermediate positions
   Duration : LREAL;
   CurrentTime : LREAL;
   State : TrajectoryState;  
@@ -33,20 +33,24 @@ VAR
   _velocityStep1 : VelocityStep1;
   _velocityStep2 : VelocityStep2;  
   
+  _inp_min_velocity, _inp_min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _inp_per_dof_control_interface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface
+  _inp_per_dof_synchronization : ARRAY[0..ParameterList.MaxDoFs] OF SynchronizationType; //< Per-DoF synchronization
+  
   _dofs, _dofsEnd : INT;
   _enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
-  _controlInterface : ControlInterfaceType := ControlInterfaceType.Position; // The default position interface controls the full kinematic state.
-  _synchronization : SynchronizationType := SynchronizationType.TimeSync; // Synchronization behavior of multiple DoFs
-  _perDofControlInterface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; /// Per-DoF control interface
-  _perDofSynchronization: ARRAY[0..ParameterList.MaxDoFs] OF SynchronizationType; /// Per-DoF synchronization
-  _discretization : DiscretizationType; // Whether the duration should be a discrete multiple of the control cycle (off by default)
-  _currentPosition, _currentVelocity, _currentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state
-  _targetPosition, _targetVelocity, _targetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Target state
-  _maxVelocity, _maxAcceleration, _maxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Kinematic constraints
-  _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Optional kindematic constraints
-  _minDuration : LREAL := 0; // Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
+  _controlInterface : ControlInterfaceType := ControlInterfaceType.Position; //< The default position interface controls the full kinematic state.
+  _synchronization : SynchronizationType := SynchronizationType.TimeSync; //< Synchronization behavior of multiple DoFs
+  _perDofControlInterface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface
+  _perDofSynchronization: ARRAY[0..ParameterList.MaxDoFs] OF SynchronizationType; //< Per-DoF synchronization
+  _discretization : DiscretizationType; //< Whether the duration should be a discrete multiple of the control cycle (off by default)
+  _currentPosition, _currentVelocity, _currentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
+  _targetPosition, _targetVelocity, _targetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
+  _maxVelocity, _maxAcceleration, _maxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
+  _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   
-  _dt : LREAL; // Time step between updates (cycle time) in [s]
+  _dt : LREAL; //< Time step between updates (cycle time) in [s]
   _errorId : INT;
 END_VAR]]></Declaration>
     <Implementation>
