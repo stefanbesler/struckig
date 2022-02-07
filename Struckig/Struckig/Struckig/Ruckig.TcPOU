@@ -93,7 +93,7 @@ THEN
 END_IF
 
 CurrentTime := CurrentTime + _dt;
-AtTime(CurrentTime, Dofs, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+AtTime(CurrentTime, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 
 _currentPosition := NewPosition;
 _currentVelocity := NewVelocity;
@@ -112,7 +112,6 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD AtTime
 VAR_INPUT
   t : LREAL;
-  dofs : INT;
   new_position : POINTER TO LREAL;
   new_velocity : POINTER TO LREAL;
   new_acceleration : POINTER TO LREAL;

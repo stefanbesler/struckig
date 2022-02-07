@@ -51,17 +51,17 @@ otg();
 AssertEquals_INT(Expected := Struckig.TrajectoryState.busy, Actual := otg.State, Message := '');
 AssertEquals_LREAL(4.0, otg.Duration, 1E-9, Message:='');
 
-otg.AtTime(0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-9, message:='p(0) should be CurrentPosition');
 AssertArrayEquals_LREAL(otg.CurrentVelocity, NewVelocity, 1E-9, message:='v(0) should be CurrentVelocity');
 AssertArrayEquals_LREAL(otg.CurrentAcceleration, NewAcceleration, 1E-9, message:='a(0) should be CurrentAcceleration');
 
-otg.AtTime(otg.Duration, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 AssertArrayEquals_LREAL(otg.TargetPosition, NewPosition, 1E-9, message:='p(0) should be TargetPosition');
 AssertArrayEquals_LREAL(otg.TargetVelocity, NewVelocity, 1E-9, message:='v(0) should be TargetVelocity');
 AssertArrayEquals_LREAL(otg.TargetAcceleration, NewAcceleration, 1E-9, message:='a(0) should be TargetAcceleration');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
@@ -243,10 +243,10 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.5;
-values[0] := -2.6871268303;
-values[0] :=  1.0;
+values[1] := -2.6871268303;
+values[2] :=  1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
 
 
@@ -255,10 +255,10 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 1.095445115, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.0;
-values[0] := -1.8641718534;
-values[0] :=  0.0;
+values[1] := -1.8641718534;
+values[2] :=  0.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
 
 
@@ -269,10 +269,10 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, 3, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
 values[0] := 0.5;
-values[0] := -1.8528486838;
-values[0] := 1.0;
+values[1] := -1.8528486838;
+values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
 
 
