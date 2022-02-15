@@ -26,35 +26,11 @@
 </p>
 
 This repository ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online-Trajectory-Generation to TwinCAT 3.
-I am developing and maintaining this port in my spare time and have no interest in making this a commercial product. So, only the Community Version is ported
-and pro features are not available.
-Anyway, if you want to motivate, donate a coffee and star this repository.
-
-<p align="center">
-  <a href="https://www.paypal.com/donate?hosted_button_id=PWRUSMDGJNQ2A"><img alt="Donate" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" /></a>
-</p>
+Only the Community Version of Ruckig is ported and pro features are not available. Struckig itself is dual licenced, you can use the source code provided here accordingly to GPLv3. If you want to use this commercially and not disclose your own source code, Struckig is also available with a custom licence. In the latter case, contact [me](mailto:stefan@besler.me).
 
 # Porting progress
 
 The original project, `ruckig` is a submodule of this repository. The commit-hash reflects the commits that are ported already - I try to keep up with changes that are done in `ruckig`.
-
-- [x] Crude initial port of source code
-- [x] Check source code for obvious copy & paste errors that may have occured during the port
-- [x] Manual testing
-- [x] Initial commit
-- [x] Implement unit tests with TcUnit-Runner or use TcUnit-Wrapper to put aside this dependency
-    - [x] KnownExamples (otg-test.cpp)
-    - [x] SecondaryFeatures (otg-test.cpp)
-    - [x] Randomized trajectories (~otg-test.cpp) implemented python script that generates radomized Unittests to compare the cpp implementaion with the port
-    - [x] otg-benchmark.cpp - implement test to check for regressions and test overall performance on codesys compiler 
-    - [x] run unit tests to find more issues that sneaked in while porting
-- [x] The original code is rather functional, which TwinCAT ST doesn't benefit from a lot, rewrite to OOP where needed
-- [x] Refactor (coding conventions)
-- [x] Code cleanup and optimize performance, some parts have to be change to be faster in twincat, we do not have the power of a cpp compiler
-- [x] CI - using [Zeugwerk](http://zeugwerk.at) tool chain paired with GitHub actions for continuous integration
-- [x] Examples
-  - [x] Position.cpp
-- [ ] Documentation - gh-pages generated from CI
 
 # Unittests
 
