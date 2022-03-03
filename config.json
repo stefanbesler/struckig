@@ -1,13 +1,13 @@
 {
-  "name": "Struckig/Struckig.sln",
-  "repositories": [],
-  "plcprojects": [
+  "fileversion": 1,
+  "solution": "Struckig/Struckig.sln",
+  "plcs": [
     {
+      "version": "0.4.0.0",      
       "name": "Struckig",
-      "version": "0.4.0.0",
       "type": "Library",
-      "zframework": {},
-      "system_references": {
+      "frameworks": {},
+      "references": {
         "TC3.1.4024.17": [
           "Tc2_System=3.4.24.0"
         ],
@@ -15,6 +15,7 @@
           "Tc2_System=3.4.24.0"
         ]
       },
+      "repositories": [],
       "bindings": {}
     }
   ]
