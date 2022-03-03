@@ -24,8 +24,8 @@ VAR_INST
   left_duration,right_duration : LREAL;   
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.t_brake;
-right_duration := Right.t_sum[6] + Right.t_brake;
+        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.brake.Duration;
+right_duration := Right.t_sum[6] + Right.brake.Duration;
 IF (left_duration < right_duration)
 THEN
   interval.Left := left_duration;
@@ -67,7 +67,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[IF (ValidProfileCount = 0) OR_ELSE (ValidProfileCount = 1 AND_THEN ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[1].t_sum[6]) < 8*Constants.Epsilon)
 THEN
   block.Pmin := ValidProfiles[0];
-  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
   CalculateBlock := TRUE;
   RETURN;
 // Only happens due to numerical issues
@@ -92,23 +92,23 @@ THEN
   RETURN;
 END_IF
 
-// Find index of fastest Profilefile
+// Find index of fastest Profile
 Tmin := Constants.Infinity;
 FOR i:=0 TO ValidProfileCount
 DO
   FOR j:=0 TO ValidProfileCount
   DO
-    IF ValidProfiles[i].t_sum[6] + ValidProfiles[i].t_brake < ValidProfiles[j].t_sum[6] + ValidProfiles[j].t_brake AND_THEN
-       ValidProfiles[i].t_sum[6] + ValidProfiles[i].t_brake < Tmin
+    IF ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration < ValidProfiles[j].t_sum[6] + ValidProfiles[j].brake.Duration AND_THEN
+       ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration < Tmin
     THEN
-      Tmin := ValidProfiles[i].t_sum[6] + ValidProfiles[i].t_brake;
+      Tmin := ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration;
       idx_min := i;
 		END_IF
   END_FOR
 END_FOR
 
 block.Pmin := ValidProfiles[idx_min];
-block.Tmin := block.Pmin.t_sum[6] + block.Pmin.t_brake;  
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
 
 IF (ValidProfileCount = 2)
 THEN

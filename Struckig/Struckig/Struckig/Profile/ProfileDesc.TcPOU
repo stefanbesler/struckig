@@ -11,11 +11,8 @@ VAR_INPUT
   t, t_sum, j : ARRAY[0..6] OF LREAL;
   a, v, p : ARRAY[0..7] OF LREAL;
 
-  pf, vf, af : LREAL; // Target (final) kinematic state
-  
-  hasBrake : BOOL;
-  t_brake : LREAL; // Total time of the braking segments
-  t_brakes, j_brakes, a_brakes, v_brakes, p_brakes : ARRAY[0..1] OF LREAL; // Allow up to two segments of braking before the "correct" Profile starts 
+  pf, vf, af : LREAL; //! Target (final) kinematic state
+  brake : BrakeProfile; //! Brake sub-profile
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -472,15 +469,15 @@ END_VAR]]></Declaration>
         <ST><![CDATA[PositionExtrema.Minimum := Constants.Infinity;
 PositionExtrema.Maximum := -Constants.Infinity;
 
-IF (hasBrake)
+IF brake.Duration > 0.0
 THEN
-  IF (t_brakes[0] > 0.0)
+  IF (brake.t[0] > 0.0)
   THEN
-    CheckStepForPositionExtremum(0.0, t_brakes[0], p_brakes[0], v_brakes[0], a_brakes[0], j_brakes[0], PositionExtrema);
+    CheckStepForPositionExtremum(0.0, brake.t[0], brake.p[0], brake.v[0], brake.a[0], brake.j[0], PositionExtrema);
   
-    IF (t_brakes[1] > 0.0) 
+    IF (brake.t[1] > 0.0) 
     THEN
-      CheckStepForPositionExtremum(t_brakes[0], t_brakes[1], p_brakes[1], v_brakes[1], a_brakes[1], j_brakes[1], PositionExtrema);            
+      CheckStepForPositionExtremum(brake.t[0], brake.t[1], brake.p[1], brake.v[1], brake.a[1], brake.j[1], PositionExtrema);            
     END_IF
   END_IF
 END_IF
@@ -493,20 +490,20 @@ DO
     t_current_sum := t_sum[i-1];
 	END_IF
   
-  CheckStepForPositionExtremum(t_current_sum + t_brakes[i], t[i], p[i], v[i], a[i], j[i], PositionExtrema);
+  CheckStepForPositionExtremum(t_current_sum + brake.Duration, t[i], p[i], v[i], a[i], j[i], PositionExtrema);
 END_FOR 
 
 IF (pf < PositionExtrema.Minimum)
 THEN
   PositionExtrema.Minimum := pf;
-  PositionExtrema.Tmin := t_sum[6] + t_brakes[i];
+  PositionExtrema.Tmin := t_sum[6] + brake.Duration;
 END_IF 
 
 
 IF (pf > PositionExtrema.Maximum) 
 THEN
   PositionExtrema.Maximum := pf;
-  PositionExtrema.Tmax := t_sum[6] + t_brakes[i];
+  PositionExtrema.Tmax := t_sum[6] + brake.Duration;
 END_IF
 
 

@@ -1,7 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
-  <POU Name="Brake" Id="{d49e6330-1a7a-48f8-bd8c-7a100b3a37c2}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM INTERNAL Brake
+  <POU Name="BrakeProfile" Id="{1eceebc8-e02e-4905-a883-8b9d67dc9558}" SpecialFunc="None">
+    <Declaration><![CDATA[/// Calculates (pre- or post-) profile to get current or final state below the limits
+FUNCTION_BLOCK BrakeProfile
+VAR_INPUT
+  Duration : LREAL; //! Overall duration
+  t, j, a, v, p : ARRAY[0..1] OF LREAL; //! Profile information for a two-step profile  
+  IsUsed : BOOL;
+END_VAR
 VAR
   t_to_a_min, t_to_a_max, t_min_to_v_max, t_to_a_zero, t_to_v_min, t_to_v_max : LREAL;
   t_to_v_max_with_constant, t_to_v_min_with_constant, v_at_a0, v_at_a_max, v_at_a_min : LREAL;

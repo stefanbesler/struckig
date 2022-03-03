@@ -6,10 +6,11 @@
 TYPE SynchronizationType :
 (
   Undefined,
-  Phase, // Phase synchronize the DoFs when possible, else fallback to "Time" strategy
-  TimeSync, // Always synchronize the DoFs to reach the target at the same time (Default)
-  TimeIfNecessarySync, // Synchronize only when necessary (e.g. for non-zero target velocity or acceleration)
-  None // Calculate every DoF independently
+  TimeSync, //! Always synchronize the DoFs to reach the target at the same time (Default)
+  TimeIfNecessarySync, //! Synchronize only when necessary (e.g. for non-zero target velocity or acceleration)
+  Phase, //! Phase synchronize the DoFs when possible, else fallback to "Time" strategy
+  // PhaseOnly, //! Always phase synchronize the DoFs (even when this is not time-optimal), else returns "ErrorNoPhaseSynchronization" 
+  None //! Calculate every DoF independently
 );
 END_TYPE
 ]]></Declaration>

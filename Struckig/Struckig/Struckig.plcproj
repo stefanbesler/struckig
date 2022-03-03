@@ -28,7 +28,7 @@
     <Folder Include="Struckig\_DataTypes" />
     <Folder Include="Struckig" />
     <Folder Include="Struckig\Block" />
-    <Folder Include="Struckig\Brake" />
+    <Folder Include="Struckig\BrakeProfile" />
     <Folder Include="Struckig\Math" />
     <Folder Include="Struckig\Velocity" />
     <Folder Include="Struckig\Position" />
@@ -50,7 +50,7 @@
     <Compile Include="Struckig\Block\Block.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Brake\Brake.TcPOU">
+    <Compile Include="Struckig\BrakeProfile\BrakeProfile.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Math\BubbleSortLreal.TcPOU">
