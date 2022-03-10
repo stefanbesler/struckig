@@ -34,13 +34,13 @@ The original project, `ruckig` is a submodule of this repository. The commit-has
 
 # Unittests
 
-This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./Struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
+This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./Struckig_unittest`) then the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
 
 Please note, that not all unittests from the [original](https://www.github.com/pantor/ruckig) source code are ported yet, but only the `KnownExamples` and `SecondaryFeatures` tests.
 
 # Continuous integration
 
-Continuous integration has not really arrived in Operational technology (OT) -- yet. Some colleguages from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publically available. Luckily, they agreed with me to let me try their tools as an
+Continuous integration has not really arrived in Operational technology (OT) -- yet. Some colleagues from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be public available. Luckily, they agreed with me to let me try their tools as an
 alpha/beta tester with this project. For more information on this topic, please contact [Zeugwerk](mailto:info@zeugwerk.at); In the meantime I
 thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build environment in this early development stage of their DevOps tools.
 
@@ -50,18 +50,14 @@ The source code and usage documentation of this library is hosted on [https://st
 
 # Example: Create time-based profile for 1 axis
 
-This examples shows how to create a single-axis trajectory from point A=0mm to point B=100mm.
-The initial state assumes that the trajectory is in stillstand and target velocity and acceleration is set to
-0. The `MinDuration` parameter is set to `10s`. Please not that `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would
-allow for a shorter travel time, but  if `MinDuration` together with Synchronization = SynchronizationType.TimeSync is set,
-the `MinDuration` parameter is considered instead.
+This example shows how to create a single-axis trajectory from point A=0mm to point B=100mm. The initial state assumes that the trajectory is in stillstand and target velocity and acceleration is set to 0. The `MinDuration` parameter is set to `10s`. Please note that `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would allow for a shorter travel time, but  if `MinDuration` together with Synchronization = SynchronizationType.TimeSync is set, the `MinDuration` parameter is considered instead.
 
 ```
 PROGRAM Example
 VAR
   otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (
-    Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
-    MinDuration :=         10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
+    Synchronization :=     SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
+    MinDuration :=         10.0, // if MinDuration is set to a value > 0 and Synchronization is set to TimeSync it is considered in trajectory calculation
     MaxVelocity :=         [ 2000.0 ],
     MaxAcceleration :=     [ 20000.0 ],
     MaxJerk :=             [ 800000.0 ],
@@ -78,8 +74,7 @@ END_VAR
 
 otg();
 
-// Update the current values, these should be send to a drive as well
-// so that it can follow the trajectory.
+// Update the current values, these should be send to a drive as well so that it can follow the trajectory.
 otg.CurrentPosition := otg.NewPosition;
 otg.CurrentVelocity := otg.NewVelocity;
 otg.CurrentAcceleration := otg.NewAcceleration;
