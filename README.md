@@ -77,6 +77,9 @@ END_VAR
 
 // =====================================================================================================================
 otg();
+// axis.SetTargetPosition(otg.NewPosition[0]); send the new position to your axis, which should be in a cyclic position mode
+// axis.SetVelocityOffset(otg.NewVelocity[0]); send the new velocity to your axis, e.g. with a velocity feedforward
+// axis.SetTorqueOffset( accelerationTorqueFactor * otg.NewAcceleration[0]) send the new acceleration to your acces, e.g. with a current feedforward
 ```
 
 ![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
