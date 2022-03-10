@@ -26,7 +26,7 @@
 </p>
 
 This repository ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online-Trajectory-Generation to TwinCAT 3.
-Only the Community Version of Ruckig is ported and pro features are not available. Struckig itself is dual licenced, you can use the source code provided here accordingly to GPLv3. If you want to use this commercially and not disclose your own source code, Struckig is also available with a custom licence. In the latter case, contact [me](mailto:stefan@besler.me).
+Only the Community Version of Ruckig is ported and pro features are not available. **Struckig itself is dual licenced, you can use the source code provided here accordingly to GPLv3. If you want to use this commercially and not disclose your own source code, Struckig is also available with a custom licence**. In the latter case, contact [me](mailto:stefan@besler.me).
 
 # Porting progress
 
