@@ -70,19 +70,34 @@ VAR
     CurrentAcceleration := [ 0.0 ],
     TargetPosition :=      [ 100.0 ],
     TargetVelocity :=      [ 0.0 ],
-    TargetAcceleration :=  [ 0.0 ]
+    TargetAcceleration :=  [ 0.0 ],
+    EnableAutoPropagate := TRUE
   );
 END_VAR
 
 // =====================================================================================================================
-
 otg();
-
-// Update the current values, these should be send to a drive as well
-// so that it can follow the trajectory.
-otg.CurrentPosition := otg.NewPosition;
-otg.CurrentVelocity := otg.NewVelocity;
-otg.CurrentAcceleration := otg.NewAcceleration;
 ```
 
 ![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
+
+
+
+
+
+IF step.OnEntry()
+THEN
+  otg.CurrentPosition := _axis.Schlitten.ActPosition();
+  otg.CurrentVelocity := 0;
+  otg.CurrentAcceleration := 0; 
+  otg.EnableAutoPropagate := TRUE;
+END_IF
+
+otg();
+
+
+
+
+
+
+
