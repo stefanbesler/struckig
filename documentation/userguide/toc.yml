@@ -1,5 +1,5 @@
-- name: Introduction
-  href: introduction.md
+- name: Installation
+  href: installation.md
 - name: Examples
   items: 
   - name: Single axis trajectory
