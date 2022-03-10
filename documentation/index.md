@@ -1,17 +1,28 @@
+# Struckig
+
 <div align="center">
-  <h1 align="center">(ST)Ruckig</h1>
   <h3 align="center">
     Online Trajectory Generation. Real-time. Time-optimal. Jerk-constrained.<br/>
     "Full" port from C++ to Structured Text, TwinCAT 3.
   </h3>
 </div>
 
-This repository aims to port [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online
-Trajectory Generation to TwinCAT 3. Please note, that while this port aims to be a full port, it will probably never reach the performance 
-of the original C++ code for the following reasons. 
-- the original code uses templates and C++17 features to reduce load during runtime. 
-- the codesys compiler , in contrast to C++ compilers, does not come with a lot of compile time optimizations. Even simple loop unwrapping optimizations are not performed - probably to make debugging easier (?)
-- while some optimizations could be done by hand, I would rather have the port as close to the original as possible, only changing the architecture where it is required, because of limitiations of the programming language of the port.
+This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** ands brings open-source powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced, you can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized that you can use it, redistribute it, study it, modify it **as long as you distribute your code under the same terms and conditions**. If you **do not want licence your own source code** that uses *struckig* with GPLv3 as well or if **you need support** using the library or **need my expertise** elsewhere, [contact me](mailto:stefan@besler.me) for a commercial runtime license.
 
-If you are looking for best possible performance of Ruckig, I suggest you look into making pantor/ruckig a TwinCAT C++ module. However,
-if you would like to use a library that is implemented in a IEC 61131-3 conform language, this port of pantor/ruckig might be for you.
+## Install Struckig
+
+Before you can use this library to blazingly fast calculating trajectory for your PLC roject, you'll need to install it. You can either compile the library ourself or, easier, use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
+
+<button onClick="location.href='installation.html'" type="button">Install.</button>
+
+## Getting started
+
+After you installed struckig you are ready to use it, but still have to reference it in your PLC, learn how to add the *struckig* library to your PLC and how to use it to calculate your very first trajectory.
+
+<button onClick="location.href='installation.html'" type="button">Try.</button>
+
+## Documentation
+
+The API reference provides insights into the internals of struckig.
+
+<button onClick="location.href='installation.html'" type="button">Read the docs.</button>
