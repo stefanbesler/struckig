@@ -85,19 +85,4 @@ otg();
 
 
 
-IF step.OnEntry()
-THEN
-  otg.CurrentPosition := _axis.Schlitten.ActPosition();
-  otg.CurrentVelocity := 0;
-  otg.CurrentAcceleration := 0; 
-  otg.EnableAutoPropagate := TRUE;
-END_IF
-
-otg();
-
-
-
-
-
-
 
