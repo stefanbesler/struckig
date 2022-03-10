@@ -7,7 +7,7 @@
   </h3>
 </div>
 
-This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** and brings free software powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced. You can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized says that you can use it, redistribute it, study it, modify it as long as you distribute your code **under the same terms and conditions**. 
+This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** and brings free software powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced. You can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized says that you can use it, redistribute it, study it, modify it as long as you distribute your code **under the same terms and conditions**. If you do not agree with the terms of the GPL and want to keep your source closed, [contact me](mailto:stefan@besler.me) to get a commercial license for struckig.
 
 ## Why GPLv3
 
