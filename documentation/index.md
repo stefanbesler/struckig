@@ -7,11 +7,11 @@
   </h3>
 </div>
 
-This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** ands brings open-source powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced, you can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized that you can use it, redistribute it, study it, modify it **as long as you distribute your code under the same terms and conditions**. If you **do not want licence your own source code** that uses *struckig* with GPLv3 as well or if **you need support** using the library or **need my expertise** elsewhere, [contact me](mailto:stefan@besler.me) for a commercial runtime license.
+This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** ands brings open-source powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced, you can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized that you can use it, redistribute it, study it, modify it **as long as you distribute your code under the same terms and conditions**. If you **do not want licence your own source code** that uses *struckig* with GPLv3 as well or if **you need support** using the library or **need my expertise** elsewhere, [contact me](mailto:stefan@besler.me) for a commercial runtime license and/or support.
 
 ## Install Struckig
 
-Before you can use this library to blazingly fast calculating trajectory for your PLC roject, you'll need to install it. You can either compile the library ourself or, easier, use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
+Before you can use this library to blazingly fast calculating trajectory for your PLC project, you'll need to install it. You can either compile the library ourself or, easier, use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
 
 <button onClick="location.href='installation.html'" type="button">Install.</button>
 
