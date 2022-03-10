@@ -28,7 +28,7 @@ Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20();
     <Method Name="Test_Trajectory_HasMinDuration_13" Id="{28d86ea9-80e3-414e-bacd-18c5f15bb4fe}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_13
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Struckig(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 8.0,
@@ -82,7 +82,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_14" Id="{94699194-d336-4f33-9f9c-639bf9f95dfd}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_14
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 7.0,
@@ -136,7 +136,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_19" Id="{d57decd4-f0e9-4a01-8208-2097f96a7aa8}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_19
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Struckig(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 3.0,
@@ -190,7 +190,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_7" Id="{a5041c91-ab6b-46ef-b79d-bda55e55eeca}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_7
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 3.0,
@@ -244,7 +244,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_8" Id="{f27518d5-3a55-42b1-9a4a-2570daffdc5a}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_8
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 7.0,
@@ -298,7 +298,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_1" Id="{10cc6401-0a0e-4275-85f9-198404a8b37f}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_1
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 8.0,
     MaxVelocity := [ 2000.0, 2000.0, 2000.0 ],
@@ -351,7 +351,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_11" Id="{89100ce4-a2c3-4f6d-a2d9-5d5f81e7407a}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_11
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 1.0,
@@ -405,7 +405,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_17" Id="{4a85467d-5048-4b59-80ff-39a2f6ec0c8d}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_17
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 10.0,
@@ -459,7 +459,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_2" Id="{341eba0c-a113-4eed-abf5-c4e1e31450b5}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_2
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 9.0,
@@ -513,7 +513,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_3" Id="{7c6d4a86-19bc-408a-ab21-a87d335d88c3}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_3
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 7.0,
@@ -567,7 +567,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_4" Id="{316b5cc9-77f5-4523-ac2f-248b3b9c4067}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_4
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 3.0,
@@ -621,7 +621,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_6" Id="{1ea6c1fe-3b92-4bd9-930a-c673722e6749}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_6
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Struckig(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 10.0,
@@ -675,7 +675,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_16" Id="{4eff1a4d-5610-42e4-96a4-c760e07db197}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_16
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 7.0,
@@ -729,7 +729,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_5" Id="{3c7dad3f-b701-4ec3-a274-bf42231bcefa}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_5
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 4.0,
@@ -783,7 +783,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_9" Id="{97e9d1c0-4d13-4bc5-80f6-09a79d5e11a7}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_9
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 7.0,
@@ -837,7 +837,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_10" Id="{058543e5-dca4-46ad-ac79-6d8496fa1017}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_10
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 5.0,
@@ -891,7 +891,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_12" Id="{1b39d57a-b186-4c46-b718-c62410c3fdc5}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_12
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 8.0,
@@ -945,7 +945,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_15" Id="{96333348-4848-4d80-8c69-0b35f594a328}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_15
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 6.0,
@@ -999,7 +999,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_18" Id="{8e8dfd3c-f7ed-465c-936b-0e0e78d29587}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_18
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 6.0,
@@ -1053,7 +1053,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20" Id="{a8a5845b-edb2-44fb-8e2e-2f35b2f08076}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 1.0,

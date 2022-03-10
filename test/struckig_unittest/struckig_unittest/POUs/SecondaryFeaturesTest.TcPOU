@@ -22,7 +22,7 @@ Test_PositionExtrema();]]></ST>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
       <Declaration><![CDATA[METHOD Test_AtTime
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
@@ -77,7 +77,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_EnabledDof" Id="{214ba0d0-4f01-4d0c-830d-5b3789ab7356}">
       <Declaration><![CDATA[METHOD Test_EnabledDof
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
     Enabled := [TRUE, FALSE, FALSE],
     Synchronization := SynchronizationType.TimeSync,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
@@ -185,7 +185,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_FirstStateAtTime" Id="{45288964-70c7-4f04-951a-1ad9938f231b}">
       <Declaration><![CDATA[METHOD Test_FirstStateAtTime
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
@@ -241,7 +241,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_IndependentMinDurations" Id="{a2e696c4-c9ef-4360-ab1b-ce079b7c502e}">
       <Declaration><![CDATA[METHOD Test_IndependentMinDurations
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
@@ -277,7 +277,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_InvalidInput" Id="{7f2842b5-4b27-40e5-9e8d-50abf85326e8}">
       <Declaration><![CDATA[METHOD Test_InvalidInput
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
@@ -327,7 +327,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_PerDofSettings" Id="{f04c0bef-a3eb-4d96-bb99-65b90fd47937}">
       <Declaration><![CDATA[METHOD Test_PerDofSettings
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
     CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
     CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
@@ -423,7 +423,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_PerDofSettings_1" Id="{2ccfa256-25fb-418a-a177-0090195ed66b}">
       <Declaration><![CDATA[METHOD Test_PerDofSettings_1
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
     CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
     CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
     CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
@@ -520,7 +520,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_PhaseSynchronization" Id="{df39aa3d-ca70-4d91-9685-7c579cd985d7}">
       <Declaration><![CDATA[METHOD Test_PhaseSynchronization
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
     Synchronization := SynchronizationType.Phase,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
     TargetPosition :=      [ 1.0, -3.0, 2.0 ],
@@ -589,7 +589,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_PositionExtrema" Id="{59aa613e-c11d-40bf-a12f-16c3c93702fe}">
       <Declaration><![CDATA[METHOD Test_PositionExtrema
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
     Synchronization := SynchronizationType.TimeSync,
     CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
     TargetPosition :=      [ 1.0, -3.0, 2.0 ],

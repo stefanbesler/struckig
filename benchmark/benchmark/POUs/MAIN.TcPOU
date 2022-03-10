@@ -16,7 +16,7 @@ VAR
   _d : Randomizer(_dynamicDist);
   _l : Randomizer(_limitDist);
   
-  _otg : Struckig.Ruckig(0.001, 0);
+  _otg : Struckig.Otg(cycletime:=0.001, dofs:=0);
   
   _step : INT := 0;
   _dt, _it, _jt : DINT := 0;
@@ -118,7 +118,7 @@ _step := 4;]]></ST>
     <Method Name="CheckCalculation" Id="{829178d5-91bc-4df1-995d-bbe41aca5758}">
       <Declaration><![CDATA[METHOD CheckCalculation : LREAL;
 VAR_INPUT
-  otg : REFERENCE TO Struckig.Ruckig;
+  otg : REFERENCE TO Struckig.Otg;
 END_VAR
 VAR
   cpuAccount : UDINT;

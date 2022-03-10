@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <DUT Name="PositionExtremaDesc" Id="{b615dcba-8544-436f-9a57-30985945064e}">
-    <Declaration><![CDATA[TYPE PositionExtremaDesc :
+    <Declaration><![CDATA[{attribute 'conditionalshow'}
+TYPE PositionExtremaDesc :
 STRUCT
   Minimum, Maximum : LREAL; // The extreme position
   Tmin, Tmax : LREAL;  // Time when the positions are reached

@@ -3,7 +3,7 @@
   <POU Name="CheckCalculation" Id="{7705c60f-b3f4-4b53-bef5-2ced749a7c74}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CheckCalculation : LREAL
 VAR_INPUT
-  otg : REFERENCE TO Struckig.Ruckig;
+  otg : REFERENCE TO Struckig.Otg;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[REPEAT 

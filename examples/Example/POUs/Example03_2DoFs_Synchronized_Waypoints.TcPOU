@@ -3,16 +3,17 @@
   <POU Name="Example03_2DoFs_Synchronized_Waypoints" Id="{f65c24cb-6647-4ba6-8455-ae973aeb2aa2}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example03_2DoFs_Synchronized_Waypoints
 VAR
-  otg : Ruckig(0.001, 2) := (Synchronization := SynchronizationType.TimeSync,
-                               MaxVelocity :=         [ 1000.0, 1000.0 ],
-                               MaxAcceleration :=     [ 50000.0, 50000.0 ],
-                               MaxJerk :=             [ 500000.0, 500000.0 ],
-                               CurrentPosition :=     [ 0.0, 0.0 ],
-                               CurrentVelocity :=     [ 0.0, 0.0 ],
-                               CurrentAcceleration := [ 0.0, 0.0 ],
-                               TargetPosition :=      [ 0.0, 0.0 ],
-                               TargetVelocity :=      [ 0.0, 0.0 ],
-                               TargetAcceleration :=  [ 0.0, 0.0 ]);						   
+  otg : Struckig.Otg(cycletime:=0.001, dofs:=2) := (
+          Synchronization := SynchronizationType.TimeSync,
+          MaxVelocity :=         [ 1000.0, 1000.0 ],
+          MaxAcceleration :=     [ 50000.0, 50000.0 ],
+          MaxJerk :=             [ 500000.0, 500000.0 ],
+          CurrentPosition :=     [ 0.0, 0.0 ],
+          CurrentVelocity :=     [ 0.0, 0.0 ],
+          CurrentAcceleration := [ 0.0, 0.0 ],
+          TargetPosition :=      [ 0.0, 0.0 ],
+          TargetVelocity :=      [ 0.0, 0.0 ],
+          TargetAcceleration :=  [ 0.0, 0.0 ]);						   
   waypoints : INT := 50;
   a : LREAL := 300;
   b : LREAL := 200;

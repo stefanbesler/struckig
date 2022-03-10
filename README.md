@@ -34,7 +34,7 @@ The original project, `ruckig` is a submodule of this repository. The commit-has
 
 # Unittests
 
-This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./Struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
+This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
 
 Please note, that not all unittests from the [original](https://www.github.com/pantor/ruckig) source code are ported yet, but only the `KnownExamples` and `SecondaryFeatures` tests.
 
@@ -59,7 +59,8 @@ the `MinDuration` parameter is considered instead.
 ```
 PROGRAM Example
 VAR
-  otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (
+  otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
+    EnableAutoPropagate := TRUE //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
     Synchronization :=     SynchronizationType.TimeSync, //< Set to TimeSync, otherwise MinDuration is ignored
     MinDuration :=         10.0, //< if MinDuration > 0 and Synchronization is set to TimeSync this sets the duration of the trajectory (if the other limitations would yields a shorter duration)
     MaxVelocity :=         [ 2000.0 ],
@@ -71,7 +72,6 @@ VAR
     TargetPosition :=      [ 100.0 ],
     TargetVelocity :=      [ 0.0 ],
     TargetAcceleration :=  [ 0.0 ],
-    EnableAutoPropagate := TRUE //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
   );
 END_VAR
 

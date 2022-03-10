@@ -35,7 +35,7 @@ example23();
     <Method Name="example01" Id="{e63245db-0c87-42fd-8c9c-5b8ef1846274}">
       <Declaration><![CDATA[METHOD example01
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -66,7 +66,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example02" Id="{3d024e2f-045e-41d5-afe1-10b2f9dc1698}">
       <Declaration><![CDATA[METHOD example02
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -97,7 +97,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example03" Id="{c4fb8de0-0810-4b7f-89b7-5d18b1207555}">
       <Declaration><![CDATA[METHOD example03
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -129,7 +129,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example04" Id="{ecd2ca2f-26a8-4bc0-8f82-360135b2e964}">
       <Declaration><![CDATA[METHOD example04
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -161,7 +161,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example05" Id="{9a23d7f8-b1dc-4571-8f89-9113608544cf}">
       <Declaration><![CDATA[METHOD example05
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -193,7 +193,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example06" Id="{9538c878-3ff7-4a42-be69-b82162ad302a}">
       <Declaration><![CDATA[METHOD example06
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
@@ -224,7 +224,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example07" Id="{5d21e693-52b1-4a27-b006-a796cc02d372}">
       <Declaration><![CDATA[METHOD example07
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
@@ -256,7 +256,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example08" Id="{63af5e8a-3ae8-470d-86d7-ef161f3ee77a}">
       <Declaration><![CDATA[METHOD example08
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -288,7 +288,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example09" Id="{0bba80a6-44ca-4252-acc1-bff433e54793}">
       <Declaration><![CDATA[METHOD example09
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.6, 0.6, 0.6 ],
@@ -320,7 +320,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example10" Id="{429e6937-b1d8-4827-8e66-784a4adb2276}">
       <Declaration><![CDATA[METHOD example10
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
@@ -351,7 +351,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example11" Id="{1e352ae4-7bde-4dd2-a814-185a3be9d037}">
       <Declaration><![CDATA[METHOD example11
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.4, 0.4, 0.4 ],
@@ -383,7 +383,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example12" Id="{0c23ba69-6e49-4902-b866-e3838ab35036}">
       <Declaration><![CDATA[METHOD example12
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 3.0, 3.0, 3.0 ],
@@ -414,7 +414,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example13" Id="{4c2316f6-1de4-4e19-84c4-ea5a6e1687a5}">
       <Declaration><![CDATA[METHOD example13
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 12.9892953062198, 3.74169932927481, 1.42398447457303 ],
@@ -446,7 +446,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example14" Id="{47840f6e-c938-48f4-bd1d-5caf30f0b4f6}">
       <Declaration><![CDATA[METHOD example14
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 8.65978706670502, 5.94921088330542, 10.7652253566829 ],
@@ -478,7 +478,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example15" Id="{90fcdf7e-96a6-43f5-bb79-bce3da217a5b}">
       <Declaration><![CDATA[METHOD example15
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        // TODO: there seems to be a bug here, if set to None, the reported duration is <3s
     MaxVelocity :=         [ 7.97399137456765, 2.68591430972239, 9.54987666746364 ],
@@ -510,7 +510,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example16" Id="{16a12324-dfbf-4dae-b099-7a5fcc7de151}">
       <Declaration><![CDATA[METHOD example16
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,        
     MaxVelocity :=         [ 0.1241065584614779, 1, 1 ],
@@ -542,7 +542,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example17" Id="{ed9b9e5f-7e2f-4410-bf5b-c0dcca3365ee}">
       <Declaration><![CDATA[METHOD example17
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,    
     MaxVelocity :=         [ 1.863775561344568, 0.4357836109021987, 6.260907804906162 ],
@@ -574,7 +574,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example18" Id="{2e6c6a48-90d6-425a-ae57-013d63da4fa1}">
       <Declaration><![CDATA[METHOD example18
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 6.144314006624488, 2.93258338415229, 0.1820021269527196 ],
@@ -606,7 +606,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example19" Id="{86ea15a9-bcc7-4c6c-9c52-2686c5495108}">
       <Declaration><![CDATA[METHOD example19
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1, 1, 1 ],
@@ -638,7 +638,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example20" Id="{43d3b3f8-bc82-46c0-9aaa-3c876692e06d}">
       <Declaration><![CDATA[METHOD example20
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1, 1, 1 ],
@@ -670,7 +670,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example21" Id="{4ad6cce6-8abe-4583-9a30-738f6d405c8e}">
       <Declaration><![CDATA[METHOD example21
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1800, 18000, 180000 ],
@@ -702,7 +702,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example22" Id="{4e3ac0f8-cb9f-4fc8-8d40-78c182460065}">
       <Declaration><![CDATA[METHOD example22
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 0.8500000000000001, 0.8500000000000001, 0.8500000000000001 ],
@@ -734,7 +734,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="example23" Id="{8284e48a-9de8-4315-ac04-9a5fe99c460f}">
       <Declaration><![CDATA[METHOD example23
 VAR_INST
-  otg : Struckig.Ruckig(0.005, 3) := (
+  otg : Struckig.Otg(0.005, 3) := (
   
     Synchronization := SynchronizationType.None,
     MaxVelocity :=         [ 1.0, 1.0, 10.01369296498101 ],

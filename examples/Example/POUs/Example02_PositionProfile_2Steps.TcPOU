@@ -3,16 +3,17 @@
   <POU Name="Example02_PositionProfile_2Steps" Id="{9bcc5091-27e8-40b3-85e4-3119402a5bb6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
 VAR
-  otg : Ruckig(0.001, 1) := (Synchronization := SynchronizationType.None,
-                             MaxVelocity :=         [ 1200.0 ],
-                             MaxAcceleration :=     [ 25000.0 ],
-                             MaxJerk :=             [ 25000.0 / 0.008 ],
-                             CurrentPosition :=     [ 47.0 ],
-                             CurrentVelocity :=     [ 0.0 ],
-                             CurrentAcceleration := [ 0.0 ],
-                             TargetPosition :=      [ 18.0 ],
-                             TargetVelocity :=      [ -10.0 ],
-                             TargetAcceleration :=  [ 0.0 ]);                                  
+  otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
+          Synchronization := SynchronizationType.None,
+          MaxVelocity :=         [ 1200.0 ],
+          MaxAcceleration :=     [ 25000.0 ],
+          MaxJerk :=             [ 25000.0 / 0.008 ],
+          CurrentPosition :=     [ 47.0 ],
+          CurrentVelocity :=     [ 0.0 ],
+          CurrentAcceleration := [ 0.0 ],
+          TargetPosition :=      [ 18.0 ],
+          TargetVelocity :=      [ -10.0 ],
+          TargetAcceleration :=  [ 0.0 ]);                                  
   run : BOOL;
   switched : BOOL;
 END_VAR

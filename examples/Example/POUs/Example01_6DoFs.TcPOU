@@ -3,16 +3,17 @@
   <POU Name="Example01_6DoFs" Id="{c00a71d8-f00f-4c7d-a99b-aab97ff59a30}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example01_6DoFs
 VAR
-  otg : Ruckig(0.001, 6) := (Synchronization := SynchronizationType.None,
-                                MaxVelocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
-                                MaxAcceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
-                                MaxJerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
-                                CurrentPosition :=     [ 0.0,  -0.1,  0.12, 0.0,  0.3, 0.05],
-                                CurrentVelocity :=     [ 0.0,   0.0,  0.2,  0.0,  0.0, 0.0 ],
-                                CurrentAcceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
-                                TargetPosition :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
-                                TargetVelocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
-                                TargetAcceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);								
+  otg : Struckig.Otg(cycletime:=0.001, dofs:=6) := (
+          Synchronization := SynchronizationType.None,
+          MaxVelocity :=         [ 1.2,   1.2,  1.2 , 0.6,  0.6, 0.6 ],
+          MaxAcceleration :=     [ 4.0,   4.0,  4.0 , 1.5,  1.5, 1.5 ],
+          MaxJerk :=             [10.0,  10.0, 10.0,  4.0 , 4.0, 4.0 ],
+          CurrentPosition :=     [ 0.0,  -0.1,  0.12, 0.0,  0.3, 0.05],
+          CurrentVelocity :=     [ 0.0,   0.0,  0.2,  0.0,  0.0, 0.0 ],
+          CurrentAcceleration := [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+          TargetPosition :=      [ 1.0,   0.5,  0.5,  0.0, -0.1, 0.2 ],
+          TargetVelocity :=      [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ],
+          TargetAcceleration :=  [ 0.0,   0.0,  0.0,  0.0,  0.0, 0.0 ]);								
 END_VAR
 
 ]]></Declaration>

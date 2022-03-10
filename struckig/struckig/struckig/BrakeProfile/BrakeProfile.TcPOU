@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1">
   <POU Name="BrakeProfile" Id="{1eceebc8-e02e-4905-a883-8b9d67dc9558}" SpecialFunc="None">
     <Declaration><![CDATA[/// Calculates (pre- or post-) profile to get current or final state below the limits
-FUNCTION_BLOCK BrakeProfile
+FUNCTION_BLOCK INTERNAL BrakeProfile
 VAR_INPUT
   Duration : LREAL; //! Overall duration
   t, j, a, v, p : ARRAY[0..1] OF LREAL; //! Profile information for a two-step profile  

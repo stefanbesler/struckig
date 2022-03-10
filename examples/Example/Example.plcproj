@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="Struckig">
-      <DefaultResolution>Struckig, * (Struckig)</DefaultResolution>
+      <DefaultResolution>Struckig, * (Stefan Besler)</DefaultResolution>
       <Namespace>Struckig</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Standard">

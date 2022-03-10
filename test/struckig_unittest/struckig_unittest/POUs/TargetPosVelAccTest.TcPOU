@@ -3,7 +3,7 @@
   <POU Name="TargetPosVelAccTest" Id="{673fcfe4-18e7-4de2-91f5-9e7dde125ab8}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TargetPosVelAccTest EXTENDS TcUnit.FB_TestSuite
 VAR
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -44,7 +44,7 @@ Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_70();
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_10" Id="{842ee266-70a5-410d-9be3-484b7fa10be1}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_10
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -94,7 +94,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_11" Id="{f6412efc-4642-4732-8a87-a18a6ba95da3}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_11
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -144,7 +144,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_13" Id="{e8918957-49ef-4ac3-b004-e40ce723f843}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_13
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -194,7 +194,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_23" Id="{2d367804-e73a-41ef-b1c1-4b2e5f8da62a}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_23
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -244,7 +244,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_24" Id="{6cc5889d-ce26-406d-b260-3be9d95e9dd9}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_24
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -294,7 +294,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_25" Id="{d5dc4e81-6c55-4dfa-aabc-5c4793c2ebf9}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_25
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -344,7 +344,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_28" Id="{11a2d2ac-8beb-48e9-87f0-99a26919c053}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_28
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -394,7 +394,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_31" Id="{576e520b-b72f-4e91-a3ef-c17f693b4e53}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_31
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -444,7 +444,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_38" Id="{826a634c-f7b6-4253-83f0-3164f9b60135}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_38
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -494,7 +494,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_41" Id="{c3e23866-34fd-401e-a79e-56a4c962215f}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_41
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -544,7 +544,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_46" Id="{61c12759-f50a-4b57-91f6-300030536cdc}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_46
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -594,7 +594,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_47" Id="{24cde0d4-1781-4a94-b508-ec86a11cfe7b}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_47
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -644,7 +644,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_48" Id="{7255ece9-428b-47f2-ac8b-ac1af2e5912c}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_48
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -694,7 +694,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_51" Id="{f8b79af7-c35f-4e6a-a207-af3d2608e93f}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_51
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -744,7 +744,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_56" Id="{f943766f-c879-42a0-acc4-d21e8468461e}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_56
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -794,7 +794,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_60" Id="{faa98057-5f47-4ac2-9aa6-2cd50a9c672d}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_60
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -844,7 +844,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_61" Id="{d3ee35ac-f407-41df-ba8d-cd70b131f98b}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_61
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -894,7 +894,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_66" Id="{927800a7-0326-4855-b422-59799426b285}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_66
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
@@ -944,7 +944,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_70" Id="{201e0db9-aa4a-4dfa-b1bd-aeeb44955d53}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration_70
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],

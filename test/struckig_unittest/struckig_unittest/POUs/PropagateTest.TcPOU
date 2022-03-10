@@ -12,7 +12,7 @@ Test_NoPropagate();
     <Method Name="Test_AutoPropagate" Id="{154f5c93-a738-40d9-9255-b30310218a2d}">
       <Declaration><![CDATA[METHOD Test_AutoPropagate
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000, 2000, 2000 ],
@@ -56,7 +56,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_ManualPropagate" Id="{72c4587a-1b38-43e2-8e8a-c11eb6cd53b0}">
       <Declaration><![CDATA[METHOD Test_ManualPropagate
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000, 2000, 2000 ],
@@ -100,7 +100,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_NoPropagate" Id="{4d2d51a2-7801-499d-b92a-22b9f1d3b883}">
       <Declaration><![CDATA[METHOD Test_NoPropagate
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000, 2000, 2000 ],

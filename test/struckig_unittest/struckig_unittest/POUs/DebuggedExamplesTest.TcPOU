@@ -12,7 +12,7 @@
     <Method Name="Test_Trajectory_HasTargetVelocity_HasTargetAcceleration" Id="{53ec57f4-9f8e-4639-b25f-deb391855d1e}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetVelocity_HasTargetAcceleration
 VAR_INST
-  ruckig : Struckig.Ruckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
