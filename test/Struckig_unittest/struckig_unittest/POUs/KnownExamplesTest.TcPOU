@@ -25,6 +25,8 @@ example18();
 example19();
 example20();
 example21();
+example22();
+example23();
 
 
 
@@ -722,6 +724,40 @@ END_VAR
 
 otg();
 AssertEquals_LREAL(Expected := 0.2281604414,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example23" Id="{8284e48a-9de8-4315-ac04-9a5fe99c460f}">
+      <Declaration><![CDATA[METHOD example23
+VAR_INST
+  otg : Struckig.Ruckig(0.005, 3) := (
+  
+    Synchronization := SynchronizationType.None,
+    MaxVelocity :=         [ 1.0, 1.0, 10.01369296498101 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 14.72621077848741 ],
+    MaxJerk :=             [ 1.0, 1.0, 7.770133554060553 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.3736320740840176 ],
+    CurrentVelocity :=     [ 0.0, 0.0, -0.60486324450823 ],
+    CurrentAcceleration := [ 0.0, 0.0, -0.4953501898933239 ],
+    TargetPosition :=      [ 0.0, 0.0, 0.233562911156468 ],
+    TargetVelocity :=      [ 0, 0, 0 ],
+    TargetAcceleration :=  [ 0, 0, 0 ],
+    MinVelocity :=         [ -1.0, -1.0, -1.94898305867544],
+    MinAcceleration :=     [ -1.0, -1.0, -0.6829625196960336]
+  );
+  
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-23');
+
+otg();
+AssertEquals_LREAL(Expected := 1.08732372,
              Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');
