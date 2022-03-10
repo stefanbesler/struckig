@@ -26,6 +26,7 @@ VAR_OUTPUT
   State : TrajectoryState;  
 END_VAR
 VAR
+  _blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;  
   _profiles : ARRAY[0..ParameterList.MaxDoFs] OF ProfileDesc;
   _independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;	
   _positionStep1 : PositionStep1;
@@ -49,7 +50,6 @@ VAR
   _maxVelocity, _maxAcceleration, _maxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
   _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
-  
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
   _errorId : INT;
 END_VAR]]></Declaration>
@@ -178,10 +178,8 @@ END_FOR]]></ST>
       <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
 VAR_INST
   dof, i : INT;
-  blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;
-  blockCount : INT;
   p0s, v0s, a0s : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
-  p : REFERENCE TO ProfileDesc;
+  p, p_limiting : REFERENCE TO ProfileDesc;
   found_profile : BOOL;
   limiting_dof : INT := -1; // The DoF that doesn't need step 2
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
@@ -208,6 +206,9 @@ DO
     p.vf := CurrentVelocity[dof];
     p.af := CurrentAcceleration[dof];  
     p.t_sum[6] := 0.0;
+    _blocks[dof].Tmin := 0.0;
+    _blocks[dof].A.IsUsed := FALSE;
+    _blocks[dof].B.IsUsed := FALSE;    
     CONTINUE;
 	END_IF
   
@@ -249,10 +250,10 @@ DO
   OF
     ControlInterfaceType.Position:
       _positionStep1.Set(p0s[dof], v0s[dof], a0s[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_profile := _positionStep1.Get(p, blocks[dof]);
+      found_profile := _positionStep1.Get(p, _blocks[dof]);
     ControlInterfaceType.Velocity:
       _velocityStep1.Set(p0s[dof], v0s[dof], a0s[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_profile := _velocityStep1.Get(p, blocks[dof]);
+      found_profile := _velocityStep1.Get(p, _blocks[dof]);
 	END_CASE
   
   IF NOT found_profile
@@ -261,27 +262,30 @@ DO
     RETURN; 
 	END_IF
 
-  _independentMinDurations[dof] := blocks[dof].Pmin.brake.Duration + blocks[dof].Tmin;
+  _independentMinDurations[dof] := _blocks[dof].Pmin.brake.Duration + _blocks[dof].Tmin;
 END_FOR
 
 
 discrete_duration := (Discretization = DiscretizationType.discrete);
-found_synchronization := Synchronize(discrete_duration, ADR(blocks), MinDuration, Duration, limiting_dof);
+found_synchronization := Synchronize(discrete_duration, MinDuration, Duration, limiting_dof);
 IF NOT found_synchronization THEN
-  //if constexpr (throw_error) {
-  //    throw std::runtime_error("[ruckig] error in time synchronization: " + std::to_string(duration));
-  //}
   Calculate := TrajectoryErrorCode.SynchronizationFailed;
   RETURN;
 END_IF
 
-(*
-if constexpr (return_error_at_maximal_duration) {
-    if (duration > 7.6e3) {
-        return Result::ErrorTrajectoryDuration;
-    }
-}
-*)
+// None Synchronization
+FOR dof:=0 TO _dofsEnd
+DO
+  IF Enabled[dof] AND_THEN _inp_per_dof_synchronization[dof] = SynchronizationType.None
+  THEN
+    _profiles[dof] := _blocks[dof].Pmin;
+    IF _blocks[dof].Tmin > Duration
+    THEN
+      Duration := _blocks[dof].Tmin;
+      limiting_dof := dof;
+		END_IF
+	END_IF
+END_FOR
 
 IF (Duration = 0.0) THEN
   RETURN;
@@ -291,13 +295,7 @@ noneSynchronizationCount := -1;
 phaseSychronizationIndex := -1;
 phaseOrNoneSychronizationCount := -1;
 positionControlInterfaceCount := -1;
-FOR dof:=0 TO _dofsEnd DO
-  IF Enabled[dof] AND_THEN dof <> limiting_dof AND_THEN _inp_per_dof_synchronization[dof] = SynchronizationType.None
-  THEN
-    noneSynchronizationCount := noneSynchronizationCount + 1;
-    _profiles[dof] := blocks[dof].Pmin;
-	END_IF
-  
+FOR dof:=0 TO _dofsEnd DO 
   IF _inp_per_dof_synchronization[dof] = SynchronizationType.None
   THEN
     noneSynchronizationCount := noneSynchronizationCount + 1;
@@ -323,7 +321,8 @@ THEN
 END_IF
 
 IF phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsEnd THEN
-  IF (IsInputCollinear(MaxJerk, _profiles[limiting_dof].Direction, limiting_dof, new_max_jerk)) THEN
+  p_limiting REF= _profiles[limiting_dof];
+  IF (IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO _dofsEnd DO
       IF (NOT Enabled[dof] OR_ELSE dof = limiting_dof) THEN
@@ -333,8 +332,8 @@ IF phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsE
       p REF= _profiles[dof];
       t_profile := Duration - p.brake.Duration;
 
-      p.t := _profiles[limiting_dof].t; // Copy timing information from limiting DoF
-      p.JerkSigns := _profiles[limiting_dof].JerkSigns;
+      p.t := p_limiting.t; // Copy timing information from limiting DoF
+      p.JerkSigns := p_limiting.JerkSigns;
       p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
 
       // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
@@ -350,7 +349,7 @@ IF phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsE
           END_IF
       END_CASE
 
-      p.Limits := _profiles[limiting_dof].Limits; // After check method call to set correct limits
+      p.Limits := p_limiting.Limits; // After check method call to set correct limits
     END_FOR
 
     IF found_time_synchronization AND_THEN phaseOrNoneSychronizationCount = _dofsEnd  THEN
@@ -370,21 +369,21 @@ DO
   t_profile := Duration - p.brake.Duration;
   
   IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(CurrentAcceleration[dof]) < Constants.Epsilon) THEN
-      p := blocks[dof].Pmin;
+      p := _blocks[dof].Pmin;
       continue;
   END_IF
   
   // Check if the final time corresponds to an extremal profile calculated in step 1
-  IF (ABS(t_profile - blocks[dof].Tmin) < Constants.Epsilon) THEN
-      p := blocks[dof].Pmin;
+  IF (ABS(t_profile - _blocks[dof].Tmin) < Constants.Epsilon) THEN
+      p := _blocks[dof].Pmin;
       continue;
-  ELSIF (blocks[dof].A.IsUsed AND_THEN ABS(t_profile - blocks[dof].A.Right) < Constants.Epsilon)
+  ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(t_profile - _blocks[dof].A.Right) < Constants.Epsilon)
   THEN
-      p := blocks[dof].A.Profile;
+      p := _blocks[dof].A.Profile;
       continue;
-  ELSIF (blocks[dof].B.IsUsed AND_THEN ABS(t_profile - blocks[dof].B.Right) < Constants.Epsilon)
+  ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(t_profile - _blocks[dof].B.Right) < Constants.Epsilon)
   THEN
-      p := blocks[dof].B.Profile;
+      p := _blocks[dof].B.Profile;
       continue;
   END_IF
   
@@ -574,7 +573,6 @@ CurrentAcceleration := NewAcceleration;
       <Declaration><![CDATA[METHOD INTERNAL Synchronize : BOOL
 VAR_INPUT
   discrete_duration : BOOL;
-  blocks : POINTER TO Block; 
 END_VAR
 VAR_IN_OUT
   Tmin : LREAL;
@@ -589,8 +587,7 @@ VAR_INST
   any_interval : BOOL;
   dof : INT;
   i,j, h : INT;
-  b : INT;
-  skip : BOOL;
+  is_blocked : BOOL;
 END_VAR
 
 ]]></Declaration>
@@ -598,8 +595,8 @@ END_VAR
         <ST><![CDATA[IF (dofs = 0 AND_THEN Tmin <> 0 AND_THEN discrete_duration <> 0)
 THEN 
   limiting_dof := 0;
-  t_sync := blocks[0].Tmin;
-  _profiles[0] := blocks[0].Pmin;
+  t_sync := _blocks[0].Tmin;
+  _profiles[0] := _blocks[0].Pmin;
   RETURN;
 END_IF
 
@@ -607,10 +604,18 @@ END_IF
 any_interval := FALSE;
 FOR dof := 0 TO _dofsEnd
 DO
-  possible_t_syncs[dof] := blocks[dof].Tmin;
-  possible_t_syncs[Dofs + dof] := SEL(blocks[dof].A.IsUsed, Constants.Infinity, blocks[dof].A.Right);
-  possible_t_syncs[2 * Dofs + dof] := SEL(blocks[dof].B.IsUsed, Constants.Infinity, blocks[dof].B.Right);
-  any_interval := any_interval OR_ELSE blocks[dof].A.IsUsed OR_ELSE blocks[dof].B.IsUsed;
+  // Ignore DoFs without synchronization here
+  IF _inp_per_dof_synchronization[dof] = SynchronizationType.None
+  THEN
+    possible_t_syncs[dof] := 0;
+    possible_t_syncs[Dofs + dof] := Constants.Infinity;
+    possible_t_syncs[2 * Dofs + dof] := Constants.Infinity;
+  ELSE
+    possible_t_syncs[dof] := _blocks[dof].Tmin;
+    possible_t_syncs[Dofs + dof] := SEL(_blocks[dof].A.IsUsed, Constants.Infinity, _blocks[dof].A.Right);
+    possible_t_syncs[2 * Dofs + dof] := SEL(_blocks[dof].B.IsUsed, Constants.Infinity, _blocks[dof].B.Right);
+    any_interval := any_interval OR_ELSE _blocks[dof].A.IsUsed OR_ELSE _blocks[dof].B.IsUsed;
+  END_IF
 END_FOR
 
 possible_t_syncs[3 * Dofs] := SEL(Tmin = 0, Tmin, Constants.Infinity);
@@ -631,22 +636,23 @@ BubbleSortLreal(ADR(possible_t_syncs), idx_end, indicesSorted:=ADR(idx));
 FOR i:=_dofsEnd TO idx_end
 DO  
   possible_t_sync REF= possible_t_syncs[idx[i]];
-  IF possible_t_sync < Tmin
-  THEN
-    CONTINUE;
-	END_IF
   
-  skip := FALSE;
-  FOR b:=0 TO _dofsEnd
+  is_blocked := FALSE;
+  FOR dof:=0 TO _dofsEnd
   DO
-    IF IsBlocked(blocks[b], possible_t_sync) 
+    IF _inp_per_dof_synchronization[dof] = SynchronizationType.None
     THEN
-      skip := TRUE;
+      CONTINUE;
+		END_IF
+    
+    IF IsBlocked(_blocks[dof], possible_t_sync) 
+    THEN
+      is_blocked := TRUE;
       EXIT;
 		END_IF
 	END_FOR
   
-  IF skip
+  IF is_blocked OR_ELSE possible_t_sync < Tmin
   THEN
     CONTINUE;
 	END_IF
@@ -662,9 +668,9 @@ DO
   limiting_dof := (idx[i] MOD Dofs);
   CASE TRUNC(idx[i] / Dofs)
   OF
-    0: _profiles[limiting_dof] := blocks[limiting_dof].Pmin;
-    1: _profiles[limiting_dof] := blocks[limiting_dof].A.Profile;
-    2: _profiles[limiting_dof] := blocks[limiting_dof].B.Profile;  
+    0: _profiles[limiting_dof] := _blocks[limiting_dof].Pmin;
+    1: _profiles[limiting_dof] := _blocks[limiting_dof].A.Profile;
+    2: _profiles[limiting_dof] := _blocks[limiting_dof].B.Profile;  
 	END_CASE
   
   Synchronize := TRUE;

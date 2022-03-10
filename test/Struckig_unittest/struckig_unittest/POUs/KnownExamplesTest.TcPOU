@@ -480,7 +480,7 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Ruckig(0.005, 3) := (
   
-    Synchronization := SynchronizationType.None,        
+    Synchronization := SynchronizationType.TimeSync,        // TODO: there seems to be a bug here, if set to None, the reported duration is <3s
     MaxVelocity :=         [ 7.97399137456765, 2.68591430972239, 9.54987666746364 ],
     MaxAcceleration :=     [ 5.44679859206862, 7.61752909348119, 0.473482772614085 ],
     MaxJerk :=             [ 7.88958080921515, 5.26855927512131, 0.764061581326592 - 1E-14 ],

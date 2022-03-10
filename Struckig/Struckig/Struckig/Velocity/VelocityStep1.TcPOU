@@ -31,10 +31,12 @@ THEN
   interval.Left := left_duration;
   interval.Right := right_duration;
   interval.Profile := Right;
+  interval.IsUsed := TRUE;
 ELSE
   interval.Left := right_duration;
   interval.Right := left_duration;
   interval.Profile := Left;
+  interval.IsUsed := TRUE;
 END_IF]]></ST>
       </Implementation>
     </Method>

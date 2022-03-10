@@ -10,13 +10,14 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_AtTime();
+Test_EnabledDof();
 Test_FirstStateAtTime();
 Test_IndependentMinDurations();
 Test_InvalidInput();
 Test_PerDofSettings();
+Test_PerDofSettings_1();
 Test_PhaseSynchronization();
-Test_PositionExtrema();
-Test_EnabledDof();]]></ST>
+Test_PositionExtrema();]]></ST>
     </Implementation>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
       <Declaration><![CDATA[METHOD Test_AtTime
@@ -112,6 +113,71 @@ values[0] := otg.TargetPosition[0];
 values[1] := -1.6825197896;
 values[2] := -1.0079368399;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
+
+
+// Make sure that disabled DoFs overwrite prior blocks
+otg.Enabled[0] := TRUE;
+otg.Enabled[1] := TRUE;
+otg.Enabled[2] := TRUE;
+
+otg.CurrentPosition[0] := 0;
+otg.CurrentPosition[1] := 0;
+otg.CurrentPosition[2] := 0;
+
+otg.TargetPosition[0] := 100;
+otg.TargetPosition[1] := -3000.0;
+otg.TargetPosition[2] := 2000.0;
+
+otg.TargetVelocity[0] := 1;
+otg.TargetVelocity[1] := 1;
+otg.TargetVelocity[2] := 1;
+
+otg(EnableAutoPropagate := FALSE);
+result := otg.State;
+
+otg.Enabled[0] := FALSE;
+otg.Enabled[1] := FALSE;
+otg.Enabled[2] := TRUE;
+
+otg.CurrentPosition[0] := 0;
+otg.CurrentPosition[1] := -2;
+otg.CurrentPosition[2] := 0;
+
+otg.CurrentVelocity[0] := 0;
+otg.CurrentVelocity[1] := 0.2;
+otg.CurrentVelocity[2] := 0;
+
+otg.CurrentAcceleration[0] := 0;
+otg.CurrentAcceleration[1] := 0.2;
+otg.CurrentAcceleration[2] := 0;
+
+otg.TargetPosition[0] := 1.0;
+otg.TargetPosition[1] := -3.0;
+otg.TargetPosition[2] := 2.0;
+
+otg.TargetVelocity[0] := 0.0;
+otg.TargetVelocity[1] := 0.0;
+otg.TargetVelocity[2] := 0.2;
+
+otg.TargetAcceleration[0] := 0.0;
+otg.TargetAcceleration[1] := 0.0;
+otg.TargetAcceleration[2] := -0.1;
+
+otg.MaxVelocity[0] := 1;
+otg.MaxVelocity[1] := 1;
+otg.MaxVelocity[2] := 1;
+
+otg.MaxAcceleration[0] := 1;
+otg.MaxAcceleration[1] := 1;
+otg.MaxAcceleration[2] := 1;
+
+otg.MaxJerk[0] := 1;
+otg.MaxJerk[1] := 1;
+otg.MaxJerk[2] := 1;
+
+otg(EnableAutoPropagate := FALSE);
+result := otg.State;
+AssertEquals_LREAL(otg.Duration, 3.6578610221, 1E-6, Message := ''); 
 
 TEST_FINISHED();]]></ST>
       </Implementation>
@@ -350,6 +416,103 @@ values[0] := 0.7482143874;
 values[1] := -2.6871268303;
 values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, message:='Position not met');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PerDofSettings_1" Id="{2ccfa256-25fb-418a-a177-0090195ed66b}">
+      <Declaration><![CDATA[METHOD Test_PerDofSettings_1
+VAR_INST
+  otg : Struckig.Ruckig(0.005, 3) := (
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 35, 35, 35 ],
+    TargetVelocity :=      [ 125, 125, 100 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 125, 125, 100 ],
+    MaxAcceleration :=     [ 2000, 2000, 2000 ],
+    MaxJerk :=             [ 20000, 20000, 20000 ]
+  );
+    
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('PerDofSettings_1');
+
+otg.ControlInterface := ControlInterfaceType.Position;
+otg.PerDofControlInterface[0] := ControlInterfaceType.Undefined;
+otg.PerDofControlInterface[1] := ControlInterfaceType.Undefined;
+otg.PerDofControlInterface[2] := ControlInterfaceType.Undefined;
+otg.PerDofSynchronization[0] := SynchronizationType.TimeSync;
+otg.PerDofSynchronization[1] := SynchronizationType.TimeSync;
+otg.PerDofSynchronization[2] := SynchronizationType.None;
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
+AssertEquals_LREAL(otg.Duration, 0.4207106781, 1E-6, message:='Duration not met');
+
+
+otg.CurrentPosition[0] := 0;
+otg.CurrentPosition[1] := -2;
+otg.CurrentPosition[2] := 0;
+
+otg.CurrentVelocity[0] := 0;
+otg.CurrentVelocity[1] := 0.2;
+otg.CurrentVelocity[2] := 0;
+
+otg.CurrentAcceleration[0] := 0;
+otg.CurrentAcceleration[1] := 0.2;
+otg.CurrentAcceleration[2] := 0;
+
+otg.TargetPosition[0] := 1.0;
+otg.TargetPosition[1] := -3.0;
+otg.TargetPosition[2] := 2.0;
+
+otg.TargetVelocity[0] := 0.0;
+otg.TargetVelocity[1] := 0.0;
+otg.TargetVelocity[2] := 0.2;
+
+otg.TargetAcceleration[0] := 0.0;
+otg.TargetAcceleration[1] := 0.0;
+otg.TargetAcceleration[2] := -0.1;
+
+otg.MaxVelocity[0] := 1;
+otg.MaxVelocity[1] := 1;
+otg.MaxVelocity[2] := 1;
+
+otg.MaxAcceleration[0] := 1;
+otg.MaxAcceleration[1] := 1;
+otg.MaxAcceleration[2] := 1;
+
+otg.MaxJerk[0] := 1;
+otg.MaxJerk[1] := 1;
+otg.MaxJerk[2] := 1;
+
+otg.PerDofSynchronization[0] := SynchronizationType.None;
+otg.PerDofSynchronization[1] := SynchronizationType.None;
+otg.PerDofSynchronization[2] := SynchronizationType.TimeSync;
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
+AssertEquals_LREAL(otg.Duration, 3.7885667284, 1E-6, message:='Duration not met');
+
+otg.PerDofSynchronization[0] := SynchronizationType.None;
+otg.PerDofSynchronization[1] := SynchronizationType.TimeSync;
+otg.PerDofSynchronization[2] := SynchronizationType.None;
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
+AssertEquals_LREAL(otg.Duration, 3.7885667284, 1E-6, message:='Duration not met');
+
+otg.Enabled[0] := TRUE;
+otg.Enabled[1] := FALSE;
+otg.Enabled[2] := TRUE;
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
+AssertEquals_LREAL(otg.Duration, 3.6578610221, 1E-6, message:='Duration not met');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
