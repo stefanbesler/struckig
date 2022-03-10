@@ -69,7 +69,7 @@ We are now done and in fact usually you will start from this point. To make the 
   </div>
   <div class="gallery-item">
     <figure>
-      <img src="../images/installation_addlibrary.png" alt="Add the struckig library"/>
+      <img src="../images/installation_addlibrary2.png" alt="Add the struckig library"/>
       <figcaption>Add the struckig library</figcaption>
     </figure>
   </div>  
