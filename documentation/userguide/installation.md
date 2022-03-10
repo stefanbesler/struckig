@@ -1,5 +1,7 @@
 # Getting started
 
+This guide will get you started with struckig. Here you will learn how to install the library into you TwinCAT environment and use the library to calculate and propagate through a very simple trajectory. Experienced users of TwinCAT, who have worked with third-party libraries before, may skip this part and directly jump to advanced examples.
+
 ## Installation
 
 The struckig library can either be downloaded from Github as a [precompiled library](https://github.com/stefanbesler/struckig/releases), or you can clone the [repository](https://github.com/stefanbesler/struckig) and compile the library yourself. This guide will focus on the former usecase.
@@ -106,3 +108,7 @@ This is probably the most basic application, which you can implement with the st
 >   * Minimum values for velocity and acceleration
 >   * Synchronization options for multiple axes
 >   * Control mode to calculate velocity profiles instead of position profiles for a controlled stop or variable-frequency-drives (VFD)
+
+> [!NOTE]
+> Compiling the library yourself and as .library instead of .compiled-library will make some internal variables available to you. While this may facilates debugging 
+> for tinkers , the compiled-library has purposly stripped to the variables and application engineer may find useful.
