@@ -40,7 +40,7 @@ Please note, that not all unittests from the [original](https://www.github.com/p
 
 # Continuous integration
 
-Continuous integration has not really arrived in Operational technology (OT) -- yet. Some colleguages from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publically available. Luckily, they agreed with me to let me try their tools as an
+Continuous integration has not really arrived in Operational technology (OT) -- yet. Some fellows from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publicly available. Luckily, they agreed with me to let me try their tools as an
 alpha/beta tester with this project. For more information on this topic, please contact [Zeugwerk](mailto:info@zeugwerk.at); In the meantime I
 thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build environment in this early development stage of their DevOps tools.
 
@@ -60,8 +60,8 @@ the `MinDuration` parameter is considered instead.
 PROGRAM Example
 VAR
   otg : Struckig.Ruckig(deltaTime:=0.001, dofs:=1) := (
-    Synchronization := SynchronizationType.TimeSync, // Set to TimeSync, otherwise MinDuration is ignored
-    MinDuration :=         10.0, // if MinDuration is set to a value > 0 it is considered in trajectory calculation
+    Synchronization :=     SynchronizationType.TimeSync, //< Set to TimeSync, otherwise MinDuration is ignored
+    MinDuration :=         10.0, //< if MinDuration > 0 and Synchronization is set to TimeSync this sets the duration of the trajectory (if the other limitations would yields a shorter duration)
     MaxVelocity :=         [ 2000.0 ],
     MaxAcceleration :=     [ 20000.0 ],
     MaxJerk :=             [ 800000.0 ],
