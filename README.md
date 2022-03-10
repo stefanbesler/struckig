@@ -71,7 +71,7 @@ VAR
     TargetPosition :=      [ 100.0 ],
     TargetVelocity :=      [ 0.0 ],
     TargetAcceleration :=  [ 0.0 ],
-    EnableAutoPropagate := TRUE
+    EnableAutoPropagate := TRUE //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
   );
 END_VAR
 
