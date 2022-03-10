@@ -11,7 +11,7 @@ This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to *
 
 ## Why GPLv3
 
-While a lot of open source projects nowadays use the **MIT license** instead of **GPLv3 license**, I decided to use the latter one for *struckig*. Free software, or as people like to call it open-source software, is not the same as **free** beer. You should either value its principles by using a copy-left license on your source code as well, or if you can not, for whatever reason, contribute to the community, which is using their **spare time** to implement this kind of software. For this project you can do this by supporting [pantor](https://ruckig.com/) by getting a pro version of ruckig or [contacting me for support](mailto:stefan@besler.me).
+While a lot of open source projects nowadays use the **MIT license** instead of **GPLv3 license**, I decided to use the latter one for *struckig*. Free software, or as people like to call it open-source software, is not the same as **free beer**. You should either value its principles by using a copy-left license on your source code as well, or if you can not you should contribute to the community, which is using their **spare time** to implement this kind of software. For this project you can do this by supporting [pantor by getting a pro version of ruckig](https://ruckig.com/) or [contacting me for support with struckig](mailto:stefan@besler.me).
 
 ## Install Struckig
 
