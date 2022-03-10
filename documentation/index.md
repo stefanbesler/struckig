@@ -15,7 +15,7 @@ While a lot of free software projects nowadays use the **MIT license** instead o
 
 ## Install Struckig
 
-Before you can use this library to blazingly fast calculating trajectory for your PLC project, you'll need to install it. You can either compile the library ourself or, easier, use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
+Before you can use this library to blazingly fast calculate trajectories for your PLC project, you'll need to install it. You can either compile the library ourself or, easier, use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
 
 <button onClick="location.href='userguide/installation.html'" type="button">Install.</button>
 
