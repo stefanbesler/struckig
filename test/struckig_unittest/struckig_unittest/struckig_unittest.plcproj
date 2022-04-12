@@ -115,6 +115,9 @@
     <SubObject Include="MinDurationTest.Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20" />
   </ItemGroup>
   <ItemGroup>
+    <PlaceholderResolution Include="Struckig">
+      <Resolution>struckig, 0.5.0.0 (Stefan Besler)</Resolution>
+    </PlaceholderResolution>
     <PlaceholderResolution Include="Tc2_Standard">
       <Resolution>Tc2_Standard, * (Beckhoff Automation GmbH)</Resolution>
     </PlaceholderResolution>
