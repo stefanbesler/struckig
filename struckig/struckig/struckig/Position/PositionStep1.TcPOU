@@ -110,7 +110,6 @@ THEN
 
     block.Pmin := validProfiles[idx_min];
     block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;
-    
     AddInterval(block.A, validProfiles[idx_min], validProfiles[idx_else_1]);
     CalculateBlock := TRUE;
     RETURN; 
@@ -154,8 +153,7 @@ DO
 END_FOR
 
 block.Pmin := validProfiles[idx_min];
-block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
-
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;
 IF (validProfileCounter = 2)
 THEN
   idx_else_1 := (idx_min + 1) MOD 3;
@@ -840,6 +838,11 @@ polynom[3] := -h2_h2/jMax_jMax;
 
 t_min := (a0 - af)/jMax;
 t_max := (aMax - aMin)/jMax;
+
+// h01 := a0_a0/jMax - 2*(v0-vMax);
+// h02 := SQRT((h01-h2)*h01) * ABS(jMax)/jMax;
+// t_min_vmax := SQRT((S*h01-h2-2*h02)/jMax;
+// t_min := MAX(t_min, t_min_vmax)
         
 Roots.SolveQuartMonic(ADR(polynom), 4, rootCount:=rootCount, roots:=root);
 FOR i:=0 TO rootCount
