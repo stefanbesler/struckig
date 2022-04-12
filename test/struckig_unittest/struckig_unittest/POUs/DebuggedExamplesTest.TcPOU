@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="DebuggedExamplesTest" Id="{e15861f7-5c4d-40dd-bbe1-0b0b2e41287f}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK DebuggedExamplesTest EXTENDS TcUnit.FB_TestSuite
 ]]></Declaration>

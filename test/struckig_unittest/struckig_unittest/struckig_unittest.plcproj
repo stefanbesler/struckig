@@ -5,7 +5,7 @@
     <ProjectGuid>{d01d1c3d-8e1a-4350-aedc-05eae2efcf27}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
-    <WriteProductVersion>true</WriteProductVersion>
+    <WriteProductVersion>false</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>struckig_unittest</Name>
     <ProgramVersion>3.1.4024.12</ProgramVersion>

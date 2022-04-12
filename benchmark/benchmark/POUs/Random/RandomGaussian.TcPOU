@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="RandomGaussian" Id="{f867848b-9e99-4c77-ad60-d50f0ee9a8da}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK RandomGaussian IMPLEMENTS IRandom
 VAR

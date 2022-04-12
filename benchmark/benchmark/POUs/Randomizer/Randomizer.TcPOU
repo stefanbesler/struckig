@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="Randomizer" Id="{bab5e9c4-5a1f-4e70-8b4d-c4488a914d49}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK Randomizer
 VAR

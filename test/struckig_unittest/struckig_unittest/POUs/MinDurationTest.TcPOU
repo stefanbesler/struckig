@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="MinDurationTest" Id="{ca9b5d56-8561-4a49-8e91-3b4374d172fa}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK MinDurationTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
@@ -28,7 +28,7 @@ Test_Trajectory_HasMinDuration_HasTargetVelocity_HasTargetAcceleration_20();
     <Method Name="Test_Trajectory_HasMinDuration_13" Id="{28d86ea9-80e3-414e-bacd-18c5f15bb4fe}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_13
 VAR_INST
-  ruckig : Struckig.Struckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 8.0,
@@ -136,7 +136,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_19" Id="{d57decd4-f0e9-4a01-8208-2097f96a7aa8}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_19
 VAR_INST
-  ruckig : Struckig.Struckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 3.0,
@@ -621,7 +621,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasMinDuration_HasTargetAcceleration_6" Id="{1ea6c1fe-3b92-4bd9-930a-c673722e6749}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasMinDuration_HasTargetAcceleration_6
 VAR_INST
-  ruckig : Struckig.Struckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,
     MinDuration := 10.0,

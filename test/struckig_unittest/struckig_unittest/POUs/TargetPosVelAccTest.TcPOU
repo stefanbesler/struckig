@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="TargetPosVelAccTest" Id="{673fcfe4-18e7-4de2-91f5-9e7dde125ab8}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TargetPosVelAccTest EXTENDS TcUnit.FB_TestSuite
 VAR

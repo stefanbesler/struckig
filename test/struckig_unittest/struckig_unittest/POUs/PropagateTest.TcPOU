@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="PropagateTest" Id="{7374ab56-ac7a-4638-bd0e-44ffdd482237}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK PropagateTest EXTENDS TcUnit.FB_TestSuite
 ]]></Declaration>

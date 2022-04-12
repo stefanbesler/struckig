@@ -3,16 +3,16 @@
   "solution": "struckig/struckig.sln",
   "plcs": [
     {
-      "version": "0.4.0.0",      
+      "version": "0.5.0.0",      
       "name": "struckig",
       "type": "Library",
       "frameworks": {},
       "references": {
-        "TC3.1.4024.17": [
-          "Tc2_System=3.4.24.0"
-        ],
         "TC3.1.4024.22": [
-          "Tc2_System=3.4.24.0"
+          "Tc2_System=*"
+        ],
+        "TC3.1.4024.25": [
+          "Tc2_System=*"
         ]
       },
       "repositories": [],

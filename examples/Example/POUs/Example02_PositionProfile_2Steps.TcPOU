@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="Example02_PositionProfile_2Steps" Id="{9bcc5091-27e8-40b3-85e4-3119402a5bb6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example02_PositionProfile_2Steps
 VAR

@@ -5,7 +5,7 @@
     <ProjectGuid>{09ead86d-0aec-4931-9eba-0e02a5aea5b1}</ProjectGuid>
     <SubObjectsSortedByName>True</SubObjectsSortedByName>
     <DownloadApplicationInfo>true</DownloadApplicationInfo>
-    <WriteProductVersion>true</WriteProductVersion>
+    <WriteProductVersion>false</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>benchmark</Name>
     <ProgramVersion>3.1.4023.0</ProgramVersion>

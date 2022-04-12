@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="Example06_PhaseSynchronization" Id="{4ad92911-ea39-417e-bb7d-fd1ee164d4a9}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM Example06_PhaseSynchronization
 VAR

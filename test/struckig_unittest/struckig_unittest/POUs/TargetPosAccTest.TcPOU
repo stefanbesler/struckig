@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.9">
+<TcPlcObject Version="1.1.0.1">
   <POU Name="TargetPosAccTest" Id="{8107848c-6e84-4afc-a3b8-763285faacae}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK TargetPosAccTest EXTENDS TcUnit.FB_TestSuite
 VAR
@@ -86,7 +86,7 @@ TEST_FINISHED();]]></ST>
     <Method Name="Test_Trajectory_HasTargetAcceleration_26" Id="{0b0fee4f-818d-4a5e-90f5-97085bb3c175}">
       <Declaration><![CDATA[METHOD Test_Trajectory_HasTargetAcceleration_26
 VAR_INST
-  ruckig : Struckig.Struckig(0.001, 3) := (
+  ruckig : Struckig.Otg(0.001, 3) := (
   
     Synchronization := SynchronizationType.TimeSync,        
     MaxVelocity := [ 2000.00000000000000000000, 2000.00000000000000000000, 2000.00000000000000000000 ],
