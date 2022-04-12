@@ -192,7 +192,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[State := TrajectoryState.Busy;
 
-IF NOT ValidateInput()
+IF NOT ValidateInput(currentState:=FALSE, targetState:=TRUE)
 THEN
   Calculate := TrajectoryErrorCode.InvalidInput;
   RETURN;
@@ -683,11 +683,30 @@ END_FOR
       </Implementation>
     </Method>
     <Method Name="ValidateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
-      <Declaration><![CDATA[{attribute 'conditionalshow'}
+      <Declaration><![CDATA[/// To check that *struckig* is able to generate a trajectory before the actual calculation step,
+/// ```st
+/// ruckig.ValidateInput(input, currentState: FALSE, targetState: TRUE);
+/// // returns boolean
+/// ```
+/// returns `FALSE` if an input is not valid. The two boolean arguments check that the current or target state are 
+/// within the limits. The check includes a typical catch of jerk-limited trajectory generation: 
+/// When the current state is at maximal velocity, any positive acceleration will inevitable lead to a velocity violation 
+/// *at a future timestep*. In general, this condition is fulfilled when
+/// ```
+/// Abs(acceleration) <= Sqrt(2 * max_jerk * (max_velocity - Abs(velocity))).
+/// ```
+/// If both arguments are set to true, the calculated trajectory is guaranteed to be *within the kinematic limits throughout* 
+/// its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.
+{attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
+VAR_INPUT
+  currentState : BOOL;
+  targetState : BOOL;
+END_VAR
 VAR
-  i : INT;
-  min_velocity, v_diff, max_target_acceleration : LREAL;
+  i, dofsEnd : INT;
+  aMin, vMin, a0, af, v0, vf : LREAL;
+  ci : ControlInterfaceType;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Dofs = 0
@@ -695,80 +714,112 @@ THEN
   RETURN;
 END_IF
 
-FOR i:=0 TO _dofsEnd
+dofsEnd := Dofs-1;
+FOR i:=0 TO dofsEnd
 DO
-  IF (ControlInterface = ControlInterfaceType.Position AND_THEN CurrentPosition[i] <> CurrentPosition[i]) THEN // isnan
+
+  IF MaxJerk[i] <> MaxJerk[i] OR_ELSE // isnan
+     MaxJerk[i] < Constants.Minimum
+  THEN
+    RETURN;
+	END_IF
+
+  IF MaxAcceleration[i] <> MaxAcceleration[i] OR_ELSE // isnan
+     MaxAcceleration[i] <= Constants.Minimum
+  THEN    
+    RETURN;
+  END_IF
+
+  aMin := SEL(MinAcceleration[i] = 0, MinAcceleration[i] ,-MaxAcceleration[i]);
+  IF aMin <> aMin OR_ELSE // isnan
+     aMin >= -Constants.Minimum
+  THEN    
     RETURN;
   END_IF
   
-  IF (ControlInterface = ControlInterfaceType.Position AND_THEN MaxVelocity[i] <> MaxVelocity[i]) THEN // isnan
+  a0 := CurrentAcceleration[i];
+  af := TargetAcceleration[i];
+  IF a0 <> a0 OR_ELSE af <> af // isnan
+  THEN
     RETURN;
-  END_IF  
-
-  IF (ControlInterface = ControlInterfaceType.Position AND_THEN MaxVelocity[i] <= Constants.Minimum) THEN
-    RETURN;
-  END_IF
-
-  IF (MinVelocity[i] <> 0 AND_THEN MinVelocity[i] >= -Constants.Minimum) THEN
-    RETURN;
-  END_IF
-
-  IF (MaxAcceleration[i] <> MaxAcceleration[i]) THEN // isnan
+	END_IF
+  
+  IF currentState AND_THEN (a0 > MaxAcceleration[i] OR_ELSE a0 < aMin)
+  THEN
     RETURN;
   END_IF
   
-  IF (MaxAcceleration[i] <= Constants.Minimum) THEN
+  IF targetState AND_THEN (af > MaxAcceleration[i] OR_ELSE af < aMin)
+  THEN
     RETURN;
   END_IF
-
-  IF (MinAcceleration[i] <> 0 AND_THEN MinAcceleration[i] >= -Constants.Minimum) THEN
-    RETURN;
-  END_IF
-
-  IF (MaxJerk[i] <= Constants.Minimum) THEN
-    RETURN;
-  END_IF
-
-  IF (ControlInterface = ControlInterfaceType.position AND_THEN TargetPosition[i] <> TargetPosition[i]) THEN
-    RETURN;
-  END_IF
-
-  IF (ControlInterface = ControlInterfaceType.position) THEN
-    IF (MinVelocity[i] <> 0) THEN
-      IF (TargetVelocity[i] > MaxVelocity[i] OR_ELSE TargetVelocity[i] < MinVelocity[i]) THEN
-          RETURN;
-      END_IF
   
-    ELSE
-      IF (ABS(TargetVelocity[i]) > MaxVelocity[i]) THEN
-          RETURN;
-      END_IF
-    END_IF
-  END_IF
-
-  IF (MinAcceleration[i] <> 0) THEN
-    IF (TargetAcceleration[i] > MaxAcceleration[i] OR_ELSE TargetAcceleration[i] < MinAcceleration[i]) THEN
-        RETURN;
-    END_IF
-
-  ELSE
-    IF (ABS(TargetAcceleration[i]) > MaxAcceleration[i]) THEN
-        RETURN;
-    END_IF
-  END_IF
-
-  // Target acceleration needs to be accessible from "above" and "below"
-  IF (ControlInterface = ControlInterfaceType.position) THEN
-    min_velocity := SEL(MinVelocity[i] <> 0, -MaxVelocity[i], MinVelocity[i]);
-    v_diff := MIN(ABS(MaxVelocity[i] - TargetVelocity[i]), ABS(min_velocity - TargetVelocity[i]));
-    max_target_acceleration := SQRT(2 * MaxJerk[i] * v_diff);
-    IF (ABS(TargetAcceleration[i]) > max_target_acceleration) THEN
+  v0 := CurrentVelocity[i];
+  vf := TargetVelocity[i];
+  IF v0 <> v0 OR_ELSE vf <> vf // isnan
+  THEN
+    RETURN;
+	END_IF
+  
+  ci := SEL(PerDofControlInterface[i] = ControlInterfaceType.Undefined, PerDofControlInterface[i], ControlInterface);
+  IF (ci = ControlInterfaceType.position)
+  THEN
+  
+    IF CurrentPosition[i] <> CurrentPosition[i] OR_ELSE //isnan
+       TargetPosition[i] <> TargetPosition[i] //isnan
+    THEN
       RETURN;
     END_IF
+    
+    IF MaxVelocity[i] <> MaxVelocity[i] OR_ELSE // isnan
+       MaxVelocity[i] <= Constants.Minimum      
+    THEN
+      RETURN;
+		END_IF
   END_IF
+  
+  vMin := SEL(MinVelocity[i] = 0, MinVelocity[i] ,-MaxVelocity[i]);
+  IF vMin <> vMin OR_ELSE // isnan
+     vMin >= -Constants.Minimum      
+  THEN
+    RETURN;
+  END_IF
+  
+  IF (currentState AND_THEN (v0 > MaxVelocity[i] OR_ELSE v0 < vMin))
+  THEN
+    RETURN;
+  END_IF
+  
+  IF (targetState AND_THEN (vf > MaxVelocity[i] OR_ELSE vf < vMin))
+  THEN
+    RETURN;
+  END_IF
+  
+  IF (currentState AND_THEN ((a0 > 0 AND_THEN velocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (a0 < 0 AND_THEN velocityAtZero(v0, a0, -MaxJerk[i]) < vMin)))
+  THEN
+    RETURN;
+	END_IF
+  
+  IF (targetState AND_THEN ((af < 0 AND_THEN velocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (af > 0 AND_THEN velocityAtZero(vf, af, -MaxJerk[i]) < vMin)))
+  THEN
+    RETURN;
+	END_IF
+
 END_FOR
 
 ValidateInput := TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="velocityAtZero" Id="{c17f4a08-90ee-4adc-b921-495797f60094}">
+      <Declaration><![CDATA[METHOD INTERNAL velocityAtZero : LREAL
+VAR_INPUT
+  v0 : LREAL;
+  a0 : LREAL;
+  j : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[velocityAtZero := v0 + (a0 * a0)/(2 * j);]]></ST>
       </Implementation>
     </Method>
   </POU>
