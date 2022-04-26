@@ -59,7 +59,7 @@ the `MinDuration` parameter is considered instead.
 PROGRAM Example
 VAR
   otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
-    EnableAutoPropagate := TRUE //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
+    EnableAutoPropagate := TRUE, //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
     Synchronization :=     SynchronizationType.TimeSync, //< Set to TimeSync, otherwise MinDuration is ignored
     MinDuration :=         10.0, //< if MinDuration > 0 and Synchronization is set to TimeSync this sets the duration of the trajectory (if the other limitations would yields a shorter duration)
     MaxVelocity :=         [ 2000.0 ],
@@ -70,7 +70,7 @@ VAR
     CurrentAcceleration := [ 0.0 ],
     TargetPosition :=      [ 100.0 ],
     TargetVelocity :=      [ 0.0 ],
-    TargetAcceleration :=  [ 0.0 ],
+    TargetAcceleration :=  [ 0.0 ]
   );
 END_VAR
 
