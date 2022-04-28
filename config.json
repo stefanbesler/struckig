@@ -1,22 +1,26 @@
 {
   "fileversion": 1,
   "solution": "struckig/struckig.sln",
-  "plcs": [
+  "projects": [
     {
-      "version": "0.5.0.0",      
-      "name": "struckig",
-      "type": "Library",
-      "frameworks": {},
-      "references": {
-        "TC3.1.4024.22": [
-          "Tc2_System=*"
-        ],
-        "TC3.1.4024.25": [
-          "Tc2_System=*"
-        ]
-      },
-      "repositories": [],
-      "bindings": {}
+      "plcs": [
+        {
+          "version": "0.5.0.0",      
+          "name": "struckig",
+          "type": "Library",
+          "frameworks": {},
+          "references": {
+            "TC3.1.4024.22": [
+              "Tc2_System=*"
+            ],
+            "TC3.1.4024.25": [
+              "Tc2_System=*"
+            ]
+          },
+          "repositories": [],
+          "bindings": {}
+        }
+      ]
     }
   ]
 }
