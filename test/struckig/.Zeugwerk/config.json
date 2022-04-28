@@ -1,26 +1,31 @@
 {
   "fileversion": 1,
   "solution": "struckig_unittest.sln",
-  "plcs": [
-    {
-      "version": "0.5.0.0",      
-      "name": "struckig_unittest",
-      "type": "Application",
-      "frameworks": {},
-      "references": {
-        "TC3.1.4024.22": [
-          "struckig=0.5.0.0",
-          "Tc3_Module=*",
-          "TcUnit=*"
-        ],
-        "TC3.1.4024.25": [
-          "struckig=0.5.0.0",
-          "Tc3_Module=*",
-          "TcUnit=*"
-        ]
-      },
-      "repositories": [],
-      "bindings": {}
+  "projects": [
+	{
+	  "name": "struckig_unittest",
+	  "plcs": [
+		{
+          "version": "0.5.0.0",
+          "name": "struckig_unittest",
+          "type": "Application",
+          "frameworks": {},
+          "references": {
+            "TC3.1.4024.22": [
+              "struckig=0.5.0.0",
+              "Tc3_Module=*",
+              "TcUnit=*"
+            ],
+            "TC3.1.4024.25": [
+              "struckig=0.5.0.0",
+              "Tc3_Module=*",
+              "TcUnit=*"
+            ]
+          },
+          "repositories": [],
+          "bindings": {}
+        }
+      ]
     }
   ]
 }
