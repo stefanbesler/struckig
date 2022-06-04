@@ -70,7 +70,7 @@ END_VAR]]></Declaration>
       _l.FillMax(ADR(_otg.MaxAcceleration), Dofs[_dt], ADR(_otg.TargetAcceleration));
       _l.Fill(ADR(_otg.MaxJerk), Dofs[_dt]);
   
-      IF NOT _otg.ValidateInput()
+      IF NOT _otg.ValidateInput(FALSE, TRUE)
       THEN
         RETURN;
       END_IF
