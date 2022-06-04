@@ -22,6 +22,7 @@
     <DefaultNamespace>Struckig</DefaultNamespace>
     <Author>Stefan Besler and contributers</Author>
     <Company>Stefan Besler</Company>
+    <CompilerDefines>ZEUGWERK_TWINCAT_3_1_4024_22</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Struckig\_DataTypes" />
