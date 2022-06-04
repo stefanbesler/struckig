@@ -130,7 +130,7 @@ END_VAR]]></Declaration>
   // Keep constant acceleration
   //new_section := 1;
   FOR dof:=0 TO _dofsEnd DO
-    Integrate(t - (_profiles[dof].Brake.Duration + _profiles[dof].t_sum[6]), _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    Integrate(t - (_profiles[dof].Brake.Duration + _profiles[dof].t_sum[6]), _profiles[dof].p[7], _profiles[dof].v[7], _profiles[dof].a[7], 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
   END_FOR
   RETURN;
 END_IF
@@ -172,7 +172,7 @@ FOR dof:=0 TO _dofsEnd DO
   // Non-time synchronization
   IF (t_diff >= p.t_sum[6]) THEN
     // Keep constant acceleration
-    Integrate(t_diff - p.t_sum[6], p.pf, p.vf, p.af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    Integrate(t_diff - p.t_sum[6], p.p[7], p.v[7], p.a[7], 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
     CONTINUE;
   END_IF
 
@@ -218,7 +218,9 @@ DO
   
   IF NOT Enabled[dof]
   THEN
-    p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof]);
+    p.p[7] := CurrentPosition[dof];
+    p.v[7] := CurrentVelocity[dof];
+    p.a[7] := CurrentAcceleration[dof];    
     p.t_sum[6] := 0.0;
     _blocks[dof].Tmin := 0.0;
     _blocks[dof].A.IsUsed := FALSE;
