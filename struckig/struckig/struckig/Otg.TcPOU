@@ -234,11 +234,11 @@ DO
   CASE _inp_per_dof_control_interface[dof]
   OF
     ControlInterfaceType.Position:
-      p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.Brake.t, p.Brake.j);
+      p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
       
     ControlInterfaceType.Velocity:
-      p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.Brake.t, p.Brake.j);
+      p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);      
 	END_CASE
   
