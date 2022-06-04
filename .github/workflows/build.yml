@@ -28,6 +28,6 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
-          name: struckig
+          name: Struckig
           path: |
             **/*.compiled-library    

@@ -2,7 +2,7 @@
 # TcXaeShell Solution File, Format Version 11.00
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{DFBE7525-6864-4E62-8B2E-D530D69D9D96}") = "struckig", "struckig.tspproj", "{F2F4A598-3DF1-4B86-AC4F-DEEAC395829C}"
+Project("{DFBE7525-6864-4E62-8B2E-D530D69D9D96}") = "Struckig", "Struckig.tspproj", "{F2F4A598-3DF1-4B86-AC4F-DEEAC395829C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

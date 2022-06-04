@@ -10,9 +10,9 @@
 			</Tasks>
 		</System>
 		<Plc>
-			<Project GUID="{D01D1C3D-8E1A-4350-AEDC-05EAE2EFCF27}" Name="struckig_unittest" PrjFilePath="struckig_unittest\struckig_unittest.plcproj" TmcFilePath="struckig_unittest\struckig_unittest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="struckig_unittest\struckig_unittest.tmc">
-					<Name>struckig_unittest Instance</Name>
+			<Project GUID="{D01D1C3D-8E1A-4350-AEDC-05EAE2EFCF27}" Name="Struckig_unittest" PrjFilePath="Struckig_unittest\Struckig_unittest.plcproj" TmcFilePath="Struckig_unittest\Struckig_unittest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Struckig_unittest\Struckig_unittest.tmc">
+					<Name>Struckig_unittest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
 						<Context>

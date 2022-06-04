@@ -1,13 +1,13 @@
 {
   "fileversion": 1,
-  "solution": "struckig/struckig.sln",
+  "solution": "Struckig/Struckig.sln",
   "projects": [
     {
-      "name": "struckig",
+      "name": "Struckig",
       "plcs": [
         {
           "version": "0.6.0.0",
-          "name": "struckig",
+          "name": "Struckig",
           "type": "Library",
           "frameworks": {},
           "references": {

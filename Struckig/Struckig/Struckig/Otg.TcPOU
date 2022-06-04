@@ -26,7 +26,7 @@ VAR_OUTPUT
   State : TrajectoryState;  
 END_VAR
 VAR
-  _newSection : INT; //< not used in struckig, ruckig pro feature
+  _newSection : INT; //< not used in Struckig, ruckig pro feature
   _blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;  
   _profiles : ARRAY[0..ParameterList.MaxDoFs] OF ProfileDesc;
   _independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;	
@@ -685,7 +685,7 @@ END_FOR
       </Implementation>
     </Method>
     <Method Name="ValidateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
-      <Declaration><![CDATA[/// To check that *struckig* is able to generate a trajectory before the actual calculation step,
+      <Declaration><![CDATA[/// To check that *Struckig* is able to generate a trajectory before the actual calculation step,
 /// ```st
 /// ruckig.ValidateInput(input, currentState: FALSE, targetState: TRUE);
 /// // returns boolean

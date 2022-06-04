@@ -24,15 +24,15 @@
     <Company>Stefan Besler</Company>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="struckig\_DataTypes" />
-    <Folder Include="struckig" />
-    <Folder Include="struckig\Block" />
-    <Folder Include="struckig\BrakeProfile" />
-    <Folder Include="struckig\Math" />
-    <Folder Include="struckig\Velocity" />
-    <Folder Include="struckig\Position" />
-    <Folder Include="struckig\Profile\_DataTypes" />
-    <Folder Include="struckig\Profile" />
+    <Folder Include="Struckig\_DataTypes" />
+    <Folder Include="Struckig" />
+    <Folder Include="Struckig\Block" />
+    <Folder Include="Struckig\BrakeProfile" />
+    <Folder Include="Struckig\Math" />
+    <Folder Include="Struckig\Velocity" />
+    <Folder Include="Struckig\Position" />
+    <Folder Include="Struckig\Profile\_DataTypes" />
+    <Folder Include="Struckig\Profile" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.TcGVL">
@@ -43,87 +43,87 @@
       <SubType>Code</SubType>
       <LinkAlways>true</LinkAlways>
     </Compile>
-    <Compile Include="struckig\Block\BlockInterval.TcDUT">
+    <Compile Include="Struckig\Block\BlockInterval.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Block\Block.TcDUT">
+    <Compile Include="Struckig\Block\Block.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\BrakeProfile\BrakeProfile.TcPOU">
+    <Compile Include="Struckig\BrakeProfile\BrakeProfile.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Integrate.TcPOU">
+    <Compile Include="Struckig\Integrate.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\BubbleSortLreal.TcPOU">
+    <Compile Include="Struckig\Math\BubbleSortLreal.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\LrealBits.TcPOU">
+    <Compile Include="Struckig\Math\LrealBits.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\LrealFromBits.TcPOU">
+    <Compile Include="Struckig\Math\LrealFromBits.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\Power.TcPOU">
+    <Compile Include="Struckig\Math\Power.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\Power2.TcPOU">
+    <Compile Include="Struckig\Math\Power2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\Cbrt.TcPOU">
+    <Compile Include="Struckig\Math\Cbrt.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Position\PositionStep1.TcPOU">
+    <Compile Include="Struckig\Position\PositionStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Position\PositionStep2.TcPOU">
+    <Compile Include="Struckig\Position\PositionStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Profile\ProfileDesc.TcPOU">
+    <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Profile\_DataTypes\PositionExtremaDesc.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\PositionExtremaDesc.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Profile\_DataTypes\ProfileDirection.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileDirection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Profile\_DataTypes\ProfileJerkSigns.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSigns.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Profile\_DataTypes\ProfileLimits.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileLimits.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Math\Roots.TcPOU">
+    <Compile Include="Struckig\Math\Roots.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Otg.TcPOU">
+    <Compile Include="Struckig\Otg.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Velocity\VelocityStep1.TcPOU">
+    <Compile Include="Struckig\Velocity\VelocityStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\Velocity\VelocityStep2.TcPOU">
+    <Compile Include="Struckig\Velocity\VelocityStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\_DataTypes\ControlInterfaceType.TcDUT">
+    <Compile Include="Struckig\_DataTypes\ControlInterfaceType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\_DataTypes\DiscretizationType.TcDUT">
+    <Compile Include="Struckig\_DataTypes\DiscretizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\_DataTypes\SynchronizationType.TcDUT">
+    <Compile Include="Struckig\_DataTypes\SynchronizationType.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\_DataTypes\TrajectoryErrorCode.TcDUT">
+    <Compile Include="Struckig\_DataTypes\TrajectoryErrorCode.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="struckig\_DataTypes\TrajectoryState.TcDUT">
+    <Compile Include="Struckig\_DataTypes\TrajectoryState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="struckig.tmc">
+    <None Include="Struckig.tmc">
       <SubType>Content</SubType>
     </None>
   </ItemGroup>

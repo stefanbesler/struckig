@@ -200,5 +200,5 @@ if __name__ == '__main__':
         print(t)
         tests.append(t)
         
-    with open('Struckig_unittest/struckig_unittest/POUs/GeneratedTest.TcPOU', 'w') as f:
+    with open('Struckig_unittest/Struckig_unittest/POUs/GeneratedTest.TcPOU', 'w') as f:
         f.write(tmpl.render(methods=tests).strip())

@@ -1,18 +1,18 @@
 {
   "fileversion": 1,
-  "solution": "struckig_unittest.sln",
+  "solution": "Struckig_unittest.sln",
   "projects": [
 	{
-	  "name": "struckig_unittest",
+	  "name": "Struckig_unittest",
 	  "plcs": [
 		{
           "version": "0.6.0.0",
-          "name": "struckig_unittest",
+          "name": "Struckig_unittest",
           "type": "Application",
           "frameworks": {},
           "references": {
             "*": [
-              "struckig=0.6.0.0",
+              "Struckig=0.6.0.0",
               "Tc3_Module=*",
               "TcUnit=*"
             ]

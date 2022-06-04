@@ -10,11 +10,11 @@
   <a href="https://github.com/stefanbesler/struckig/actions">
     <img src="https://github.com/stefanbesler/struckig/actions/workflows/build.yml/badge.svg" alt="Build/Test">
   </a>
-  <a href="https://stefanbesler.github.io/struckig/struckig/Constants.html">
+  <a href="https://stefanbesler.github.io/struckig/Struckig/Constants.html">
     <img src="https://github.com/stefanbesler/struckig/actions/workflows/documentation.yml/badge.svg" alt="Documentation">
   </a>  
   <a href="https://github.com/stefanbesler/struckig/issues">
-    <img src="https://img.shields.io/github/issues/stefanbesler/struckig.svg" alt="Issues">
+    <img src="https://img.shields.io/github/issues/stefanbesler/Struckig.svg" alt="Issues">
   </a>
   <a href="https://github.com/stefanbesler/struckig/releases">
     <img src="https://img.shields.io/github/v/release/stefanbesler/ruckig.svg?include_prereleases&sort=semver" alt="Releases">
@@ -33,7 +33,7 @@ The original project, `ruckig` is a submodule of this repository. The commit-has
 
 # Unittests
 
-This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `./struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
+This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `.test/Struckig/Struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
 
 Please note, that not all unittests from the [original](https://www.github.com/pantor/ruckig) source code are ported yet, but only the `KnownExamples` and `SecondaryFeatures` tests.
 
@@ -45,7 +45,7 @@ thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build en
 
 # Documentation
 
-The source code and usage documentation of this library is hosted on [https://stefanbesler.github.io/struckig/](https://stefanbesler.github.io/struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
+The source code and usage documentation of this library is hosted on [https://stefanbesler.github.io/Struckig/](https://stefanbesler.github.io/Struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
 
 # Example: Create time-based profile for 1 axis
 
