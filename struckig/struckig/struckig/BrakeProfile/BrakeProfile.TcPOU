@@ -53,6 +53,36 @@ ELSE
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Finalize" Id="{0fcf778f-80e5-4f55-9da3-b7c243c42728}">
+      <Declaration><![CDATA[METHOD Finalize
+VAR_IN_OUT
+  ps : LREAL;
+  vs : LREAL;
+  as : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Duration := t[0] + t[1];
+        
+IF t[0] > 0
+THEN
+  p[0] := ps;
+  v[0] := vs;
+  a[0] := as;
+  Integrate(t[0], p0:=ps, v0:=vs, a0:=as, j:=j[0], p:=ps, v:=vs, a:=as);
+END_IF
+
+IF t[1] > 0
+THEN
+  p[1] := ps;
+  v[1] := vs;
+  a[1] := as;
+  Integrate(t[1], p0:=ps, v0:=vs, a0:=as, j:=j[1], p:=ps, v:=vs, a:=as);
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="PositionBrakeTrajectory" Id="{95c53b9d-c397-464e-b5fb-c3d4cad36b7c}">
       <Declaration><![CDATA[METHOD PositionBrakeTrajectory
 VAR_INPUT

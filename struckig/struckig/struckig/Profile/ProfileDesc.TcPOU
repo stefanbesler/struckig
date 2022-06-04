@@ -12,7 +12,7 @@ VAR_INPUT
   a, v, p : ARRAY[0..7] OF LREAL;
 
   pf, vf, af : LREAL; //! Target (final) kinematic state
-  brake : BrakeProfile; //! Brake sub-profile
+  Brake, Accel : BrakeProfile; //! Brake sub-profiles
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -441,22 +441,6 @@ THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Integrate" Id="{801ace88-741b-4b24-8760-4124fdd6b2b6}">
-      <Declaration><![CDATA[ /// Integrate with constant jerk for duration t. Returns new position, new velocity, and new acceleration.
-METHOD Integrate
-VAR_INPUT
-  t, p0, v0, a0, j  : LREAL;
-END_VAR
-VAR_IN_OUT
-  p, v, a : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[p := p0 + t * (v0 + t * (a0 * 0.5 + t * j / 6));
-v := v0 + t * (a0 + t * j * 0.5);
-a := a0 + t * j;]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="PositionExtrema" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
       <Declaration><![CDATA[METHOD PositionExtrema : PositionExtremaDesc
 VAR_INPUT
@@ -469,15 +453,15 @@ END_VAR]]></Declaration>
         <ST><![CDATA[PositionExtrema.Minimum := Constants.Infinity;
 PositionExtrema.Maximum := -Constants.Infinity;
 
-IF brake.Duration > 0.0
+IF Brake.Duration > 0.0
 THEN
-  IF (brake.t[0] > 0.0)
+  IF (Brake.t[0] > 0.0)
   THEN
-    CheckStepForPositionExtremum(0.0, brake.t[0], brake.p[0], brake.v[0], brake.a[0], brake.j[0], PositionExtrema);
+    CheckStepForPositionExtremum(0.0, Brake.t[0], Brake.p[0], Brake.v[0], Brake.a[0], Brake.j[0], PositionExtrema);
   
-    IF (brake.t[1] > 0.0) 
+    IF (Brake.t[1] > 0.0) 
     THEN
-      CheckStepForPositionExtremum(brake.t[0], brake.t[1], brake.p[1], brake.v[1], brake.a[1], brake.j[1], PositionExtrema);            
+      CheckStepForPositionExtremum(Brake.t[0], Brake.t[1], Brake.p[1], Brake.v[1], Brake.a[1], Brake.j[1], PositionExtrema);            
     END_IF
   END_IF
 END_IF
@@ -490,20 +474,20 @@ DO
     t_current_sum := t_sum[i-1];
 	END_IF
   
-  CheckStepForPositionExtremum(t_current_sum + brake.Duration, t[i], p[i], v[i], a[i], j[i], PositionExtrema);
+  CheckStepForPositionExtremum(t_current_sum + Brake.Duration, t[i], p[i], v[i], a[i], j[i], PositionExtrema);
 END_FOR 
 
 IF (pf < PositionExtrema.Minimum)
 THEN
   PositionExtrema.Minimum := pf;
-  PositionExtrema.Tmin := t_sum[6] + brake.Duration;
+  PositionExtrema.Tmin := t_sum[6] + Brake.Duration;
 END_IF 
 
 
 IF (pf > PositionExtrema.Maximum) 
 THEN
   PositionExtrema.Maximum := pf;
-  PositionExtrema.Tmax := t_sum[6] + brake.Duration;
+  PositionExtrema.Tmax := t_sum[6] + Brake.Duration;
 END_IF
 
 

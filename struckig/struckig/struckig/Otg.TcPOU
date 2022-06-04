@@ -130,7 +130,7 @@ END_VAR]]></Declaration>
   // Keep constant acceleration
   //new_section := 1;
   FOR dof:=0 TO _dofsEnd DO
-    _profiles[0].Integrate(t - (_profiles[dof].brake.Duration + _profiles[dof].t_sum[6]), _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    Integrate(t - (_profiles[dof].Brake.Duration + _profiles[dof].t_sum[6]), _profiles[dof].pf, _profiles[dof].vf, _profiles[dof].af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
   END_FOR
   RETURN;
 END_IF
@@ -140,25 +140,40 @@ FOR dof:=0 TO _dofsEnd DO
   p REF= _profiles[dof];
 
   t_diff := t;
-  IF (p.brake.Duration > 0) THEN
-    IF (t_diff < p.brake.Duration) THEN
-      index := SEL(t_diff < p.brake.t[0], 1, 0);
+  
+  // Brake pre-trajectory
+  IF (p.Brake.Duration > 0) THEN
+    IF (t_diff < p.Brake.Duration) THEN
+      index := SEL(t_diff < p.Brake.t[0], 1, 0);
       IF (index > 0) THEN
-        t_diff := t_diff - p.brake.t[index - 1];
+        t_diff := t_diff - p.Brake.t[index - 1];
       END_IF
 
-      _profiles[0].Integrate(t_diff, p.brake.p[index], p.brake.v[index], p.brake.a[index], p.brake.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+      Integrate(t_diff, p.Brake.p[index], p.Brake.v[index], p.Brake.a[index], p.Brake.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
       CONTINUE;
     ELSE
-      t_diff := t_diff - p.brake.Duration;
+      t_diff := t_diff - p.Brake.Duration;
     END_IF
   END_IF
+  
+// Accel post-trajectory
+// if (new_section == profiles.size() - 1 && p.accel.duration > 0) {
+//     if (t_diff_dof > p.t_sum[6]) {
+//         const size_t index = (t_diff_dof < p.accel.t[0]) ? 1 : 0;
+//         if (index > 0) {
+//             t_diff_dof -= p.accel.t[index - 1];
+//         }
+
+//         std::tie(new_position[dof], new_velocity[dof], new_acceleration[dof]) = integrate(t_diff_dof, p.accel.p[index], p.accel.v[index], p.accel.a[index], p.accel.j[index]);
+//         continue;
+//     }
+// }
 
   // Non-time synchronization
   IF (t_diff >= p.t_sum[6]) THEN
     // Keep constant acceleration
-    _profiles[0].Integrate(t_diff - p.t_sum[6], p.pf, p.vf, p.af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
-    continue;
+    Integrate(t_diff - p.t_sum[6], p.pf, p.vf, p.af, 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    CONTINUE;
   END_IF
 
   FOR index:=0 TO 6 DO
@@ -172,7 +187,7 @@ FOR dof:=0 TO _dofsEnd DO
     t_diff := t_diff - p.t_sum[index - 1];
   END_IF
 
-  p.Integrate(t_diff, p.p[index], p.v[index], p.a[index], p.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+  Integrate(t_diff, p.p[index], p.v[index], p.a[index], p.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -180,12 +195,11 @@ END_FOR]]></ST>
       <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
 VAR_INST
   dof, i : INT;
-  p0s, v0s, a0s : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   p, p_limiting : REFERENCE TO ProfileDesc;
   found_profile : BOOL;
   limiting_dof : INT := -1; // The DoF that doesn't need step 2
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
-   new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   t_profile : LREAL;
   noneSynchronizationCount, phaseSychronizationIndex, phaseOrNoneSychronizationCount, positionControlInterfaceCount : INT;
 END_VAR]]></Declaration>
@@ -204,9 +218,7 @@ DO
   
   IF NOT Enabled[dof]
   THEN
-    p.pf := CurrentPosition[dof];
-    p.vf := CurrentVelocity[dof];
-    p.af := CurrentAcceleration[dof];  
+    p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof]);
     p.t_sum[6] := 0.0;
     _blocks[dof].Tmin := 0.0;
     _blocks[dof].A.IsUsed := FALSE;
@@ -222,39 +234,23 @@ DO
   CASE _inp_per_dof_control_interface[dof]
   OF
     ControlInterfaceType.Position:
-      p.brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.brake.t, p.brake.j);
+      p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.Brake.t, p.Brake.j);
+      p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
       
     ControlInterfaceType.Velocity:
-      p.brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.brake.t, p.brake.j);
+      p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], p.Brake.t, p.Brake.j);
+      p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);      
 	END_CASE
   
-  p.brake.Duration := p.brake.t[0] + p.brake.t[1];
-  p0s[dof] := CurrentPosition[dof];
-  v0s[dof] := CurrentVelocity[dof];
-  a0s[dof] := CurrentAcceleration[dof];  
-  
-  // Integrate brake pre-trajectory
-  FOR i := 0 TO 1
-  DO
-    IF p.brake.t[i] <= 0
-    THEN
-      EXIT;
-    END_IF
-    
-    p.brake.p[i] := p0s[dof];
-    p.brake.v[i] := v0s[dof];
-    p.brake.a[i] := a0s[dof];
-    p.Integrate(p.brake.t[i], p0s[dof], v0s[dof], a0s[dof], p.brake.j[i], p:=p0s[dof], v:=v0s[dof], a:=a0s[dof]);
-  
-	END_FOR
+  p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
 
   CASE _inp_per_dof_control_interface[dof]
   OF
     ControlInterfaceType.Position:
-      _positionStep1.Set(p0s[dof], v0s[dof], a0s[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      _positionStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       found_profile := _positionStep1.Get(p, _blocks[dof]);
     ControlInterfaceType.Velocity:
-      _velocityStep1.Set(p0s[dof], v0s[dof], a0s[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      _velocityStep1.Set(p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       found_profile := _velocityStep1.Get(p, _blocks[dof]);
 	END_CASE
   
@@ -264,7 +260,7 @@ DO
     RETURN; 
 	END_IF
 
-  _independentMinDurations[dof] := _blocks[dof].Pmin.brake.Duration + _blocks[dof].Tmin;
+  _independentMinDurations[dof] := _blocks[dof].Pmin.Brake.Duration + _blocks[dof].Tmin;
 END_FOR
 
 
@@ -332,11 +328,10 @@ IF phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsE
       END_IF
 
       p REF= _profiles[dof];
-      t_profile := Duration - p.brake.Duration;
+      t_profile := Duration - p.Brake.Duration - p.Accel.Duration;
 
       p.t := p_limiting.t; // Copy timing information from limiting DoF
       p.JerkSigns := p_limiting.JerkSigns;
-      p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
 
       // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
       CASE (p.JerkSigns) OF 
@@ -368,7 +363,7 @@ DO
   END_IF
   
   p REF= _profiles[dof];
-  t_profile := Duration - p.brake.Duration;
+  t_profile := Duration - p.Brake.Duration - p.Accel.Duration;
   
   IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(CurrentAcceleration[dof]) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
@@ -392,11 +387,11 @@ DO
   CASE (_inp_per_dof_control_interface[dof])
   OF  
     ControlInterfaceType.Position: 
-      _positionStep2.Set(t_profile, p0s[dof], v0s[dof], a0s[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      _positionStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       found_time_synchronization := _positionStep2.Get(p);
 
     ControlInterfaceType.Velocity: 
-      _velocityStep2.Set(t_profile, p0s[dof], v0s[dof], a0s[dof], TargetVelocity[dof], TargetAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      _velocityStep2.Set(t_profile, p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
       found_time_synchronization := _velocityStep2.Get(p);
   END_CASE
 

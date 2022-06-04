@@ -3,7 +3,7 @@
   <POU Name="VelocityStep1" Id="{0bad3140-2221-4abc-b516-4f31ef4a9048}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep1 
 VAR
-  p0, v0, a0 : LREAL;
+  v0, a0 : LREAL;
   vf, af : LREAL;
   aMax, aMin, jMax : LREAL;
   
@@ -24,8 +24,8 @@ VAR_INST
   left_duration,right_duration : LREAL;   
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.brake.Duration;
-right_duration := Right.t_sum[6] + Right.brake.Duration;
+        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.Brake.Duration + Left.Accel.Duration; 
+right_duration := Right.t_sum[6] + Right.Brake.Duration + Right.Accel.Duration; 
 IF (left_duration < right_duration)
 THEN
   interval.Left := left_duration;
@@ -69,7 +69,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[IF (ValidProfileCount = 0) OR_ELSE (ValidProfileCount = 1 AND_THEN ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[1].t_sum[6]) < 8*Constants.Epsilon)
 THEN
   block.Pmin := ValidProfiles[0];
-  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
   CalculateBlock := TRUE;
   RETURN;
 // Only happens due to numerical issues
@@ -100,17 +100,17 @@ FOR i:=0 TO ValidProfileCount
 DO
   FOR j:=0 TO ValidProfileCount
   DO
-    IF ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration < ValidProfiles[j].t_sum[6] + ValidProfiles[j].brake.Duration AND_THEN
-       ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration < Tmin
+    IF ValidProfiles[i].t_sum[6] + ValidProfiles[i].Brake.Duration < ValidProfiles[j].t_sum[6] + ValidProfiles[j].Brake.Duration AND_THEN
+       ValidProfiles[i].t_sum[6] + ValidProfiles[i].Brake.Duration < Tmin
     THEN
-      Tmin := ValidProfiles[i].t_sum[6] + ValidProfiles[i].brake.Duration;
+      Tmin := ValidProfiles[i].t_sum[6] + ValidProfiles[i].Brake.Duration + ValidProfiles[i].Accel.Duration;
       idx_min := i;
 		END_IF
   END_FOR
 END_FOR
 
 block.Pmin := ValidProfiles[idx_min];
-block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
 
 IF (ValidProfileCount = 2)
 THEN
@@ -145,24 +145,23 @@ END_IF]]></ST>
     <Method Name="Get" Id="{cec2f89e-f52b-4f5e-9994-37aa8aef2d56}">
       <Declaration><![CDATA[METHOD Get : BOOL
 VAR_INPUT
-  Profilefile : ProfileDesc;
+  Profile : ProfileDesc;
 END_VAR
 VAR_IN_OUT
   block : Block; 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Profilefile.SetBoundaryVelocity(p0, v0, a0, vf, af);
-ValidProfileCount := -1;
+        <ST><![CDATA[ValidProfileCount := -1;
 
 IF (ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
 THEN
-  time_none(Profilefile, aMax, aMin, jMax);
+  time_none(Profile, aMax, aMin, jMax);
 ELSE
-  time_none(Profilefile, aMax, aMin, jMax);
-  time_acc0(Profilefile, aMax, aMin, jMax);
-  time_none(Profilefile, aMin, aMax, -jMax);
-  time_acc0(Profilefile, aMin, aMax, -jMax);
+  time_none(Profile, aMax, aMin, jMax);
+  time_acc0(Profile, aMax, aMin, jMax);
+  time_none(Profile, aMin, aMax, -jMax);
+  time_acc0(Profile, aMin, aMax, -jMax);
 END_IF
 
 Get := CalculateBlock(block);]]></ST>
@@ -190,15 +189,14 @@ ValidProfileCount := ValidProfileCount - 1;]]></ST>
     <Method Name="Set" Id="{b830671d-0c64-4c64-98a7-036c1e36cf24}">
       <Declaration><![CDATA[METHOD Set
 VAR_INPUT
-  p0, v0, a0 : LREAL; 
+  v0, a0 : LREAL; 
   vf, af : LREAL; 
   aMax, aMin : LREAL; 
   jMax : LREAL;   
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.p0 := p0;
-THIS^.v0 := v0;
+        <ST><![CDATA[THIS^.v0 := v0;
 THIS^.a0 := a0;
 THIS^.vf := vf;
 THIS^.af := af;;

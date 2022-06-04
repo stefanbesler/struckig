@@ -3,8 +3,8 @@
   <POU Name="PositionStep2" Id="{76034b67-20c8-4cde-bd76-8a31c34aeac6}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL PositionStep2
 VAR
-  p0, v0, a0 : LREAL;
-  tf, pf, vf, af : LREAL;
+  v0, a0 : LREAL;
+  tf, vf, af : LREAL;
   _vMax, _vMin, _aMax, _aMin, _jMax : LREAL;
   
   // Pre-calculated expressions
@@ -37,9 +37,7 @@ VAR_INST
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Profile.SetBoundaryPosition(p0, v0, a0, pf, vf, af);
-
-up_first := (pd > tf * v0);
+        <ST><![CDATA[up_first := (pd > tf * v0);
 vMax := SEL(up_first, _vMin, _vMax);
 vMin := SEL(up_first, _vMax, _vMin);
 aMax := SEL(up_first, _aMin, _aMax);
@@ -76,11 +74,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.p0 := p0;
-THIS^.v0 := v0;
+        <ST><![CDATA[THIS^.v0 := v0;
 THIS^.a0 := a0;
 THIS^.tf := tf;
-THIS^.pf := pf;
 THIS^.vf := vf;
 THIS^.af := af;
 THIS^._vMax := vMax;

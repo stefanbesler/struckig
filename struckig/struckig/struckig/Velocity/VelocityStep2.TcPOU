@@ -3,7 +3,7 @@
   <POU Name="VelocityStep2" Id="{44d0404d-f840-43a5-b935-c3fca779d43d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep2 
 VAR
-  p0, v0, a0 : LREAL;
+  v0, a0 : LREAL;
   tf, vf, af : LREAL;
   aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
@@ -30,9 +30,7 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Profile.SetBoundaryVelocity(p0, v0, a0, vf, af);
-
-// Test all cases to get ones that match
+        <ST><![CDATA[// Test all cases to get ones that match
 // However we should guess which one is correct and try them first...
 IF (vf > v0) THEN
   Get := CheckAll(Profile, aMax, aMin, jMax) OR_ELSE CheckAll(Profile, aMin, aMax, -jMax);
@@ -45,15 +43,14 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD Set
 VAR_INPUT
   tf : LREAL;
-  p0, v0, a0 : LREAL;
+  v0, a0 : LREAL;
   vf, af : LREAL;
   aMax, aMin : LREAL;
   jMax : LREAL; 
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.p0 := p0;
-THIS^.v0 := v0;
+        <ST><![CDATA[THIS^.v0 := v0;
 THIS^.a0 := a0;
 THIS^.tf := tf;
 THIS^.vf := vf;

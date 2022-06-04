@@ -52,6 +52,9 @@
     <Compile Include="struckig\BrakeProfile\BrakeProfile.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="struckig\Integrate.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="struckig\Math\BubbleSortLreal.TcPOU">
       <SubType>Code</SubType>
     </Compile>

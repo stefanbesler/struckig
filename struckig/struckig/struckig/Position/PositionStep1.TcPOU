@@ -42,8 +42,8 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.Brake.Duration;
-right_duration := Right.t_sum[6] + Right.Brake.Duration;
+        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.Brake.Duration + Left.Accel.Duration;
+right_duration := Right.t_sum[6] + Right.Brake.Duration + Right.Accel.Duration;
 IF (left_duration < right_duration)
 THEN
   interval.Left := left_duration;
@@ -89,7 +89,7 @@ block.B.IsUsed := FALSE;
 IF validProfileCounter = 0
 THEN
   block.Pmin := validProfiles[0];
-  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration; 
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration; 
   CalculateBlock := TRUE;
 
 ELSIF validProfileCounter = 1 
@@ -98,7 +98,7 @@ THEN
   IF ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*Constants.Epsilon
   THEN
     block.Pmin := validProfiles[0];
-    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;  
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
     CalculateBlock := TRUE;
     RETURN;
 	END_IF
@@ -109,7 +109,7 @@ THEN
     idx_else_1 := (idx_min + 1) MOD 2;
 
     block.Pmin := validProfiles[idx_min];
-    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration; 
     AddInterval(block.A, validProfiles[idx_min], validProfiles[idx_else_1]);
     CalculateBlock := TRUE;
     RETURN; 
@@ -143,17 +143,17 @@ FOR i:=0 TO validProfileCounter
 DO
   FOR j:=0 TO validProfileCounter
   DO
-    IF validProfiles[i].t_sum[6] + validProfiles[i].brake.Duration < validProfiles[j].t_sum[6] + validProfiles[j].brake.Duration AND_THEN
-       validProfiles[i].t_sum[6] + validProfiles[i].brake.Duration < Tmin
+    IF validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration < validProfiles[j].t_sum[6] + validProfiles[j].Brake.Duration AND_THEN
+       validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration < Tmin
     THEN
-      Tmin := validProfiles[i].t_sum[6] + validProfiles[i].brake.Duration;
+      Tmin := validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration + validProfiles[i].Accel.Duration;
       idx_min := i;
 		END_IF
   END_FOR
 END_FOR
 
 block.Pmin := validProfiles[idx_min];
-block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration;
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
 IF (validProfileCounter = 2)
 THEN
   idx_else_1 := (idx_min + 1) MOD 3;
@@ -193,8 +193,7 @@ VAR_INST
   vMax, vMin, aMax, aMin, jMax : LREAL;  
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Profilefile.SetBoundaryPosition(p0, v0, a0, pf, vf, af);
-validProfileCounter := -1;
+        <ST><![CDATA[validProfileCounter := -1;
 
 IF (ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon) THEN
   vMax := SEL(pd >= 0, _vMin, _vMax);
