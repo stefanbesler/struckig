@@ -6,7 +6,7 @@ This guide will get you started with struckig. Here you will learn how to instal
 
 The struckig library can either be downloaded from Github as a [precompiled library](https://github.com/stefanbesler/struckig/releases), or you can clone the [repository](https://github.com/stefanbesler/struckig) and compile the library yourself. This guide will focus on the former usecase.
 
-First, [get the latest release](todo) of the library, the download will give you a file called "struckig_0.5.0.0.compiled-library" on your computer. Note that the version number may differ from the file you actually downloaded. At the time of writing this text, the file is called . Start the TwinCAT XAE Shell or the Visual Studio Version you are usually using to develop TwinCAT PLCs. Then, in the menubar, select **PLC** and then **Library Repository...** (see figures below)
+First, [get the latest release](todo) of the library, the download will give you a file called "struckig_0.6.0.0.compiled-library" on your computer. Start the TwinCAT XAE Shell or the Visual Studio Version you are usually using to develop TwinCAT PLCs. Then, in the menubar, select **PLC** and then **Library Repository...** (see figures below)
 
 <div class="gallery">
   <div class="gallery-item">
