@@ -660,7 +660,19 @@ values[1] := -2.0833333333;
 values[2] := 0.1666666667;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 
+otg.CurrentPosition[0] := 1.0;
+otg.CurrentPosition[1] := -2.0;
+otg.CurrentPosition[2] := 3.0;
+otg.TargetPosition[0] := 1.0;
+otg.TargetPosition[1] := -2.0;
+otg.TargetPosition[2] := 3.0;
 
+otg();
+otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+result := Struckig.TrajectoryState.Idle;
+AssertEquals(result, otg.State, '');
+AssertEquals_LREAL(0, otg.Duration, 1E-9, '');
+AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-6, '');
 
 
 otg.CurrentPosition[0] := 0.0;

@@ -288,6 +288,11 @@ DO
 END_FOR
 
 IF (Duration = 0.0) THEN
+  // Copy all profiles for end state
+  FOR dof:=0 TO _dofsEnd
+  DO
+    _profiles[dof] := _blocks[dof].Pmin;
+	END_FOR
   RETURN;
 END_IF
 
