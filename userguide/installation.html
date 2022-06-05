@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Getting started | html </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Getting started | html ">
+    <meta name="generator" content="docfx 2.58.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/highlight-default.css">
+    <link rel="stylesheet" href="../styles/featherlight.min.css" type="text/css">
+    <meta property="docfx:navrel" content="../toc">
+    <meta property="docfx:tocrel" content="toc">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+                
+                <ul class="nav level1 navbar-nav">
+                      <li>
+                          <a href="../userguide/installation.html" title="User guide">User guide</a>
+                      </li>
+                      <li>
+                          <a href="../reference/Struckig/Constants.html" title="API Reference">API Reference</a>
+                      </li>
+                </ul>    </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div>
+              <div class="sidefilter">
+                <form class="toc-filter">
+                  <span class="glyphicon glyphicon-filter filter-icon"></span>
+                  <input type="text" id="toc_filter_input" placeholder="Enter here to filter..." onkeypress="if(event.keyCode==13) {return false;}">
+                </form>
+              </div>
+              <div class="sidetoc">
+                <div class="toc" id="toc">
+                  
+                  <ul class="nav level1">
+                    <li class="active">
+                      <a href="installation.html" title="Installation" class="active">Installation</a>
+                    </li>
+                    <li class="">
+                      <span class="expand-stub"></span>
+                      <a class="">Examples</a>
+                        
+                        <ul class="nav level2">
+                          <li class="">
+                            <a href="single_axis_trajectory.html" title="Single axis trajectory" class="">Single axis trajectory</a>
+                          </li>
+                          <li class="">
+                            <a href="synchronized_trajectory.html" title="Synchronized trajectory" class="">Synchronized trajectory</a>
+                          </li>
+                        </ul>  </li>
+                    <li class="">
+                      <a href="license.html" title="License" class="">License</a>
+                    </li>
+                    <li class="">
+                      <a href="notices.html" title="Notices" class="">Notices</a>
+                    </li>
+                  </ul>        </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h1 id="getting-started">Getting started</h1>
+
+<p>This guide will get you started with Struckig. Here you will learn how to install the library into you TwinCAT environment and use the library to calculate and propagate through a very simple trajectory. Experienced users of TwinCAT, who have worked with third-party libraries before, may skip this part and directly jump to advanced examples.</p>
+<h2 id="installation">Installation</h2>
+<p>The Struckig library can either be downloaded from Github as a <a href="https://github.com/stefanbesler/Struckig/releases">precompiled library</a>, or you can clone the <a href="https://github.com/stefanbesler/Struckig">repository</a> and compile the library yourself. This guide will focus on the former usecase.</p>
+<p>First, <a href="todo">get the latest release</a> of the library, the download will give you a file called &quot;Struckig_0.6.0.0.compiled-library&quot; on your computer. Start the TwinCAT XAE Shell or the Visual Studio Version you are usually using to develop TwinCAT PLCs. Then, in the menubar, select <strong>PLC</strong> and then <strong>Library Repository...</strong> (see figures below)</p>
+<div class="gallery">
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_twincatxae.png" alt="TwinCAT XAE Shell">
+      <figcaption>TwinCAT XAE Shell</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_libraryrepository.png" alt="TwinCAT XAE Shell">
+      <figcaption>Library repository</figcaption>
+    </figure>
+  </div>  
+</div>
+<p>In the library-repository dialog click on <strong>Install</strong> and navigate to the file compiled-library file and select it. Then, click on <strong>Open</strong> to install the Struckig library into your TwinCAT environment and you are ready to use it.</p>
+<h2 id="plc">PLC</h2>
+<p>Once the Struckig library is installed on your system you may use it in any PLC you like accordingly to the <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GPLv3 licence</a>. Usually you will already have a PLC, but for demonstration purposes we will start from a plain TwinCAT XAE shell. In the menubar click on <strong>File</strong> and then select <strong>New &gt; Project</strong>.</p>
+<div class="gallery">
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_twincatxae.png" alt="TwinCAT XAE Shell">
+      <figcaption>TwinCAT XAE Shell</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_project.png" alt="Create Project">
+      <figcaption>Create a new project</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_plc.png" alt="Add a new PLC">
+      <figcaption>Add a new PLC</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_plc2.png" alt="Create Standard PLC project">
+      <figcaption>Create a new Standard PLC project</figcaption>
+    </figure>
+  </div>  
+</div>
+<p>In the dialog, create a new <strong>TwinCAT XAE Project (XML format)</strong>, give the project a proper <strong>Name</strong> and <strong>Location</strong> and click on <strong>Ok</strong> to continue. The next step is to create <strong>PLC</strong> in your TwinCAT project by right-clicking on <strong>PLC</strong> in the <strong>Solution Explorer</strong>. In the contextmenu select <strong>Add new item...</strong>. In the dialog, select <strong>Standard PLC Project</strong>, give it a <strong>Name</strong> and click on <strong>Add</strong>.</p>
+<p>We are now done and in fact usually you will start from this point. To make the Struckig library available to the PLC right-click on <strong>References</strong> and select <strong>Add library</strong>. In the dialog search for <em><strong>Struckig</strong></em>, select the item and click on <strong>Ok</strong></p>
+<div class="gallery">
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_addlibrary.png" alt="Add a library">
+      <figcaption>Add a library</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/installation_addlibrary2.png" alt="Add the Struckig library">
+      <figcaption>Add the Struckig library</figcaption>
+    </figure>
+  </div>  
+</div>
+<p>To write your first program, which utilizes the Struckig library, replace the content of the <strong>MAIN</strong> program by the following source code.</p>
+<pre><code class="lang-st">// --- Declaration -------------------------------------
+PROGRAM MAIN
+VAR
+  otg : Struckig.Struckig(cycletime:=0.001, dofs:=1) := (
+    EnableAutoPropagate := TRUE,
+    MaxVelocity :=         [ 2000.0 ],
+    MaxAcceleration :=     [ 20000.0 ],
+    MaxJerk :=             [ 800000.0 ],
+    CurrentPosition :=     [ 0.0 ],
+    TargetPosition :=      [ 100.0 ]
+  );
+  ActPosition : LREAL;
+END_VAR
+
+// --- Implementation ---------------------------------
+otg();
+ActPosition := otg.NewPosition;
+</code></pre>
+<p>This is probably the most basic application, which you can implement with the Struckig trajectory-generator. The code initializes a trajectory for a single axis (<code>dofs:=1</code>) in a PLC with a cycletime of 10ms. The latter value should match the <strong>Cycle ticks</strong> of your task (defaults to 10ms). The program calculates and a trajectory from <code>position=0</code> to <code>position=100</code>, parametrized with a maximum velocity, acceleration and jerk in arbitrary units (typically mm or degree). In the implementation part the trajectory generator is called every cycle. The output parameter <strong>NewPosition</strong> can be send to control an actual, phyiscal axis. The option <strong>EnableAutoPropagate</strong> automatically updates the trajectory after each call. Disabling the parameter is useful for offline trajectory generation, usually you can always set this to <code>TRUE</code>.</p>
+<div class="NOTE">
+<h5>Note</h5>
+<p>This is the most basic example. There are many more settings that can be used for this trajectory generator,
+such as</p>
+<ul>
+<li>Minimum durationt</li>
+<li>Current values for velocity and acceleration</li>
+<li>Target values for velocity and acceleration</li>
+<li>Minimum values for velocity and acceleration</li>
+<li>Synchronization options for multiple axes</li>
+<li>Control mode to calculate velocity profiles instead of position profiles for a controlled stop or variable-frequency-drives (VFD)</li>
+</ul>
+</div>
+<div class="NOTE">
+<h5>Note</h5>
+<p>Compiling the library yourself and as .library instead of .compiled-library will make some internal variables available to you. While this may facilates debugging
+for tinkers , the compiled-library has purposly stripped to the variables and application engineer may find useful.</p>
+</div>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            Powered by <a href='http://zeugwerk.at'>Zeugwerk GmbH</a>
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+          
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+    
+    <!-- mermaid & featherlight & highlight support -->
+    <script type="text/javascript" src="../styles/mermaid.min.js"></script>
+    <script type="text/javascript" src="../styles/highlight.pack.js"></script>
+    <script type="text/javascript" src="../styles/highlight-iecst.min.js"></script>
+    <script type="text/javascript" src="../styles/jquery-latest.js"></script>
+    <script type="text/javascript" src="../styles/featherlight.min.js" charset="utf-8"></script>
+    <script>    
+        mermaid.initialize({
+            startOnLoad:false,
+            flowchart:{
+                useMaxWidth:true,
+                htmlLabels:true
+            },
+            sequence:{
+                useMaxWidth:true
+            },        
+        });
+    
+        $(document).ready(function() {
+            hljs.highlightAll(); 
+        
+            const elements = document.getElementsByClassName("lang-mermaid");
+            let index = 0;
+    
+            while (elements.length != 0) {
+                let element = elements[0];
+                mermaid.render('graph'+index, element.innerText, (svgGraph) => {                    
+                    element.parentElement.outerHTML = "<div class='mermaid'>" + svgGraph + "</div>";
+                });
+                $('#graph'+index).height("100%");
+                ++index;
+            }
+    
+            // featherlight initialization
+            // find all images, but not the logo, and add the lightbox
+            $('img').not('#logo').each(function(){
+                var $img = $(this);
+                var filename = $img.attr('src')
+                //add cursor
+                $img.css('cursor','zoom-in');
+                $img.css('cursor','-moz-zoom-in');
+                $img.css('cursor','-webkit-zoom-in');
+    
+                //add featherlight
+                $img.attr('alt', filename);
+                $img.featherlight(filename);
+            });
+        });
+    </script>
+    
+  </body>
+</html>
