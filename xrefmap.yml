@@ -16,6 +16,9 @@ references:
 - uid: Struckig.Cbrt
   name: Cbrt
   href: reference/Struckig/Struckig/Math/Cbrt.html
+- uid: Struckig.Ceil
+  name: Ceil
+  href: reference/Struckig/Struckig/Math/Ceil.html
 - uid: Struckig.Constants
   name: Constants
   href: reference/Struckig/Constants.html
