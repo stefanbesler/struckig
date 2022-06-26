@@ -4,7 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK MathTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_Cbrt();
-Test_LrealFromBits();]]></ST>
+Test_LrealFromBits();
+Test_Ceil();]]></ST>
     </Implementation>
     <Method Name="Test_Cbrt" Id="{fb4f66a2-1f91-4a1e-b1d2-83e0fdba8205}">
       <Declaration><![CDATA[METHOD Test_Cbrt
@@ -29,6 +30,32 @@ AssertEquals_LREAL(0.793700525984099737, actual, 1E-18, message:='');
 
 actual := Struckig.Cbrt(3.5353238602192074E-08);
 AssertEquals_LREAL(0.0032820339420509366, actual, 1E-18, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Ceil" Id="{9fd4e64d-fdec-4ee2-a367-51305cf91684}">
+      <Declaration><![CDATA[METHOD Test_Ceil
+VAR
+  actual : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Ceil');
+
+actual := Struckig.Ceil(8.1);
+AssertEquals_LREAL(9, actual, 1E-20, message:='');
+
+actual := Struckig.Ceil(-8.1);
+AssertEquals_LREAL(-8, actual, 1E-20, message:='');
+
+actual := Struckig.Ceil(0);
+AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+actual := Struckig.Ceil(0.1);
+AssertEquals_LREAL(1, actual, 1E-20, message:='');
+
+actual := Struckig.Ceil(-0.1);
+AssertEquals_LREAL(0, actual, 1E-20, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

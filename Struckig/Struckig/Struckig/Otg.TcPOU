@@ -320,12 +320,12 @@ FOR dof:=0 TO _dofsEnd DO
   END_IF 
 END_FOR
 
-IF noneSynchronizationCount = _dofsEnd
+IF NOT discrete_duration AND_THEN noneSynchronizationCount = _dofsEnd
 THEN
   RETURN;
 END_IF
 
-IF phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsEnd THEN
+IF NOT discrete_duration AND_THEN phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsEnd THEN
   p_limiting REF= _profiles[limiting_dof];
   IF (IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
@@ -365,8 +365,8 @@ END_IF
 // Time Synchronization
 FOR dof:=0 TO _dofsEnd
 DO
-  IF (NOT Enabled[dof] OR_ELSE dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] = SynchronizationType.None) THEN
-      CONTINUE;
+  IF NOT Enabled[dof] OR_ELSE ((dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] = SynchronizationType.None) AND_THEN NOT discrete_duration) THEN
+    CONTINUE;
   END_IF
   
   p REF= _profiles[dof];
@@ -374,21 +374,21 @@ DO
   
   IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(CurrentAcceleration[dof]) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
-      continue;
+      CONTINUE;
   END_IF
   
   // Check if the final time corresponds to an extremal profile calculated in step 1
   IF (ABS(t_profile - _blocks[dof].Tmin) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
-      continue;
+      CONTINUE;
   ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(t_profile - _blocks[dof].A.Right) < Constants.Epsilon)
   THEN
       p := _blocks[dof].A.Profile;
-      continue;
+      CONTINUE;
   ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(t_profile - _blocks[dof].B.Right) < Constants.Epsilon)
   THEN
       p := _blocks[dof].B.Profile;
-      continue;
+      CONTINUE;
   END_IF
   
   CASE (_inp_per_dof_control_interface[dof])
@@ -628,7 +628,7 @@ IF (discrete_duration)
 THEN
   FOR i:=0 TO 3*Dofs-1
   DO
-    possible_t_syncs[i] := (*ceil*)(possible_t_syncs[i] / _dt) * _dt;   // todo: ceil                 
+    possible_t_syncs[i] := Ceil(possible_t_syncs[i] / _dt) * _dt;        
   END_FOR
 END_IF
 
