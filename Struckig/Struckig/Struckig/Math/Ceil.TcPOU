@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="Ceil" Id="{678b65ba-18be-46ec-96ee-46bd4c2c799e}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION Ceil : LREAL
+VAR_INPUT
+  val : LREAL;
+END_VAR
+VAR CONSTANT
+  InfinityBits : ULINT := ULINT#16#7FF0000000000000;
+END_VAR
+VAR
+  InfinityPtr : POINTER TO LREAL := ADR(InfinityBits);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF val <> val OR_ELSE val = InfinityPtr^ OR_ELSE val = -InfinityPtr^ // nan or inf
+THEN
+  RETURN;
+END_IF
+
+Ceil := DINT_TO_LREAL(LREAL_TO_DINT(val));
+IF Ceil < val THEN
+	Ceil := Ceil + 1;
+END_IF;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -68,9 +68,6 @@
     <Compile Include="Struckig\Math\LrealFromBits.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Math\LrealLint.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Struckig\Math\Power.TcPOU">
       <SubType>Code</SubType>
     </Compile>
