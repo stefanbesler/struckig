@@ -10,11 +10,7 @@
           "name": "Struckig",
           "type": "Library",
           "frameworks": {},
-          "references": {
-            "TC3.1.4024.22": [],
-            "TC3.1.4024.25": [],
-            "TC3.1.4024.29": []
-          },
+          "references": {},
           "repositories": [],
           "bindings": {},
           "patches": {
@@ -41,17 +37,19 @@
                 "ZEquipment"
               ],
               "repositories": [
-                "http://framework.zeugwerk.dev/Release"
+                "http://framework.zeugwerk.dev/CE"
               ],
               "hide": false
             }
           },
           "references": {
-            "TC3.1.4024.22": [],
-            "TC3.1.4024.25": [],
-            "TC3.1.4024.29": []
+            "*": [
+              "Struckig=*"
+            ]
           },
-          "repositories": [],
+          "repositories": [
+            "http://framework.zeugwerk.dev/CE"
+          ],
           "bindings": {},
           "patches": {
             "platform": {},
@@ -59,6 +57,6 @@
           }
         }
       ]
-    }    
+    }
   ]
 }
