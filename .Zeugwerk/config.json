@@ -37,7 +37,7 @@
                 "ZEquipment"
               ],
               "repositories": [
-                "http://framework.zeugwerk.dev/CE"
+                "https://framework.zeugwerk.dev/CE"
               ],
               "hide": false
             }
@@ -48,7 +48,7 @@
             ]
           },
           "repositories": [
-            "http://framework.zeugwerk.dev/CE"
+            "https://framework.zeugwerk.dev/CE"
           ],
           "bindings": {},
           "patches": {
