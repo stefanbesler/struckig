@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.29" ClassName="CNestedPlcProjDef">
+	<Project GUID="{C03D08D6-9C7A-4DDC-B9EE-5A8F5E53386C}" Name="ZStruckig" PrjFilePath="..\..\ZStruckig\ZStruckig.plcproj" TmcFilePath="..\..\ZStruckig\ZStruckig.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e"/>
+</TcSmItem>

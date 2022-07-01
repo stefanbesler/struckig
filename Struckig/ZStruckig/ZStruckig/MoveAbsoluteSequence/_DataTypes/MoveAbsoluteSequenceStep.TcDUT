@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.11">
+  <DUT Name="MoveAbsoluteSequenceStep" Id="{f9d8fe40-8a2f-4554-8f1c-73767fe31e2a}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE MoveAbsoluteSequenceStep :
+(
+	Begin := 0,
+  Exec,
+  End
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

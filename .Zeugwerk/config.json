@@ -23,6 +23,42 @@
           }
         }
       ]
-    }
+    },
+    {
+      "name": "ZStruckig",
+      "plcs": [
+        {
+          "version": "0.1.0.0",
+          "name": "ZStruckig",
+          "type": "Library",
+          "frameworks": {
+            "zeugwerk": {
+              "version": "latest",
+              "references": [
+                "ZCore",
+                "ZPlatform",
+                "ZAux",
+                "ZEquipment"
+              ],
+              "repositories": [
+                "http://framework.zeugwerk.dev/Release"
+              ],
+              "hide": false
+            }
+          },
+          "references": {
+            "TC3.1.4024.22": [],
+            "TC3.1.4024.25": [],
+            "TC3.1.4024.29": []
+          },
+          "repositories": [],
+          "bindings": {},
+          "patches": {
+            "platform": {},
+            "argument": {}
+          }
+        }
+      ]
+    }    
   ]
 }
