@@ -4,6 +4,7 @@
     <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
 FUNCTION_BLOCK Otg
 VAR_INPUT
+  CycleTime : LREAL;
   Dofs : INT;
   Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL;  
   ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; //< The default position interface controls the full kinematic state.
@@ -88,7 +89,7 @@ THEN
   _minDuration := MinDuration;
   _perDofControlInterface := PerDofControlInterface;
   _perDofSynchronization := PerDofSynchronization;
-  
+  _dt := CycleTime;
   CurrentTime := 0.0;
   NewCalculation := TRUE;  
 END_IF
@@ -458,6 +459,34 @@ THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="ErrorCode" Id="{df1856aa-ddd6-43c2-8198-e93b1db87e8a}">
+      <Declaration><![CDATA[METHOD ErrorCode : TrajectoryErrorCode
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ErrorCode := _errorId;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ErrorMessage" Id="{ff9991e9-176b-43d5-a3fb-79c9a996762a}">
+      <Declaration><![CDATA[METHOD ErrorMessage : STRING(255)
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE _errorId
+OF
+  TrajectoryErrorCode.CalculateStep1Failed: ErrorMessage := 'Trajectory generation failed in step1';
+  TrajectoryErrorCode.InvalidInput: ErrorMessage := 'Trajectory-generation invalid input';
+  TrajectoryErrorCode.SynchronizationFailed: ErrorMessage := 'Trajectory-generation synchronization failed';
+ELSE
+  IF State = TrajectoryState.Error
+  THEN
+    ErrorMessage := 'Unknown error';
+	END_IF
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="FB_init" Id="{b602f7a7-4307-4d87-b5fe-4e3716d1e55b}">
       <Declaration><![CDATA[METHOD FB_init : BOOL
 VAR_INPUT
@@ -475,7 +504,7 @@ FOR i:=0 TO ParameterList.MaxDoFs
 DO
   Enabled[i] := i < dofs;
 END_FOR
-_dt := cycletime;]]></ST>
+_dt := THIS^.CycleTime := cycletime;]]></ST>
       </Implementation>
     </Method>
     <Method Name="IsBlocked" Id="{fe13951c-4e92-4835-b744-475e6b7411b6}">

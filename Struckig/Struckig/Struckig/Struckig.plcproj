@@ -23,6 +23,7 @@
     <Author>Stefan Besler and contributers</Author>
     <Company>Stefan Besler</Company>
     <CompilerDefines>ZEUGWERK_TWINCAT_3_1_4024_22</CompilerDefines>
+    <Description>Full port of pantor ruckig library (Community version) to IEC 61131-3 Structured Text. Online Trajectory Generation. Real-time. Time-optimal. Jerk-constrained.</Description>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Struckig\_DataTypes" />
@@ -125,11 +126,6 @@
     <Compile Include="Struckig\_DataTypes\TrajectoryState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Struckig.tmc">
-      <SubType>Content</SubType>
-    </None>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

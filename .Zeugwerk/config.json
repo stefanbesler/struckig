@@ -10,11 +10,7 @@
           "name": "Struckig",
           "type": "Library",
           "frameworks": {},
-          "references": {
-            "TC3.1.4024.22": [],
-            "TC3.1.4024.25": [],
-            "TC3.1.4024.29": []
-          },
+          "references": {},
           "repositories": [],
           "bindings": {},
           "patches": {
