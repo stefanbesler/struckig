@@ -19,44 +19,6 @@
           }
         }
       ]
-    },
-    {
-      "name": "ZStruckig",
-      "plcs": [
-        {
-          "version": "0.1.0.0",
-          "name": "ZStruckig",
-          "type": "Library",
-          "frameworks": {
-            "zeugwerk": {
-              "version": "latest",
-              "references": [
-                "ZCore",
-                "ZPlatform",
-                "ZAux",
-                "ZEquipment"
-              ],
-              "repositories": [
-                "https://framework.zeugwerk.dev/CE"
-              ],
-              "hide": false
-            }
-          },
-          "references": {
-            "*": [
-              "Struckig=*"
-            ]
-          },
-          "repositories": [
-            "https://framework.zeugwerk.dev/CE"
-          ],
-          "bindings": {},
-          "patches": {
-            "platform": {},
-            "argument": {}
-          }
-        }
-      ]
     }
   ]
 }
