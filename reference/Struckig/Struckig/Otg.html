@@ -205,6 +205,7 @@
 <h6><strong>Namespace</strong>: <a class="xref" href="Otg.html">Struckig</a></h6>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">FUNCTION_BLOCK Otg (
+ CycleTime : LREAL,
  Dofs : INT,
  Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL,
  ControlInterface : ControlInterfaceType,
@@ -236,6 +237,11 @@
 </tr>
 </thead>
 <tbody>
+<tr>
+<td style="text-align: left;"><a name="CycleTime"></a>CycleTime</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
 <tr>
 <td style="text-align: left;"><a name="Dofs"></a>Dofs</td>
 <td style="text-align: left;">INT</td>
@@ -484,6 +490,16 @@
 <h4 id="Struckig.Otg.Change" data-uid="Struckig.Otg.Change">Change</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE Change () : BOOL
+</code></pre>
+<p><a name="ErrorCode"></a></p>
+<h4 id="Struckig.Otg.ErrorCode" data-uid="Struckig.Otg.ErrorCode">ErrorCode</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD ErrorCode () : TrajectoryErrorCode
+</code></pre>
+<p><a name="ErrorMessage"></a></p>
+<h4 id="Struckig.Otg.ErrorMessage" data-uid="Struckig.Otg.ErrorMessage">ErrorMessage</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD ErrorMessage () : STRING(255)
 </code></pre>
 <p><a name="IsBlocked"></a></p>
 <h4 id="Struckig.Otg.IsBlocked" data-uid="Struckig.Otg.IsBlocked">IsBlocked</h4>
