@@ -52,7 +52,7 @@ END_FOR
 
 IF limits = ProfileLimits.Acc0
 THEN
-  IF t[1] < Constants.Epsilon
+  IF t[1] < Constants.DoubleEpsilon
   THEN
     RETURN;
   END_IF
@@ -236,7 +236,7 @@ DO
 END_FOR
 
 IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel THEN
-  IF (t[3] < Constants.Epsilon) 
+  IF (t[3] < Constants.DoubleEpsilon) 
   THEN
     RETURN;                    
   END_IF
@@ -244,7 +244,7 @@ END_IF
 
 IF limits = ProfileLimits.Acc0 OR_ELSE limits = ProfileLimits.Acc0Acc1
 THEN
-  IF (t[1] < Constants.Epsilon) 
+  IF (t[1] < Constants.DoubleEpsilon) 
   THEN
     RETURN;                    
   END_IF
@@ -252,7 +252,7 @@ END_IF
 
 IF limits = ProfileLimits.Acc1 OR_ELSE limits = ProfileLimits.Acc0Acc1
 THEN
-  IF (t[5] < Constants.Epsilon)
+  IF (t[5] < Constants.DoubleEpsilon)
   THEN
     RETURN;            
   END_IF
@@ -317,7 +317,7 @@ DO
     END_IF
   END_IF
   
-  IF (i > 1 AND_THEN a[i+1] * a[i] < -Constants.Epsilon) 
+  IF (i > 1 AND_THEN a[i+1] * a[i] < -Constants.DoubleEpsilon) 
   THEN
     v_a_zero := v[i] - (a[i] * a[i]) / (2 * j[i]);
     IF (v_a_zero > vUppLim OR_ELSE v_a_zero < vLowLim)
@@ -399,7 +399,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR i:=0 TO 6
 DO
-  IF ABS(p[i] - pt) < Constants.Epsilon
+  IF ABS(p[i] - pt) < Constants.DoubleEpsilon
   THEN
     t_t := offset + SEL(i>0, 0, t_sum[i-1]);
     v_t := v[i];

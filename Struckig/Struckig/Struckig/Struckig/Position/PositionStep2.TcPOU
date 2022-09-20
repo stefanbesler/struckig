@@ -1037,13 +1037,14 @@ END_FOR
 
 
 // 3 step Profile (ak. UZD), sometimes missed because of numerical errors T 012
-IF (ABS(af - a0) < Constants.DoubleEpsilon) 
+h1 := -ad_ad + jMax*(2*(a0 + af)*tf - 4*vd + jMax*tf_tf);
+IF h1 >= 0 AND_THEN (ABS(af - a0) < Constants.DoubleEpsilon) 
 THEN
-  h1 := SQRT(4*(a0*tf - vd)/jMax + tf_tf);
+  h1 := SQRT(h1) / ABS(jMax);
   
-  Profile.t[0] := (tf - h1)*0.5;
+  Profile.t[0] := (tf - h1 + ad/jMax)/2;
   Profile.t[1] := h1;
-  Profile.t[2] := Profile.t[0];
+  Profile.t[2] := (tf - h1 - ad/jMax)/2;
   Profile.t[3] := 0;
   Profile.t[4] := 0;
   Profile.t[5] := 0;

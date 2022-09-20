@@ -413,6 +413,14 @@ THEN
   RETURN;
 END_IF
 
+IF ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilon AND_THEN ABS(d) < Constants.DoubleEpsilon
+THEN
+  roots[rootCount+1] := 0;
+  roots[rootCount+2] := -Cbrt(c);  
+  rootCount := rootCount + 2;
+  RETURN;
+END_IF
+
 a3 := -b;
 b3 := a * c - 4 * d;
 c3 := -a * a * d - c * c + 4 * b * d;
