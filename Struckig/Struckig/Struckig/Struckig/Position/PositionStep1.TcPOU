@@ -491,40 +491,40 @@ END_IF
       <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
 METHOD PRIVATE time_acc0_two_step
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF ABS(2*a0*jMax) > Constants.Epsilon
 THEN
   // Two step
-  Profile.t[0] := 0;
-  Profile.t[1] := (af_af - a0_a0 + 2*jMax*(vf - v0))/(2*a0*jMax);
-  Profile.t[2] := (a0 - af)/jMax;
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+  profile.t[0] := 0;
+  profile.t[1] := (af_af - a0_a0 + 2*jMax*(vf - v0))/(2*a0*jMax);
+  profile.t[2] := (a0 - af)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+  IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(Profile, jMax);
+    AddProfile(profile, jMax);
     RETURN;
   END_IF
 END_IF
 
 // Three step - Removed pf
-Profile.t[0] := (-a0 + aMax)/jMax;
-Profile.t[1] := (a0_a0 + af_af - 2*aMax*aMax + 2*jMax*(vf - v0))/(2*aMax*jMax);
-Profile.t[2] := (-af + aMax)/jMax;
-Profile.t[3] := 0;
-Profile.t[4] := 0;
-Profile.t[5] := 0;
-Profile.t[6] := 0;
+profile.t[0] := (-a0 + aMax)/jMax;
+profile.t[1] := (a0_a0 + af_af - 2*aMax*aMax + 2*jMax*(vf - v0))/(2*aMax*jMax);
+profile.t[2] := (-af + aMax)/jMax;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
 
-IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
 THEN
-  AddProfile(Profile, jMax);
+  AddProfile(profile, jMax);
   RETURN;     
 END_IF
 
@@ -537,20 +537,39 @@ IF h1 >= 0 AND_THEN ABS(h0) > Constants.DoubleEpsilon
 THEN
   h1 := SQRT(h1) * ABS(jMax) / jMax;
   
-  Profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0*af_af + 12*jMax_jMax*pd + 12*(af - a0)*jMax*vf + h1)/(2*jMax*h0);
-  Profile.t[1] := -h1/(jMax*h0);
-  Profile.t[2] := (-4*a0_p3 - 2*af_p3 + 6*a0_a0*af + 12*jMax_jMax*pd - 12*(af - a0)*jMax*v0 + h1)/(2*jMax*h0);
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+  profile.t[0] := (4*af_p3 + 2*a0_p3 - 6*a0*af_af + 12*jMax_jMax*pd + 12*(af - a0)*jMax*vf + h1)/(2*jMax*h0);
+  profile.t[1] := -h1/(jMax*h0);
+  profile.t[2] := (-4*a0_p3 - 2*af_p3 + 6*a0_a0*af + 12*jMax_jMax*pd - 12*(af - a0)*jMax*v0 + h1)/(2*jMax*h0);
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+  IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(Profile, jMax);
+    AddProfile(profile, jMax);
     RETURN;     
   END_IF
-END_IF]]></ST>
+END_IF
+
+
+// Three step - t=(aMax - aMin)/jMax
+t := (aMax - aMin)/jMax;
+
+profile.t[0] := (-a0 + aMax)/jMax;
+profile.t[1] := (a0_a0 - af_af)/(2*aMax*jMax) + (vf - v0 + jMax*t*t)/aMax - 2*t;
+profile.t[2] := t;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := (af - aMin)/jMax;
+
+IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+THEN
+  AddProfile(profile, jMax);
+  RETURN;     
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc1_vel_two_step" Id="{64e54b1d-928d-4828-9fe0-4384e30cc74c}">
