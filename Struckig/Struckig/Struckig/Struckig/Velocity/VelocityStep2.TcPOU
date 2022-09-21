@@ -63,7 +63,7 @@ THIS^.jMax := jMax;]]></ST>
     <Method Name="time_acc0" Id="{139ae830-064a-498c-9553-ea8f79b368be}">
       <Declaration><![CDATA[METHOD PRIVATE time_acc0 : BOOL
 VAR_IN_OUT
-  Profile : ProfileDesc;
+  profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
@@ -79,16 +79,16 @@ IF h1 >= 0
 THEN
   h1 := SQRT(h1);
   
-  Profile.t[0] := (af - a0)/(2*jMax) + (tf - h1)/2;
-  Profile.t[1] := h1;
-  Profile.t[2] := tf - (Profile.t[0] + h1);
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+  profile.t[0] := (af - a0)/(2*jMax) + (tf - h1)/2;
+  profile.t[1] := h1;
+  profile.t[2] := tf - (profile.t[0] + h1);
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
-    Profile.pf := Profile.p[7];
+  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin)) THEN
+    profile.pf := profile.p[7];
     time_acc0 := TRUE;
     RETURN;
   END_IF
@@ -97,21 +97,36 @@ END_IF
 // UU Solution
 h1 := (a0 - af + jMax*tf);
 
-Profile.t[0] := -((a0*a0 + af*af - 2*a0*af - 2*jMax*(vf - v0 - a0*tf))/(2*jMax*h1));
-Profile.t[1] := h1/jMax;
-Profile.t[2] := 0;
-Profile.t[3] := 0;
-Profile.t[4] := tf - (Profile.t[0] + Profile.t[1]);
-Profile.t[5] := 0;
-Profile.t[6] := 0;
+profile.t[0] := -Power2(af - a0)/(2*jMax*h1) + (vf - v0 - a0*tf)/h1;
+profile.t[1] := h1/jMax;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := tf - (profile.t[0] + profile.t[1]);
+profile.t[5] := 0;
+profile.t[6] := 0;
 
-IF (Profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin))
+IF (profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin))
 THEN
-  Profile.pf := Profile.p[7];
+  profile.pf := profile.p[7];
   time_acc0 := TRUE;
+  RETURN;
 END_IF
 
-]]></ST>
+// UU Solution - 2 step
+profile.t[0] := 0;
+profile.t[1] := (a0 - af)/jMax + tf;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := (af - a0)/jMax;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF (profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin))
+THEN
+  profile.pf := profile.p[7];
+  time_acc0 := TRUE;
+  RETURN;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_none" Id="{b7252407-1ffc-4203-89cb-177864a2876c}">

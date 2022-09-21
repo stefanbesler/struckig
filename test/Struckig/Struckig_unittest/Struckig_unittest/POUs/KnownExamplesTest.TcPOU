@@ -30,7 +30,8 @@ example23();
 example24();
 example25();
 example26();
-
+example27();
+example28();
 
 ]]></ST>
     </Implementation>
@@ -857,6 +858,68 @@ otg();
 AssertEquals_LREAL(Expected := 0.58,
              Actual := CheckCalculation(otg),
              DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example27" Id="{ccc2cdd0-f683-46d4-8ff5-97bafeee7c04}">
+      <Declaration><![CDATA[METHOD example27
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    MaxVelocity :=         [ 6.457718232379019, 5.410520681182422, 7.155849933176751 ],
+    MaxAcceleration :=     [ 26.89552377323262, 22.5322006432468, 29.81022362406315 ],
+    MaxJerk :=             [ 224.2224490037115, 187.8497873921497, 248.4650723139127 ],
+    CurrentPosition :=     [ 0.5289912019692077, -0.2461593579591288, -0.2728396804501142 ],
+    CurrentVelocity :=     [ 0.0287779218983349, -0.005980397028399779, 0.04763314105835294 ],
+    CurrentAcceleration := [ -1.374657509445135, 0.2564786317266955, -2.497210506808601 ],
+    TargetPosition :=      [ 0, 0, 0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    Discretization := DiscretizationType.Discrete,
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+  
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-27');
+
+otg();
+AssertEquals_LREAL(Expected :=0.024,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example28" Id="{c48de666-40fb-4f5c-ba77-31f9be3f1f84}">
+      <Declaration><![CDATA[METHOD example28
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 10.0, 10.0, 10.0 ],
+    MaxJerk :=             [ 224.2224490037115, 187.8497873921497, 10.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.1119477497536703, -0.005706738140158095, 0.0 ],
+    CurrentAcceleration := [ -2.943871184141059, 0.1638588832925878, 0.0 ],
+    TargetPosition :=      [ 0, 0, 0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    Discretization := DiscretizationType.Continuous,
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-28');
+
+otg();
+AssertEquals_LREAL(Expected := 0.0352632,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
              Message := '');
  
 TEST_FINISHED();]]></ST>
