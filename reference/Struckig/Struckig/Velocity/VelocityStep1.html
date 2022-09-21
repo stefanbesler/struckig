@@ -211,9 +211,9 @@
 <h4 id="Struckig.VelocityStep1.AddInterval" data-uid="Struckig.VelocityStep1.AddInterval">AddInterval</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD AddInterval (
- interval : BlockInterval,
- Left : ProfileDesc,
- Right : ProfileDesc)
+ interval : REFERENCE TO BlockInterval,
+ Left : REFERENCE TO ProfileDesc,
+ Right : REFERENCE TO ProfileDesc)
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -227,17 +227,17 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="interval"></a>interval</td>
-<td style="text-align: left;"><a class="xref" href="../Block/BlockInterval.html">Struckig.BlockInterval</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Block/BlockInterval.html">Struckig.BlockInterval</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;"><a name="Left"></a>Left</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;"><a name="Right"></a>Right</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -275,7 +275,7 @@
 <h4 id="Struckig.VelocityStep1.CalculateBlock" data-uid="Struckig.VelocityStep1.CalculateBlock">CalculateBlock</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD CalculateBlock (
- block : Block) : BOOL
+ block : REFERENCE TO Block) : BOOL
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -289,7 +289,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="block"></a>block</td>
-<td style="text-align: left;"><a class="xref" href="../Block/Block.html">Struckig.Block</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Block/Block.html">Struckig.Block</a></td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>

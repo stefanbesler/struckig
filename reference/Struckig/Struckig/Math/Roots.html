@@ -208,9 +208,9 @@
 <h4 id="Struckig.Roots.PolyDeri" data-uid="Struckig.Roots.PolyDeri">PolyDeri</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PolyDeri (
- coeffs : LREAL,
+ coeffs : POINTER TO LREAL,
  coeffsCount : BYTE,
- out : LREAL)
+ out : POINTER TO LREAL)
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -224,7 +224,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="coeffs"></a>coeffs</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -234,7 +234,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><a name="out"></a>out</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -243,7 +243,7 @@
 <h4 id="Struckig.Roots.PolyEval" data-uid="Struckig.Roots.PolyEval">PolyEval</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PolyEval (
- polynom : LREAL,
+ polynom : POINTER TO LREAL,
  degree : INT,
  x : LREAL) : LREAL
 </code></pre>
@@ -259,7 +259,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="polynom"></a>polynom</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -278,9 +278,9 @@
 <h4 id="Struckig.Roots.PolyMonicDeri" data-uid="Struckig.Roots.PolyMonicDeri">PolyMonicDeri</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PolyMonicDeri (
- monic_coeffs : LREAL,
+ monic_coeffs : POINTER TO LREAL,
  coeffsCount : BYTE,
- out : LREAL)
+ out : POINTER TO LREAL)
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -294,7 +294,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="monic_coeffs"></a>monic_coeffs</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -304,7 +304,7 @@
 </tr>
 <tr>
 <td style="text-align: left;"><a name="out"></a>out</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -313,7 +313,7 @@
 <h4 id="Struckig.Roots.ShrinkInterval" data-uid="Struckig.Roots.ShrinkInterval">ShrinkInterval</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD ShrinkInterval (
- p : LREAL,
+ p : POINTER TO LREAL,
  degree : BYTE,
  l : LREAL,
  h : LREAL) : LREAL
@@ -330,7 +330,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="p"></a>p</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -354,7 +354,7 @@
 <h4 id="Struckig.Roots.SolveCub" data-uid="Struckig.Roots.SolveCub">SolveCub</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD SolveCub (
- polynom : LREAL,
+ polynom : POINTER TO LREAL,
  rootCount : INT,
  roots : ARRAY[0..6] OF LREAL)
 </code></pre>
@@ -370,7 +370,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="polynom"></a>polynom</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -402,7 +402,7 @@
 <p>Calculate all roots of the monic quartic equation: x^4 + a<em>x^3 + b</em>x^2 + c*x + d = 0</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD SolveQuartMonic (
- polynom : LREAL,
+ polynom : POINTER TO LREAL,
  degree : LREAL,
  rootCount : INT,
  roots : ARRAY[0..6] OF LREAL)
@@ -419,7 +419,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="polynom"></a>polynom</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -458,7 +458,7 @@ The input x must be of length 3
 Number of zeros are returned</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD SolveResolvent (
- x : LREAL,
+ x : POINTER TO LREAL,
  a : LREAL,
  b : LREAL,
  c : LREAL) : INT
@@ -475,7 +475,7 @@ Number of zeros are returned</p>
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="x"></a>x</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><em>POINTER TO</em> LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>

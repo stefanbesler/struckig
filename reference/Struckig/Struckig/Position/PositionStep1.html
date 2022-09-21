@@ -298,8 +298,8 @@
 <h4 id="Struckig.PositionStep1.Get" data-uid="Struckig.PositionStep1.Get">Get</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD Get (
- Profilefile : ProfileDesc,
- block : Block) : BOOL
+ profile : REFERENCE TO ProfileDesc,
+ block : REFERENCE TO Block) : BOOL
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -312,13 +312,13 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profilefile"></a>Profilefile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;"><a name="block"></a>block</td>
-<td style="text-align: left;"><a class="xref" href="../Block/Block.html">Struckig.Block</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Block/Block.html">Struckig.Block</a></td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -429,69 +429,17 @@
 </tr>
 </tbody>
 </table>
-<p><a name="time_acc0"></a></p>
-<h4 id="Struckig.PositionStep1.time_acc0" data-uid="Struckig.PositionStep1.time_acc0">time_acc0</h4>
-<h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD PRIVATE time_acc0 (
- Profile : ProfileDesc,
- vMax : LREAL,
- vMin : LREAL,
- aMax : LREAL,
- aMin : LREAL,
- jMax : LREAL)
-</code></pre>
-<h5 class="parameters">Inputs</h5>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMax"></a>vMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMin"></a>vMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMax"></a>aMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMin"></a>aMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="jMax"></a>jMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-</tbody>
-</table>
 <p><a name="time_acc0_acc1"></a></p>
 <h4 id="Struckig.PositionStep1.time_acc0_acc1" data-uid="Struckig.PositionStep1.time_acc0_acc1">time_acc0_acc1</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_acc0_acc1 (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
  aMin : LREAL,
- jMax : LREAL)
+ jMax : LREAL,
+ return_after_found : BOOL)
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -505,7 +453,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -531,15 +479,21 @@
 <tr>
 <td style="text-align: left;"><a name="jMax"></a>jMax</td>
 <td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="return_after_found"></a>return_after_found</td>
+<td style="text-align: left;">BOOL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table>
 <p><a name="time_acc0_two_step"></a></p>
 <h4 id="Struckig.PositionStep1.time_acc0_two_step" data-uid="Struckig.PositionStep1.time_acc0_two_step">time_acc0_two_step</h4>
+<p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_acc0_two_step (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -558,60 +512,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMax"></a>vMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMin"></a>vMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMax"></a>aMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMin"></a>aMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="jMax"></a>jMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-</tbody>
-</table>
-<p><a name="time_acc1"></a></p>
-<h4 id="Struckig.PositionStep1.time_acc1" data-uid="Struckig.PositionStep1.time_acc1">time_acc1</h4>
-<h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD PRIVATE time_acc1 (
- Profile : ProfileDesc,
- vMax : LREAL,
- vMin : LREAL,
- aMax : LREAL,
- aMin : LREAL,
- jMax : LREAL)
-</code></pre>
-<h5 class="parameters">Inputs</h5>
-<table>
-<thead>
-<tr>
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -643,9 +544,10 @@
 </table>
 <p><a name="time_acc1_vel_two_step"></a></p>
 <h4 id="Struckig.PositionStep1.time_acc1_vel_two_step" data-uid="Struckig.PositionStep1.time_acc1_vel_two_step">time_acc1_vel_two_step</h4>
+<p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_acc1_vel_two_step (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -664,7 +566,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -690,6 +592,65 @@
 <tr>
 <td style="text-align: left;"><a name="jMax"></a>jMax</td>
 <td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p><a name="time_all_none_acc0_acc1"></a></p>
+<h4 id="Struckig.PositionStep1.time_all_none_acc0_acc1" data-uid="Struckig.PositionStep1.time_all_none_acc0_acc1">time_all_none_acc0_acc1</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD PRIVATE time_all_none_acc0_acc1 (
+ profile : REFERENCE TO ProfileDesc,
+ vMax : LREAL,
+ vMin : LREAL,
+ aMax : LREAL,
+ aMin : LREAL,
+ jMax : LREAL,
+ return_after_found : BOOL)
+</code></pre>
+<h5 class="parameters">Inputs</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="vMax"></a>vMax</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="vMin"></a>vMin</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="aMax"></a>aMax</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="aMin"></a>aMin</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="jMax"></a>jMax</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="return_after_found"></a>return_after_found</td>
+<td style="text-align: left;">BOOL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -698,12 +659,13 @@
 <h4 id="Struckig.PositionStep1.time_all_vel" data-uid="Struckig.PositionStep1.time_all_vel">time_all_vel</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_all_vel (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
  aMin : LREAL,
- jMax : LREAL)
+ jMax : LREAL,
+ return_after_found : BOOL)
 </code></pre>
 <h5 class="parameters">Inputs</h5>
 <table>
@@ -717,7 +679,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -745,66 +707,19 @@
 <td style="text-align: left;">LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
-</tbody>
-</table>
-<p><a name="time_none"></a></p>
-<h4 id="Struckig.PositionStep1.time_none" data-uid="Struckig.PositionStep1.time_none">time_none</h4>
-<h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD PRIVATE time_none (
- Profile : ProfileDesc,
- vMax : LREAL,
- vMin : LREAL,
- aMax : LREAL,
- aMin : LREAL,
- jMax : LREAL)
-</code></pre>
-<h5 class="parameters">Inputs</h5>
-<table>
-<thead>
 <tr>
-<th style="text-align: left;">Name</th>
-<th style="text-align: left;">Type</th>
-<th style="text-align: left;">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMax"></a>vMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="vMin"></a>vMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMax"></a>aMax</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="aMin"></a>aMin</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="jMax"></a>jMax</td>
-<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"><a name="return_after_found"></a>return_after_found</td>
+<td style="text-align: left;">BOOL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table>
 <p><a name="time_none_two_step"></a></p>
 <h4 id="Struckig.PositionStep1.time_none_two_step" data-uid="Struckig.PositionStep1.time_none_two_step">time_none_two_step</h4>
+<p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_none_two_step (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -823,7 +738,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
@@ -855,9 +770,10 @@
 </table>
 <p><a name="time_vel_two_step"></a></p>
 <h4 id="Struckig.PositionStep1.time_vel_two_step" data-uid="Struckig.PositionStep1.time_vel_two_step">time_vel_two_step</h4>
+<p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_vel_two_step (
- Profile : ProfileDesc,
+ Profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -876,7 +792,7 @@
 <tbody>
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
-<td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
+<td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
 <tr>
