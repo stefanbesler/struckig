@@ -210,28 +210,28 @@ THEN
   ELSE
     // There is no blocked interval when vf==0 && af==0, so return after first found profile
     time_all_vel(profile, vMax, vMin, aMax, aMin, jMax, true);
-    IF (validProfileCounter > 0) THEN
+    IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
     time_all_none_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax, TRUE);
-    IF (validProfileCounter > 0) THEN
+    IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
     time_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax, true);
-    IF (validProfileCounter > 0) THEN
+    IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
     
     time_all_vel(profile, vMin, vMax, aMin, aMax, -jMax, true);
-    IF (validProfileCounter > 0) THEN
+    IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
     time_all_none_acc0_acc1(profile, vMin, vMax, aMin, aMax, -jMax, TRUE);
-    IF (validProfileCounter > 0) THEN
+    IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
