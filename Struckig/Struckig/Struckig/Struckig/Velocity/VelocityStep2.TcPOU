@@ -3,8 +3,7 @@
   <POU Name="VelocityStep2" Id="{44d0404d-f840-43a5-b935-c3fca779d43d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep2 
 VAR
-  v0, a0 : LREAL;
-  tf, vf, af : LREAL;
+  tf, a0, af, vd : LREAL;
   aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
@@ -32,7 +31,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[// Test all cases to get ones that match
 // However we should guess which one is correct and try them first...
-IF (vf > v0) THEN
+IF (vd > 0) THEN
   Get := CheckAll(Profile, aMax, aMin, jMax) OR_ELSE CheckAll(Profile, aMin, aMax, -jMax);
 ELSE
   Get := CheckAll(Profile, aMin, aMax, -jMax) OR_ELSE CheckAll(Profile, aMax, aMin, jMax);
@@ -50,14 +49,13 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.v0 := v0;
-THIS^.a0 := a0;
+        <ST><![CDATA[THIS^.a0 := a0;
 THIS^.tf := tf;
-THIS^.vf := vf;
 THIS^.af := af;
 THIS^.aMax := aMax;
 THIS^.aMin := aMin;
-THIS^.jMax := jMax;]]></ST>
+THIS^.jMax := jMax;
+THIS^.vd := vf - v0;]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{139ae830-064a-498c-9553-ea8f79b368be}">
@@ -74,7 +72,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// UD Solution 1/2
-h1 := (-a0*a0 - af*af + 2*a0*af + 2*jMax*((a0 + af)*tf - 2*(vf - v0)))/(jMax*jMax) + tf*tf;
+h1 := (-a0*a0 - af*af + 2*a0*af + 2*jMax*((a0 + af)*tf - 2*(vd)))/(jMax*jMax) + tf*tf;
 IF h1 >= 0
 THEN
   h1 := SQRT(h1);
@@ -97,8 +95,8 @@ END_IF
 // UU Solution
 h1 := (a0 - af + jMax*tf);
 
-profile.t[0] := -Power2(af - a0)/(2*jMax*h1) + (vf - v0 - a0*tf)/h1;
-profile.t[1] := h1/jMax;
+profile.t[0] := -Power2(af - a0)/(2*jMax*h1) + (vd - a0*tf)/h1;
+profile.t[1] := (a0 - af)/jMax + tf;
 profile.t[2] := 0;
 profile.t[3] := 0;
 profile.t[4] := tf - (profile.t[0] + profile.t[1]);
@@ -132,7 +130,7 @@ END_IF]]></ST>
     <Method Name="time_none" Id="{b7252407-1ffc-4203-89cb-177864a2876c}">
       <Declaration><![CDATA[METHOD PRIVATE time_none : BOOL
 VAR_IN_OUT
-  Profile : ProfileDesc;
+  profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
@@ -142,35 +140,36 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon AND_THEN ABS(vf - v0) < Constants.DoubleEpsilon) THEN
-  Profile.t[0] := 0;
-  Profile.t[1] := 0;
-  Profile.t[2] := 0;
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+        <ST><![CDATA[IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon AND_THEN ABS(vd) < Constants.DoubleEpsilon) THEN
+  profile.t[0] := 0;
+  profile.t[1] := tf;
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
-    Profile.pf := Profile.p[7];
+  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+    profile.pf := profile.p[7];
     time_none := TRUE;
     RETURN;
   END_IF
 END_IF
     
 // UD Solution 1/2
-Profile.t[0] := -(2*(af*tf + v0 - vf))/(a0 - af);
-Profile.t[1] := tf - Profile.t[0];
-Profile.t[2] := 0;
-Profile.t[3] := 0;
-Profile.t[4] := 0;
-Profile.t[5] := 0;
-Profile.t[6] := 0;
+h1 := 2*(af*tf - vd);
+profile.t[0] := h1/(af - a0);
+profile.t[1] := tf - profile.t[0];
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
 
-jf := (a0 - af)*(a0 - af)/(2*(af*tf + v0 - vf));
-IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jf, aMax, aMin))
+jf := Power2(a0 - af)/h1;
+IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jf, aMax, aMin))
 THEN
-  Profile.pf := Profile.p[7];
+  profile.pf := profile.p[7];
   time_none := TRUE;
 END_IF]]></ST>
       </Implementation>

@@ -33,6 +33,10 @@ example26();
 example27();
 example28();
 example29();
+example30();
+example31();
+example32();
+
 
 
 ]]></ST>
@@ -948,6 +952,91 @@ END_VAR
 
 otg();
 AssertEquals_LREAL(Expected := 4.0032799558,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example30" Id="{3fede239-06fe-4709-b2c3-430b2caeee89}">
+      <Declaration><![CDATA[METHOD example30
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    CurrentPosition := [0.0, 0.0, 0.0],
+    CurrentVelocity := [1.0, 0.0, 0.0],
+    CurrentAcceleration := [0.0, 0.0, 0.0],
+    TargetPosition := [0.0, 0.0, 0.0],
+    TargetVelocity := [1.0, 0.0, 1.0],
+    TargetAcceleration := [0.0, 0.0, 0.0],
+    MaxVelocity := [1.0, 1.0, 1.0],
+    MaxAcceleration := [1.0, 1.0, 1.0],
+    MaxJerk := [1.0, 1.0, 1.0],
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-30');
+
+otg();
+AssertEquals_LREAL(Expected := 2.0,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example31" Id="{2600698e-c9a2-4a83-86cb-ea07e4bbb42a}">
+      <Declaration><![CDATA[METHOD example31
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    CurrentPosition := [-0.54516231864478149, -1.4206629551476477, 0.32727720821160067],
+    CurrentVelocity := [6.1348323207600686, -0.0040477518609957240, 0.0088178054233364854],
+    CurrentAcceleration := [0.0000000000000000, 0.19725113486681556, -0.23382835447542066],
+    TargetVelocity := [6.1348323207600686, 0.014259490365703332, -0.012798219033181931],
+    TargetAcceleration := [0.0, 0.0, 0.0],
+    MaxVelocity := [6.4577182323790190, 5.4105206811824216, 7.1558499331767509],
+    MaxAcceleration := [26.895523773232618, 22.532200643246796, 29.810223624063148],
+    MaxJerk := [224.22244900371152, 187.84978739214969, 248.46507231391274],
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-31');
+
+otg();
+AssertEquals_LREAL(Expected := 0.0187497625,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example32" Id="{b3457ed3-4b32-4da5-80c9-6838ee359551}">
+      <Declaration><![CDATA[METHOD example32
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    CurrentPosition := [-1.2563817016634644, -0.51079124473334669, 2.4607439315667303],
+    CurrentVelocity := [3.4194572623820010, 5.7548168684509085, -1.5675191369761612],
+    CurrentAcceleration := [27.722541632719086, -1.7945991957745204, -22.971380686605098],
+    TargetVelocity := [5.1559110036108979, 5.5636136585722848, -3.6173923596604807],
+    TargetAcceleration := [0.0, 0.0, 0.0],
+    MaxVelocity := [9.5993108859688121, 9.4247779607693793, 17.453292519943297],
+    MaxAcceleration := [39.985493163190093, 39.618974020271281, 72.710416638083771],
+    MaxJerk := [333.30552725335713, 330.26865435488696, 606.01322287747109],
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-32');
+
+otg();
+AssertEquals_LREAL(Expected := 0.1030382161,
              Actual := CheckCalculation(otg),
              DELTA := 1E-7,
              Message := '');

@@ -3,9 +3,9 @@
   <POU Name="VelocityStep1" Id="{0bad3140-2221-4abc-b516-4f31ef4a9048}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep1 
 VAR
-  v0, a0 : LREAL;
-  vf, af : LREAL;
+  a0, af : LREAL;
   aMax, aMin, jMax : LREAL;
+  vd : LREAL;
   
   ValidProfiles : ARRAY[0..2] OF ProfileDesc; // Max 3 valid profiles
   ValidProfileCount : INT := -1;  
@@ -150,24 +150,47 @@ END_VAR
 VAR_IN_OUT
   block : Block; 
 END_VAR
+VAR
+  aMax, aMin, jMax : LREAL;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ValidProfileCount := -1;
 
-IF (ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
+IF ABS(af) < Constants.DoubleEpsilon
 THEN
-  time_none(profile, aMax, aMin, jMax);
+  // There is no blocked interval when af==0, so return after first found profile
+  aMax := SEL((vd >= 0), THIS^.aMin, THIS^.aMax);
+  aMin := SEL((vd >= 0), THIS^.aMax, THIS^.aMin);
+  jMax := SEL((vd >= 0), -THIS^.jMax, THIS^.jMax);
+  
+  time_none(profile, aMax, aMin, jMax, TRUE);
   IF ValidProfileCount >= 0
   THEN 
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
-  time_none(profile, aMax, aMin, -jMax);  
+  
+  time_acc0(profile, aMax, aMin, jMax, TRUE);
+  IF ValidProfileCount >= 0
+  THEN 
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_none(profile, aMin, aMax, -jMax, TRUE);
+  IF ValidProfileCount >= 0
+  THEN 
+    Get := CalculateBlock(block);
+    RETURN;
+	END_IF
+  
+  time_acc0(profile, aMin, aMax, -jMax, TRUE);
 ELSE
-  time_none(profile, aMax, aMin, jMax);
-  time_acc0(profile, aMax, aMin, jMax);
-  time_none(profile, aMin, aMax, -jMax);
-  time_acc0(profile, aMin, aMax, -jMax);
+  time_none(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
+  time_none(profile, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
+  time_acc0(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
+  time_acc0(profile, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
 END_IF
 
 Get := CalculateBlock(block);]]></ST>
@@ -202,100 +225,116 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[THIS^.v0 := v0;
-THIS^.a0 := a0;
-THIS^.vf := vf;
+        <ST><![CDATA[THIS^.a0 := a0;
+THIS^.vd := vf - v0;
 THIS^.af := af;;
 THIS^.aMax := aMax;
 THIS^.aMin := aMin;
-THIS^.jMax := jMax;]]></ST>
+THIS^.jMax := jMax;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{196de754-de31-4539-a912-55eccbd9444f}">
       <Declaration><![CDATA[METHOD PRIVATE time_acc0
 VAR_IN_OUT
-  Profile : ProfileDesc;
+  profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
+  return_after_found : BOOL;  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// UD
-Profile.t[0] := (-a0 + aMax)/jMax;
-Profile.t[1] := (a0*a0 + af*af - 2*aMax*aMax + 2*jMax*(vf - v0))/(2*aMax*jMax);
-Profile.t[2] := (-af + aMax)/jMax;
-Profile.t[3] := 0;
-Profile.t[4] := 0;
-Profile.t[5] := 0;
-Profile.t[6] := 0;
+profile.t[0] := (-a0 + aMax)/jMax;
+profile.t[1] := (a0*a0 + af*af - 2*aMax*aMax + 2*jMax*vd)/(2*aMax*jMax);
+profile.t[2] := (-af + aMax)/jMax;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
 
 IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin))
 THEN
-  AddProfile(Profile, jMax);
+  AddProfile(profile, jMax);
+  IF return_after_found
+  THEN
+    RETURN;
+	END_IF
 END_IF
 
 // UU
-Profile.t[0] := (-a0 + aMax)/jMax;
-Profile.t[1] := (a0*a0 - af*af + 2*jMax*(vf - v0))/(2*aMax*jMax);
-Profile.t[2] := 0;
-Profile.t[3] := 0;
-Profile.t[4] := (af - aMax)/jMax;
-Profile.t[5] := 0;
-Profile.t[6] := 0;
+profile.t[0] := (-a0 + aMax)/jMax;
+profile.t[1] := (a0*a0 - af*af + 2*jMax*vd)/(2*aMax*jMax);
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := (af - aMax)/jMax;
+profile.t[5] := 0;
+profile.t[6] := 0;
 
 IF (Profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin))
 THEN
-  AddProfile(Profile, jMax);
+  AddProfile(profile, jMax);
+  IF return_after_found
+  THEN
+    RETURN;
+	END_IF  
 END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_none" Id="{f88d49e0-16f5-403f-a899-55296e113bff}">
       <Declaration><![CDATA[METHOD PRIVATE time_none
 VAR_IN_OUT
-  Profile : ProfileDesc;
+  profile : ProfileDesc;
 END_VAR
 VAR_INPUT
   aMax, aMin, jMax : LREAL;
+  return_after_found : BOOL;    
 END_VAR
 VAR
   h1 : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h1 := (a0*a0 + af*af)*0.5 + jMax*(vf - v0);
+        <ST><![CDATA[h1 := (a0*a0 + af*af)/2 + jMax*vd;
 IF h1>=0
 THEN
   h1 := SQRT(h1);
   
   // Solution 1
-  Profile.t[0] := -(a0 + h1)/jMax;
-  Profile.t[1] := 0;
-  Profile.t[2] := -(af + h1)/jMax;
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+  profile.t[0] := -(a0 + h1)/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := -(af + h1)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin))
+  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin))
   THEN
-    AddProfile(Profile, jMax);
-    RETURN;
+    AddProfile(profile, jMax);
+    IF return_after_found
+    THEN
+      RETURN;
+    END_IF
   END_IF
 
   // Solution 2
-  Profile.t[0] := (-a0 + h1)/jMax;
-  Profile.t[1] := 0;
-  Profile.t[2] := (-af + h1)/jMax;
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := 0;
+  profile.t[0] := (-a0 + h1)/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := (-af + h1)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
   
-  IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
-    AddProfile(Profile, jMax);
+  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
+    AddProfile(profile, jMax);
+    IF return_after_found
+    THEN
+      RETURN;
+    END_IF    
   END_IF
-
 END_IF
     ]]></ST>
       </Implementation>
