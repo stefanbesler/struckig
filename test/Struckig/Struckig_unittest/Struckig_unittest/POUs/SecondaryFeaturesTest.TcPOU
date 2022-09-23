@@ -19,7 +19,8 @@ Test_PerDofSettings();
 Test_PerDofSettings_1();
 Test_PhaseSynchronization();
 Test_PositionExtrema();
-Test_DurationDiscretization();]]></ST>
+Test_DurationDiscretization();
+Test_InputInitalized();]]></ST>
     </Implementation>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
       <Declaration><![CDATA[METHOD Test_AtTime
@@ -312,6 +313,41 @@ AssertEquals_LREAL(otg._independentMinDurations[1], 3.6860977315, 1E-9, message:
 AssertEquals_LREAL(otg._independentMinDurations[2], otg.Duration, 1E-9, message:='');
 
 TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_InputInitalized" Id="{b3d7b5dd-ee27-45b7-b9cf-deb942269708}">
+      <Declaration><![CDATA[METHOD Test_InputInitalized
+VAR_INST
+  otg : Struckig.Otg(0.005, 2) := (
+    MaxVelocity :=         [ 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0 ]
+  );
+END_VAR
+VAR
+  nan : LREAL := SQRT(-1);
+  result : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('InputInitialized');
+
+AssertFalse(otg._inputInitialized, 'Input is initially not initalized');
+
+otg();
+
+AssertTrue(otg._inputInitialized, 'Input is initialized after the first call to OTG');
+
+
+TEST_FINISHED();
+
+
+
+
+
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="Test_InputValidation" Id="{ebd76db9-5662-45c4-b273-d537ff4a7faf}">
