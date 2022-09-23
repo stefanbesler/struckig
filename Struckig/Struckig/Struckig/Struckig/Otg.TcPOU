@@ -265,7 +265,7 @@ DO
     RETURN; 
 	END_IF
 
-  _independentMinDurations[dof] := _blocks[dof].Pmin.Brake.Duration + _blocks[dof].Tmin;
+  _independentMinDurations[dof] := _blocks[dof].Tmin;
 END_FOR
 
 
