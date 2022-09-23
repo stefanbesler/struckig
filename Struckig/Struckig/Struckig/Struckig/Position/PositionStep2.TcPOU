@@ -1158,7 +1158,7 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 VAR
-  p1, ph1, ph2, ph3, ph4, ph5 : LREAL;
+  p1, ph1, ph2, ph3, ph4, ph5, val_max : LREAL;
   polynom, deriv, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
   dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
   rootCount, dd_tz_intervalCount : INT := -1;
@@ -1259,12 +1259,17 @@ ELSE
     tz_current := tz;
   END_FOR
   
-  IF (Roots.PolyEval(ADR(polynom), 5, tz_current) * Roots.PolyEval(ADR(polynom), 5, tz_max) < 0)
+  val_max := Roots.PolyEval(ADR(polynom), 5, tz_max);
+  IF Roots.PolyEval(ADR(polynom), 5, tz_current) * val_max < 0
   THEN
     root[rootCount+1] := Roots.ShrinkInterval(ADR(polynom), 5, tz_current, tz_max);
     rootCount := rootCount + 1;
+  ELSIF ABS(val_max) < 8 * Constants.DoubleEpsilon
+  THEN
+    root[rootCount+1] := tz_max;
+    rootCount := rootCount + 1;
   END_IF
-  
+
   FOR i:=0 TO rootCount
   DO
     t := root[i];

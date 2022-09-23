@@ -32,6 +32,8 @@ example25();
 example26();
 example27();
 example28();
+example29();
+
 
 ]]></ST>
     </Implementation>
@@ -918,6 +920,34 @@ END_VAR
 
 otg();
 AssertEquals_LREAL(Expected := 0.0352632,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example29" Id="{72f060a7-02f9-44b4-840f-b5c4060b1533}">
+      <Declaration><![CDATA[METHOD example29
+VAR_INST
+  otg : Struckig.Otg(0.004, 6) := (
+    CurrentPosition := [0.5, -0.7, -0.7, -1.5, -0, -0.2],
+    CurrentVelocity := [2.689534009085704E-06, -2.689534009088848E-06, -2.689534009086246E-06, -2.689534009088414E-06, 2.689534009087655E-06, -2.689534009089241E-06],
+    CurrentAcceleration := [-0.001639979880695402, 0.001639979880696266, 0.001639979880695815, 0.00163997988069603, -0.00163997988069612],
+    TargetPosition := [1.5, -0.7, -0.7, -1.5, 0, -0.2],
+    TargetVelocity := [0, 0, 0, 0, 0, 0 ],
+    TargetAcceleration := [0, 0, 0, 0, 0, 0],
+    MaxVelocity := [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    MaxAcceleration := [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    MaxJerk := [0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-29');
+
+otg();
+AssertEquals_LREAL(Expected := 4.0032799558,
              Actual := CheckCalculation(otg),
              DELTA := 1E-7,
              Message := '');
