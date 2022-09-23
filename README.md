@@ -31,21 +31,12 @@ Only the Community Version of Ruckig is ported and pro features are not availabl
 
 The original project, `ruckig` is a submodule of this repository. The commit-hash reflects the commits that are ported already - I try to keep up with changes that are done in `ruckig`.
 
-# Unittests
+# Continuous integration & Documentation
 
-This project uses [TcUnit](http://www.tcunit.org/) for unittesting. Since the library is a standalone PLC project, unittests are implemented in a different solution (subfolder `.test/Struckig/Struckig_unittest`) than the library. In order to execute the unittests the `Struckig` library has to be [saved and installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189307403.html&id=) and `TcUnit.library` has to be [downloaded](https://github.com/tcunit/TcUnit/releases) and [installed](https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/4189333259.html&id=).
+This project is using [zkbuild](https://github.com/Zeugwerk/zkbuild-action) for continuous integration and [zkdoc](https://github.com/Zeugwerk/zkdoc-action) for generating the [documentation](https://stefanbesler.github.io/Struckig/).
+To run the tests manually, get a copy of [TcUnit](http://www.tcunit.org/) and activate the testing solution *test\Struckig\Struckig_unittest.sln*
 
-Please note, that not all unittests from the [original](https://www.github.com/pantor/ruckig) source code are ported yet, but only the `KnownExamples` and `SecondaryFeatures` tests.
 
-# Continuous integration
-
-Continuous integration has not really arrived in Operational technology (OT) -- yet. Some fellows from work are making good progress in implementing buildtools and preparing a CI/CD environment for TwinCAT that will be publicly available. Luckily, they agreed with me to let me try their tools as an
-alpha/beta tester with this project. For more information on this topic, please contact [Zeugwerk](mailto:info@zeugwerk.at); In the meantime I
-thank [@Zeugwerk](https://github.com/Zeugwerk) for letting me use their build environment in this early development stage of their DevOps tools.
-
-# Documentation
-
-The source code and usage documentation of this library is hosted on [https://stefanbesler.github.io/Struckig/](https://stefanbesler.github.io/Struckig/). Kudos again to [@Zeugwerk](https://github.com/Zeugwerk) for letting me beta test their TwinCAT documentation generation, which is still in alpha phase.
 
 # Example: Create time-based profile for 1 axis
 
