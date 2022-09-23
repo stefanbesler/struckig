@@ -28,6 +28,9 @@ references:
 - uid: Struckig.DiscretizationType
   name: DiscretizationType
   href: reference/Struckig/Struckig/_DataTypes/DiscretizationType.html
+- uid: Struckig.Fmod
+  name: Fmod
+  href: reference/Struckig/Struckig/Math/Fmod.html
 - uid: Struckig.Integrate
   name: Integrate
   href: reference/Struckig/Struckig/Integrate.html
