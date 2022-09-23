@@ -36,7 +36,7 @@ example29();
 example30();
 example31();
 example32();
-
+example33();
 
 
 ]]></ST>
@@ -1037,6 +1037,36 @@ END_VAR
 
 otg();
 AssertEquals_LREAL(Expected := 0.1030382161,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example33" Id="{68cceb00-3949-4b80-9f97-16b905bba6e5}">
+      <Declaration><![CDATA[METHOD example33
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (
+    CurrentPosition := [0, 0, 0],
+    CurrentVelocity := [0, -0.0577630321017372216, 0],
+    CurrentAcceleration := [0, -1.9198621771937627, 0],
+    TargetPosition := [0, 0, 0],
+    TargetVelocity := [0, -0.1, 0],
+    TargetAcceleration := [0.0, 0.0, 0.0],
+    MaxVelocity := [5.23, 3.926990816987241394, 3.92],
+    MaxAcceleration := [4.36, 4.363323129985824, 4.36],
+    MaxJerk := [43.63, 43.633231299858238116, 43.63],
+    ControlInterface := ControlInterfaceType.Velocity,
+    Discretization := DiscretizationType.Discrete
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-33');
+
+otg();
+AssertEquals_LREAL(Expected := 0.048,
              Actual := CheckCalculation(otg),
              DELTA := 1E-7,
              Message := '');

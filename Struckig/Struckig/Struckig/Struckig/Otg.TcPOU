@@ -623,6 +623,7 @@ VAR_INST
   dof : INT;
   i,j, h : INT;
   is_blocked : BOOL;
+  remainder : LREAL;
 END_VAR
 
 ]]></Declaration>
@@ -655,11 +656,20 @@ END_FOR
 
 possible_t_syncs[3 * Dofs] := SEL(Tmin = 0, Tmin, Constants.Infinity);
 any_interval := any_interval OR_ELSE Tmin > 0;
-IF (discrete_duration)
+IF discrete_duration
 THEN
   FOR i:=0 TO 3*Dofs-1
   DO
-    possible_t_syncs[i] := Ceil(possible_t_syncs[i] / _dt) * _dt;        
+    possible_t_sync REF= possible_t_syncs[i];
+    IF possible_t_sync = Constants.Infinity
+    THEN
+      CONTINUE;
+		END_IF
+    
+    remainder := Fmod(possible_t_sync, _dt); // in [0, delta_time)
+    IF remainder > 0 THEN
+      possible_t_sync := possible_t_sync + _dt - remainder;
+    END_IF     
   END_FOR
 END_IF
 

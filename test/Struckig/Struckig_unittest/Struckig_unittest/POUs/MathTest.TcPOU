@@ -5,7 +5,9 @@
     <Implementation>
       <ST><![CDATA[Test_Cbrt();
 Test_LrealFromBits();
-Test_Ceil();]]></ST>
+Test_Ceil();
+Test_Fmod();
+]]></ST>
     </Implementation>
     <Method Name="Test_Cbrt" Id="{fb4f66a2-1f91-4a1e-b1d2-83e0fdba8205}">
       <Declaration><![CDATA[METHOD Test_Cbrt
@@ -56,6 +58,45 @@ AssertEquals_LREAL(1, actual, 1E-20, message:='');
 
 actual := Struckig.Ceil(-0.1);
 AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Fmod" Id="{2d283eca-8afb-4973-8ca2-2aedc13f57fa}">
+      <Declaration><![CDATA[METHOD Test_Fmod
+VAR
+  actual : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Cbrt');
+
+actual := Struckig.Fmod(5, 1);
+AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 2);
+AssertEquals_LREAL(1, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 3);
+AssertEquals_LREAL(2, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 4);
+AssertEquals_LREAL(1, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 5);
+AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 6);
+AssertEquals_LREAL(5, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 7);
+AssertEquals_LREAL(5, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(5, 8);
+AssertEquals_LREAL(5, actual, 1E-20, message:='');
+
+actual := Struckig.Fmod(123.123, 0.121);
+AssertEquals_LREAL(0.066, actual, 1E-20, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

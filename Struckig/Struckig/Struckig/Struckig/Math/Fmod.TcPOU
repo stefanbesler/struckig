@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="Fmod" Id="{e7de841c-f3d1-4a5d-b60b-81609d8fb3bd}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION Fmod : LREAL
+VAR_INPUT
+  x : LREAL;
+  y : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Fmod := x - TRUNC(x / y) * y;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
