@@ -7,6 +7,7 @@
 Test_LrealFromBits();
 Test_Ceil();
 Test_Fmod();
+Test_Clamp();
 ]]></ST>
     </Implementation>
     <Method Name="Test_Cbrt" Id="{fb4f66a2-1f91-4a1e-b1d2-83e0fdba8205}">
@@ -58,6 +59,27 @@ AssertEquals_LREAL(1, actual, 1E-20, message:='');
 
 actual := Struckig.Ceil(-0.1);
 AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Clamp" Id="{0b9dcc11-6cdc-4240-8723-22092748cb1a}">
+      <Declaration><![CDATA[METHOD Test_Clamp
+VAR
+  actual : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Clamp');
+
+actual := Struckig.Clamp(-1, 0, 1);
+AssertEquals_LREAL(0, actual, 1E-20, message:='');
+
+actual := Struckig.Clamp(-1, -2, 1);
+AssertEquals_LREAL(-1, actual, 1E-20, message:='');
+
+actual := Struckig.Clamp(2, 0, 1);
+AssertEquals_LREAL(1, actual, 1E-20, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

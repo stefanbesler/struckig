@@ -63,6 +63,9 @@
     <Compile Include="Struckig\Math\Ceil.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Math\Clamp.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Math\Fmod.TcPOU">
       <SubType>Code</SubType>
     </Compile>

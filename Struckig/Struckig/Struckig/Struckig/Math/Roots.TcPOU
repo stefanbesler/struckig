@@ -3,7 +3,7 @@
   <POU Name="Roots" Id="{551d5993-d7b8-4037-a2a7-4cae14a4c1a9}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM INTERNAL Roots
 VAR
-  a2, aover3, q, r2, q3, aa, t : LREAL;
+  a2, q, qsqrt, r2, q3, aa, t : LREAL;
   a, b, c, d, rr, theta, ux, uyi, inva, invaa, bb, bover3a, p, halfq, yy, inv2b, x, y, uuu, vvv, www, w, h : LREAL;
   discriminant : LREAL;
   e0, e1, q1, q2, p1, p2, dd, sqrtD  : LREAL;
@@ -224,7 +224,7 @@ ELSE
   bb := b * b;
   bover3a := b * inva / 3;
   p := (a * c - bb / 3) * invaa;
-  halfq := (2 * bb * b - 9 * a * b * c + 27 * a * a * d) * (0.5 / 27) * invaa * inva;
+  halfq := (2 * bb * b - 9 * a * b * c + 27 * a * a * d) / 54 * invaa * inva;
   yy := p * p * p / 27 + halfq * halfq;  
     
   IF (yy > Constants.DoubleEpsilon) THEN
@@ -527,30 +527,23 @@ VAR_INPUT
   a,b,c : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[aover3 := a / 3;
+        <ST><![CDATA[a := a / 3;
 a2 := a * a;
-q := (a2 - 3 * b) / 9;
-rr := a * (2 * a2 - 9 * b) / 54 + c / 2;
+q := a2 - b / 3;
+rr := (a * (2 * a2 - b) + c) / 2;
 r2 := rr * rr;
 q3 := q * q * q;
 
-IF (r2 < q3) THEN
-  t := rr / SQRT(q3);
-  IF (t < -1.0) THEN
-      t := -1.0;
-  END_IF
-  
-  IF (t > 1.0) THEN
-      t := 1.0;
-  END_IF
-  
+IF (r2 < q3) AND_THEN q >= 0 THEN
+  qsqrt := SQRT(q);
+  t := Clamp(rr / (q * qsqrt), -1.0, 1.0);
   q := -2 * SQRT(q);
   theta := ACOS(t) / 3;
   ux := COS(theta) * q;
   uyi := SIN(theta) * q;
-  x[0] := ux - aover3;
-  x[1] := ux * Constants.Cos120 - uyi * Constants.Sin120 - aover3;
-  x[2] := ux * Constants.Cos120 + uyi * Constants.Sin120 - aover3;
+  x[0] := ux - a;
+  x[1] := ux * Constants.Cos120 - uyi * Constants.Sin120 - a;
+  x[2] := ux * Constants.Cos120 + uyi * Constants.Sin120  - a;
   SolveResolvent := 3;
   RETURN;
 
@@ -561,8 +554,8 @@ ELSE
   END_IF
   bb := SEL(0.0 = aa, q / aa, 0.0);
   
-  x[0] := (aa + bb) - aover3;
-  x[1] := -(aa + bb) / 2 - aover3;
+  x[0] := (aa + bb) - a;
+  x[1] := -(aa + bb) / 2 - a;
   x[2] := SQRT(3) * (aa - bb) / 2;
   IF (ABS(x[2]) < Constants.DoubleEpsilon) THEN
     x[2] := x[1];
