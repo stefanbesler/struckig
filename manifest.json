@@ -109,7 +109,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Constants.html",
-          "hash": "zb0lVkUJGhCWU/0tSyrDw263uvcyXUdMgcjUOSVtk98="
+          "hash": "Volhvh1walBNdYptOCjcA2OMQuJ1I+GKtttcDxG+81k="
         }
       },
       "is_incremental": false,
@@ -121,7 +121,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/ParameterList.html",
-          "hash": "rm5En/pHlmoWzAVdhSeQ5CO477gxTjTHy0dgz/bnbWA="
+          "hash": "qUqnAqTejapjfEcCAdSDrKsQjiY1CaH+vtlAM6/2XeM="
         }
       },
       "is_incremental": false,
@@ -133,7 +133,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Block/Block.html",
-          "hash": "qFbKAsVc3BmhD5HI04Vuqs/ZSvASX4WWj6m2bQbCsGI="
+          "hash": "nzMEnlsslEPCOzE2cdZRtLen7Vml327HFOyHQEq3Cvs="
         }
       },
       "is_incremental": false,
@@ -145,7 +145,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Block/BlockInterval.html",
-          "hash": "AQxfCDWY7tS3jcLyJW4pd0d90kEU24Q7yBWGE9Z8xXA="
+          "hash": "/8XS/yHSzvMP/Bx2hCSeSA5IMl14bEyok9yBwoocT3g="
         }
       },
       "is_incremental": false,
@@ -157,7 +157,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/BrakeProfile/BrakeProfile.html",
-          "hash": "Stt5LeHiPdNs4mmpSUd3/81owpGkUgdCnNmcAr1N2ro="
+          "hash": "tYAAEMtiFjoU9kbmBdNeSySJiXmtpKmGh/BhuOAaTn0="
         }
       },
       "is_incremental": false,
@@ -169,7 +169,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Integrate.html",
-          "hash": "3ou8j64hMhFRyFoMPagO83BrgecKRYBULU+xz/xtDkw="
+          "hash": "AyDhwLwsBPUMO/Bf36j/kT51wac7AWmAB+ugcPhWngw="
         }
       },
       "is_incremental": false,
@@ -181,7 +181,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/BubbleSortLreal.html",
-          "hash": "zauUg51ZKirXW93JQfIGcLSJtxFl9Ajc92VqAM2D8Kg="
+          "hash": "GjoKB3vGLoBPELjVHi9+vAOVBYdwL6o2yX+J53UjyCs="
         }
       },
       "is_incremental": false,
@@ -193,7 +193,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Cbrt.html",
-          "hash": "koNOiZrqULHAFT4heplM4SCpPigZjvdGswlSZhSZJEI="
+          "hash": "eEKusXsFLnjq9MFUHbr6n5zySwEG/IKjC+zdS7uoa1Y="
         }
       },
       "is_incremental": false,
@@ -205,7 +205,19 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Ceil.html",
-          "hash": "fUgMQKL1f4f39LoDYCXM742WcnHDNDgU67lsEtwIbXQ="
+          "hash": "ANkecUGpYVvf9KVhnwboPUnDXRsGxMRrqm2JVg0ockA="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/Struckig/Math/Clamp.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/Struckig/Math/Clamp.html",
+          "hash": "cAu2gn+yMA7bUoJXb0uIyaC02dNEbC96dkLXXhe8iM8="
         }
       },
       "is_incremental": false,
@@ -217,7 +229,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Fmod.html",
-          "hash": "4ODdlOgkHTNoYlqTn6YejRbA2Bxa9EkELjaxNFeOK6g="
+          "hash": "USADNkfTFIQq5LzH7uWlscZ0ol+hRGbmenxfAhp1i8g="
         }
       },
       "is_incremental": false,
@@ -229,7 +241,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/LrealBits.html",
-          "hash": "NNqHbVgdxWqCYdwQ3G5ounEZ1G4FuKQz7UADdiTI/h8="
+          "hash": "Yv7kLFMJmuP4KLY/xN8hukVbp24rAuzYkGTv+FVhEl8="
         }
       },
       "is_incremental": false,
@@ -241,7 +253,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/LrealFromBits.html",
-          "hash": "ffnoiXXvQkCt+SacKxMSfFBpYnAlIyUz+VjPkVxQz/4="
+          "hash": "TtechAwQp0h+W6e9z8RQMR/C1CA8iPFeyGOZ4sGZfLE="
         }
       },
       "is_incremental": false,
@@ -253,7 +265,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Power.html",
-          "hash": "5LicB56riaCJjkbi4MXZjrAWzExFaFKhmJRGhlJ98jQ="
+          "hash": "xJHLLk0agpWsQyTzAechPwmeOoRVX0Yn9huVd7ctGjE="
         }
       },
       "is_incremental": false,
@@ -265,7 +277,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Power2.html",
-          "hash": "B1FAcPpSGvMMcJuGeZoWANEgPJikJGOKm/N7GVBXMQA="
+          "hash": "vUbrujQOasMOa2hCvt2WPIFrhpleHx8D3zJC+lZvf3o="
         }
       },
       "is_incremental": false,
@@ -277,7 +289,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Math/Roots.html",
-          "hash": "R2e29zamr1cLrCq+LtpyasuPXJAJjTLTvS4qlb2A3gQ="
+          "hash": "DCKPRbVml3Wf4Z8sPTt8jAsqyxfFgXCysBS8Aq59p2U="
         }
       },
       "is_incremental": false,
@@ -289,7 +301,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Otg.html",
-          "hash": "IQUHKC4XEWwDKmT9HqnTfgrFQIyjhcUNP3+UtkZS0EM="
+          "hash": "xD190cHPiEYpnZkk8f7cqhdF1lLhSPRvaO3k/UlM5p8="
         }
       },
       "is_incremental": false,
@@ -301,7 +313,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Position/PositionStep1.html",
-          "hash": "bVlJwqjuOIMArBEMsDYxrip9U4bDdPX8weHN538sBec="
+          "hash": "OqJZlHxXzkce2nrF6PIme2UEqwKZdjJMXOlPzhQbP2E="
         }
       },
       "is_incremental": false,
@@ -313,7 +325,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Position/PositionStep2.html",
-          "hash": "CT8HmshN7T29+IYw6ijLLgduP+IM3kYUCk2Ksw/H5eA="
+          "hash": "NClTX7ao6b7P2338XpOCdS4B5PP+NOZa5IAiMnuv5kU="
         }
       },
       "is_incremental": false,
@@ -325,7 +337,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Profile/ProfileDesc.html",
-          "hash": "Ny90WsCXrPOeOUigd823Sm90J6UpzrgylW0mnrZmAjg="
+          "hash": "Ncsi+xq9Diz/YK8hFjFONmg9DgwmR4I8ONYCqo40nvE="
         }
       },
       "is_incremental": false,
@@ -337,7 +349,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html",
-          "hash": "OpPzeNzI143B/d6UPsY6ypbYeh/n0F+Vh0SO5Ucx2U4="
+          "hash": "SEm+8agww03jjK++sehg3M1ygXFRE+DydiA99vef5io="
         }
       },
       "is_incremental": false,
@@ -349,7 +361,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileDirection.html",
-          "hash": "gCuF0wRn656c/1666ifOpybxqDXp+9wbOCZ81RioQhA="
+          "hash": "yDj4esLjFtnwUkCTcr5V804N7SdLPaQPnQvIUnl37Zk="
         }
       },
       "is_incremental": false,
@@ -361,7 +373,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileJerkSigns.html",
-          "hash": "w96lAz1nG7KNQ3PFGNY3CAebbp1LkrYKnGouvtcbUZI="
+          "hash": "xi6eDsF+SOQ2omtP9pNOv2RkehKqIg4HYo7aWYkc4b0="
         }
       },
       "is_incremental": false,
@@ -373,7 +385,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileLimits.html",
-          "hash": "tYa5UEL4q4QQkXgfBcexqCG4D6xGQSuNs+aTmesRY2o="
+          "hash": "gGeWQJIMMSLGot4Qn4W6wcPJLkA6kg2PbQzBUQiujcs="
         }
       },
       "is_incremental": false,
@@ -385,7 +397,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Velocity/VelocityStep1.html",
-          "hash": "G5HJ4De5AglefCpoWILvduwR/oTPqnnZ49laRu2AfUQ="
+          "hash": "Y3rv641waq8VnC2H5XLallF8coWzFB7OezrkffFhxUI="
         }
       },
       "is_incremental": false,
@@ -397,7 +409,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/Velocity/VelocityStep2.html",
-          "hash": "haG9FUn8pEO+t9ePwp0KT/gH8RFtek14psxQkmSJlaI="
+          "hash": "SI52cq0ZS90maEBg0F/4nDVqAZAplldoifwm+SpvTjs="
         }
       },
       "is_incremental": false,
@@ -409,7 +421,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.html",
-          "hash": "vHUq7wHJytvQUYfxn/2ABdS+eP4ElSeKaRNnbYBldbw="
+          "hash": "q/kMHudaAKWF7x1VK2aFVYklfEFj9N/b+hfytcApzgY="
         }
       },
       "is_incremental": false,
@@ -421,7 +433,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.html",
-          "hash": "SB7ZcfcF480hmtxiMLwqXL5IAumQ8WM/GfYgrdgFEg4="
+          "hash": "aAl6Ua0/Z6e4FfkrrjK1nXmWUe7kXn+Cv0LrdbKeaCE="
         }
       },
       "is_incremental": false,
@@ -433,7 +445,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.html",
-          "hash": "YwuDqSMB4XNKFaMtSKwhmrbywWG1R1WnqmyYL/+DdPM="
+          "hash": "iNJedAaVhGm2wmJrMSYCJNK4Q5zBxJs3yKuLWXVhhhc="
         }
       },
       "is_incremental": false,
@@ -445,7 +457,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.html",
-          "hash": "duX6YH8rGC5lXt0pNludDBVNNxyQn5YMxdImztWcMn4="
+          "hash": "FeaweqAYg+S1TQWFzTAuo7X9OerIaY5Tpp+FqfYareE="
         }
       },
       "is_incremental": false,
@@ -457,7 +469,7 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.html",
-          "hash": "riARaI0SKvtrWQ9JtilNRHaGcxWMgleZU3iQ6vSta4Q="
+          "hash": "TeWCr5DZF1RjZj9rc01O50vLh7X74n0nUmItcaZyTCA="
         }
       },
       "is_incremental": false,
@@ -553,7 +565,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 37,
+          "total_file_count": 38,
           "skipped_file_count": 0
         },
         "ResourceDocumentProcessor": {
