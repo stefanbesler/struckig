@@ -91,7 +91,7 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TEST('Cbrt');
+        <ST><![CDATA[TEST('Fmod');
 
 actual := Struckig.Fmod(5, 1);
 AssertEquals_LREAL(0, actual, 1E-20, message:='');
@@ -118,7 +118,7 @@ actual := Struckig.Fmod(5, 8);
 AssertEquals_LREAL(5, actual, 1E-20, message:='');
 
 actual := Struckig.Fmod(123.123, 0.121);
-AssertEquals_LREAL(0.066, actual, 1E-20, message:='');
+AssertEquals_LREAL(0.066, actual, 1E-8, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
