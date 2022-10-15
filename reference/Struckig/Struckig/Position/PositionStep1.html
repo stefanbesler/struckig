@@ -252,8 +252,7 @@
 <h4 id="Struckig.PositionStep1.AddProfile" data-uid="Struckig.PositionStep1.AddProfile">AddProfile</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD AddProfile (
- Profile : ProfileDesc,
- jMax : LREAL)
+ Profile : ProfileDesc)
 </code></pre>
 <h5 class="parameters">Inouts</h5>
 <table>
@@ -268,11 +267,6 @@
 <tr>
 <td style="text-align: left;"><a name="Profile"></a>Profile</td>
 <td style="text-align: left;"><a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="jMax"></a>jMax</td>
-<td style="text-align: left;">LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -439,7 +433,7 @@
 <h4 id="Struckig.PositionStep1.time_acc0_acc1" data-uid="Struckig.PositionStep1.time_acc0_acc1">time_acc0_acc1</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_acc0_acc1 (
- Profile : REFERENCE TO ProfileDesc,
+ profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -458,7 +452,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
 <td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
@@ -553,7 +547,7 @@
 <p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_acc1_vel_two_step (
- Profile : REFERENCE TO ProfileDesc,
+ profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -571,7 +565,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
 <td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
@@ -665,7 +659,7 @@
 <h4 id="Struckig.PositionStep1.time_all_vel" data-uid="Struckig.PositionStep1.time_all_vel">time_all_vel</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_all_vel (
- Profile : REFERENCE TO ProfileDesc,
+ profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -684,7 +678,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
 <td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
@@ -725,7 +719,7 @@
 <p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_none_two_step (
- Profile : REFERENCE TO ProfileDesc,
+ profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -743,7 +737,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
 <td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
@@ -779,7 +773,7 @@
 <p>Only for numerical issues, always return_after_found</p>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE time_vel_two_step (
- Profile : REFERENCE TO ProfileDesc,
+ profile : REFERENCE TO ProfileDesc,
  vMax : LREAL,
  vMin : LREAL,
  aMax : LREAL,
@@ -797,7 +791,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: left;"><a name="Profile"></a>Profile</td>
+<td style="text-align: left;"><a name="profile"></a>profile</td>
 <td style="text-align: left;"><em>REFERENCE TO</em> <a class="xref" href="../Profile/ProfileDesc.html">Struckig.ProfileDesc</a></td>
 <td style="text-align: left;"></td>
 </tr>
@@ -895,7 +889,7 @@
     
             // featherlight initialization
             // find all images, but not the logo, and add the lightbox
-            $('img').not('#logo').each(function(){
+            $('.gallery img').each(function(){
                 var $img = $(this);
                 var filename = $img.attr('src')
                 //add cursor

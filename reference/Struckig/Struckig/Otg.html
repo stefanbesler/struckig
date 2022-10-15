@@ -583,6 +583,13 @@
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PassOutputToInput ()
 </code></pre>
+<p><a name="Reset"></a></p>
+<h4 id="Struckig.Otg.Reset" data-uid="Struckig.Otg.Reset">Reset</h4>
+<p>Resets the instance (e.g. to force a new calculation on the next update).
+This method can be used to trigger a new trajectory even if inputs do not change.</p>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD Reset ()
+</code></pre>
 <p><a name="Synchronize"></a></p>
 <h4 id="Struckig.Otg.Synchronize" data-uid="Struckig.Otg.Synchronize">Synchronize</h4>
 <h5 class="decalaration">Declaration</h5>
@@ -779,7 +786,7 @@ its duration. Also, note that there are range constraints of the input due to nu
     
             // featherlight initialization
             // find all images, but not the logo, and add the lightbox
-            $('img').not('#logo').each(function(){
+            $('.gallery img').each(function(){
                 var $img = $(this);
                 var filename = $img.attr('src')
                 //add cursor

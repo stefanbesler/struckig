@@ -279,6 +279,46 @@
 <td style="text-align: left;">LREAL</td>
 <td style="text-align: left;"></td>
 </tr>
+<tr>
+<td style="text-align: left;"><a name="VelocityEpsilon"></a>VelocityEpsilon</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="AccelerationEpsilon"></a>AccelerationEpsilon</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="JerkEpsilon"></a>JerkEpsilon</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="PositionPrecision"></a>PositionPrecision</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="VelocityPrecision"></a>VelocityPrecision</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="AccelerationPrecision"></a>AccelerationPrecision</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="TimePrecision"></a>TimePrecision</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;"><a name="Tmax"></a>Tmax</td>
+<td style="text-align: left;">LREAL</td>
+<td style="text-align: left;"></td>
+</tr>
 </tbody>
 </table>
 </article>
@@ -348,7 +388,7 @@
     
             // featherlight initialization
             // find all images, but not the logo, and add the lightbox
-            $('img').not('#logo').each(function(){
+            $('.gallery img').each(function(){
                 var $img = $(this);
                 var filename = $img.attr('src')
                 //add cursor
