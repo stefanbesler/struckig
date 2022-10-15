@@ -604,6 +604,17 @@ CurrentAcceleration := NewAcceleration;
 //END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Reset" Id="{b7bf29bd-f032-40ea-9301-3dafba0e7b6f}">
+      <Declaration><![CDATA[/// Resets the instance (e.g. to force a new calculation on the next update).
+/// This method can be used to trigger a new trajectory even if inputs do not change.
+METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_inputInitialized := FALSE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Synchronize" Id="{190d7ca7-bc21-4bc2-982d-9be9e1cca821}">
       <Declaration><![CDATA[METHOD INTERNAL Synchronize : BOOL
 VAR_INPUT
