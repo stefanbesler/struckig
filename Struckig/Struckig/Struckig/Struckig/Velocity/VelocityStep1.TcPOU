@@ -44,14 +44,12 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD AddProfile
 VAR_IN_OUT CONSTANT
   Profile : ProfileDesc;
-  jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ValidProfileCount := ValidProfileCount + 1;
 ValidProfiles[ValidProfileCount] := Profile;
-ValidProfiles[ValidProfileCount].pf := Profile.p[7];
-ValidProfiles[ValidProfileCount].Direction := SEL((jMax > 0), ProfileDirection.Down, ProfileDirection.Up);]]></ST>
+ValidProfiles[ValidProfileCount].pf := Profile.p[7];]]></ST>
       </Implementation>
     </Method>
     <Method Name="CalculateBlock" Id="{dc46def7-4a89-4ab7-8711-fc35caa0cac8}">
@@ -256,7 +254,7 @@ profile.t[6] := 0;
 
 IF (Profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.Acc0, jMax, aMax, aMin))
 THEN
-  AddProfile(profile, jMax);
+  AddProfile(profile);
   IF return_after_found
   THEN
     RETURN;
@@ -274,7 +272,7 @@ profile.t[6] := 0;
 
 IF (Profile.CheckForVelocity(ProfileJerkSigns.udud, ProfileLimits.Acc0, jMax, aMax, aMin))
 THEN
-  AddProfile(profile, jMax);
+  AddProfile(profile);
   IF return_after_found
   THEN
     RETURN;
@@ -312,7 +310,7 @@ THEN
   
   IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin))
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     IF return_after_found
     THEN
       RETURN;
@@ -329,7 +327,7 @@ THEN
   profile.t[6] := 0;
   
   IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ProfileLimits.None, jMax, aMax, aMin)) THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     IF return_after_found
     THEN
       RETURN;

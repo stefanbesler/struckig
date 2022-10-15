@@ -16,6 +16,17 @@ VAR_GLOBAL INTERNAL CONSTANT
   Sin120 : LREAL := 0.866025403784438646764;  
   Pi : LREAL := 3.14159265358979323846;
   Minimum : LREAL := 1.17549435082E-38;  // used for validating input
+  
+  VelocityEpsilon : LREAL := 1E-12;
+  AccelerationEpsilon : LREAL := 1E-12;
+  JerkEpsilon : LREAL := 1E-12; 
+  
+  PositionPrecision : LREAL := 1E-8;
+  VelocityPrecision : LREAL := 1E-8;
+  AccelerationPrecision : LREAL := 1E-10;
+  TimePrecision : LREAL := 1E-12;  
+  
+  Tmax : LREAL := 1E12;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

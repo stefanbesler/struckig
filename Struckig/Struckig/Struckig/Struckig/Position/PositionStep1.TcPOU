@@ -63,13 +63,11 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD AddProfile
 VAR_IN_OUT CONSTANT
   Profile : ProfileDesc;
-  jMax : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[validProfileCounter := validProfileCounter + 1;
-validProfiles[validProfileCounter] := Profile;
-validProfiles[validProfileCounter].Direction := SEL(jMax > 0, ProfileDirection.Down, ProfileDirection.Up);]]></ST>
+validProfiles[validProfileCounter] := Profile;]]></ST>
       </Implementation>
     </Method>
     <Method Name="CalculateBlock" Id="{50e177a8-dca6-48ec-aabe-f9c22fb4f02a}">
@@ -430,7 +428,7 @@ jMax_jMax := jMax * jMax;]]></ST>
     <Method Name="time_acc0_acc1" Id="{e5212c06-396a-492c-bc44-27957c4ab5ed}">
       <Declaration><![CDATA[METHOD PRIVATE time_acc0_acc1
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
   return_after_found : BOOL;  
 END_VAR]]></Declaration>
@@ -453,9 +451,9 @@ THEN
     profile.t[5] := h3 + h1/aMin;
     profile.t[6] := profile.t[4] + af/jMax;
   
-    IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+    IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
     THEN
-      AddProfile(Profile, jMax);
+      AddProfile(profile);
       IF return_after_found
       THEN
         RETURN;
@@ -466,17 +464,17 @@ THEN
   // UDDU: Solution 1  
   IF h2 > -h1/aMax AND_THEN h3 > h1/aMin
   THEN
-    Profile.t[0] := (-a0 + aMax)/jMax;
-    Profile.t[1] := h2 + h1/aMax;
-    Profile.t[2] := aMax/jMax;
-    Profile.t[3] := 0;
-    Profile.t[4] := -aMin/jMax;
-    Profile.t[5] := h3 - h1/aMin;
-    Profile.t[6] := Profile.t[4] + af/jMax;
+    profile.t[0] := (-a0 + aMax)/jMax;
+    profile.t[1] := h2 + h1/aMax;
+    profile.t[2] := aMax/jMax;
+    profile.t[3] := 0;
+    profile.t[4] := -aMin/jMax;
+    profile.t[5] := h3 - h1/aMin;
+    profile.t[6] := profile.t[4] + af/jMax;
   
-    IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
+    IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
     THEN
-      AddProfile(Profile, jMax);              
+      AddProfile(profile);              
     END_IF
 	END_IF  
 END_IF
@@ -508,7 +506,7 @@ THEN
   
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     RETURN;
   END_IF
 END_IF
@@ -524,7 +522,7 @@ profile.t[6] := 0;
 
 IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
 THEN
-  AddProfile(profile, jMax);
+  AddProfile(profile);
   RETURN;     
 END_IF
 
@@ -547,7 +545,7 @@ THEN
   
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     RETURN;     
   END_IF
 END_IF
@@ -566,7 +564,7 @@ profile.t[6] := (af - aMin)/jMax;
 
 IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
 THEN
-  AddProfile(profile, jMax);
+  AddProfile(profile);
   RETURN;     
 END_IF
 ]]></ST>
@@ -576,7 +574,7 @@ END_IF
       <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
 METHOD PRIVATE time_acc1_vel_two_step
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -590,7 +588,7 @@ profile.t[6] := profile.t[4] + af/jMax;
 
 IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
 THEN
-  AddProfile(Profile, jMax);
+  AddProfile(Profile);
   RETURN;        
 END_IF]]></ST>
       </Implementation>
@@ -610,7 +608,7 @@ t_min_none := (a0 - af)/jMax;
 t_max_none := (aMax - aMin)/jMax;
 
 polynom_none[0] := 0;
-polynom_none[1] := (-2*(a0_a0 + af_af - 2*jMax*(v0 + vf)))/jMax_jMax;
+polynom_none[1] := -2*(a0_a0 + af_af - 2*jMax*(v0 + vf))/jMax_jMax;
 polynom_none[2] := 4*(a0_p3 - af_p3 + 3*jMax*(af*vf - a0*v0))/(3*jMax*jMax_jMax) - 4*pd/jMax;
 polynom_none[3] := -h2_h2/jMax_jMax;
 
@@ -629,8 +627,8 @@ polynom_acc0[3] := h0_acc0/(12*jMax_jMax*jMax_jMax);
 
 // ACC1
 h3_acc1 := -(a0_a0 + af_af)/(2*jMax*aMin) + aMin/jMax + (vf - v0)/aMin;
-t_min_acc1 := -(a0 - aMin)/jMax;
-t_max_acc1 := (-a0 + aMax)/jMax;
+t_min_acc1 := (aMin - a0)/jMax;
+t_max_acc1 := (aMax - a0)/jMax;
 
 h0_acc1 := (a0_p4 - af_p4)/4 + 2*(af_p3 - a0_p3)*aMin/3 + (a0_a0 - af_af)*aMin*aMin/2 + jMax*(af_af*vf + a0_a0*v0 + 2*aMin*(jMax*pd - a0*v0 - af*vf) + aMin*aMin*(v0 + vf) + jMax*(v0_v0 - vf_vf));
 h2_acc1 := a0_a0 - a0*aMin + 2*jMax*v0;
@@ -684,7 +682,7 @@ DO
 
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.None, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     IF return_after_found
     THEN
       RETURN;
@@ -727,7 +725,7 @@ DO
   
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     IF return_after_found
     THEN
       RETURN;
@@ -789,7 +787,7 @@ DO
   
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1, jMax, vMax, vMin, aMax, aMin, setLimits:=TRUE))
   THEN
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     IF return_after_found
     THEN
       RETURN;
@@ -802,24 +800,24 @@ END_FOR
     <Method Name="time_all_vel" Id="{0932514e-6750-4a1f-b673-619a59e1903e}">
       <Declaration><![CDATA[METHOD PRIVATE time_all_vel
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
   return_after_found : BOOL;  
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// ACC0_ACC1_VEL
-Profile.t[0] := (-a0 + aMax)/jMax;
-Profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0 - vMax))/(aMax*jMax);
-Profile.t[2] := aMax/jMax;
-Profile.t[3] := (3*(a0_p4*aMin - af_p4*aMax) + 8*aMax*aMin*(af_p3 - a0_p3 + 3*jMax*(a0*v0 - af*vf)) + 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0) - 6*af_af*aMax*(aMin*aMin - 2*jMax*vf) - 12*jMax*(aMax*aMin*(aMax*(v0 + vMax) - aMin*(vf + vMax) - 2*jMax*pd) + (aMin - aMax)*jMax*vMax*vMax + jMax*(aMax*vf_vf - aMin*v0_v0)))/(24*aMax*aMin*jMax_jMax*vMax);
-Profile.t[4] := -aMin/jMax;
-Profile.t[5] := -(af_af*0.5 - aMin*aMin - jMax*(vf - vMax))/(aMin*jMax);
-Profile.t[6] := Profile.t[4] + af/jMax;
+profile.t[0] := (-a0 + aMax)/jMax;
+profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0 - vMax))/(aMax*jMax);
+profile.t[2] := aMax/jMax;
+profile.t[3] := (3*(a0_p4*aMin - af_p4*aMax) + 8*aMax*aMin*(af_p3 - a0_p3 + 3*jMax*(a0*v0 - af*vf)) + 6*a0_a0*aMin*(aMax*aMax - 2*jMax*v0) - 6*af_af*aMax*(aMin*aMin - 2*jMax*vf) - 12*jMax*(aMax*aMin*(aMax*(v0 + vMax) - aMin*(vf + vMax) - 2*jMax*pd) + (aMin - aMax)*jMax*vMax*vMax + jMax*(aMax*vf_vf - aMin*v0_v0)))/(24*aMax*aMin*jMax_jMax*vMax);
+profile.t[4] := -aMin/jMax;
+profile.t[5] := -(af_af*0.5 - aMin*aMin - jMax*(vf - vMax))/(aMin*jMax);
+profile.t[6] := profile.t[4] + af/jMax;
 
-IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
 THEN
-  AddProfile(Profile, jMax);
+  AddProfile(profile);
   RETURN;    
 END_IF
 
@@ -828,17 +826,17 @@ t_acc0  := a0_a0/(2*jMax_jMax) + (vMax - v0)/jMax;
 IF t_acc0 >= 0
 THEN
   t_acc0 := SQRT(t_acc0 );
-  Profile.t[0] := t_acc0  - a0/jMax;
-  Profile.t[1] := 0;
-  Profile.t[2] := t_acc0 ;
-  Profile.t[3] := -(3*af_p4 - 8*aMin*(af_p3 - a0_p3) - 24*aMin*jMax*(a0*v0 - af*vf) + 6*af_af*(aMin*aMin - 2*jMax*vf) - 12*jMax*(2*aMin*jMax*pd + aMin*aMin*(vf + vMax) + jMax*(vMax*vMax - vf_vf) + aMin*t_acc0 *(a0_a0 - 2*jMax*(v0 + vMax))))/(24*aMin*jMax_jMax*vMax);
-  //Profile.t[4] := -aMin/jMax;
-  //Profile.t[5] := -(af_af*0.5 - aMin*aMin + jMax*(vMax - vf))/(aMin*jMax);
-  //Profile.t[6] := Profile.t[4] + af/jMax;
+  profile.t[0] := t_acc0  - a0/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := t_acc0 ;
+  profile.t[3] := -(3*af_p4 - 8*aMin*(af_p3 - a0_p3) - 24*aMin*jMax*(a0*v0 - af*vf) + 6*af_af*(aMin*aMin - 2*jMax*vf) - 12*jMax*(2*aMin*jMax*pd + aMin*aMin*(vf + vMax) + jMax*(vMax*vMax - vf_vf) + aMin*t_acc0 *(a0_a0 - 2*jMax*(v0 + vMax))))/(24*aMin*jMax_jMax*vMax);
+  //profile.t[4] := -aMin/jMax;
+  //profile.t[5] := -(af_af*0.5 - aMin*aMin + jMax*(vMax - vf))/(aMin*jMax);
+  //profile.t[6] := profile.t[4] + af/jMax;
         
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
+  IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
   THEN
-    AddProfile(Profile, jMax); 
+    AddProfile(profile); 
     RETURN; 
   END_IF
 END_IF
@@ -848,17 +846,17 @@ t_acc1 := 0.5*af_af/(jMax_jMax) + (vMax - vf)/jMax;
 IF t_acc1 >= 0
 THEN
   t_acc1 := SQRT(t_acc1);
-  Profile.t[0] := (-a0 + aMax)/jMax;
-  Profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0 - vMax))/(aMax*jMax);
-  Profile.t[2] := aMax/jMax;
-  Profile.t[3] := (3*a0_p4 + 8*aMax*(af_p3 - a0_p3) + 24*aMax*jMax*(a0*v0 - af*vf) + 6*a0_a0*(aMax*aMax - 2*jMax*v0) - 12*jMax*(-2*aMax*jMax*pd + aMax*aMax*(v0 + vMax) + jMax*(vMax*vMax - v0_v0) + aMax*t_acc1*(-af_af + 2*(vf + vMax)*jMax)))/(24*aMax*jMax_jMax*vMax);
-  Profile.t[4] := t_acc1;
-  Profile.t[5] := 0;
-  Profile.t[6] := t_acc1 + af/jMax;
+  profile.t[0] := (-a0 + aMax)/jMax;
+  profile.t[1] := (a0_a0*0.5 - aMax*aMax - jMax*(v0 - vMax))/(aMax*jMax);
+  profile.t[2] := aMax/jMax;
+  profile.t[3] := (3*a0_p4 + 8*aMax*(af_p3 - a0_p3) + 24*aMax*jMax*(a0*v0 - af*vf) + 6*a0_a0*(aMax*aMax - 2*jMax*v0) - 12*jMax*(-2*aMax*jMax*pd + aMax*aMax*(v0 + vMax) + jMax*(vMax*vMax - v0_v0) + aMax*t_acc1*(-af_af + 2*(vf + vMax)*jMax)))/(24*aMax*jMax_jMax*vMax);
+  profile.t[4] := t_acc1;
+  profile.t[5] := 0;
+  profile.t[6] := t_acc1 + af/jMax;
   
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
+  IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)) 
   THEN
-    AddProfile(Profile, jMax);
+    AddProfile(profile);
     RETURN;
   END_IF
 END_IF
@@ -867,17 +865,17 @@ END_IF
 // Solution 3/4
 IF t_acc0 >= 0 AND_THEN t_acc1 >= 0
 THEN
-  Profile.t[0] := t_acc0 - a0/jMax;
-  Profile.t[1] := 0;
-  Profile.t[2] := t_acc0;
-  Profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0*v0 - af*vf + (af_af*t_acc1 + a0_a0*t_acc0)*0.5)/(jMax*vMax) - (v0/vMax + 1.0)*t_acc0 - (vf/vMax + 1.0)*t_acc1 + pd/vMax;
-  //Profile.t[4] := t_acc1;
-  //Profile.t[5] := 0;
-  //Profile.t[6] := t_acc1 + af/jMax;
+  profile.t[0] := t_acc0 - a0/jMax;
+  profile.t[1] := 0;
+  profile.t[2] := t_acc0;
+  profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0*v0 - af*vf + (af_af*t_acc1 + a0_a0*t_acc0)*0.5)/(jMax*vMax) - (v0/vMax + 1.0)*t_acc0 - (vf/vMax + 1.0)*t_acc1 + pd/vMax;
+  //profile.t[4] := t_acc1;
+  //profile.t[5] := 0;
+  //profile.t[6] := t_acc1 + af/jMax;
   
-  IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+  IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN
-    AddProfile(Profile, jMax);
+    AddProfile(profile);
     RETURN;
   END_IF
 END_IF]]></ST>
@@ -887,7 +885,7 @@ END_IF]]></ST>
       <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
 METHOD PRIVATE time_none_two_step
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -907,7 +905,7 @@ END_VAR]]></Declaration>
     
     IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.None, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
     THEN 
-      AddProfile(profile, jMax);
+      AddProfile(profile);
       RETURN;
     END_IF
 	END_IF
@@ -925,7 +923,7 @@ END_VAR]]></Declaration>
   
   IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.None, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
   THEN 
-    AddProfile(profile, jMax);
+    AddProfile(profile);
     RETURN;
   END_IF
 {}]]></ST>
@@ -935,7 +933,7 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
 METHOD PRIVATE time_vel_two_step
 VAR_INPUT
-  Profile : REFERENCE TO ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -956,26 +954,26 @@ THEN
     profile.t[5] := 0;
     profile.t[6] := h1 + af/jMax;
   
-    IF Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)
+    IF profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE)
     THEN
-      addProfile(profile, jMax);
+      AddProfile(profile);
       RETURN;
     END_IF 
   {}
   
   {}    
     // Four step        
-    Profile.t[0] := 0;
-    Profile.t[1] := 0;
-    Profile.t[2] := a0/jMax;
-    Profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0*v0 - af*vf + (af_af*h1 + a0_p3/jMax)*0.5)/(jMax*vMax) - (v0/vMax + 1.0)*a0/jMax - (vf/vMax + 1.0)*h1 + pd/vMax;
-    Profile.t[4] := h1;
-    Profile.t[5] := 0;
-    Profile.t[6] := h1 + af/jMax;
+    profile.t[0] := 0;
+    profile.t[1] := 0;
+    profile.t[2] := a0/jMax;
+    profile.t[3] := (af_p3 - a0_p3)/(3.0*jMax_jMax*vMax) + (a0*v0 - af*vf + (af_af*h1 + a0_p3/jMax)*0.5)/(jMax*vMax) - (v0/vMax + 1.0)*a0/jMax - (vf/vMax + 1.0)*h1 + pd/vMax;
+    profile.t[4] := h1;
+    profile.t[5] := 0;
+    profile.t[6] := h1 + af/jMax;
     
-    IF (Profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
+    IF (profile.CheckVel(ProfileJerkSigns.Uddu, ProfileLimits.Vel, jMax, vMax, vMin, aMax, aMin, setLimits:=FALSE))
     THEN
-      AddProfile(Profile, jMax); 
+      AddProfile(profile); 
       RETURN;       
     END_IF
   {}
