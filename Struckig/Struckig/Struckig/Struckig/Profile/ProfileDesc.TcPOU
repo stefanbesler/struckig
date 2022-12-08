@@ -2,7 +2,8 @@
 <TcPlcObject Version="1.1.0.1">
   <POU Name="ProfileDesc" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
     <Declaration><![CDATA[/// The state Profile for position, velocity, acceleration and jerk for a single DoF
-FUNCTION_BLOCK INTERNAL ProfileDesc
+{attribute 'hide'}
+FUNCTION_BLOCK ProfileDesc
 VAR_INPUT
   Limits : ProfileLimits;
   Direction : ProfileDirection;
@@ -114,6 +115,7 @@ VAR_INPUT
   jf : LREAL;
   aMax : LREAL;
   aMin : LREAL;  
+  jMax : LREAL;  
 END_VAR
 VAR
   i : INT;
@@ -122,7 +124,10 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-CheckForVelocityWithTiming := CheckForVelocity(jerkSigns, limits, jf, aMax, aMin);]]></ST>
+CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(jerkSigns, limits, jf, aMax, aMin);
+
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckPositionExtremum" Id="{e3c5916b-156b-465a-87ae-6759453a325c}">

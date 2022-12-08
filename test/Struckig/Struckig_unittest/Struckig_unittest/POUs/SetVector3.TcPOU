@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="SetVector3" Id="{abf2b289-a0a2-4bac-bd3b-9b2cee140424}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION SetVector3 : BOOL
+VAR_INPUT
+  vector : POINTER TO LREAL;  
+  x1 : LREAL;
+  x2 : LREAL;
+  x3 : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[vector[0] := x1;
+vector[1] := x2;
+vector[2] := x3;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

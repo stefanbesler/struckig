@@ -244,7 +244,7 @@ DO
       
     ControlInterfaceType.Velocity:
       p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);      
+      p.SetBoundaryVelocity(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetVelocity[dof], TargetAcceleration[dof]);      
 	END_CASE
   
   p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
@@ -328,7 +328,8 @@ THEN
   RETURN;
 END_IF
 
-IF NOT discrete_duration AND_THEN phaseSychronizationIndex >= 0 AND_THEN positionControlInterfaceCount = _dofsEnd THEN
+
+IF limiting_dof >= 0 AND_THEN phaseSychronizationIndex >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
   IF (IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk)) THEN
     found_time_synchronization := TRUE;
@@ -343,18 +344,41 @@ IF NOT discrete_duration AND_THEN phaseSychronizationIndex >= 0 AND_THEN positio
       p.t := p_limiting.t; // Copy timing information from limiting DoF
       p.JerkSigns := p_limiting.JerkSigns;
 
-      // Profile::Limits::NONE is a small hack, as there is no specialization for that in the check function
-      CASE (p.JerkSigns) OF 
-        ProfileJerkSigns.Uddu: 
-          IF ( NOT p.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])) THEN
-              found_time_synchronization := FALSE;
-          END_IF
-
-        ProfileJerkSigns.Udud: 
-          IF ( NOT p.CheckWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])) THEN
-              found_time_synchronization := FALSE;
-          END_IF
+      CASE _inp_per_dof_control_interface[dof]
+      OF
+        ControlInterfaceType.Position:
+          CASE p.JerkSigns
+          OF
+            ProfileJerkSigns.Uddu:
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              THEN
+                found_time_synchronization := FALSE;                        
+              END_IF
+          
+            ProfileJerkSigns.Udud:
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              THEN            
+                found_time_synchronization := FALSE;
+              END_IF
+          END_CASE
+        
+        ControlInterfaceType.Velocity:
+          CASE p.JerkSigns
+          OF
+            ProfileJerkSigns.Uddu:
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              THEN
+                found_time_synchronization := FALSE;                        
+              END_IF
+          
+            ProfileJerkSigns.Udud:
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ProfileLimits.None, new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              THEN            
+                found_time_synchronization := FALSE;
+              END_IF
+          END_CASE        
       END_CASE
+  
 
       p.Limits := p_limiting.Limits; // After check method call to set correct limits
     END_FOR
@@ -405,12 +429,8 @@ DO
       found_time_synchronization := _velocityStep2.Get(p);
   END_CASE
 
-  IF (NOT found_time_synchronization) THEN
-    (*
-      if constexpr (throw_error) {
-          throw std::runtime_error("[ruckig] error in step 2 in dof: " + std::to_string(dof) + " for t sync: " + std::to_string(duration) + " input: " + to_string());
-      }
-      *)
+  IF NOT found_time_synchronization
+  THEN
     Calculate := TrajectoryErrorCode.SynchronizationFailed;
   END_IF
 END_FOR]]></ST>
@@ -527,60 +547,95 @@ VAR_INPUT
   jMax : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   limitingDirection : ProfileDirection;
   limitingDof : INT;
-  newMaxJerk : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  new_max_jerk : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
 END_VAR
 VAR_INST
-  pdFoundNoneZero : BOOL := FALSE;
-  v0Scale, a0Scale, vfScale, afScale, scale : LREAL;
+  scale_dof : INT := -1;
   dof : INT;
   pd : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  scale_vector : POINTER TO LREAL;
+  pd_scale, v0_scale, a0_scale, vf_scale, af_scale, scale, scale_limiting, current_scale : LREAL;
   max_jerk_limiting : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[FOR dof:=0 TO _dofsEnd
+        <ST><![CDATA[// Check that vectors pd, v0, a0, vf, af are collinear
+FOR dof:=0 TO _dofsEnd
+DO
+  pd[dof] := TargetPosition[dof] - CurrentPosition[dof];
+END_FOR
+
+FOR dof:=0 TO _dofsEnd
 DO
   IF _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase
   THEN
     CONTINUE;
 	END_IF
   
-  pd[dof] := TargetPosition[dof] - CurrentPosition[dof];
-  
-  IF NOT pdFoundNoneZero AND_THEN ABS(pd[dof]) > Constants.Epsilon
+  IF _inp_per_dof_control_interface[dof] = ControlInterfaceType.Position AND_THEN ABS(pd[dof]) > Constants.Epsilon
   THEN
-    v0Scale := CurrentVelocity[dof] / pd[dof];
-    a0Scale := CurrentAcceleration[dof] / pd[dof];
-    vfScale := TargetVelocity[dof] / pd[dof];
-    afScale := TargetAcceleration[dof] / pd[dof];
-    pdFoundNoneZero := TRUE;
-	END_IF
+    scale_vector := ADR(pd);
+    scale_dof := dof;
+    EXIT;
+
+  ELSIF ABS(CurrentVelocity[dof]) > Constants.Epsilon
+  THEN
+    scale_vector := ADR(CurrentVelocity);
+    scale_dof := dof;
+    EXIT;
+
+  ELSIF ABS(CurrentAcceleration[dof]) >  Constants.Epsilon
+  THEN
+    scale_vector := ADR(CurrentAcceleration);
+    scale_dof := dof;
+    EXIT;
+  
+  ELSIF ABS(TargetVelocity[dof]) >  Constants.Epsilon
+  THEN
+    scale_vector := ADR(TargetVelocity);
+    scale_dof := dof;
+    EXIT;
+
+  ELSIF ABS(TargetAcceleration[dof]) > Constants.Epsilon
+  THEN
+    scale_vector := ADR(TargetAcceleration);
+    scale_dof := dof;
+    EXIT;
+  END_IF
 END_FOR
 
-IF NOT pdFoundNoneZero // position difference is zero everywhere...
+IF scale_dof < 0
 THEN
-  RETURN;
+  RETURN; // Zero everywhere is in theory collinear, but that trivial case is better handled elsewhere
 END_IF
 
+scale := scale_vector[scale_dof];
+pd_scale := pd[scale_dof] / scale;
+v0_scale := CurrentVelocity[scale_dof] / scale;
+vf_scale := TargetVelocity[scale_dof] / scale;
+a0_scale := CurrentAcceleration[scale_dof] / scale;
+af_scale := TargetAcceleration[scale_dof] / scale;
+
+scale_limiting := scale_vector[limitingDof];
 max_jerk_limiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
 FOR dof:=0 TO _dofsEnd
 DO
-  IF dof = limitingDof OR_ELSE _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase
+  IF _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase
   THEN
     CONTINUE;
 	END_IF
   
-  // Are the vectors colinear?
-  IF CurrentVelocity[dof] - v0Scale * pd[dof] > Constants.EpsilonColinear OR_ELSE
-    CurrentAcceleration[dof] - a0Scale * pd[dof] > Constants.EpsilonColinear OR_ELSE
-    TargetVelocity[dof] - vfScale * pd[dof] > Constants.EpsilonColinear OR_ELSE
-    TargetAcceleration[dof] - afScale * pd[dof] > Constants.EpsilonColinear
+  current_scale := scale_vector[dof];
+  IF (_inp_per_dof_control_interface[dof] = ControlInterfaceType.Position AND_THEN ABS(pd[dof] - pd_scale * current_scale) > Constants.Epsilon)
+    OR_ELSE ABS(CurrentVelocity[dof] - v0_scale * current_scale) > Constants.Epsilon
+    OR_ELSE ABS(CurrentAcceleration[dof] - a0_scale * current_scale) > Constants.Epsilon
+    OR_ELSE ABS(TargetVelocity[dof] - vf_scale * current_scale) > Constants.Epsilon
+    OR_ELSE ABS(TargetAcceleration[dof] - af_scale * current_scale) > Constants.Epsilon
   THEN
     RETURN;
 	END_IF
   
-  scale := pd[dof] / pd[limitingDof];  
-  newMaxJerk[dof] := scale * max_jerk_limiting;
+  new_max_jerk[dof] := max_jerk_limiting * current_scale / scale_limiting;
 END_FOR
 
 IsInputCollinear := TRUE;]]></ST>

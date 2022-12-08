@@ -748,7 +748,8 @@ VAR_INST
     TargetPosition :=      [ 1.0, -3.0, 2.0 ],
     MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
     MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
-    MaxJerk :=             [ 1.0, 1.0, 1.0 ]
+    MaxJerk :=             [ 1.0, 1.0, 1.0 ],
+    EnableAutoPropagate := FALSE
   ); 
 END_VAR
 VAR
@@ -758,6 +759,7 @@ VAR
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
+  profiles : POINTER TO ProfileDesc := ADR(otg._profiles);
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('PhaseSynchronization');
@@ -766,56 +768,140 @@ otg();
 result := otg.State;
 AssertEquals(busy, result, Message := '');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := ''); 
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
 otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
-values[0] := 0.0833333333;
-values[1] := -2.0833333333;
-values[2] := 0.1666666667;
+SetVector3(ADR(values), 0.0833333333, -2.0833333333, 0.1666666667);
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
-
-otg.CurrentPosition[0] := 1.0;
-otg.CurrentPosition[1] := -2.0;
-otg.CurrentPosition[2] := 3.0;
-otg.TargetPosition[0] := 1.0;
-otg.TargetPosition[1] := -2.0;
-otg.TargetPosition[2] := 3.0;
-
-otg();
-otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
-result := Struckig.TrajectoryState.Idle;
-AssertEquals(result, otg.State, '');
-AssertEquals_LREAL(0, otg.Duration, 1E-9, '');
-AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-6, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
 
 
-otg.CurrentPosition[0] := 0.0;
-otg.CurrentPosition[1] := -2.0;
-otg.CurrentPosition[2] := 0.0;
 
-otg.TargetPosition[0] := 10.0;
-otg.TargetPosition[1] := -3.0;
-otg.TargetPosition[2] := 2.0;
 
-otg.MaxVelocity[0] := 10.0;
-otg.MaxVelocity[1] := 2.0;
-otg.MaxVelocity[2] := 1.0;
-
-otg.MaxAcceleration[0] := 10.0;
-otg.MaxAcceleration[1] := 2.0;
-otg.MaxAcceleration[2] := 1.0;
-
-otg.MaxJerk[0] := 10.0;
-otg.MaxJerk[1] := 2.0;
-otg.MaxJerk[2] := 1.0;
-
+SetVector3(ADR(otg.CurrentPosition),0,-2,0);
+SetVector3(ADR(otg.TargetPosition),10,-3,2);
+SetVector3(ADR(otg.MaxVelocity),10,2,1);
+SetVector3(ADR(otg.MaxAcceleration),10,2,1);
+SetVector3(ADR(otg.MaxJerk),10,2,1);
 otg();
 result := otg.State;
 AssertEquals(busy, result, Message := '');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := ''); 
 otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
-values[0] := 0.8333333333;
-values[1] := -2.0833333333;
-values[2] := 0.1666666667;
+SetVector3(ADR(values), 0.833333333, -2.0833333333, 0.1666666667);
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
+
+// Test equal start and target state
+SetVector3(ADR(otg.CurrentPosition), 1,-2,3);
+SetVector3(ADR(otg.TargetPosition), 1,-2,3);
+otg();
+otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+AssertEquals_LREAL(otg.Duration, 0.0, 1E-6, Message := '');
+AssertEquals_INT(TrajectoryState.Idle, otg.State, '');
+SetVector3(ADR(values), 1, -2, 3);
+AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
+
+
+SetVector3(ADR(otg.CurrentPosition),0,0,0);
+SetVector3(ADR(otg.CurrentVelocity),0,0,0);
+SetVector3(ADR(otg.CurrentAcceleration),0,0,0);
+SetVector3(ADR(otg.TargetPosition),0,0,0);
+SetVector3(ADR(otg.TargetVelocity),0.2,0.3,0.4);
+SetVector3(ADR(otg.TargetAcceleration),0,0,0);
+SetVector3(ADR(otg.MaxVelocity),1,1,1);
+SetVector3(ADR(otg.MaxAcceleration),1,1,1);
+SetVector3(ADR(otg.MaxJerk),1,1,1);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := '');   
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := '');   
+
+
+
+
+
+SetVector3(ADR(otg.CurrentPosition),0,0,0);
+SetVector3(ADR(otg.CurrentVelocity),0,0,0);
+SetVector3(ADR(otg.CurrentAcceleration),0,0,0);
+SetVector3(ADR(otg.TargetPosition),0,0,0.01);
+SetVector3(ADR(otg.TargetVelocity),0.2,0.3,0.4);
+SetVector3(ADR(otg.TargetAcceleration),0,0,0);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertTrue(ABS(profiles[0].t[0] - profiles[1].t[0]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+AssertTrue(ABS(profiles[0].t[0] - profiles[2].t[0]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+
+
+
+
+
+SetVector3(ADR(otg.CurrentPosition), 0,0,0);
+SetVector3(ADR(otg.CurrentVelocity), 0.4, 0.15, 0.2);
+SetVector3(ADR(otg.CurrentAcceleration), 0.8,0.3,0.4);
+SetVector3(ADR(otg.TargetPosition), 0,0,0);
+SetVector3(ADR(otg.TargetVelocity), 0,0,0);
+SetVector3(ADR(otg.TargetAcceleration), 0,0,0);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
+
+
+SetVector3(ADR(otg.MaxVelocity), 1,0.2,1);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertTrue(ABS(profiles[0].t[0] - profiles[1].t[0]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+AssertTrue(ABS(profiles[0].t[0] - profiles[2].t[0]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+
+
+
+
+
+
+
+SetVector3(ADR(otg.CurrentPosition),0,0.02,1);
+SetVector3(ADR(otg.CurrentVelocity),-0.2,0.15,0.2);
+SetVector3(ADR(otg.CurrentAcceleration),-0.4,0.3,0.4);
+SetVector3(ADR(otg.TargetPosition),0.03,0,0);
+SetVector3(ADR(otg.TargetVelocity),-0.02,0.015,0.02);
+SetVector3(ADR(otg.TargetAcceleration),0,0,0);
+SetVector3(ADR(otg.MaxVelocity),1,1,1);
+SetVector3(ADR(otg.MaxAcceleration),1,1,1);
+SetVector3(ADR(otg.MaxJerk),1,1,1);
+otg.ControlInterface := ControlInterfaceType.Velocity;
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
+
+
+
+SetVector3(ADR(otg.MaxJerk),1,0.1,1);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := '');
+AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
+
+
+
+
+SetVector3(ADR(otg.TargetAcceleration),0.01,0,0);
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertTrue(ABS(profiles[0].t[2] - profiles[1].t[2]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+AssertTrue(ABS(profiles[0].t[2] - profiles[2].t[2]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
+
+
 
 TEST_FINISHED();]]></ST>
       </Implementation>
