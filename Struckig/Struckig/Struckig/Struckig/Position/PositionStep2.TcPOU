@@ -1288,7 +1288,7 @@ ELSE
     orig := -pd - (2*a0_p3 + 4*af_p3 + 24*a0*jMax*t*(af + jMax*(h1 + t - tf)) + 6*a0_a0*(af + jMax*(2*t - tf)) + 6*(a0_a0 + af_af)*jMax*h1 + 12*af*jMax*(jMax*t*t - vd) + 12*jMax_jMax*(jMax*t*t*(h1 + t - tf) - tf*v0 - h1*vd))/(12*jMax_jMax);
     deriv_newton := -(a0 + jMax*t)*(3*(h1 + t) - 2*tf + (a0 + 2*af)/jMax);
     
-    IF ABS(deriv_newton) < Constants.DoubleEpsilon
+    IF orig <> orig OR_ELSE deriv_newton <> deriv_newton OR_ELSE ABS(deriv_newton) < Constants.DoubleEpsilon 
     THEN
       CONTINUE;
     END_IF
