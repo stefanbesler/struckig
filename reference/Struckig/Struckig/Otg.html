@@ -440,6 +440,47 @@
 </tbody>
 </table>
 <h3 id="methods">Methods</h3>
+<p><a name="AbortErrorId"></a></p>
+<h4 id="Struckig.Otg.AbortErrorId" data-uid="Struckig.Otg.AbortErrorId">AbortErrorId</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD PROTECTED AbortErrorId (
+ errorId : INT,
+ message : STRING)
+</code></pre>
+<h5 class="parameters">Inputs</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a name="errorId"></a>errorId</td>
+<td style="text-align: left;">INT</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<h5 class="parameters">Inouts</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a name="message"></a>message</td>
+<td style="text-align: left;">STRING</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
 <p><a name="AtTime"></a></p>
 <h4 id="Struckig.Otg.AtTime" data-uid="Struckig.Otg.AtTime">AtTime</h4>
 <h5 class="decalaration">Declaration</h5>
@@ -490,12 +531,7 @@
 <p><a name="Calculate"></a></p>
 <h4 id="Struckig.Otg.Calculate" data-uid="Struckig.Otg.Calculate">Calculate</h4>
 <h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD PRIVATE Calculate () : TrajectoryErrorCode
-</code></pre>
-<p><a name="Change"></a></p>
-<h4 id="Struckig.Otg.Change" data-uid="Struckig.Otg.Change">Change</h4>
-<h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD PRIVATE Change () : BOOL
+<pre><code class="lang-st">METHOD PRIVATE Calculate () : TrajectoryState
 </code></pre>
 <p><a name="ErrorCode"></a></p>
 <h4 id="Struckig.Otg.ErrorCode" data-uid="Struckig.Otg.ErrorCode">ErrorCode</h4>
@@ -506,6 +542,11 @@
 <h4 id="Struckig.Otg.ErrorMessage" data-uid="Struckig.Otg.ErrorMessage">ErrorMessage</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD ErrorMessage () : STRING(255)
+</code></pre>
+<p><a name="HasChanged"></a></p>
+<h4 id="Struckig.Otg.HasChanged" data-uid="Struckig.Otg.HasChanged">HasChanged</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD PRIVATE HasChanged () : BOOL
 </code></pre>
 <p><a name="IsBlocked"></a></p>
 <h4 id="Struckig.Otg.IsBlocked" data-uid="Struckig.Otg.IsBlocked">IsBlocked</h4>
@@ -590,6 +631,29 @@ This method can be used to trigger a new trajectory even if inputs do not change
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD Reset ()
 </code></pre>
+<p><a name="SetBusy"></a></p>
+<h4 id="Struckig.Otg.SetBusy" data-uid="Struckig.Otg.SetBusy">SetBusy</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD PROTECTED SetBusy (
+ on : BOOL)
+</code></pre>
+<h5 class="parameters">Inputs</h5>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Type</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><a name="on"></a>on</td>
+<td style="text-align: left;">BOOL</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
 <p><a name="Synchronize"></a></p>
 <h4 id="Struckig.Otg.Synchronize" data-uid="Struckig.Otg.Synchronize">Synchronize</h4>
 <h5 class="decalaration">Declaration</h5>
