@@ -60,7 +60,7 @@ END_VAR]]></Declaration>
       <ST><![CDATA[NewCalculation := FALSE;
 SetBusy(TRUE);
 
-IF Change() OR_ELSE NOT _inputInitialized
+IF HasChanged() OR_ELSE NOT _inputInitialized
 THEN
   _dofsEnd := Dofs - 1; // for looping
 
@@ -441,51 +441,6 @@ DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Change" Id="{412a3b6e-c01a-46d6-b769-48dae1ba53ec}">
-      <Declaration><![CDATA[METHOD PRIVATE Change : BOOL
-VAR
-  i : INT;  
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF _dofs <> Dofs
-THEN
-  Change := TRUE;
-  RETURN;
-END_IF
-
-FOR i:=0 TO _dofsEnd
-DO
-  IF _currentPosition[i] <> CurrentPosition[i] OR_ELSE
-     _currentVelocity[i] <> CurrentVelocity[i] OR_ELSE
-     _currentAcceleration[i] <> CurrentAcceleration[i] OR_ELSE
-     _targetPosition[i] <> TargetPosition[i] OR_ELSE
-     _targetVelocity[i] <> TargetVelocity[i] OR_ELSE
-     _targetAcceleration[i] <> TargetAcceleration[i] OR_ELSE
-     _maxVelocity[i] <> MaxVelocity[i] OR_ELSE
-     _maxAcceleration[i] <> MaxAcceleration[i] OR_ELSE
-     _maxJerk[i] <> MaxJerk[i] OR_ELSE
-     _enabled[i] <> Enabled[i] OR_ELSE
-     _minVelocity[i] <> MinVelocity[i] OR_ELSE
-     _minAcceleration[i] <> MinAcceleration[i] OR_ELSE
-     _perDofControlInterface[i] <> PerDofControlInterface[i] OR_ELSE
-     _perDofSynchronization[i] <> PerDofSynchronization[i]
-  THEN
-    Change := TRUE;  
-    RETURN;
-	END_IF
-END_FOR
-
-IF _controlInterface <> ControlInterface OR_ELSE
-   _synchronization <> Synchronization OR_ELSE
-   _discretization <> Discretization OR_ELSE
-   _minDuration <> MinDuration   
-THEN
-  Change := TRUE;
-  RETURN;
-END_IF]]></ST>
-      </Implementation>
-    </Method>
     <Method Name="ErrorCode" Id="{df1856aa-ddd6-43c2-8198-e93b1db87e8a}">
       <Declaration><![CDATA[METHOD ErrorCode : TrajectoryErrorCode
 VAR_INPUT
@@ -532,6 +487,51 @@ DO
   Enabled[i] := i < dofs;
 END_FOR
 _dt := THIS^.CycleTime := cycletime;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="HasChanged" Id="{412a3b6e-c01a-46d6-b769-48dae1ba53ec}">
+      <Declaration><![CDATA[METHOD PRIVATE HasChanged : BOOL
+VAR
+  i : INT;  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _dofs <> Dofs
+THEN
+  HasChanged := TRUE;
+  RETURN;
+END_IF
+
+FOR i:=0 TO _dofsEnd
+DO
+  IF NOT (_currentPosition[i] = CurrentPosition[i] AND_THEN
+     _currentVelocity[i] = CurrentVelocity[i] AND_THEN
+     _currentAcceleration[i] = CurrentAcceleration[i] AND_THEN
+     _targetPosition[i] = TargetPosition[i] AND_THEN
+     _targetVelocity[i] = TargetVelocity[i] AND_THEN
+     _targetAcceleration[i] = TargetAcceleration[i] AND_THEN
+     _maxVelocity[i] = MaxVelocity[i] AND_THEN
+     _maxAcceleration[i] = MaxAcceleration[i] AND_THEN
+     _maxJerk[i] = MaxJerk[i] AND_THEN
+     _enabled[i] = Enabled[i] AND_THEN
+     _minVelocity[i] = MinVelocity[i] AND_THEN
+     _minAcceleration[i] = MinAcceleration[i] AND_THEN
+     _perDofControlInterface[i] = PerDofControlInterface[i] AND_THEN
+     _perDofSynchronization[i] = PerDofSynchronization[i])
+  THEN
+    HasChanged := TRUE;  
+    RETURN;
+	END_IF
+END_FOR
+
+IF NOT (_controlInterface = ControlInterface AND_THEN
+   _synchronization = Synchronization AND_THEN
+   _discretization = Discretization AND_THEN
+   _minDuration = MinDuration)   
+THEN
+  HasChanged := TRUE;
+  RETURN;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="IsBlocked" Id="{fe13951c-4e92-4835-b744-475e6b7411b6}">
