@@ -60,6 +60,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF t[0] <= 0 AND_THEN t[1] <= 0
 THEN
+  Duration := 0;
   RETURN;
 END_IF
 
