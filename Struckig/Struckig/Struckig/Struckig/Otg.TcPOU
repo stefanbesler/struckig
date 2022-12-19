@@ -886,7 +886,7 @@ DO
 	END_IF
   
   ci := SEL(PerDofControlInterface[i] = ControlInterfaceType.Undefined, PerDofControlInterface[i], ControlInterface);
-  IF (ci = ControlInterfaceType.position)
+  IF (ci = ControlInterfaceType.Position)
   THEN
   
     IF CurrentPosition[i] <> CurrentPosition[i] OR_ELSE //isnan

@@ -58,18 +58,20 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Duration := t[0] + t[1];
-        
-IF t[0] > 0
+        <ST><![CDATA[IF t[0] <= 0 AND_THEN t[1] <= 0
 THEN
-  p[0] := ps;
-  v[0] := vs;
-  a[0] := as;
-  Integrate(t[0], p0:=ps, v0:=vs, a0:=as, j:=j[0], p:=ps, v:=vs, a:=as);
+  RETURN;
 END_IF
+
+Duration := t[0];
+p[0] := ps;
+v[0] := vs;
+a[0] := as;
+Integrate(t[0], p0:=ps, v0:=vs, a0:=as, j:=j[0], p:=ps, v:=vs, a:=as);
 
 IF t[1] > 0
 THEN
+  Duration := Duration + t[1];
   p[1] := ps;
   v[1] := vs;
   a[1] := as;
@@ -161,10 +163,10 @@ THEN
   v_at_a_min := VelocityAtTime(v0, a0, -jMax, t_to_a_min);
   t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
   t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
-  t[0] := t_to_a_min - Constants.BrakeEpsilon;
+  t[0] := MAX(t_to_a_min - Constants.BrakeEpsilon, 0);
   t[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
 ELSE
-  t[0] := t_min_to_v_max - Constants.BrakeEpsilon;
+  t[0] := MAX(t_min_to_v_max - Constants.BrakeEpsilon, 0);
 END_IF]]></ST>
       </Implementation>
     </Method>

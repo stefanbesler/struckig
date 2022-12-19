@@ -37,6 +37,10 @@ example30();
 example31();
 example32();
 example33();
+example34();
+example35();
+example36();
+
 
 
 ]]></ST>
@@ -1067,6 +1071,91 @@ END_VAR
 
 otg();
 AssertEquals_LREAL(Expected := 0.048,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example34" Id="{2e155773-1620-4e87-8112-8f35ede17200}">
+      <Declaration><![CDATA[METHOD example34
+VAR_INST
+  otg : Struckig.Otg(0.01, 1) := (
+    CurrentPosition := [0],
+    CurrentVelocity := [1],
+    CurrentAcceleration := [-2],
+    TargetPosition := [1],
+    TargetVelocity := [0.5],
+    TargetAcceleration := [0.0],
+    MaxVelocity := [0.8],
+    MaxAcceleration := [2],
+    MaxJerk := [5]
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-34');
+
+otg();
+AssertEquals_LREAL(Expected := 1.6041105549250121,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example35" Id="{40b97033-fdd1-4031-96bb-de1ea46c05fb}">
+      <Declaration><![CDATA[METHOD example35
+VAR_INST
+  otg : Struckig.Otg(0.004, 6) := (
+    CurrentPosition := [0.1720894642466409, 3.62255615705579, 1.675754445058354, 2.181127634157466, 0.7829547024446563, 0],
+    CurrentVelocity := [0, -0.06422550797049381, -0.006910864193129071, 0.1207111377965507, 0, 0],
+    CurrentAcceleration := [0, 0, 0, -0.3999999999978001, 0, 0],
+    TargetPosition := [0.1703441349946466, 3.587689540855463, 1.671344092861895, 2.271916653384632, 0.7826056365942573, -0.003141592653589793],
+    TargetVelocity := [0, -0.06423623454575711, -0.007006078877926925, 0.1187909578397501, 0, 0],
+    TargetAcceleration := [0, 0, 0, 0, 0, 0],
+    MaxVelocity := [0.06981316999999999, 0.06423623454575711, 0.007006078877926925, 0.1187909578397501, 6.981317008, 34.90658504],
+    MaxAcceleration := [0.034906585, 0.261799388, 0.043633231, 0.4, 4.01425728, 34.90658504],
+    MaxJerk := [100, 100, 100, 100, 100, 100]
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-35');
+
+otg();
+AssertEquals_LREAL(Expected := 0.76427371316291570,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-7,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example36" Id="{fa162e63-7481-449c-b111-b6324ea37642}">
+      <Declaration><![CDATA[METHOD example36
+VAR_INST
+  otg : Struckig.Otg(0.004, 6) := (
+    CurrentPosition := [0.1174161453909641,-0.4222080077114712,0.3003863125814782,2.960444926889819,-0.005791262234199017,-2.364847659719411],
+    CurrentVelocity := [-3.662950284795513E-09,-5.585273134233322E-09,0.01325125623820627,1.800912308381978E-08,-1.307199431356758E-09,-1.908875705031016E-08],
+    CurrentAcceleration := [1.350015487635199E-07,2.058506025917496E-07,-0.4883877683641483,-6.637435179724953E-07,4.81780898060446E-08,7.035344641338199E-07],
+    TargetPosition := [0.117416145324707,-0.4222080078125,0.3006260070800781,2.960444927215576,-0.00579126225784421,-2.364847660064697],
+    TargetVelocity := [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+    TargetAcceleration := [0, 0, 0, 0, 0, 0],
+    MaxVelocity := [0.002,0.002,0.002,0.003141592629253865,0.003141592629253865,0.003141592629253865],
+    MaxAcceleration := [0.01,0.01,0.01,0.01570796314626932,0.01570796314626932,0.01570796314626932],
+    MaxJerk := [ 0.18,0.18,0.18,1.570796314626932,1.570796314626932,1.570796314626932],
+    Discretization := DiscretizationType.Discrete
+  );
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-36');
+
+otg();
+AssertEquals_LREAL(Expected := 11198.436000000000,
              Actual := CheckCalculation(otg),
              DELTA := 1E-7,
              Message := '');
