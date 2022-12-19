@@ -58,15 +58,14 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[NewCalculation := FALSE;
-State := TrajectoryState.Busy;
+SetBusy(TRUE);
 
 IF Change() OR_ELSE NOT _inputInitialized
 THEN
   _dofsEnd := Dofs - 1; // for looping
 
-  _errorId := Calculate();
-  IF _errorId <> 0 THEN
-    State := State := TrajectoryState.Error;
+  Calculate();
+  IF State = TrajectoryState.Error THEN
     RETURN;
   END_IF
 
@@ -103,7 +102,7 @@ _currentPosition := NewPosition;
 _currentVelocity := NewVelocity;
 _currentAcceleration := NewAcceleration;
 
-IF (CurrentTime > Duration) THEN
+IF CurrentTime > Duration THEN
   State := TrajectoryState.Idle;
 END_IF
 
@@ -112,6 +111,20 @@ THEN
   PassOutputToInput();
 END_IF]]></ST>
     </Implementation>
+    <Method Name="AbortErrorId" Id="{a52172e2-73f2-4456-81bd-a6267fd08edc}">
+      <Declaration><![CDATA[METHOD PROTECTED AbortErrorId
+VAR_INPUT
+  errorId : INT;
+END_VAR
+VAR_IN_OUT CONSTANT  
+  message : STRING;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := TrajectoryState.Error;
+_errorId := errorId;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="AtTime" Id="{bf1093a4-cb3c-415c-bc2d-e44ec3ea9553}">
       <Declaration><![CDATA[{attribute 'conditionalshow'}
 METHOD AtTime
@@ -195,7 +208,7 @@ END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="Calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
-      <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
+      <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryState
 VAR_INST
   dof, i : INT;
   p, p_limiting : REFERENCE TO ProfileDesc;
@@ -204,14 +217,14 @@ VAR_INST
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
   new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   t_profile : LREAL;
-  noneSynchronizationCount, phaseSychronizationIndex, phaseOrNoneSychronizationCount, positionControlInterfaceCount : INT;
+  noneSynchronizationCount, phaseSychronizations, phaseOrNoneSychronizationCount : INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[State := TrajectoryState.Busy;
+        <ST><![CDATA[SetBusy(TRUE);
 
 IF NOT ValidateInput(currentState:=FALSE, targetState:=TRUE)
 THEN
-  Calculate := TrajectoryErrorCode.InvalidInput;
+  AbortErrorId(TrajectoryErrorCode.InvalidInput, '');
   RETURN;
 END_IF
 
@@ -660,6 +673,16 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[_inputInitialized := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetBusy" Id="{1b2700a2-8d80-4602-985b-0427ca0aa7fc}">
+      <Declaration><![CDATA[METHOD PROTECTED SetBusy
+VAR_INPUT
+  on : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[State := TrajectoryState.Busy;]]></ST>
       </Implementation>
     </Method>
     <Method Name="Synchronize" Id="{190d7ca7-bc21-4bc2-982d-9be9e1cca821}">
