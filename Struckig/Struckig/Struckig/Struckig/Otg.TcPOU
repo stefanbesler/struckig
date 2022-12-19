@@ -300,9 +300,8 @@ IF (Duration = 0.0) THEN
 END_IF
 
 noneSynchronizationCount := -1;
-phaseSychronizationIndex := -1;
+phaseSychronizations := -1;
 phaseOrNoneSychronizationCount := -1;
-positionControlInterfaceCount := -1;
 FOR dof:=0 TO _dofsEnd DO 
   IF _inp_per_dof_synchronization[dof] = SynchronizationType.None
   THEN
@@ -311,16 +310,8 @@ FOR dof:=0 TO _dofsEnd DO
   ELSIF _inp_per_dof_synchronization[dof] = SynchronizationType.Phase
   THEN
     phaseOrNoneSychronizationCount := phaseOrNoneSychronizationCount + 1;
-    IF phaseSychronizationIndex < 0
-    THEN
-      phaseSychronizationIndex := dof;
-    END_IF
+    phaseSychronizations := phaseSychronizations + 1;
   END_IF
-  
-  IF _inp_per_dof_control_interface[dof] = ControlInterfaceType.Position
-  THEN
-    positionControlInterfaceCount := positionControlInterfaceCount + 1;
-  END_IF 
 END_FOR
 
 IF NOT discrete_duration AND_THEN noneSynchronizationCount = _dofsEnd
@@ -329,12 +320,12 @@ THEN
 END_IF
 
 
-IF limiting_dof >= 0 AND_THEN phaseSychronizationIndex >= 0 THEN
+IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
-  IF (IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk)) THEN
+  IF IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO _dofsEnd DO
-      IF (NOT Enabled[dof] OR_ELSE dof = limiting_dof) THEN
+      IF NOT Enabled[dof] OR_ELSE dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase THEN
         CONTINUE;
       END_IF
 
@@ -431,7 +422,8 @@ DO
 
   IF NOT found_time_synchronization
   THEN
-    Calculate := TrajectoryErrorCode.SynchronizationFailed;
+    AbortErrorId(TrajectoryErrorCode.SynchronizationFailed, '');
+    RETURN;  
   END_IF
 END_FOR]]></ST>
       </Implementation>

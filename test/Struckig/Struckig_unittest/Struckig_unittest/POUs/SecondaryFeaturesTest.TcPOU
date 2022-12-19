@@ -112,7 +112,6 @@ values[1] := -3.0;
 values[2] := 2.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 
-
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
@@ -736,6 +735,31 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 3.6578610221, 1E-6, message:='Duration not met');
 
+
+
+SetVector3(ADR(otg.CurrentPosition),0,0,0);
+SetVector3(ADR(otg.CurrentVelocity),0.2,0,-0.1);
+SetVector3(ADR(otg.CurrentAcceleration),0,0,0);
+SetVector3(ADR(otg.TargetPosition),1,-0.2,-0.5);
+SetVector3(ADR(otg.TargetVelocity),0,0,0);
+SetVector3(ADR(otg.TargetAcceleration),0,0,0);
+SetVector3(ADR(otg.MaxVelocity),1,1,1);
+SetVector3(ADR(otg.MaxAcceleration),1,1,1);
+SetVector3(ADR(otg.MaxJerk),1,1,1);
+otg.Enabled[0] := TRUE;
+otg.Enabled[1] := TRUE;
+otg.Enabled[2] := TRUE;
+otg.PerDofSynchronization[0] := Struckig.SynchronizationType.Phase;
+otg.PerDofSynchronization[1] := Struckig.SynchronizationType.None;
+otg.PerDofSynchronization[2] := Struckig.SynchronizationType.Phase;
+otg();
+AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
+AssertEquals_LREAL(otg.Duration, 2.848387279, 1E-6, Message := '');
+AssertTrue(ABS(otg._profiles[0].t[0] - otg._profiles[1].t[0]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL 
+AssertArrayEquals_LREAL( otg._profiles[0].t, otg._profiles[2].t, 1E-6, Message := '');
+
+
+
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
@@ -901,6 +925,17 @@ AssertEquals_INT(TrajectoryState.Busy, otg.State, '');
 AssertTrue(ABS(profiles[0].t[2] - profiles[1].t[2]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
 AssertTrue(ABS(profiles[0].t[2] - profiles[2].t[2]) > 1E-6, Message := '');  // Todo: AssertArrayNotEquals_LREAL
 
+
+
+
+SetVector3(ADR(otg.CurrentPosition),0,0,0);
+SetVector3(ADR(otg.CurrentVelocity),0,0,0);
+SetVector3(ADR(otg.CurrentAcceleration),0,0,0);
+SetVector3(ADR(otg.TargetPosition),0,0,0);
+SetVector3(ADR(otg.TargetVelocity),0,0,0);
+SetVector3(ADR(otg.TargetAcceleration),0,0,0);
+otg();
+AssertEquals_INT(TrajectoryState.Idle, otg.State, '');
 
 
 TEST_FINISHED();]]></ST>
