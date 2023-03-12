@@ -18,7 +18,7 @@
     <LibraryReferences>{f4bffdbd-5758-46b1-8be5-022517971003}</LibraryReferences>
     <Released>false</Released>
     <Title>Struckig</Title>
-    <ProjectVersion>0.7.1.0</ProjectVersion>
+    <ProjectVersion>0.8.8.0</ProjectVersion>
     <DefaultNamespace>Struckig</DefaultNamespace>
     <Author>Stefan Besler and contributers</Author>
     <Company>Stefan Besler</Company>

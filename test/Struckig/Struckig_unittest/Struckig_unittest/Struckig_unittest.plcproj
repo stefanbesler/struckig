@@ -127,7 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Struckig">
-      <Resolution>Struckig, 0.7.1.0 (Stefan Besler)</Resolution>
+      <Resolution>Struckig, 0.8.8.0 (Stefan Besler)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc3_Module">
       <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>

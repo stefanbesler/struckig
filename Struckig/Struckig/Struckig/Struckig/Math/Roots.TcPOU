@@ -44,22 +44,25 @@ VAR_INPUT
   x : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF degree > 0 THEN
-  IF (ABS(x) < Constants.DoubleEpsilon) THEN
-      PolyEval := polynom[degree];
-  ELSIF (x = 1.0) THEN
-    FOR j:= degree TO 0 BY -1
-    DO
-      PolyEval := PolyEval + polynom[j];
-    END_FOR
-  ELSE
-    xn := 1.0;
-    FOR j:= degree TO 0 BY -1 
-    DO
-      PolyEval := PolyEval + polynom[j] * xn;
-      xn := xn * x;
-    END_FOR
-  END_IF
+        <ST><![CDATA[IF degree = 0
+THEN
+  RETURN;
+END_IF
+
+IF (ABS(x) < Constants.DoubleEpsilon) THEN
+    PolyEval := polynom[degree];
+ELSIF x = 1.0 THEN
+  FOR j:= degree TO 0 BY -1
+  DO
+    PolyEval := PolyEval + polynom[j];
+  END_FOR
+ELSE
+  xn := 1.0;
+  FOR j:= degree TO 0 BY -1 
+  DO
+    PolyEval := PolyEval + polynom[j] * xn;
+    xn := xn * x;
+  END_FOR
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -92,8 +95,7 @@ VAR_INPUT
   l, h : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[PolyDeri(p, degree, out:=ADR(deriv));
-fl := PolyEval(p, degree, l);
+        <ST><![CDATA[fl := PolyEval(p, degree, l);
 fh := PolyEval(p, degree, h);
 IF (fl = 0.0) THEN
   ShrinkInterval := l;
@@ -116,6 +118,7 @@ END_IF
 ShrinkInterval := (l + h) / 2;
 dxold := ABS(h - l);
 dx := dxold;
+PolyDeri(p, degree, out:=ADR(deriv));
 f := PolyEval(p, degree, ShrinkInterval);
 df := PolyEval(ADR(deriv), degree-1, ShrinkInterval);
 FOR iterations:=0 TO ParameterList.MaxIterations DO
