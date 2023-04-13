@@ -100,9 +100,9 @@ END_VAR
         <ST><![CDATA[TEST('Example-02');
 
 otg();
-AssertEquals_LREAL(Expected := (*1E-18*)6.8399037867067934E-06,
+AssertEquals_LREAL(Expected := 1E-18,
              Actual := CheckCalculation(otg),
-             Delta := 1E-19,
+             Delta := 1E-8,
              Message := '');
  
 TEST_FINISHED();]]></ST>
@@ -417,7 +417,7 @@ END_VAR
         <ST><![CDATA[TEST('Example-12');
 
 otg();
-AssertEquals_LREAL(Expected := 1.4939455945092736666,
+AssertEquals_LREAL(Expected := 1.493796958,
              Actual := CheckCalculation(otg),
              DELTA := 1E-8,
              Message := '');

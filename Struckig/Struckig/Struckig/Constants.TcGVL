@@ -6,9 +6,8 @@
 VAR_GLOBAL INTERNAL CONSTANT
   BrakeEpsilon : LREAL := 2.2E-14;
   DoubleEpsilon : LREAL := 2.2204460492503131E-016; // smallest such that 1.0+Constants.DoubleEpsilon != 1.0
-  DoubleEpsilonSqrt : LREAL := 1.483E-8;
   Epsilon : LREAL := 1E-8;
-  Epsilon16 : LREAL := 16 * 1E-8;
+  Epsilon16 : LREAL := 16 * 2.2204460492503131E-016;
   EpsilonColinear : LREAL := 1E-7;
   Infinity : LREAL := 1.7976931348623157E+308;  
   Tolerance : LREAL := 1E-14;

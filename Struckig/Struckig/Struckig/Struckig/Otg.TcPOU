@@ -208,7 +208,7 @@ END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="Calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
-      <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryState
+      <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
 VAR_INST
   dof, i : INT;
   p, p_limiting : REFERENCE TO ProfileDesc;

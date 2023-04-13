@@ -9,7 +9,7 @@ VAR
   e0, e1, q1, q2, p1, p2, dd, sqrtD  : LREAL;
   a3, b3, c3 : LREAL;
   x3 : ARRAY[0..2] OF LREAL;
-  iZeroes : INT;  
+  number_zeroes : INT;  
   deriv : ARRAY[0 .. 10] OF LREAL;
   fl, fh, temp : LREAL;
   dxold, dx, f,df : LREAL;
@@ -332,113 +332,54 @@ b := polynom[1];
 c := polynom[2];
 d := polynom[3];
 e0 := cbrt(c * c);
-IF (ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilonSqrt AND_THEN ABS(c) < Constants.DoubleEpsilonSqrt AND_THEN ABS(d) < Constants.DoubleEpsilon) AND_THEN
-   ABS(e0) > Constants.DoubleEpsilon
+IF ABS(d) < Constants.DoubleEpsilon
 THEN
-  e1 := (b * b + 12 * d)/(9 * e0);
-  q1 := -(4 * b) / 3 - e0 - e1;
-  p1 := SQRT(-q1 - 2 * b);
-  q2 := 2 * c / p1;
-  
-  dd := q1 - q2;
-  IF (dd > 0.0)
-  THEN  
-    sqrtD := SQRT(dd);
-    
-    h := ((p1 + sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[0] := h;
-      rootCount := 0;
-		END_IF
-    
-    h := ((p1 - sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF
-  END_IF
-  
-  dd := q1 + q2;
-  IF (dd > 0.0)
-  THEN  
-    sqrtD := SQRT(dd);
-    
-    h := ((-p1 + sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF
-    
-    h := ((-p1 - sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF
-  END_IF
-  RETURN;
-END_IF
-
-IF (ABS(c) < Constants.DoubleEpsilon AND_THEN ABS(d) < Constants.DoubleEpsilon)
-THEN
-  roots[0] := 0.0;
-  rootCount := rootCount+1;
-  
-  dd := a * a - 4 * b;
-  IF (ABS(dd) < Constants.DoubleEpsilon)
+  IF ABS(c) < Constants.DoubleEpsilon
   THEN
-    h := (-a / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF
-  ELSIF (dd > 0)
-  THEN
-    sqrtD := SQRT(dd);
-    h := ((-a - sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF
-    
-    h := ((-a + sqrtD) / 2);
-    IF h >= 0
-    THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-		END_IF  
-  END_IF
-  RETURN;
-END_IF
+    roots[rootCount+1] := 0;
+    rootCount := rootCount + 1;    
 
-IF ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilon AND_THEN ABS(d) < Constants.DoubleEpsilon
-THEN
-  roots[rootCount+1] := 0;
-  roots[rootCount+2] := -Cbrt(c);  
-  rootCount := rootCount + 2;
-  RETURN;
+    dd := a * a - 4 * b;
+    IF ABS(dd) < Constants.DoubleEpsilon 
+    THEN
+      roots[rootCount+1] := -a / 2;
+      rootCount := rootCount + 1;          
+     ELSIF (dd > 0)
+     THEN 
+      sqrtD := SQRT(dd);
+      roots[rootCount+1] := (-a - sqrtD) / 2;
+      roots[rootCount+2] := (-a + sqrtD) / 2;
+      rootCount := rootCount + 2;       
+    END_IF
+    RETURN;
+  END_IF
+  
+  IF ABS(a) < Constants.DoubleEpsilon AND_THEN ABS(b) < Constants.DoubleEpsilon
+  THEN
+    roots[rootCount+1] := 0;
+    roots[rootCount+2] := -Cbrt(c);
+    rootCount := rootCount + 2;
+    RETURN;
+  END_IF
 END_IF
 
 a3 := -b;
 b3 := a * c - 4 * d;
 c3 := -a * a * d - c * c + 4 * b * d;
 
-// Solve the resolvent: y^3 - b*y^2 + (ac - 4*d)*y - a^2*d - c^2 + 4*b*d = 0
-iZeroes := SolveResolvent(ADR(x3), a3, b3, c3);
+number_zeroes := SolveResolvent(ADR(x3), a3, b3, c3);
 
 y := x3[0];
 // Choosing Y with maximal absolute value.
-IF (iZeroes <> 1) THEN
-  IF ABS(x3[1]) > ABS(y) THEN
+IF (number_zeroes <> 1)
+THEN
+  IF ABS(x3[1]) > ABS(y)
+  THEN
     y := x3[1];
   END_IF
   
-  IF ABS(x3[2]) > ABS(y) THEN
+  IF ABS(x3[2]) > ABS(y)
+  THEN
     y := x3[2];
   END_IF
 END_IF
@@ -467,7 +408,8 @@ END_IF
 
 // Solve the quadratic equation: x^2 + p1*x + q1 = 0
 dd := p1 * p1 - 4 * q1;
-IF (ABS(dd) < Constants.Epsilon16) THEN
+IF ABS(dd) < Constants.Epsilon16
+THEN
   
   h:= (-p1 / 2);
   IF h >= 0
@@ -476,7 +418,8 @@ IF (ABS(dd) < Constants.Epsilon16) THEN
     rootCount := rootCount + 1;
   END_IF
   
-ELSIF (dd > 0.0)  THEN
+ELSIF dd > 0.0
+THEN
   sqrtD := SQRT(dd);
   h := ((-p1 + sqrtD) / 2);
   IF h >= 0
@@ -504,14 +447,15 @@ IF (ABS(dd) < Constants.Epsilon16) THEN
   END_IF  
 ELSIF (dd > 0.0) THEN
   sqrtD := SQRT(dd);
-  h := ((-p2 + sqrtD) / 2); 
+  
+  h := ((-p2 - sqrtD) / 2);
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
     rootCount := rootCount + 1;
   END_IF
   
-  h := ((-p2 - sqrtD) / 2);
+  h := ((-p2 + sqrtD) / 2); 
   IF h >= 0
   THEN
     roots[rootCount+1] := h;
