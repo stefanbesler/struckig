@@ -104,6 +104,9 @@
                                   <a href="../../Struckig/Struckig/Integrate.html" title="Integrate" class="">Integrate</a>
                                 </li>
                                 <li class="">
+                                  <a href="../../Struckig/Struckig/IOtg.html" title="IOtg" class="">IOtg</a>
+                                </li>
+                                <li class="">
                                   <a href="../../Struckig/Struckig/Math/Ceil.html" title="Ceil" class="">Ceil</a>
                                 </li>
                                 <li class="">
@@ -117,6 +120,9 @@
                                 </li>
                                 <li class="">
                                   <a href="../../Struckig/Struckig/Math/Power2.html" title="Power2" class="">Power2</a>
+                                </li>
+                                <li class="">
+                                  <a href="../../Struckig/Struckig/Otg1.html" title="Otg1" class="">Otg1</a>
                                 </li>
                                 <li class="">
                                   <a href="../../Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html" title="PositionExtremaDesc" class="">PositionExtremaDesc</a>
@@ -154,10 +160,13 @@
             <article class="content wrap" id="_content" data-uid="Struckig.Otg">
 <h1 id="otg">Otg</h1>
 
+<div class="implements"><h5>Implements</h5>
+<div><a class="xref" href="IOtg.html">Struckig.IOtg</a></div>
+</div>
 <h6><strong>Namespace</strong>: <a class="xref" href="Otg.html">Struckig</a></h6>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">{attribute 'conditionalshow_all_locals'}
-FUNCTION_BLOCK Otg (
+FUNCTION_BLOCK Otg IMPLEMENTS Struckig.IOtg (
  CycleTime : LREAL,
  Dofs : INT,
  Enabled : ARRAY[0..ParameterList.MaxDoFs] OF BOOL,
@@ -328,18 +337,8 @@ FUNCTION_BLOCK Otg (
 <td style="text-align: left;"></td>
 </tr>
 <tr>
-<td style="text-align: left;"><a name="Duration"></a>Duration</td>
-<td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
 <td style="text-align: left;"><a name="CurrentTime"></a>CurrentTime</td>
 <td style="text-align: left;">LREAL</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr>
-<td style="text-align: left;"><a name="State"></a>State</td>
-<td style="text-align: left;"><a class="xref" href="_DataTypes/TrajectoryState.html">Struckig.TrajectoryState</a></td>
 <td style="text-align: left;"></td>
 </tr>
 </tbody>
@@ -386,6 +385,17 @@ FUNCTION_BLOCK Otg (
 </tr>
 </tbody>
 </table>
+<h3 id="properties">Properties</h3>
+<p><a name="Duration"></a></p>
+<h4 id="Struckig.Otg.Duration" data-uid="Struckig.Otg.Duration">Duration</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">PROPERTY Duration : LREAL
+</code></pre>
+<p><a name="State"></a></p>
+<h4 id="Struckig.Otg.State" data-uid="Struckig.Otg.State">State</h4>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">PROPERTY State : TrajectoryState
+</code></pre>
 <h3 id="methods">Methods</h3>
 <p><a name="AbortErrorId"></a></p>
 <h4 id="Struckig.Otg.AbortErrorId" data-uid="Struckig.Otg.AbortErrorId">AbortErrorId</h4>
@@ -480,6 +490,12 @@ METHOD AtTime (
 <h4 id="Struckig.Otg.Calculate" data-uid="Struckig.Otg.Calculate">Calculate</h4>
 <h5 class="decalaration">Declaration</h5>
 <pre><code class="lang-st">METHOD PRIVATE Calculate () : TrajectoryErrorCode
+</code></pre>
+<p><a name="Cyclic"></a></p>
+<h4 id="Struckig.Otg.Cyclic" data-uid="Struckig.Otg.Cyclic">Cyclic</h4>
+<p>This method simply calls the body of the function block</p>
+<h5 class="decalaration">Declaration</h5>
+<pre><code class="lang-st">METHOD Cyclic ()
 </code></pre>
 <p><a name="ErrorCode"></a></p>
 <h4 id="Struckig.Otg.ErrorCode" data-uid="Struckig.Otg.ErrorCode">ErrorCode</h4>
@@ -697,10 +713,10 @@ METHOD ValidateInput (
 </tr>
 </tbody>
 </table>
-<p><a name="velocityAtZero"></a></p>
-<h4 id="Struckig.Otg.velocityAtZero" data-uid="Struckig.Otg.velocityAtZero">velocityAtZero</h4>
+<p><a name="VelocityAtZero"></a></p>
+<h4 id="Struckig.Otg.VelocityAtZero" data-uid="Struckig.Otg.VelocityAtZero">VelocityAtZero</h4>
 <h5 class="decalaration">Declaration</h5>
-<pre><code class="lang-st">METHOD INTERNAL velocityAtZero (
+<pre><code class="lang-st">METHOD INTERNAL VelocityAtZero (
  v0 : LREAL,
  a0 : LREAL,
  j : LREAL) : LREAL

@@ -19,9 +19,15 @@ references:
 - uid: Struckig.Integrate
   name: Integrate
   href: reference/Struckig/Struckig/Integrate.html
+- uid: Struckig.IOtg
+  name: IOtg
+  href: reference/Struckig/Struckig/IOtg.html
 - uid: Struckig.Otg
   name: Otg
   href: reference/Struckig/Struckig/Otg.html
+- uid: Struckig.Otg1
+  name: Otg1
+  href: reference/Struckig/Struckig/Otg1.html
 - uid: Struckig.ParameterList
   name: ParameterList
   href: reference/Struckig/ParameterList.html
