@@ -24,7 +24,7 @@ jobs:
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
-          files: archive/test/**/TcUnit_xUnit_results.xml
+          files: archive/tests/**/TcUnit_xUnit_results.xml
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
