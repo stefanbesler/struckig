@@ -75,6 +75,9 @@ otg();
 
 ![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
 
+Note: Struckig supports motions with multiple degree of freedoms with the Otg function block. If you need to use only 1 degree of freedom you can also
+utilize the specialized function block `Otg1`. The latter function block uses single variables instead of arrays, which simplifies the usage a bit.
+
 
 
 
