@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="IOtg" Id="{a184e1a6-99b6-45c5-a545-2299a1ba3b18}">
+    <Declaration><![CDATA[INTERFACE IOtg
+]]></Declaration>
+    <Method Name="AtTime" Id="{41ff6a58-6de0-469e-96e7-a3465afa5f08}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#AtTime
+{attribute 'conditionalshow'}
+METHOD AtTime
+VAR_INPUT
+  t : LREAL;
+  new_position : POINTER TO LREAL;
+  new_velocity : POINTER TO LREAL;
+  new_acceleration : POINTER TO LREAL;
+  new_section : POINTER TO INT;
+END_VAR]]></Declaration>
+    </Method>
+    <Method Name="Cyclic" Id="{d26b89d9-5de1-4e69-9c66-3af979a1e1cd}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Cyclic
+METHOD Cyclic
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="Duration" Id="{8c0faacd-e13f-4137-8331-68d5ef9a1818}">
+      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Get Name="Get" Id="{279d889d-1482-438e-9f3b-c645ec4f089b}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="ErrorCode" Id="{0747d31a-088e-4db7-8659-b8ffedb5c8af}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ErrorCode
+METHOD ErrorCode : TrajectoryErrorCode
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="ErrorMessage" Id="{5bc8e598-ec78-4926-954b-e195d3ae2641}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ErrorMessage
+METHOD ErrorMessage : STRING(255)
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="PassOutputToInput" Id="{61e0c36c-00ec-4db9-a11d-5554a17e34af}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#PassOutputToInput
+METHOD PassOutputToInput
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Method Name="Reset" Id="{b7e13521-212e-48c5-9aa8-793af451fe62}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Reset
+METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+    </Method>
+    <Property Name="State" Id="{1fb2d035-21ef-4a96-839a-0735632d15bd}">
+      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Get Name="Get" Id="{4517957e-24b2-4a50-b177-5b0b420d1e7f}">
+        <Declaration><![CDATA[]]></Declaration>
+      </Get>
+    </Property>
+    <Method Name="ValidateInput" Id="{a70dd70a-3498-48f3-b1ca-fd916bf70707}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ValidateInput
+{attribute 'conditionalshow'}
+METHOD ValidateInput : BOOL
+VAR_INPUT
+  currentState : BOOL;
+  targetState : BOOL;
+END_VAR]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

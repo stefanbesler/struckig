@@ -24,6 +24,20 @@ VAR
   d_extremasCount : INT;
   d_extremas : ARRAY[0..6] OF LREAL;
   indices : ARRAY[0..6] OF INT;
+  
+  h0, h0a, h0b, h0c, h1, h2 : LREAL;  
+  h3, jf : LREAL;  
+  ph1, ph2, ph3, ph4 : LREAL;
+  t : LREAL; 
+  orig, deriv : LREAL;
+  i : INT;
+  ph0, ph5, ph6, ph7 : LREAL;
+  h1a : LREAL;
+  p1, val_max : LREAL;
+  polynom, deriva, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
+  dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
+  tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
+  deriv_newton, res, p_val, val_new : LREAL;    
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -129,9 +143,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  h0, h0a, h0b, h0c, h1, h2 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[h1 := SQRT(ad_ad/(2*jMax_jMax) - ad*(aMax - a0)/(jMax_jMax) + (aMax*tf - vd)/jMax);
@@ -206,10 +217,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  h0a : LREAL;
-  h1, h2, h3, jf : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
@@ -285,9 +292,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR_INST
-  h0, h1, h2, h3 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU, Solution 1
@@ -331,14 +335,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  ph1, ph2, ph3, ph4 : LREAL;
-  polynom : ARRAY[0..4] OF LREAL;
-  t : LREAL; 
-  orig, deriv : LREAL;
-  h1 : LREAL;
-  i : INT;  
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (tf < MAX((-a0 + aMax)/jMax, 0.0) + MAX(aMax/jMax, 0.0))
@@ -452,9 +448,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  h0, h0a, h0b, h0c, h1, h2 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// a3 != 0
@@ -565,14 +558,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  h0, ph1, ph2, ph3, ph4 : LREAL;
-  polynom : ARRAY[0..3] OF LREAL; 
-  t : LREAL; 
-  orig, deriv : LREAL;
-  h1 : LREAL;
-  i : INT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Profile UDDU
@@ -682,12 +667,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  t, h0, h1, h2, h3, orig, deriv, jf: LREAL;
-  polynom : ARRAY[0..3] OF LREAL;
-  i : INT;
-  ph0, ph1, ph2, ph3, ph4, ph5, ph6, ph7 : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF (ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon)
@@ -1162,9 +1141,6 @@ VAR_IN_OUT
 END_VAR
 VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
-VAR
-  t, h0, h0b, h1a, h1, h2, h3: LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[h0 := ad_ad + 2*jMax*(a0*tf - vd);
@@ -1305,14 +1281,7 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR
 VAR
-  p1, ph1, ph2, ph3, ph4, ph5, val_max : LREAL;
-  polynom, deriv, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
-  dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
   rootCount, dd_tz_intervalCount : INT := -1;
-  t, tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
-  orig, deriv_newton, res, p_val, val_new : LREAL;
-  h1 : LREAL;
-  i : INT;  
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[tz_min := MAX(0.0, -a0/jMax);
@@ -1371,11 +1340,11 @@ ELSE
   polynom[4] := (a0*(7*a0_p4 - 10*a0_a0*ph3 - 4*a0*ph1 + 6*a0_a0*p1 + ph2))/(12*jMax_jMax*jMax*ph4);
   polynom[5] := (7*a0_p6 + af_p6 - 12*a0_p4*ph3 + 48*af_p3*jMax_jMax*g1 - 8*a0_p3*ph1 - 72*jMax_jMax*jMax*(jMax*g1*g1 + vd_vd*vd + 2*af*g1*vd) - 6*af_p4*jMax*vd + 36*af_af*jMax_jMax*vd_vd + 9*a0_p4*p1 + 3*a0_a0*ph2)/(144*jMax_jMax*jMax_jMax*ph4);
   
-  Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriv));
-  Roots.PolyDeri(ADR(deriv), 4, out:=ADR(dderiv));
+  Roots.PolyMonicDeri(ADR(polynom), 5, out:=ADR(deriva));
+  Roots.PolyDeri(ADR(deriva), 4, out:=ADR(dderiv));
   
   // Solve 4th order derivative analytically
-  Roots.SolveQuartMonic(ADR(deriv[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
+  Roots.SolveQuartMonic(ADR(deriva[1]), 4, rootCount:=d_extremasCount, roots:=d_extremas);
   
   tz_current := tz_min;
   BubbleSortLreal(data:=ADR(d_extremas), d_extremasCount, indicesSorted:=ADR(indices));
@@ -1387,7 +1356,7 @@ ELSE
       CONTINUE;
     END_IF
   
-    orig := Roots.PolyEval(ADR(deriv), 4, tz);
+    orig := Roots.PolyEval(ADR(deriva), 4, tz);
     IF (ABS(orig) > Constants.Tolerance) THEN
       tz := tz - orig / Roots.PolyEval(ADR(dderiv), 3, tz);
     END_IF
@@ -1484,8 +1453,8 @@ ELSE
   polynom[5] := (a0*(11*a0_p4 + ph4 - 10*a0_p3*ph5 - 6*a0_a0*ph1 + 4*a0*ph2))/(12*jMax_jMax*jMax_jMax*jMax);
   polynom[6] := (11*a0_p6 - af_p6 - 12*a0_p5*ph5 - 48*af_p3*jMax_jMax*g1 - 9*a0_p4*ph1 + 72*jMax_jMax*jMax*(jMax*g1*g1 - vd_vd*vd - 2*af*g1*vd) - 6*af_p4*jMax*vd - 36*af_af*jMax_jMax*vd_vd + 8*a0_p3*ph2 + 3*a0_a0*ph4)/(144*jMax_jMax*jMax_jMax*jMax_jMax);
   
-  Roots.PolyMonicDeri(ADR(polynom), 6, out:=ADR(deriv));
-  Roots.PolyMonicDeri(ADR(deriv), 5, out:=ADR(dderiv));
+  Roots.PolyMonicDeri(ADR(polynom), 6, out:=ADR(deriva));
+  Roots.PolyMonicDeri(ADR(deriva), 5, out:=ADR(dderiv));
   Roots.SolveQuartMonic(ADR(dderiv[1]), 4, rootCount:=rootCount, roots:=root);
   
   tz_min := 0.0;
@@ -1507,7 +1476,7 @@ ELSE
       tz := tz - Roots.PolyEval(ADR(dderiv), 4, tz) / Roots.PolyEval(ADR(ddderiv), 3, tz);
     END_IF  
   
-    IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz) < 0)
+    IF (Roots.PolyEval(ADR(deriva), 5, dd_tz_current) * Roots.PolyEval(ADR(deriva), 5, tz) < 0)
     THEN
       dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current;
       dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz;
@@ -1518,7 +1487,7 @@ ELSE
       
   END_FOR
   
-  IF (Roots.PolyEval(ADR(deriv), 5, dd_tz_current) * Roots.PolyEval(ADR(deriv), 5, tz_max) < 0)
+  IF (Roots.PolyEval(ADR(deriva), 5, dd_tz_current) * Roots.PolyEval(ADR(deriva), 5, tz_max) < 0)
   THEN
     dd_tz_intervals[dd_tz_intervalCount+1, 0] := dd_tz_current; 
     dd_tz_intervals[dd_tz_intervalCount+1, 1] := tz_max;
@@ -1529,7 +1498,7 @@ ELSE
   tz_current := tz_min;
   FOR i:=0 TO dd_tz_intervalCount
   DO
-    tz := Roots.ShrinkInterval(ADR(deriv), 5, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
+    tz := Roots.ShrinkInterval(ADR(deriva), 5, dd_tz_intervals[i, 0], dd_tz_intervals[i, 1]);
     IF tz >= tz_max
     THEN
       CONTINUE;

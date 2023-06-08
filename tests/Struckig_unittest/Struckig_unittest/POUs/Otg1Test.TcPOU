@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="Otg1Test" Id="{8a6a17dd-e4ff-4937-8965-d44c2fc3cfa6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK Otg1Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[example06();]]></ST>
+    </Implementation>
+    <Method Name="example06" Id="{bedf579c-8582-4ecd-a670-db98a2696885}">
+      <Declaration><![CDATA[METHOD example06
+VAR_INST
+  otg1 : Struckig.Otg1(0.005) := (
+  
+    Synchronization := SynchronizationType.None,        
+    MaxVelocity :=          0.4,
+    MaxAcceleration :=      1.0,
+    MaxJerk :=              2.0,
+    CurrentPosition :=      0.0,
+    CurrentVelocity :=      0.0,
+    CurrentAcceleration :=  0.0,
+    TargetPosition :=       1.0,
+    TargetVelocity :=       0.0,
+    TargetAcceleration :=   0.0
+  );
+  	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-06');
+
+otg1();
+AssertEquals_LREAL(Expected := 3.394427191,
+             Actual := CheckCalculation(otg1),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

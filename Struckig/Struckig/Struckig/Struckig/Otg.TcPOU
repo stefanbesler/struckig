@@ -2,7 +2,7 @@
 <TcPlcObject Version="1.1.0.1">
   <POU Name="Otg" Id="{1c5850a2-5b12-4229-9d95-591ad970a07b}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
-FUNCTION_BLOCK Otg
+FUNCTION_BLOCK Otg IMPLEMENTS IOtg
 VAR_INPUT
   CycleTime : LREAL;
   Dofs : INT;
@@ -22,11 +22,11 @@ END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
-  Duration : LREAL;
   CurrentTime : LREAL;
-  State : TrajectoryState;  
 END_VAR
 VAR
+  _duration : LREAL;
+  _state : TrajectoryState;  
   _inputInitialized : BOOL := FALSE;
   _newSection : INT; //< not used in Struckig, ruckig pro feature
   _blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;  
@@ -51,6 +51,7 @@ VAR
   _currentPosition, _currentVelocity, _currentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
   _targetPosition, _targetVelocity, _targetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
   _maxVelocity, _maxAcceleration, _maxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  _new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
@@ -103,7 +104,7 @@ _currentVelocity := NewVelocity;
 _currentAcceleration := NewAcceleration;
 
 IF CurrentTime > Duration THEN
-  State := TrajectoryState.Idle;
+  _state := TrajectoryState.Idle;
 END_IF
 
 IF EnableAutoPropagate
@@ -121,7 +122,7 @@ VAR_IN_OUT CONSTANT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[State := TrajectoryState.Error;
+        <ST><![CDATA[_state := TrajectoryState.Error;
 _errorId := errorId;]]></ST>
       </Implementation>
     </Method>
@@ -215,7 +216,6 @@ VAR_INST
   found_profile : BOOL;
   limiting_dof : INT := -1; // The DoF that doesn't need step 2
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
-  new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   t_profile : LREAL;
   noneSynchronizationCount, phaseSychronizations, phaseOrNoneSychronizationCount : INT;
 END_VAR]]></Declaration>
@@ -283,7 +283,7 @@ END_FOR
 
 
 discrete_duration := (Discretization = DiscretizationType.discrete);
-found_synchronization := Synchronize(discrete_duration, MinDuration, Duration, limiting_dof);
+found_synchronization := Synchronize(discrete_duration, MinDuration, _duration, limiting_dof);
 IF NOT found_synchronization THEN
   Calculate := TrajectoryErrorCode.SynchronizationFailed;
   RETURN;
@@ -297,7 +297,7 @@ DO
     _profiles[dof] := _blocks[dof].Pmin;
     IF _blocks[dof].Tmin > Duration
     THEN
-      Duration := _blocks[dof].Tmin;
+      _duration := _blocks[dof].Tmin;
       limiting_dof := dof;
 		END_IF
 	END_IF
@@ -335,7 +335,7 @@ END_IF
 
 IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
-  IF IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, new_max_jerk) THEN
+  IF IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, _new_max_jerk) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO _dofsEnd DO
       IF NOT Enabled[dof] OR_ELSE dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase THEN
@@ -354,13 +354,13 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
           CASE p.JerkSigns
           OF
             ProfileJerkSigns.Uddu:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN
                 found_time_synchronization := FALSE;                        
               END_IF
           
             ProfileJerkSigns.Udud:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ProfileLimits.None, t_profile, new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ProfileLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN            
                 found_time_synchronization := FALSE;
               END_IF
@@ -370,13 +370,13 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
           CASE p.JerkSigns
           OF
             ProfileJerkSigns.Uddu:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN
                 found_time_synchronization := FALSE;                        
               END_IF
           
             ProfileJerkSigns.Udud:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ProfileLimits.None, new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ProfileLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN            
                 found_time_synchronization := FALSE;
               END_IF
@@ -441,6 +441,27 @@ DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Cyclic" Id="{a39f478e-45fb-4ab5-b9ea-cf6200adb8cf}">
+      <Declaration><![CDATA[/// This method simply calls the body of the function block
+METHOD Cyclic
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Duration" Id="{22144de6-ee66-4178-90aa-defacda9f48a}">
+      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Get Name="Get" Id="{073fe594-e12c-4fbb-b64f-b5d845294008}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Duration := _duration;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="ErrorCode" Id="{df1856aa-ddd6-43c2-8198-e93b1db87e8a}">
       <Declaration><![CDATA[METHOD ErrorCode : TrajectoryErrorCode
 VAR_INPUT
@@ -477,11 +498,14 @@ VAR_INPUT
   cycletime : LREAL;
   dofs : SINT;
 END_VAR
-VAR_INST
+VAR
   i : INT;
+  blockSize : UDINT := SIZEOF(Block)*SINT_TO_UDINT(dofs);
+  profileSize : UDINT :=  SIZEOF(ProfileDesc)*SINT_TO_UDINT(dofs);  
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^.Dofs := dofs;
+
 FOR i:=0 TO ParameterList.MaxDoFs
 DO
   Enabled[i] := i < dofs;
@@ -682,9 +706,20 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[State := TrajectoryState.Busy;]]></ST>
+        <ST><![CDATA[_state := TrajectoryState.Busy;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="State" Id="{931901e4-919f-4a68-b320-69d9626c0ea2}">
+      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Get Name="Get" Id="{8fa2d4b4-f170-4b7b-a2e0-16c3339d4da1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := _state;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="Synchronize" Id="{190d7ca7-bc21-4bc2-982d-9be9e1cca821}">
       <Declaration><![CDATA[METHOD INTERNAL Synchronize : BOOL
 VAR_INPUT
@@ -919,12 +954,12 @@ DO
     RETURN;
   END_IF
   
-  IF (currentState AND_THEN ((a0 > 0 AND_THEN velocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (a0 < 0 AND_THEN velocityAtZero(v0, a0, -MaxJerk[i]) < vMin)))
+  IF (currentState AND_THEN ((a0 > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (a0 < 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin)))
   THEN
     RETURN;
 	END_IF
   
-  IF (targetState AND_THEN ((af < 0 AND_THEN velocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (af > 0 AND_THEN velocityAtZero(vf, af, -MaxJerk[i]) < vMin)))
+  IF (targetState AND_THEN ((af < 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (af > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin)))
   THEN
     RETURN;
 	END_IF
@@ -939,8 +974,8 @@ END_IF
 ValidateInput := TRUE;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="velocityAtZero" Id="{c17f4a08-90ee-4adc-b921-495797f60094}">
-      <Declaration><![CDATA[METHOD INTERNAL velocityAtZero : LREAL
+    <Method Name="VelocityAtZero" Id="{c17f4a08-90ee-4adc-b921-495797f60094}">
+      <Declaration><![CDATA[METHOD INTERNAL VelocityAtZero : LREAL
 VAR_INPUT
   v0 : LREAL;
   a0 : LREAL;
@@ -948,7 +983,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[velocityAtZero := v0 + (a0 * a0)/(2 * j);]]></ST>
+        <ST><![CDATA[VelocityAtZero := v0 + (a0 * a0)/(2 * j);]]></ST>
       </Implementation>
     </Method>
   </POU>

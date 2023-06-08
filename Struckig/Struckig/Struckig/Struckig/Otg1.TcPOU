@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="Otg1" Id="{9885581d-fa47-4155-a97e-9f730ee0a51b}" SpecialFunc="None">
+    <Declaration><![CDATA[{attribute 'conditionalshow_all_locals'}
+FUNCTION_BLOCK Otg1 IMPLEMENTS IOtg
+VAR_INPUT
+  CycleTime : LREAL;
+  ControlInterface : ControlInterfaceType := ControlInterfaceType.Position; //< The default position interface controls the full kinematic state.
+  Synchronization : SynchronizationType := SynchronizationType.TimeSync; //< Synchronization behavior of multiple DoFs
+  PerDofControlInterface : ControlInterfaceType; //< Per-DoF control interface (overwrites global ControlInterface)
+  PerDofSynchronization :  SynchronizationType; //< Per-DoF synchronization (overwrites global Synchronization)
+  Discretization : DiscretizationType; //< Whether the duration should be a discrete multiple of the control cycle (off by default)
+  CurrentPosition, CurrentVelocity, CurrentAcceleration : LREAL; //< Current state
+  TargetPosition, TargetVelocity, TargetAcceleration : LREAL; //< Target state
+  MaxVelocity, MaxAcceleration, MaxJerk : LREAL; //< Kinematic constraints
+  MinVelocity, MinAcceleration : LREAL; //< Optional kindematic constraints
+  MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
+  EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
+END_VAR
+VAR_OUTPUT
+  NewPosition, NewVelocity, NewAcceleration : LREAL;
+  NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
+  CurrentTime : LREAL;
+END_VAR
+VAR
+  _otg : Otg(0,0);
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[_otg.PerDofControlInterface[0] := PerDofControlInterface;
+_otg.PerDofSynchronization[0] := PerDofSynchronization;
+_otg.Discretization := Discretization;
+_otg.CurrentPosition[0] := CurrentPosition;
+_otg.CurrentVelocity[0] := CurrentVelocity;
+_otg.CurrentAcceleration[0] := CurrentAcceleration;
+_otg.TargetPosition[0] := TargetPosition;
+_otg.TargetVelocity[0] := TargetVelocity;
+_otg.TargetAcceleration[0] := TargetAcceleration;
+_otg.MaxVelocity[0] := MaxVelocity;
+_otg.MaxAcceleration[0] := MaxAcceleration;
+_otg.MaxJerk[0] := MaxJerk;
+_otg.MinVelocity[0] := MinVelocity;
+_otg.MinAcceleration[0] := MinAcceleration;
+_otg.MinDuration := MinDuration;
+_otg.EnableAutoPropagate := EnableAutoPropagate;
+
+_otg(CycleTime := CycleTime,
+     Dofs := 1,
+     ControlInterface := ControlInterface,
+     Synchronization := Synchronization);
+     
+NewPosition := _otg.NewPosition[0];
+NewVelocity := _otg.NewVelocity[0];
+NewAcceleration := _otg.NewAcceleration[0];
+CurrentTime := _otg.CurrentTime;
+
+]]></ST>
+    </Implementation>
+    <Method Name="AtTime" Id="{a520beb5-151c-42d0-b2df-d1a48984d915}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#AtTime
+{attribute 'conditionalshow'}
+METHOD AtTime
+VAR_INPUT
+  t : LREAL;
+  new_position : POINTER TO LREAL;
+  new_velocity : POINTER TO LREAL;
+  new_acceleration : POINTER TO LREAL;
+  new_section : POINTER TO INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg.AtTime(t, new_position, new_velocity, new_acceleration, new_section);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Cyclic" Id="{222cfd84-0828-4551-b3bf-cdb6fa696da0}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Cyclic
+METHOD Cyclic
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Duration" Id="{c500a90d-2d0a-4395-8368-a7e5a4ac6445}">
+      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Get Name="Get" Id="{4d73abcd-1d4b-4970-898c-c561217a1ac1}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Duration := _otg.Duration;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ErrorCode" Id="{d66ae977-1948-45e1-af4d-d17d8482ba05}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ErrorCode
+METHOD ErrorCode : TrajectoryErrorCode
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ErrorCode := _otg.ErrorCode();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ErrorMessage" Id="{cf0cfe69-ca56-489c-9f3b-08d7e760c4e8}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ErrorMessage
+METHOD ErrorMessage : STRING(255)
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ErrorMessage := _otg.ErrorMessage();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="FB_init" Id="{b7cb1bcc-2fba-472d-8488-be869d5cd5c0}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  cycletime : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg.FB_init(bInitRetains, bInCopyCode, cycletime, 1);
+THIS^.CycleTime := cycletime;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="PassOutputToInput" Id="{d24bcd13-2f63-4f99-8654-eee02ba9397a}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#PassOutputToInput
+METHOD PassOutputToInput
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg.PassOutputToInput();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{f6006d6a-8fe6-4e6f-b876-0bd4c55c24d1}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Reset
+METHOD Reset
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg.Reset();]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="State" Id="{b5ac2802-49ba-47cc-be5c-251e2733bfd0}">
+      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Get Name="Get" Id="{1e97f762-4d10-4dd6-8a07-2ee620b245a0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[State := _otg.State;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="ValidateInput" Id="{6d9acfaa-b45e-458e-bbca-53ad7d22ebed}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ValidateInput
+{attribute 'conditionalshow'}
+METHOD ValidateInput : BOOL
+VAR_INPUT
+  currentState : BOOL;
+  targetState : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateInput := _otg.ValidateInput(currentState, targetState);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

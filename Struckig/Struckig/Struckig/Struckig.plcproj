@@ -56,6 +56,9 @@
     <Compile Include="Struckig\Integrate.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\IOtg.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Math\BubbleSortLreal.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -81,6 +84,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Math\Cbrt.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Otg1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Position\PositionStep1.TcPOU">

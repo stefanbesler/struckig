@@ -3,13 +3,13 @@
   <POU Name="CheckCalculation" Id="{7705c60f-b3f4-4b53-bef5-2ced749a7c74}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION CheckCalculation : LREAL
 VAR_INPUT
-  otg : REFERENCE TO Struckig.Otg;
+  otg : Struckig.IOtg;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[REPEAT 
-  otg();
+  otg.Cyclic();
   otg.PassOutputToInput();
-UNTIL otg.State <> Struckig.TrajectoryState.busy END_REPEAT
+UNTIL otg.State <> Struckig.TrajectoryState.Busy END_REPEAT
 
 CheckCalculation := otg.Duration;]]></ST>
     </Implementation>
