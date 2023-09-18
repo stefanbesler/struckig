@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - 'documentation/**'
+      - 'docs/**'
       - 'Struckig/**'
   pull_request:
   workflow_dispatch:
@@ -19,8 +19,9 @@ jobs:
           username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
           password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
           filepath: "."
+          doc-folder: "docs"
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: archive/documentation/html
+          publish_dir: archive/docs/html
