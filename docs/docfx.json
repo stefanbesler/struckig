@@ -21,7 +21,9 @@
     "dest": "html",
     "fileMetadataFiles": [],
     "template": [
-      "statictoc", "template"
+      "default",
+      "modern",
+      "template"
     ],
     "postProcessors": [],
     "markdownEngineName": "markdig",
