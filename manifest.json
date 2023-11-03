@@ -1,5 +1,4 @@
 {
-  "homepages": [],
   "source_base_path": "C:/jenkins/workspace/jobs/doc/docs",
   "xrefmap": "xrefmap.yml",
   "files": [
@@ -11,7 +10,6 @@
           "relative_path": "images/installation_addlibrary.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -22,7 +20,6 @@
           "relative_path": "images/installation_addlibrary2.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -33,7 +30,6 @@
           "relative_path": "images/installation_libraryrepository.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -44,7 +40,6 @@
           "relative_path": "images/installation_plc.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -55,7 +50,6 @@
           "relative_path": "images/installation_plc2.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -66,7 +60,6 @@
           "relative_path": "images/installation_project.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -77,7 +70,6 @@
           "relative_path": "images/installation_twincatxae.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -88,7 +80,6 @@
           "relative_path": "images/synchronization_phase_vs_time.png"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -96,11 +87,9 @@
       "source_relative_path": "index.md",
       "output": {
         ".html": {
-          "relative_path": "index.html",
-          "hash": "ouWu+p2h++I/SnxGeZSs2A/wcCUoklXSExGzpjEczuo="
+          "relative_path": "index.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -108,11 +97,9 @@
       "source_relative_path": "reference/Struckig/ParameterList.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/ParameterList.html",
-          "hash": "JF7OD4uFat3XYzoK6EidqdznZ9qAlL66aRU4PQaYyu8="
+          "relative_path": "reference/Struckig/ParameterList.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -120,23 +107,9 @@
       "source_relative_path": "reference/Struckig/Struckig/IOtg.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/IOtg.html",
-          "hash": "8iu847r6o0YXKsmafl1Lftmq9rGSGBe4YGf5OZy/134="
+          "relative_path": "reference/Struckig/Struckig/IOtg.html"
         }
       },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Integrate.md",
-      "output": {
-        ".html": {
-          "relative_path": "reference/Struckig/Struckig/Integrate.html",
-          "hash": "cWsDsogV4DFK0eER9KMgvW6/mPv7PcG+K7eJMVLvn2A="
-        }
-      },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -144,11 +117,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Math/Ceil.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Ceil.html",
-          "hash": "IRf2GK88NAo8OAgntS7mhOUzRyMCCl0qetjp+u31RT4="
+          "relative_path": "reference/Struckig/Struckig/Math/Ceil.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -156,11 +127,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Math/Clamp.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Clamp.html",
-          "hash": "R3eU3MebHUagQApFMa7xeODar/JAwuCB2Z5kqZGXeEw="
+          "relative_path": "reference/Struckig/Struckig/Math/Clamp.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -168,47 +137,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Math/Fmod.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Fmod.html",
-          "hash": "idjzMFN2cRwssG3kHfa9+2S6pKml/9VBV/xRyrWZOYs="
+          "relative_path": "reference/Struckig/Struckig/Math/Fmod.html"
         }
       },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Power.md",
-      "output": {
-        ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Power.html",
-          "hash": "BLrTUP8jYkzpXVE7t8zYy7iqRqJi4pZOkswTH/BYmYE="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Power2.md",
-      "output": {
-        ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Power2.html",
-          "hash": "Cd57rDGxy8cp3wvjiR/98NFHRYz6RaxpOzeuLH2W/iY="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Roots.md",
-      "output": {
-        ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Roots.html",
-          "hash": "ySSILCE9j1HU+Yv9OTqoAV44mjSeaEcKPp8FA7tXz8c="
-        }
-      },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -216,11 +147,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Otg.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Otg.html",
-          "hash": "+/Ybyfbekz2AFzppDPCX8jW1ME01BzhPe3lQLqY8cio="
+          "relative_path": "reference/Struckig/Struckig/Otg.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -228,11 +157,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Otg1.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Otg1.html",
-          "hash": "hBpD5+gmCsw24C3Q4zLAAsOYDapx5icnMfR+aGWHaVI="
+          "relative_path": "reference/Struckig/Struckig/Otg1.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -240,11 +167,9 @@
       "source_relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html",
-          "hash": "QFJScQ+v185Za3Co+lpnIZoTu+a0Nvh+E/1vbXiEZaI="
+          "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -252,11 +177,9 @@
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.html",
-          "hash": "NBM6TbB5vn3yYDVOEX2KufLJmeT71WDANRrka98uZOY="
+          "relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -264,11 +187,9 @@
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.html",
-          "hash": "n/zhGG5PvClZUrSMljIkey2f5By2ohUs4QqhAEkf1zo="
+          "relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -276,11 +197,9 @@
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.html",
-          "hash": "vaYKkMMV1M1fjN12vOOsuz21l6TWSj5c3gjjpYMlrtM="
+          "relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -288,11 +207,9 @@
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.html",
-          "hash": "x6Jlmiq/9Bf1lf4pjj3dWfFmOebb+aYWIXuWTD9XMpc="
+          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -300,11 +217,35 @@
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.html",
-          "hash": "S8dGi0shRU9qahTmw52wAMEBucEejSz86e+gdMUG7TM="
+          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.html"
         }
       },
-      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "reference/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "reference/toc.html"
+        },
+        ".json": {
+          "relative_path": "reference/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
       "version": ""
     },
     {
@@ -315,11 +256,9 @@
       "source_relative_path": "userguide/installation.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/installation.html",
-          "hash": "mDtb/dtdSSRuiXIZzUplC/gk0DD952kDv98HPcE+2sI="
+          "relative_path": "userguide/installation.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -327,11 +266,9 @@
       "source_relative_path": "userguide/introduction.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/introduction.html",
-          "hash": "SmoPaukbyHvB4ZFZBHh1zrvmYw8nxs34KxIO4csYwsU="
+          "relative_path": "userguide/introduction.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -339,11 +276,9 @@
       "source_relative_path": "userguide/license.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/license.html",
-          "hash": "Z9BXC5AGZNR0F2EXf+Z03F6dYtmQvz/xrpxl01XsAtc="
+          "relative_path": "userguide/license.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -351,11 +286,9 @@
       "source_relative_path": "userguide/notices.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/notices.html",
-          "hash": "phUj9aNhbN5bJjOh3pYfaXV6yqlIpA5d9zJs0/adGqo="
+          "relative_path": "userguide/notices.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -363,11 +296,9 @@
       "source_relative_path": "userguide/single_axis_trajectory.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/single_axis_trajectory.html",
-          "hash": "lTUytOHht39jft9DaYOIqneupVpgUr7GTx6ulrwOaiU="
+          "relative_path": "userguide/single_axis_trajectory.html"
         }
       },
-      "is_incremental": false,
       "version": ""
     },
     {
@@ -375,59 +306,25 @@
       "source_relative_path": "userguide/synchronized_trajectory.md",
       "output": {
         ".html": {
-          "relative_path": "userguide/synchronized_trajectory.html",
-          "hash": "urxEWu+CX+IjP1Pjp/AOF/lShjFcrGRd8uOOrNYYVgI="
+          "relative_path": "userguide/synchronized_trajectory.html"
         }
       },
-      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "userguide/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/toc.html"
+        },
+        ".json": {
+          "relative_path": "userguide/toc.json"
+        }
+      },
       "version": ""
     }
   ],
-  "incremental_info": [
-    {
-      "status": {
-        "can_incremental": false,
-        "details": "Cannot build incrementally because last build info is missing.",
-        "incrementalPhase": "build",
-        "total_file_count": 0,
-        "skipped_file_count": 0,
-        "full_build_reason_code": "NoAvailableBuildCache"
-      },
-      "processors": {
-        "ConceptualDocumentProcessor": {
-          "can_incremental": false,
-          "incrementalPhase": "build",
-          "total_file_count": 24,
-          "skipped_file_count": 0
-        },
-        "ResourceDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        },
-        "TocDocumentProcessor": {
-          "can_incremental": false,
-          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
-          "incrementalPhase": "build",
-          "total_file_count": 0,
-          "skipped_file_count": 0
-        }
-      }
-    },
-    {
-      "status": {
-        "can_incremental": false,
-        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
-        "incrementalPhase": "postProcessing",
-        "total_file_count": 0,
-        "skipped_file_count": 0
-      },
-      "processors": {}
-    }
-  ],
-  "version_info": {},
   "groups": [
     {
       "xrefmap": "xrefmap.yml"

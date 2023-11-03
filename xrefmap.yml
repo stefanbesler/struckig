@@ -16,9 +16,6 @@ references:
 - uid: Struckig.Fmod
   name: Fmod
   href: reference/Struckig/Struckig/Math/Fmod.html
-- uid: Struckig.Integrate
-  name: Integrate
-  href: reference/Struckig/Struckig/Integrate.html
 - uid: Struckig.IOtg
   name: IOtg
   href: reference/Struckig/Struckig/IOtg.html
@@ -34,15 +31,6 @@ references:
 - uid: Struckig.PositionExtremaDesc
   name: PositionExtremaDesc
   href: reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html
-- uid: Struckig.Power
-  name: Power
-  href: reference/Struckig/Struckig/Math/Power.html
-- uid: Struckig.Power2
-  name: Power2
-  href: reference/Struckig/Struckig/Math/Power2.html
-- uid: Struckig.Roots
-  name: Roots
-  href: reference/Struckig/Struckig/Math/Roots.html
 - uid: Struckig.SynchronizationType
   name: SynchronizationType
   href: reference/Struckig/Struckig/_DataTypes/SynchronizationType.html
