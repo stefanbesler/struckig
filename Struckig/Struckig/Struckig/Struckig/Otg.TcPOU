@@ -374,13 +374,13 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
           CASE p.JerkSigns
           OF
             ProfileJerkSigns.Uddu:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ProfileLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN
                 found_time_synchronization := FALSE;                        
               END_IF
           
             ProfileJerkSigns.Udud:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ProfileLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ReachedLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN            
                 found_time_synchronization := FALSE;
               END_IF
@@ -390,13 +390,13 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
           CASE p.JerkSigns
           OF
             ProfileJerkSigns.Uddu:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ProfileLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN
                 found_time_synchronization := FALSE;                        
               END_IF
           
             ProfileJerkSigns.Udud:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ProfileLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ReachedLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
               THEN            
                 found_time_synchronization := FALSE;
               END_IF

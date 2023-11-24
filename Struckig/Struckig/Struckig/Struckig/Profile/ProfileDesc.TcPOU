@@ -5,7 +5,7 @@
 {attribute 'hide'}
 FUNCTION_BLOCK ProfileDesc
 VAR_INPUT
-  Limits : ProfileLimits;
+  Limits : ReachedLimits;
   Direction : ProfileDirection;
   JerkSigns : ProfileJerkSigns;
   
@@ -23,7 +23,7 @@ END_VAR]]></Declaration>
 METHOD CheckForVelocity : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSigns;
-  limits : ProfileLimits;  
+  limits : ReachedLimits;  
   jf : LREAL;
   aMax : LREAL;
   aMin : LREAL;  
@@ -51,7 +51,7 @@ DO
 END_FOR
 
 
-IF limits = ProfileLimits.Acc0
+IF limits = ReachedLimits.Acc0
 THEN
   IF t[1] < Constants.DoubleEpsilon
   THEN
@@ -111,7 +111,7 @@ CheckForVelocity := ABS(v[7] - vf) < Constants.VelocityPrecision
 METHOD CheckForVelocityWithTiming : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSigns;
-  limits : ProfileLimits;  
+  limits : ReachedLimits;  
   jf : LREAL;
   aMax : LREAL;
   aMin : LREAL;  
@@ -208,7 +208,7 @@ END_IF
 METHOD CheckVel : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSigns;    
-  limits : ProfileLimits;
+  limits : ReachedLimits;
   jf : LREAL;
   vMax : LREAL;
   vMin : LREAL;  
@@ -240,14 +240,14 @@ DO
   t_sum[i+1] := t_sum[i] + t[i+1];  
 END_FOR
 
-IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel THEN
+IF limits = ReachedLimits.Acc0Acc1Vel OR_ELSE limits = ReachedLimits.Acc0Vel OR_ELSE limits = ReachedLimits.Acc1Vel OR_ELSE limits = ReachedLimits.Vel THEN
   IF (t[3] < Constants.DoubleEpsilon) 
   THEN
     RETURN;                    
   END_IF
 END_IF
 
-IF limits = ProfileLimits.Acc0 OR_ELSE limits = ProfileLimits.Acc0Acc1
+IF limits = ReachedLimits.Acc0 OR_ELSE limits = ReachedLimits.Acc0Acc1
 THEN
   IF (t[1] < Constants.DoubleEpsilon) 
   THEN
@@ -255,7 +255,7 @@ THEN
   END_IF
 END_IF
 
-IF limits = ProfileLimits.Acc1 OR_ELSE limits = ProfileLimits.Acc0Acc1
+IF limits = ReachedLimits.Acc1 OR_ELSE limits = ReachedLimits.Acc0Acc1
 THEN
   IF (t[5] < Constants.DoubleEpsilon)
   THEN
@@ -300,7 +300,7 @@ DO
   v[i+1] := v[i] + t[i] * (a[i] + t[i] * j[i] / 2);
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * (a[i] / 2 + t[i] * j[i] / 6));
 
-  IF limits = ProfileLimits.Acc0Acc1Vel OR_ELSE limits = ProfileLimits.Acc0Acc1 OR_ELSE limits = ProfileLimits.Acc0Vel OR_ELSE limits = ProfileLimits.Acc1Vel OR_ELSE limits = ProfileLimits.Vel
+  IF limits = ReachedLimits.Acc0Acc1Vel OR_ELSE limits = ReachedLimits.Acc0Acc1 OR_ELSE limits = ReachedLimits.Acc0Vel OR_ELSE limits = ReachedLimits.Acc1Vel OR_ELSE limits = ReachedLimits.Vel
   THEN
     IF i = 2
     THEN
@@ -310,13 +310,13 @@ DO
   
   IF setLimits
   THEN
-    IF limits = ProfileLimits.Acc1
+    IF limits = ReachedLimits.Acc1
     THEN
       IF i = 2
       THEN
         a[3] := aMin;
       END_IF
-    ELSIF limits = ProfileLimits.Acc0Acc1
+    ELSIF limits = ReachedLimits.Acc0Acc1
     THEN
       CASE i
       OF
@@ -358,7 +358,7 @@ CheckVel := ABS(p[7] - pf) < Constants.PositionPrecision
       <Declaration><![CDATA[METHOD CheckWithTiming : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSigns;    
-  limits : ProfileLimits;
+  limits : ReachedLimits;
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;
@@ -376,7 +376,7 @@ CheckWithTiming := CheckVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin, setLi
       <Declaration><![CDATA[METHOD CheckWithTiming2 : BOOL
 VAR_INPUT
   jerkSigns : ProfileJerkSigns;    
-  limits : ProfileLimits;
+  limits : ReachedLimits;
   tf : LREAL;
   jf : LREAL;
   vMax : LREAL;

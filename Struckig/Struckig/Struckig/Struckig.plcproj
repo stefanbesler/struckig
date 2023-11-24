@@ -107,7 +107,7 @@
     <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSigns.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\ProfileLimits.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ReachedLimits.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Math\Roots.TcPOU">
