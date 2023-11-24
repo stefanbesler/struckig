@@ -15,7 +15,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/pantor/ruckig/blob/17248bce0bb17c22b66d686ab3b01d662b74c669/docs\reference\Struckig\Struckig\_DataTypes\TrajectoryState.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/pantor/ruckig/blob/517a97f5304acae432c453a6d454568843b4b762/docs\reference\Struckig\Struckig\_DataTypes\TrajectoryState.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -88,9 +88,11 @@
 <h4 class="section">Fields</h4><dl class="parameters">
 <a name="Undefined"></a><dt><code>Undefined = 0</code>
 <dd><p></p></dd><a name="Idle"></a><dt><code>Idle = 1</code>
-<dd><p></p></dd><a name="Busy"></a><dt><code>Busy = 2</code>
-<dd><p></p></dd><a name="Error"></a><dt><code>Error = 3</code>
-<dd><p></p></dd></dl>
+<dd><p>The trajectory has reached its final position. For trajectories with a target velocity or/and a target acceleration
+there will still be movement.</p></dd><a name="Busy"></a><dt><code>Busy = 2</code>
+<dd><p>The trajectory is calculated normally</p></dd><a name="Error"></a><dt><code>Error = 3</code>
+<dd><p>An error occured, use [ErrorCode](Struckig.IOtg#ErrorCode) and [ErrorMessage](Struckig.IOtg#ErrorMessage) to get more
+information about the error.</p></dd></dl>
 
 </article>
 
