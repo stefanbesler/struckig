@@ -16,7 +16,7 @@
     <Implicit_KindOfTask>{23a670f4-2417-4917-907e-f416baaaec8d}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{58f48993-e77e-4536-bff7-b0d34be7acb8}</Implicit_Jitter_Distribution>
     <LibraryReferences>{604fede9-7b95-4a71-aceb-a9436682d543}</LibraryReferences>
-    <ProjectVersion>0.9.0.0</ProjectVersion>
+    <ProjectVersion>0.9.3.0</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PlcTask.TcTTO">
@@ -102,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderReference Include="Struckig">
-      <DefaultResolution>Struckig, 0.9.0.0 (Stefan Besler)</DefaultResolution>
+      <DefaultResolution>Struckig, 0.9.3.0 (Stefan Besler)</DefaultResolution>
       <Namespace>Struckig</Namespace>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
@@ -130,7 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Struckig">
-      <Resolution>Struckig, 0.9.0.0 (Stefan Besler)</Resolution>
+      <Resolution>Struckig, 0.9.3.0 (Stefan Besler)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="Tc3_Module">
       <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>

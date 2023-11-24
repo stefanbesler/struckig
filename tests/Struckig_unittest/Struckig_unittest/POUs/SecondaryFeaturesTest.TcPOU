@@ -10,18 +10,23 @@ VAR
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_AtTime();
+Test_AtTime1();
+Test_AtTime1_2();
+Test_DurationDiscretization();
 Test_EnabledDof();
 Test_FirstStateAtTime();
 Test_IndependentMinDurations();
-Test_InvalidInput();
+Test_IndependentMinDurations_1();
+Test_InputInitalized();
 Test_InputValidation();
+Test_InvalidInput();
 Test_PerDofSettings();
 Test_PerDofSettings_1();
 Test_PhaseSynchronization();
 Test_PositionExtrema();
-Test_DurationDiscretization();
-Test_InputInitalized();
-Test_IndependentMinDurations_1();]]></ST>
+
+
+]]></ST>
     </Implementation>
     <Method Name="Test_AtTime" Id="{8747a524-a952-4b4b-9b1d-d5709bbaaf50}">
       <Declaration><![CDATA[METHOD Test_AtTime
@@ -74,6 +79,93 @@ values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-9, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_AtTime1" Id="{6b9a2765-c384-4cf1-ad5e-1b9d190a840a}">
+      <Declaration><![CDATA[METHOD Test_AtTime1
+VAR_INST
+  otg : Struckig.Otg(0.005, 1) := (
+    CurrentPosition :=     [ 0.0 ],
+    CurrentVelocity :=     [ 0.0 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition :=      [ 1.0 ],
+    TargetVelocity :=      [ 0.0 ],
+    TargetAcceleration :=  [ 0.0 ],
+    MaxVelocity :=         [ 1.0 ],
+    MaxAcceleration :=     [ 1.0 ],
+    MaxJerk :=             [ 1.0 ],
+	EnableAutoPropagate := FALSE
+  ); 
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+  newPosition, newVelocity, newAcceleration : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('AtTime1');
+
+
+otg();
+
+AssertEquals_INT(Expected := Struckig.TrajectoryState.Busy, Actual := otg.State, Message := '');
+AssertEquals_LREAL(3.1748, otg.Duration, 1E-4, Message:='');
+
+otg.AtTime1(0, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(otg.CurrentPosition[0], newPosition, 1E-5, Message:='');
+
+otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(0.5, newPosition, 1E-4, Message:='');
+
+otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(1.0, newPosition, 1E-4, Message:='');
+AssertEquals_LREAL(0.0, newVelocity, 1E-4, Message:='');
+AssertEquals_LREAL(0.0, newAcceleration, 1E-4, Message:='');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_AtTime1_2" Id="{96218005-af63-4d3f-bab2-ab982daff044}">
+      <Declaration><![CDATA[METHOD Test_AtTime1_2
+VAR_INST
+  otg : Struckig.Otg(0.005, 2) := (
+    CurrentPosition :=     [ 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, 1.0 ],
+    TargetVelocity :=      [ 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0 ],
+    MaxJerk :=             [ 1.0, 1.0 ],
+	EnableAutoPropagate := FALSE
+  ); 
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+  newPosition, newVelocity, newAcceleration : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('AtTime1_2');
+
+
+otg();
+
+AssertEquals_INT(Expected := Struckig.TrajectoryState.Busy, Actual := otg.State, Message := '');
+AssertEquals_LREAL(3.1748, otg.Duration, 1E-4, Message:='');
+
+newPosition := 5;
+otg.AtTime1(0, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
+
+otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
+
+otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration);
+AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
+
 
 TEST_FINISHED();]]></ST>
       </Implementation>

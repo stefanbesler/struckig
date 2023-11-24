@@ -6,8 +6,16 @@
 TYPE TrajectoryState :
 (
   Undefined,
+  
+  /// The trajectory has reached its final position. For trajectories with a target velocity or/and a target acceleration
+  /// there will still be movement.
   Idle,
+  
+  /// The trajectory is calculated normally
   Busy,
+  
+  /// An error occured, use [ErrorCode](Struckig.IOtg#ErrorCode) and [ErrorMessage](Struckig.IOtg#ErrorMessage) to get more
+  /// information about the error.
   Error
 );
 END_TYPE

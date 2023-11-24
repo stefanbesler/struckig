@@ -70,6 +70,20 @@ END_VAR]]></Declaration>
         <ST><![CDATA[_otg.AtTime(t, new_position, new_velocity, new_acceleration, new_section);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="AtTime1" Id="{1d694463-453a-4697-a59a-2e7b7e0e0ffd}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#AtTime1
+{attribute 'conditionalshow'}
+METHOD AtTime1
+VAR_INPUT
+  t : LREAL;
+  new_position : REFERENCE TO LREAL;
+  new_velocity : REFERENCE TO LREAL;
+  new_acceleration : REFERENCE TO LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_otg.AtTime1(t, new_position, new_velocity, new_acceleration);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Cyclic" Id="{222cfd84-0828-4551-b3bf-cdb6fa696da0}">
       <Declaration><![CDATA[/// \copydoc Struckig.Otg#Cyclic
 METHOD Cyclic

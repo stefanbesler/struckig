@@ -4,8 +4,8 @@
     <Declaration><![CDATA[{attribute 'qualified_only'}
 TYPE TrajectoryErrorCode :
 (
-	Undefined := 0,
-  InvalidInput,
+  Undefined := 0,
+  InvalidInput, //< Error in the input parameter
   SynchronizationFailed,
   CalculateStep1Failed
 );

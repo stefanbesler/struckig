@@ -15,6 +15,17 @@ VAR_INPUT
   new_section : POINTER TO INT;
 END_VAR]]></Declaration>
     </Method>
+    <Method Name="AtTime1" Id="{0d37baef-f79a-4d1b-9576-a2376af604c9}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#AtTime1
+{attribute 'conditionalshow'}
+METHOD AtTime1
+VAR_INPUT
+  t : LREAL;
+  new_position : REFERENCE TO LREAL;
+  new_velocity : REFERENCE TO LREAL;
+  new_acceleration : REFERENCE TO LREAL;
+END_VAR]]></Declaration>
+    </Method>
     <Method Name="Cyclic" Id="{d26b89d9-5de1-4e69-9c66-3af979a1e1cd}">
       <Declaration><![CDATA[/// \copydoc Struckig.Otg#Cyclic
 METHOD Cyclic

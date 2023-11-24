@@ -127,7 +127,8 @@ _errorId := errorId;]]></ST>
       </Implementation>
     </Method>
     <Method Name="AtTime" Id="{bf1093a4-cb3c-415c-bc2d-e44ec3ea9553}">
-      <Declaration><![CDATA[{attribute 'conditionalshow'}
+      <Declaration><![CDATA[/// Get the kinematic state at a given time
+{attribute 'conditionalshow'}
 METHOD AtTime
 VAR_INPUT
   t : LREAL;
@@ -152,7 +153,7 @@ END_VAR]]></Declaration>
   RETURN;
 END_IF
 
-new_section := 0;
+//new_section := 0;
 FOR dof:=0 TO _dofsEnd DO
   p REF= _profiles[dof];
 
@@ -206,6 +207,25 @@ FOR dof:=0 TO _dofsEnd DO
 
   Integrate(t_diff, p.p[index], p.v[index], p.a[index], p.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
 END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AtTime1" Id="{d543d75f-6e83-4f40-aeff-b8c350fca5a8}">
+      <Declaration><![CDATA[/// Get the kinematic state and current section at a given time without vectors for a single DoF.
+/// Using this method is only allowed for DoF = 1, for higher degrees of freedom use
+/// [AtTime](xref:Struckig.Otg#AtTime). Using this method for DoF > 0 will not yield any result
+{attribute 'conditionalshow'}
+METHOD AtTime1
+VAR_INPUT
+  t : LREAL;
+  new_position : REFERENCE TO LREAL;
+  new_velocity : REFERENCE TO LREAL;
+  new_acceleration : REFERENCE TO LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF _dofs = 1
+THEN
+  AtTime(t, ADR(new_position), ADR(new_velocity), ADR(new_acceleration), 0);
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
