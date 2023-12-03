@@ -986,7 +986,7 @@ DO
 
 END_FOR
 
-IF _dt <= 0 AND_THEN Discretization <> DiscretizationType.Continuous
+IF CycleTime <= 0 AND_THEN Discretization <> DiscretizationType.Continuous
 THEN
   RETURN;
 END_IF
