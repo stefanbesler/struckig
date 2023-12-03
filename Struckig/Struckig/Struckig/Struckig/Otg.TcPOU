@@ -802,9 +802,9 @@ THEN
       CONTINUE;
 		END_IF
     
-    remainder := Fmod(possible_t_sync, _dt); // in [0, delta_time)
+    remainder := Fmod(possible_t_sync, CycleTime); // in [0, delta_time)
     IF remainder > 0 THEN
-      possible_t_sync := possible_t_sync + _dt - remainder;
+      possible_t_sync := possible_t_sync + CycleTime - remainder;
     END_IF     
   END_FOR
 END_IF
