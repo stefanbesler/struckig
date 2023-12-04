@@ -2,8 +2,8 @@ name: Deploy
 on:
   workflow_dispatch:
 jobs:
-  Fetch:
-    name: Fetch from GitHub 
+  Deploy:
+    name: Twinpack
     runs-on: windows-latest
     steps:
       - uses: robinraju/release-downloader@v1.8
