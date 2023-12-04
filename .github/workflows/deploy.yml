@@ -1,0 +1,12 @@
+name: Deploy
+on:
+  workflow_dispatch:
+jobs:
+  Fetch:
+    name: Fetch from GitHub 
+    runs-on: windows-latest
+    steps:
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          latest: true
+          fileName: "*.library"
