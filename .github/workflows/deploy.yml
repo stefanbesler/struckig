@@ -10,7 +10,7 @@ jobs:
         with:
           latest: true
           fileName: "*.library"
-      - uses: Zeugwerk/twinpack-action@HEAD
+      - uses: Zeugwerk/twinpack-action@v0.4.0
         with:
           username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
           password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}       
