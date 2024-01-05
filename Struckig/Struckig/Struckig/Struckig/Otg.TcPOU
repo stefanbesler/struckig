@@ -56,6 +56,7 @@ VAR
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
   _errorId : INT;
+  _errorMessage : STRING(255);
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[NewCalculation := FALSE;
@@ -123,6 +124,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[_state := TrajectoryState.Error;
+_errorMessage := message;
 _errorId := errorId;]]></ST>
       </Implementation>
     </Method>
@@ -241,10 +243,8 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[SetBusy(TRUE);
-
-IF NOT ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE)
+IF NOT ValidateInputOrAbort(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE)
 THEN
-  AbortErrorId(TrajectoryErrorCode.InvalidInput, '');
   RETURN;
 END_IF
 
@@ -497,17 +497,23 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE _errorId
-OF
-  TrajectoryErrorCode.CalculateStep1Failed: ErrorMessage := 'Trajectory generation failed in step1';
-  TrajectoryErrorCode.InvalidInput: ErrorMessage := 'Trajectory-generation invalid input';
-  TrajectoryErrorCode.SynchronizationFailed: ErrorMessage := 'Trajectory-generation synchronization failed';
+        <ST><![CDATA[IF _errorMessage = ''
+THEN
+  CASE _errorId
+  OF
+    TrajectoryErrorCode.CalculateStep1Failed: ErrorMessage := 'Trajectory generation failed in step1';
+    TrajectoryErrorCode.InvalidInput: ErrorMessage := 'Trajectory-generation invalid input';
+    TrajectoryErrorCode.SynchronizationFailed: ErrorMessage := 'Trajectory-generation synchronization failed';
+  ELSE
+    IF State = TrajectoryState.Error
+    THEN
+      ErrorMessage := 'Unknown error';
+    END_IF
+  END_CASE
 ELSE
-  IF State = TrajectoryState.Error
-  THEN
-    ErrorMessage := 'Unknown error';
-	END_IF
-END_CASE]]></ST>
+  ErrorMessage := _errorMessage;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="FB_init" Id="{b602f7a7-4307-4d87-b5fe-4e3716d1e55b}">
@@ -861,7 +867,7 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ValidateInput" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
+    <Method Name="ValidateInput" Id="{8698d64e-d7f2-4ed2-944f-63b3faed7548}">
       <Declaration><![CDATA[/// To check that *Struckig* is able to generate a trajectory before the actual calculation step,
 /// ```st
 /// ruckig.ValidateInput(input, currentState: FALSE, targetState: TRUE);
@@ -878,6 +884,23 @@ END_FOR
 /// its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.
 {attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
+VAR_INPUT
+  checkCurrentStateWithinLimits : BOOL;
+  checkTargetStateWithinLimits : BOOL;
+END_VAR
+VAR
+  stateMem : TrajectoryState;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stateMem := _state;
+ValidateInput := ValidateInputOrAbort(checkCurrentStateWithinLimits, checkTargetStateWithinLimits);
+_state := stateMem;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateInputOrAbort" Id="{e330fefe-c82d-4b3b-9555-b849f32242ef}">
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#ValidateInput
+{attribute 'conditionalshow'}
+METHOD PROTECTED ValidateInputOrAbort : BOOL
 VAR_INPUT
   checkCurrentStateWithinLimits : BOOL;
   checkTargetStateWithinLimits : BOOL;
@@ -900,12 +923,14 @@ DO
   IF MaxJerk[i] <> MaxJerk[i] OR_ELSE // isnan
      MaxJerk[i] < Constants.Minimum
   THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum jerk limit should be larger than zero');
     RETURN;
 	END_IF
 
   IF MaxAcceleration[i] <> MaxAcceleration[i] OR_ELSE // isnan
      MaxAcceleration[i] <= Constants.Minimum
-  THEN    
+  THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum acceleration limit should be larger than zero'); 
     RETURN;
   END_IF
 
@@ -913,18 +938,21 @@ DO
   IF aMin <> aMin OR_ELSE // isnan
      aMin >= -Constants.Minimum
   THEN    
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum acceleration limit should be smaller than zero'); 
     RETURN;
   END_IF
   
   a0 := CurrentAcceleration[i];
   IF a0 <> a0 // isnan
   THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current acceleration should be a valid number'); 
     RETURN;
 	END_IF
   
   af := TargetAcceleration[i];
   IF af <> af // isnan
   THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target acceleration should be a valid number'); 
     RETURN;
 	END_IF  
   
@@ -932,11 +960,13 @@ DO
   THEN
     IF a0 > MaxAcceleration[i]
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current acceleration exceeds its maximum acceleration limit'); 
       RETURN;
     END_IF
     
     IF  a0 < aMin
     THEN 
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current acceleration undercuts its minimum acceleration limit'); 
       RETURN;
     END_IF    
   END_IF
@@ -945,24 +975,28 @@ DO
   THEN
     IF af > MaxAcceleration[i]
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target acceleration exceeds its maximum acceleration limit'); 
       RETURN;
     END_IF
  
     IF af < aMin
     THEN
-      RETURN;    
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target acceleration undercuts its minimum acceleration limit'); 
+      RETURN;  
 		END_IF
   END_IF
   
   v0 := CurrentVelocity[i];
   IF v0 <> v0// isnan
   THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current velocity should be a valid number'); 
     RETURN;
 	END_IF
   
   vf := TargetVelocity[i];
   IF vf <> vf // isnan
   THEN
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target velocity should be a valid number'); 
     RETURN;
 	END_IF
   
@@ -972,17 +1006,20 @@ DO
   
     IF CurrentPosition[i] <> CurrentPosition[i] //isnan
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current position should be a valid number'); 
       RETURN;
     END_IF
     
     IF TargetPosition[i] <> TargetPosition[i] //isnan
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target position should be a valid number'); 
       RETURN;
     END_IF    
     
     IF MaxVelocity[i] <> MaxVelocity[i] OR_ELSE // isnan
        MaxVelocity[i] <= Constants.Minimum      
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum velocity limit should be larger than zero'); 
       RETURN;
 		END_IF
     
@@ -990,6 +1027,7 @@ DO
     IF vMin <> vMin OR_ELSE // isnan
        vMin >= -Constants.Minimum      
     THEN
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum velocity limit should be smaller than zero'); 
       RETURN;
     END_IF
     
@@ -997,11 +1035,13 @@ DO
     THEN
       IF v0 > MaxVelocity[i]
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current velocity exceeds its maximum velocity limit'); 
         RETURN;
       END_IF
 
       IF v0 < vMin
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'current velocity undercuts its minimum velocity limit'); 
         RETURN;
       END_IF
     END_IF
@@ -1010,11 +1050,13 @@ DO
     THEN
       IF vf > MaxVelocity[i]
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target velocity exceeds its maximum velocity limit'); 
         RETURN;
       END_IF
       
       IF vf < vMin
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'target velocity undercuts its minimum velocity limit'); 
         RETURN;
 			END_IF
     END_IF
@@ -1023,11 +1065,13 @@ DO
     THEN
       IF a0 > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will exceed its maximum velocity limit'); 
         RETURN;
 			END_IF
       
       IF a0 < 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will undercut its minimum velocity limit'); 
         RETURN;
 			END_IF      
     END_IF
@@ -1036,11 +1080,13 @@ DO
     THEN
       IF af < 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will exceed its maximum velocity limit'); 
         RETURN;
 			END_IF
       
       IF af > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin
       THEN
+        AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will undercut its minimum velocity limit'); 
         RETURN;
 			END_IF  
     END_IF    
@@ -1050,10 +1096,11 @@ END_FOR
 
 IF CycleTime <= 0 AND_THEN Discretization <> DiscretizationType.Continuous
 THEN
+  AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Cycle time parameter should be larger than zero'); 
   RETURN;
 END_IF
 
-ValidateInput := TRUE;]]></ST>
+ValidateInputOrAbort := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="VelocityAtZero" Id="{c17f4a08-90ee-4adc-b921-495797f60094}">

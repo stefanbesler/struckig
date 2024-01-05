@@ -501,58 +501,58 @@ END_VAR
       <Implementation>
         <ST><![CDATA[TEST('InputValidation');
 
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.MaxJerk[1] := nan;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 otg.MaxJerk[1] := 1.0;
 otg.CurrentPosition[1] := nan;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 otg.CurrentPosition[1] := 1.0;
 otg.MaxAcceleration[1] := -1.0;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 otg.MaxAcceleration[1] := 1.0;
 otg.TargetVelocity[1] := 1.3;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=FALSE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=FALSE);
 AssertTrue(result, '');
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 otg.TargetVelocity[1] := 0.3;
 otg.CurrentVelocity[0] := 2.0;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=FALSE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=FALSE);
 AssertTrue(result, '');
-result := otg.ValidateInput(currentState:=TRUE, targetState:=FALSE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=TRUE, checkTargetStateWithinLimits:=FALSE);
 AssertFalse(result, '');
-result := otg.ValidateInput(currentState:=TRUE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=TRUE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.CurrentVelocity[0] := 1.0;
 otg.CurrentAcceleration[0] := -1.0;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
-result := otg.ValidateInput(currentState:=TRUE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=TRUE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.CurrentVelocity[0] := 1.0;
 otg.CurrentAcceleration[0] := 1.0;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
-result := otg.ValidateInput(currentState:=TRUE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=TRUE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 otg.CurrentVelocity[0] := 0.72;
 otg.CurrentAcceleration[0] := 0.72;
-result := otg.ValidateInput(currentState:=TRUE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=TRUE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.CurrentVelocity[0] := 0;
@@ -563,17 +563,17 @@ otg.TargetVelocity[0] := 0;
 otg.TargetVelocity[1] := 0.72;
 otg.TargetAcceleration[0] := 0;
 otg.TargetAcceleration[1] := 0.72;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.TargetVelocity[1] := 1.0;
 otg.TargetAcceleration[1] := 1.0;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertTrue(result, '');
 
 otg.TargetVelocity[1] := 1.0;
 otg.TargetAcceleration[1] := -0.0001;
-result := otg.ValidateInput(currentState:=FALSE, targetState:=TRUE);
+result := otg.ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE);
 AssertFalse(result, '');
 
 TEST_FINISHED();
@@ -606,6 +606,7 @@ VAR_INST
     
 END_VAR
 VAR
+  nan : LREAL := SQRT(-1);  
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
@@ -622,7 +623,10 @@ otg.TargetVelocity[2] := 0.0;
 
 otg();
 
-AssertEquals_INT(otg.State, Struckig.TrajectoryState.error, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('target velocity exceeds its maximum velocity limit', otg.ErrorMessage(), message:='');
+
 AssertFalse(otg.NewCalculation, message:='ruckig.NewCalculation should be false');
 
 otg.TargetVelocity[0] := 0.2;
@@ -631,8 +635,67 @@ otg.TargetVelocity[2] := 0.8;
 
 otg();
 
-AssertEquals_INT(otg.State, Struckig.TrajectoryState.busy, message:='State should be busy');
+AssertEquals_INT(Struckig.TrajectoryState.Busy, otg.State, message:='State should be busy');
 AssertTrue(otg.NewCalculation, message:='ruckig.NewCalculation should be true');
+
+
+otg.MaxJerk[0] := 1.0;
+otg.MaxJerk[1] := nan;
+
+otg();
+
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('maximum jerk limit should be larger than zero', otg.ErrorMessage(), message:='');
+
+
+otg.MaxJerk[0] := 1.0;
+otg.MaxJerk[1] := 1.0;
+otg.CurrentPosition[0] := 1.0;
+otg.CurrentPosition[1] := nan;
+
+otg();
+
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('current position should be a valid number', otg.ErrorMessage(), message:='');
+
+otg.CurrentPosition[0] := 1.0;
+otg.CurrentPosition[1] := 1.0;
+otg.MaxAcceleration[0] := 1.0;
+otg.MaxAcceleration[1] := -11.0;
+
+otg();
+
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('maximum acceleration limit should be larger than zero', otg.ErrorMessage(), message:='');
+
+
+
+otg.MaxAcceleration[0] := 1.0;
+otg.MaxAcceleration[1] := 1.0;
+otg.MaxVelocity[0] := 1.0;
+otg.MaxVelocity[1] := -1.0;
+
+otg();
+
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('maximum velocity limit should be larger than zero', otg.ErrorMessage(), message:='');
+
+
+otg.MaxVelocity[0] := 1.0;
+otg.MaxVelocity[1] := 1.0;
+otg.TargetVelocity[0] := 0;
+otg.TargetVelocity[0] := 1.3;
+
+otg();
+
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
+AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
+AssertEquals_STRING('target velocity exceeds its maximum velocity limit', otg.ErrorMessage(), message:='');
+
 
 TEST_FINISHED();]]></ST>
       </Implementation>

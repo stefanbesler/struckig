@@ -180,7 +180,7 @@ VAR_INPUT
   checkTargetStateWithinLimits : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ValidateInput := _otg.ValidateInput(checkCurrentStateWithinLimits, checkTargetStateWithinLimits);]]></ST>
+        <ST><![CDATA[_otg.ValidateInput(checkCurrentStateWithinLimits, checkTargetStateWithinLimits);]]></ST>
       </Implementation>
     </Method>
   </POU>
