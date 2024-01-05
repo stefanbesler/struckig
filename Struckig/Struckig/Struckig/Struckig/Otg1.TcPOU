@@ -48,6 +48,9 @@ _otg(CycleTime := CycleTime,
      ControlInterface := ControlInterface,
      Synchronization := Synchronization);
      
+CurrentPosition := _otg.CurrentPosition[0];
+CurrentVelocity := _otg.CurrentVelocity[0];
+CurrentAcceleration := _otg.CurrentAcceleration[0];     
 NewPosition := _otg.NewPosition[0];
 NewVelocity := _otg.NewVelocity[0];
 NewAcceleration := _otg.NewAcceleration[0];
@@ -173,11 +176,11 @@ END_VAR
 {attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
 VAR_INPUT
-  currentState : BOOL;
-  targetState : BOOL;
+  checkCurrentStateWithinLimits : BOOL;
+  checkTargetStateWithinLimits : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ValidateInput := _otg.ValidateInput(currentState, targetState);]]></ST>
+        <ST><![CDATA[ValidateInput := _otg.ValidateInput(checkCurrentStateWithinLimits, checkTargetStateWithinLimits);]]></ST>
       </Implementation>
     </Method>
   </POU>

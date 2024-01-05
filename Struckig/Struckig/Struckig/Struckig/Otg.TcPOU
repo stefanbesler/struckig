@@ -242,7 +242,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[SetBusy(TRUE);
 
-IF NOT ValidateInput(currentState:=FALSE, targetState:=TRUE)
+IF NOT ValidateInput(checkCurrentStateWithinLimits:=FALSE, checkTargetStateWithinLimits:=TRUE)
 THEN
   AbortErrorId(TrajectoryErrorCode.InvalidInput, '');
   RETURN;
@@ -879,8 +879,8 @@ END_FOR
 {attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
 VAR_INPUT
-  currentState : BOOL;
-  targetState : BOOL;
+  checkCurrentStateWithinLimits : BOOL;
+  checkTargetStateWithinLimits : BOOL;
 END_VAR
 VAR
   i, dofsEnd : INT;
@@ -917,25 +917,51 @@ DO
   END_IF
   
   a0 := CurrentAcceleration[i];
-  af := TargetAcceleration[i];
-  IF a0 <> a0 OR_ELSE af <> af // isnan
+  IF a0 <> a0 // isnan
   THEN
     RETURN;
 	END_IF
   
-  IF currentState AND_THEN (a0 > MaxAcceleration[i] OR_ELSE a0 < aMin)
+  af := TargetAcceleration[i];
+  IF af <> af // isnan
   THEN
     RETURN;
+	END_IF  
+  
+  IF checkCurrentStateWithinLimits
+  THEN
+    IF a0 > MaxAcceleration[i]
+    THEN
+      RETURN;
+    END_IF
+    
+    IF  a0 < aMin
+    THEN 
+      RETURN;
+    END_IF    
   END_IF
   
-  IF targetState AND_THEN (af > MaxAcceleration[i] OR_ELSE af < aMin)
+  IF checkTargetStateWithinLimits 
   THEN
-    RETURN;
+    IF af > MaxAcceleration[i]
+    THEN
+      RETURN;
+    END_IF
+ 
+    IF af < aMin
+    THEN
+      RETURN;    
+		END_IF
   END_IF
   
   v0 := CurrentVelocity[i];
+  IF v0 <> v0// isnan
+  THEN
+    RETURN;
+	END_IF
+  
   vf := TargetVelocity[i];
-  IF v0 <> v0 OR_ELSE vf <> vf // isnan
+  IF vf <> vf // isnan
   THEN
     RETURN;
 	END_IF
@@ -944,45 +970,81 @@ DO
   IF (ci = ControlInterfaceType.Position)
   THEN
   
-    IF CurrentPosition[i] <> CurrentPosition[i] OR_ELSE //isnan
-       TargetPosition[i] <> TargetPosition[i] //isnan
+    IF CurrentPosition[i] <> CurrentPosition[i] //isnan
     THEN
       RETURN;
     END_IF
+    
+    IF TargetPosition[i] <> TargetPosition[i] //isnan
+    THEN
+      RETURN;
+    END_IF    
     
     IF MaxVelocity[i] <> MaxVelocity[i] OR_ELSE // isnan
        MaxVelocity[i] <= Constants.Minimum      
     THEN
       RETURN;
 		END_IF
+    
+    vMin := SEL(MinVelocity[i] = 0, MinVelocity[i], -MaxVelocity[i]);
+    IF vMin <> vMin OR_ELSE // isnan
+       vMin >= -Constants.Minimum      
+    THEN
+      RETURN;
+    END_IF
+    
+    IF checkCurrentStateWithinLimits 
+    THEN
+      IF v0 > MaxVelocity[i]
+      THEN
+        RETURN;
+      END_IF
+
+      IF v0 < vMin
+      THEN
+        RETURN;
+      END_IF
+    END_IF
+    
+    IF checkTargetStateWithinLimits
+    THEN
+      IF vf > MaxVelocity[i]
+      THEN
+        RETURN;
+      END_IF
+      
+      IF vf < vMin
+      THEN
+        RETURN;
+			END_IF
+    END_IF
+    
+    IF checkCurrentStateWithinLimits
+    THEN
+      IF a0 > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]
+      THEN
+        RETURN;
+			END_IF
+      
+      IF a0 < 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin
+      THEN
+        RETURN;
+			END_IF      
+    END_IF
+    
+    IF checkTargetStateWithinLimits
+    THEN
+      IF af < 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]
+      THEN
+        RETURN;
+			END_IF
+      
+      IF af > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin
+      THEN
+        RETURN;
+			END_IF  
+    END_IF    
   END_IF
-  
-  vMin := SEL(MinVelocity[i] = 0, MinVelocity[i] ,-MaxVelocity[i]);
-  IF vMin <> vMin OR_ELSE // isnan
-     vMin >= -Constants.Minimum      
-  THEN
-    RETURN;
-  END_IF
-  
-  IF (currentState AND_THEN (v0 > MaxVelocity[i] OR_ELSE v0 < vMin))
-  THEN
-    RETURN;
-  END_IF
-  
-  IF (targetState AND_THEN (vf > MaxVelocity[i] OR_ELSE vf < vMin))
-  THEN
-    RETURN;
-  END_IF
-  
-  IF (currentState AND_THEN ((a0 > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (a0 < 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin)))
-  THEN
-    RETURN;
-	END_IF
-  
-  IF (targetState AND_THEN ((af < 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]) OR_ELSE (af > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin)))
-  THEN
-    RETURN;
-	END_IF
 
 END_FOR
 

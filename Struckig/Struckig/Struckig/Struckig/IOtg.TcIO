@@ -78,8 +78,8 @@ END_VAR
 {attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
 VAR_INPUT
-  currentState : BOOL;
-  targetState : BOOL;
+  checkCurrentStateWithinLimits : BOOL;
+  checkTargetStateWithinLimits : BOOL;
 END_VAR]]></Declaration>
     </Method>
   </Itf>
