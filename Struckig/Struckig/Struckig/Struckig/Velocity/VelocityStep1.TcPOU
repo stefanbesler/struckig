@@ -155,6 +155,27 @@ END_VAR
       <Implementation>
         <ST><![CDATA[ValidProfileCount := -1;
 
+// Zero-limits special case
+IF THIS^.jMax = 0.0
+THEN
+  IF time_all_single_step(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax)
+  THEN
+    block.Pmin := validProfiles[0];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+    AddInterval(block.A, block.Pmin, block.Pmin);
+    IF ABS(a0) > Constants.DoubleEpsilon
+    THEN
+      block.A.Right := Constants.Infinity;
+    END_IF
+    
+    Get := TRUE;
+    RETURN; 
+	END_IF
+  
+  RETURN;  
+END_IF
+
+
 IF ABS(af) < Constants.DoubleEpsilon
 THEN
   // There is no blocked interval when af==0, so return after first found profile
@@ -278,6 +299,57 @@ THEN
     RETURN;
 	END_IF  
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_all_single_step" Id="{04e93f46-943a-4eb4-9824-8983b7feb007}">
+      <Declaration><![CDATA[METHOD PRIVATE time_all_single_step : BOOL
+VAR_IN_OUT
+  profile : ProfileDesc;
+END_VAR
+VAR_INPUT
+  aMax, aMin, jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(af - a0) > Constants.DoubleEpsilon
+THEN 
+  RETURN;
+END_IF
+    
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF ABS(a0) > Constants.DoubleEpsilon
+THEN
+
+  IF ABS(a0) > Constants.DoubleEpsilon
+  THEN
+    profile.t[3] := vd / a0;
+    IF profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
+    THEN
+      AddProfile(profile);
+      time_all_single_step := TRUE;
+      RETURN;
+    END_IF
+	END_IF
+
+ ELSE IF ABS(vd) < Constants.DoubleEpsilon
+ THEN
+    IF profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
+    THEN 
+      AddProfile(profile);
+      time_all_single_step := TRUE;
+      RETURN;
+  END_IF
+ END_IF
+END_IF
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_none" Id="{f88d49e0-16f5-403f-a899-55296e113bff}">

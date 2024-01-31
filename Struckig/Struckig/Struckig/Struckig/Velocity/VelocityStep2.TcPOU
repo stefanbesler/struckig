@@ -157,21 +157,25 @@ END_VAR
 END_IF
     
 // UD Solution 1/2
-h1 := 2*(af*tf - vd);
-profile.t[0] := h1/(af - a0);
-profile.t[1] := tf - profile.t[0];
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
-
-jf := Power2(a0 - af)/h1;
-IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, jf, aMax, aMin))
+IF ABS(af - a0) > Constants.DoubleEpsilon
 THEN
-  profile.pf := profile.p[7];
-  time_none := TRUE;
-END_IF]]></ST>
+  h1 := 2*(af*tf - vd);
+  profile.t[0] := h1/(af - a0);
+  profile.t[1] := tf - profile.t[0];
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+  
+  jf := Power2(a0 - af)/h1;
+  IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, jf, aMax, aMin))
+  THEN
+    profile.pf := profile.p[7];
+    time_none := TRUE;
+  END_IF
+END_IF
+]]></ST>
       </Implementation>
     </Method>
   </POU>

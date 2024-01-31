@@ -15,6 +15,7 @@ VAR
   targetPosVelAccTest : TargetPosVelAccTest;
   propagateTest : PropagateTest;
   otg1Test : Otg1Test;
+  zeroLimitsTest : ZeroLimitsTest;
   // generatedTest : GeneratedTest;
 END_VAR
 ]]></Declaration>

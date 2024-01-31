@@ -97,7 +97,10 @@ t[1] := 0.0;
 j[0] := 0.0;
 j[1] := 0.0;
 
-IF a0 > aMax
+IF jMax = 0 OR_ELSE aMax = 0 OR_ELSE aMin = 0
+THEN
+  RETURN; // Ignore braking for zero-limits
+ELSIF a0 > aMax
 THEN
   AccelerationBrake(v0, a0, vMax, vMin, aMax, aMin, jMax);
 ELSIF a0 < aMin
@@ -184,7 +187,10 @@ t[1] := 0.0;
 j[0] := 0.0;
 j[1] := 0.0;
 
-IF (a0 > aMax)
+IF jMax = 0
+THEN
+  RETURN; // Ignore braking for zero-limits
+ELSIF (a0 > aMax)
 THEN
   j[0] := -jMax;
   t[0] := (a0 - aMax)/jMax + Constants.BrakeEpsilon;

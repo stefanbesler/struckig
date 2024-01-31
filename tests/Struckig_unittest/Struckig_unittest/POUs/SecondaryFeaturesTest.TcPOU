@@ -646,7 +646,7 @@ otg();
 
 AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
 AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
-AssertEquals_STRING('maximum jerk limit should be larger than zero', otg.ErrorMessage(), message:='');
+AssertEquals_STRING('maximum jerk limit should be larger than or equal to zero', otg.ErrorMessage(), message:='');
 
 
 otg.MaxJerk[0] := 1.0;
@@ -669,7 +669,7 @@ otg();
 
 AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
 AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
-AssertEquals_STRING('maximum acceleration limit should be larger than zero', otg.ErrorMessage(), message:='');
+AssertEquals_STRING('maximum acceleration limit should be larger than or equal to zero', otg.ErrorMessage(), message:='');
 
 
 
@@ -682,7 +682,7 @@ otg();
 
 AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='State should be error');
 AssertEquals_INT(Struckig.TrajectoryErrorCode.InvalidInput, otg.ErrorCode(), message:='Invalid input error');
-AssertEquals_STRING('maximum velocity limit should be larger than zero', otg.ErrorMessage(), message:='');
+AssertEquals_STRING('maximum velocity limit should be larger than or equal to zero', otg.ErrorMessage(), message:='');
 
 
 otg.MaxVelocity[0] := 1.0;

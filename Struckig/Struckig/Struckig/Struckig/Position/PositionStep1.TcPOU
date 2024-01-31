@@ -20,7 +20,7 @@ VAR
   deriv : LREAL;
   t : LREAL;
   i : INT;
-  h0, h1, h2, h2_h2, h3, h5, h2_none, h3_acc0, h3_acc1, h0_acc0, h2_acc0, h0_acc1, h2_acc1 : LREAL;
+  h0, h1, h2, h2_h2, h3, h5, h2_none, h3_acc0, h3_acc1, h0_acc0, h2_acc0, h0_acc1, h2_acc1, q : LREAL;
   t_min, t_max, t_min_none, t_max_none, t_min_acc0, t_max_acc0, t_min_acc1, t_max_acc1 : LREAL;
   t_acc1, t_acc0 : LREAL;
   validProfiles : ARRAY[0..5] OF ProfileDesc; // Max 5 valid profiles + 1 spare for numerical issues
@@ -194,6 +194,28 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[validProfileCounter := -1;
+
+// Zero-limits special case
+IF _jMax = 0.0 OR_ELSE _aMax = 0.0 OR_ELSE _aMin = 0.0 
+THEN
+  IF time_all_single_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax) 
+  THEN
+    block.Pmin := validProfiles[0];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+    AddInterval(block.A, block.Pmin, block.Pmin);
+    
+    IF ABS(v0) > Constants.DoubleEpsilon OR_ELSE ABS(a0) > Constants.DoubleEpsilon
+    THEN
+      block.A.Right := Constants.Infinity;
+    END_IF
+    
+    Get := TRUE;
+    RETURN; 
+  END_IF
+  
+  RETURN;
+END_IF
+
 
 IF ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon
 THEN
@@ -818,6 +840,75 @@ DO
 		END_IF    
   END_IF
 END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_all_single_step" Id="{55ad35e0-a00f-4e02-8b7d-a7106d66f7c6}">
+      <Declaration><![CDATA[METHOD PRIVATE time_all_single_step : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin, jMax : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(af - a0) > Constants.DoubleEpsilon
+THEN
+  RETURN;
+END_IF
+
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF ABS(a0) > Constants.DoubleEpsilon
+THEN
+  q := 2*a0*pd + v0_v0;
+  IF q >= 0
+  THEN
+    q := SQRT(q);
+    
+    // Solution 1
+    profile.t[3] := (-v0 + q) / a0;
+    IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
+    THEN
+      AddProfile(profile);
+      time_all_single_step := TRUE;
+      RETURN;
+    END_IF  
+    
+    // Solution 2
+    profile.t[3] := -(v0 + q) / a0;
+    IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
+    THEN
+      AddProfile(profile);
+      time_all_single_step := TRUE;
+      RETURN;
+    END_IF
+  END_IF
+  
+ELSIF ABS(v0) > Constants.DoubleEpsilon
+THEN
+  profile.t[3] := pd / v0;
+  IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
+  THEN
+    AddProfile(profile);
+    time_all_single_step := TRUE;
+    RETURN;
+  END_IF
+  
+ELSIF ABS(pd) < Constants.DoubleEpsilon
+THEN 
+  IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
+  THEN
+    AddProfile(profile);
+    time_all_single_step := TRUE;
+    RETURN;
+  END_IF      
+END_IF
+
 ]]></ST>
       </Implementation>
     </Method>

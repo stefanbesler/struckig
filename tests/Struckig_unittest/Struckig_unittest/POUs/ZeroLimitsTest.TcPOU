@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="ZeroLimitsTest" Id="{ac7f32e5-ecad-400f-91b1-3253b77ac3df}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK ZeroLimitsTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_PositionInterface();
+Test_PositionInterfaceValidateInput();
+Test_PositionInterfaceValidateInput_1();
+Test_VelocityInterface();
+Test_VelocityInterface_1();
+Test_VelocityInterfaceValidateInput();
+
+]]></ST>
+    </Implementation>
+    <Method Name="Test_PositionInterface" Id="{0829a982-07ad-4ba6-bc32-d39a377d4344}">
+      <Declaration><![CDATA[METHOD Test_PositionInterface
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.2, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 0.0, 1.0, 0.0 ],
+    MaxJerk :=             [ 0.0, 1.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionInterface');
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='Trajectory working');
+AssertEquals_LREAL(5.0, otg.Duration, 1E-6, message:='Duration not met');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PositionInterfaceValidateInput" Id="{044f609b-7783-4629-890a-9966318434d9}">
+      <Declaration><![CDATA[METHOD Test_PositionInterfaceValidateInput
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ -0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 1.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.4, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.8, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 1.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 200.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 200.0, 0.0 ],
+    MaxJerk :=             [ 0.0, 200.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionInterfaceValidateInput');
+
+otg();
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='Trajectory failed');
+AssertEquals_STRING('Zero limits conflict in step 1', otg.ErrorMessage(), message:='');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PositionInterfaceValidateInput_1" Id="{d852fee9-6ec1-4b8e-92e4-d6c0dc952031}">
+      <Declaration><![CDATA[METHOD Test_PositionInterfaceValidateInput_1
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ -0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 1.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.3, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.8, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 1.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 1.0, 2.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 2.0, 0.0 ],
+    MaxJerk :=             [ 0.0, 2.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionInterfaceValidateInput_1');
+
+otg();
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='Trajectory failed');
+AssertEquals_STRING('Zero limits conflict with other degrees of freedom in time synchronization', otg.ErrorMessage(), message:='');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_VelocityInterface" Id="{3edded92-d937-44ce-85aa-dd12e001375b}">
+      <Declaration><![CDATA[METHOD Test_VelocityInterface
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := Struckig.ControlInterfaceType.Velocity,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ -0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 1.0, 0.0, 0.2 ],
+    TargetPosition :=      [ 0.4, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.9, 0.5, 0.4 ],
+    TargetAcceleration :=  [ 1.0, 0.0, 0.2 ],
+    MaxVelocity :=         [ 1.0, 2.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 2.0, 6.0 ],
+    MaxJerk :=             [ 1.0, 2.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_VelocityInterface');
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='Trajectory working');
+AssertEquals_LREAL(2.0, otg.Duration, 1E-6, message:='Duration not met');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_VelocityInterface_1" Id="{766c70c1-5d05-4be1-95cc-58fc2d2739c0}">
+      <Declaration><![CDATA[METHOD Test_VelocityInterface_1
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := Struckig.ControlInterfaceType.Velocity,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ -0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 1.0, 0.0, 0.2 ],
+    TargetPosition :=      [ 0.4, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.9, 0.5, 0.4 ],
+    TargetAcceleration :=  [ 1.0, 0.0, 0.2 ],
+    MaxVelocity :=         [ 1.0, 2.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 2.0, 6.0 ],
+    MaxJerk :=             [ 0.0, 2.0, 20.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_VelocityInterface_1');
+
+otg();
+AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='Trajectory working');
+AssertEquals_LREAL(1.1, otg.Duration, 1E-6, message:='Duration not met');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_VelocityInterfaceValidateInput" Id="{4ea7e036-398c-448b-8611-436225621c2e}">
+      <Declaration><![CDATA[METHOD Test_VelocityInterfaceValidateInput
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := Struckig.ControlInterfaceType.Velocity,
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ -0.2, 0.0, 0.0 ],
+    CurrentAcceleration := [ 1.0, 0.0, 0.2 ],
+    TargetPosition :=      [ 0.4, -3.0, 0.0 ],
+    TargetVelocity :=      [ 0.9, 0.5, 0.4 ],
+    TargetAcceleration :=  [ 1.0, 0.0, 0.2 ],
+    MaxVelocity :=         [ 1.0, 2.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 2.0, 6.0 ],
+    MaxJerk :=             [ 0.0, 2.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_VelocityInterfaceValidateInput');
+
+otg();
+AssertEquals_INT(Struckig.TrajectoryState.Error, otg.State, message:='Trajectory failed');
+AssertEquals_STRING('Zero limits conflict with other degrees of freedom in time synchronization', otg.ErrorMessage(), message:='');
+
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

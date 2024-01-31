@@ -7,7 +7,9 @@ TYPE TrajectoryErrorCode :
   Undefined := 0,
   InvalidInput, //< Error in the input parameter
   SynchronizationFailed,
-  CalculateStep1Failed
+  CalculateStep1Failed,
+  ZeroLimitsConflict,
+  ZeroLimitsConflictInSynchronization
 );
 END_TYPE
 ]]></Declaration>

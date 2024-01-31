@@ -231,7 +231,7 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Calculate" Id="{d4e77b2d-b7a2-4486-8e6b-9e101a6d8b8b}">
-      <Declaration><![CDATA[METHOD PRIVATE Calculate : TrajectoryErrorCode
+      <Declaration><![CDATA[METHOD PRIVATE Calculate
 VAR_INST
   dof, i : INT;
   p, p_limiting : REFERENCE TO ProfileDesc;
@@ -240,6 +240,7 @@ VAR_INST
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
   t_profile : LREAL;
   noneSynchronizationCount, phaseSychronizations, phaseOrNoneSychronizationCount : INT;
+  has_zero_limits : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[SetBusy(TRUE);
@@ -294,8 +295,15 @@ DO
   
   IF NOT found_profile
   THEN
-    Calculate := TrajectoryErrorCode.CalculateStep1Failed;
-    RETURN; 
+    has_zero_limits := (MaxAcceleration[dof] = 0.0 OR_ELSE _inp_min_acceleration[dof] = 0.0 OR_ELSE MaxJerk[dof] = 0.0);
+    IF has_zero_limits
+    THEN
+      AbortErrorId(TrajectoryErrorCode.ZeroLimitsConflict, '');
+      RETURN;
+    ELSE 
+      AbortErrorId(TrajectoryErrorCode.CalculateStep1Failed, '');      
+      RETURN;
+    END_IF
 	END_IF
 
   _independentMinDurations[dof] := _blocks[dof].Tmin;
@@ -304,9 +312,26 @@ END_FOR
 
 discrete_duration := (Discretization = DiscretizationType.discrete);
 found_synchronization := Synchronize(discrete_duration, MinDuration, _duration, limiting_dof);
-IF NOT found_synchronization THEN
-  Calculate := TrajectoryErrorCode.SynchronizationFailed;
-  RETURN;
+IF NOT found_synchronization
+THEN
+  has_zero_limits := FALSE;
+  FOR i:=0 TO _dofsEnd
+  DO
+    IF MaxAcceleration[dof] = 0.0 OR_ELSE _inp_min_acceleration[dof] = 0.0 OR_ELSE MaxJerk[dof] = 0.0
+    THEN
+      has_zero_limits := TRUE;
+      EXIT;
+    END_IF
+  END_FOR
+      
+  IF has_zero_limits
+  THEN
+    AbortErrorId(TrajectoryErrorCode.ZeroLimitsConflictInSynchronization, '');
+    RETURN;
+  ELSE
+    AbortErrorId(TrajectoryErrorCode.SynchronizationFailed, '');
+    RETURN;    
+	END_IF    
 END_IF
 
 // None Synchronization
@@ -456,7 +481,7 @@ DO
   IF NOT found_time_synchronization
   THEN
     AbortErrorId(TrajectoryErrorCode.SynchronizationFailed, '');
-    RETURN;  
+    RETURN;
   END_IF
 END_FOR]]></ST>
       </Implementation>
@@ -504,6 +529,9 @@ THEN
     TrajectoryErrorCode.CalculateStep1Failed: ErrorMessage := 'Trajectory generation failed in step1';
     TrajectoryErrorCode.InvalidInput: ErrorMessage := 'Trajectory-generation invalid input';
     TrajectoryErrorCode.SynchronizationFailed: ErrorMessage := 'Trajectory-generation synchronization failed';
+    TrajectoryErrorCode.ZeroLimitsConflict: ErrorMessage := 'Zero limits conflict in step 1';
+    TrajectoryErrorCode.ZeroLimitsConflictInSynchronization: ErrorMessage := 'Zero limits conflict with other degrees of freedom in time synchronization';
+
   ELSE
     IF State = TrajectoryState.Error
     THEN
@@ -839,7 +867,7 @@ DO
 		END_IF
 	END_FOR
   
-  IF is_blocked OR_ELSE possible_t_sync < Tmin
+  IF is_blocked OR_ELSE possible_t_sync < Tmin OR_ELSE possible_t_sync = Constants.Infinity
   THEN
     CONTINUE;
 	END_IF
@@ -921,24 +949,24 @@ FOR i:=0 TO dofsEnd
 DO
 
   IF MaxJerk[i] <> MaxJerk[i] OR_ELSE // isnan
-     MaxJerk[i] < Constants.Minimum
+     MaxJerk[i] < 0.0
   THEN
-    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum jerk limit should be larger than zero');
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum jerk limit should be larger than or equal to zero');
     RETURN;
 	END_IF
 
   IF MaxAcceleration[i] <> MaxAcceleration[i] OR_ELSE // isnan
-     MaxAcceleration[i] <= Constants.Minimum
+     MaxAcceleration[i] < 0.0
   THEN
-    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum acceleration limit should be larger than zero'); 
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum acceleration limit should be larger than or equal to zero'); 
     RETURN;
   END_IF
 
   aMin := SEL(MinAcceleration[i] = 0, MinAcceleration[i] ,-MaxAcceleration[i]);
   IF aMin <> aMin OR_ELSE // isnan
-     aMin >= -Constants.Minimum
+     aMin > 0
   THEN    
-    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum acceleration limit should be smaller than zero'); 
+    AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum acceleration limit should be smaller than or equal zero'); 
     RETURN;
   END_IF
   
@@ -1017,17 +1045,17 @@ DO
     END_IF    
     
     IF MaxVelocity[i] <> MaxVelocity[i] OR_ELSE // isnan
-       MaxVelocity[i] <= Constants.Minimum      
+       MaxVelocity[i] < 0.0      
     THEN
-      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum velocity limit should be larger than zero'); 
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum velocity limit should be larger than or equal to zero'); 
       RETURN;
 		END_IF
     
     vMin := SEL(MinVelocity[i] = 0, MinVelocity[i], -MaxVelocity[i]);
     IF vMin <> vMin OR_ELSE // isnan
-       vMin >= -Constants.Minimum      
+       vMin > 0.0
     THEN
-      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum velocity limit should be smaller than zero'); 
+      AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum velocity limit should be smaller than or equal to zero'); 
       RETURN;
     END_IF
     
@@ -1063,13 +1091,13 @@ DO
     
     IF checkCurrentStateWithinLimits
     THEN
-      IF a0 > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]
+      IF a0 > 0 AND_THEN MaxJerk[i] > 0 AND_THEN VelocityAtZero(v0, a0, MaxJerk[i]) > MaxVelocity[i]
       THEN
         AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will exceed its maximum velocity limit'); 
         RETURN;
 			END_IF
       
-      IF a0 < 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin
+      IF a0 < 0 AND_THEN MaxJerk[i] > 0 AND_THEN VelocityAtZero(v0, a0, -MaxJerk[i]) < vMin
       THEN
         AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will undercut its minimum velocity limit'); 
         RETURN;
@@ -1078,13 +1106,13 @@ DO
     
     IF checkTargetStateWithinLimits
     THEN
-      IF af < 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]
+      IF af < 0 AND_THEN MaxJerk[i] > 0 AND_THEN VelocityAtZero(vf, af, MaxJerk[i]) > MaxVelocity[i]
       THEN
         AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will exceed its maximum velocity limit'); 
         RETURN;
 			END_IF
       
-      IF af > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin
+      IF af > 0 AND_THEN MaxJerk[i] > 0 AND_THEN VelocityAtZero(vf, af, -MaxJerk[i]) < vMin
       THEN
         AbortErrorId(TrajectoryErrorCode.InvalidInput, 'Trajectory will inevitably reach a velocity from the current kinematic state that will undercut its minimum velocity limit'); 
         RETURN;
