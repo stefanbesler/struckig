@@ -67,21 +67,21 @@ END_IF
 
 IF jerkSigns = ProfileJerkSigns.Uddu
 THEN
-  j[0] := jf;
+  j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
-  j[2] := -jf;
+  j[2] := SEL(t[2] > 0, 0, -jf);
   j[3] := 0;
-  j[4] := -jf;
+  j[4] := SEL(t[4] > 0, 0, -jf);
   j[5] := 0;
-  j[6] := jf;          
+  j[6] := SEL(t[6] > 0, 0, jf);          
 ELSE
-  j[0] := jf;
+  j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
-  j[2] := -jf;
+  j[2] := SEL(t[2] > 0, 0, -jf);
   j[3] := 0;
-  j[4] := jf;
+  j[4] := SEL(t[4] > 0, 0, jf);
   j[5] := 0;
-  j[6] := -jf;
+  j[6] := SEL(t[6] > 0, 0, -jf); 
 END_IF
 
 
@@ -270,21 +270,21 @@ END_IF
         
 IF jerkSigns = ProfileJerkSigns.Uddu
 THEN
-  j[0] := jf;
+  j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
-  j[2] := -jf;
+  j[2] := SEL(t[2] > 0, 0, -jf);
   j[3] := 0;
-  j[4] := -jf;
+  j[4] := SEL(t[4] > 0, 0, -jf);
   j[5] := 0;
-  j[6] := jf;
+  j[6] := SEL(t[6] > 0, 0, jf);          
 ELSE
-  j[0] := jf;
+  j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
-  j[2] := -jf;
+  j[2] := SEL(t[2] > 0, 0, -jf);
   j[3] := 0;
-  j[4] := jf;
+  j[4] := SEL(t[4] > 0, 0, jf);
   j[5] := 0;
-  j[6] := -jf;          
+  j[6] := SEL(t[6] > 0, 0, -jf); 
 END_IF
 
 vUppLim := SEL(vMax > 0, vMin, vMax) + 1E-12;

@@ -13,7 +13,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{09EAD86D-0AEC-4931-9EBA-0E02A5AEA5B1}" Name="benchmark" PrjFilePath="benchmark\benchmark.plcproj" TmcFilePath="benchmark\benchmark.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="benchmark\benchmark.tmc" TmcHash="{2C52BE80-97AE-CBCC-ECEB-F71B4614EA0B}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="benchmark\benchmark.tmc" TmcHash="{78CED0DE-E2F2-0FE9-7E34-D3C6BAB0298F}">
 					<Name>benchmark Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
