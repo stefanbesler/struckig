@@ -83,9 +83,6 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
@@ -216,14 +213,24 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.md",
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "reference/Struckig/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/toc.html"
+        },
+        ".json": {
+          "relative_path": "reference/Struckig/toc.json"
         }
       },
       "version": ""
@@ -255,9 +262,6 @@
       "version": ""
     },
     {
-      "log_codes": [
-        "InvalidFileLink"
-      ],
       "type": "Conceptual",
       "source_relative_path": "userguide/installation.md",
       "output": {
