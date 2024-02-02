@@ -104,7 +104,7 @@ _currentPosition := NewPosition;
 _currentVelocity := NewVelocity;
 _currentAcceleration := NewAcceleration;
 
-IF CurrentTime > Duration THEN
+IF CurrentTime > _duration THEN
   _state := TrajectoryState.Idle;
 END_IF
 
