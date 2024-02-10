@@ -8,15 +8,7 @@
         {
           "version": "0.9.3.0",
           "name": "Struckig",
-          "type": "Library",
-          "frameworks": {},
-          "references": {},
-          "repositories": [],
-          "bindings": {},
-          "patches": {
-            "platform": {},
-            "argument": {}
-          }
+          "type": "Library"
         }
       ]
     }
