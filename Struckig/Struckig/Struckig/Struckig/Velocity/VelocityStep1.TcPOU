@@ -143,7 +143,7 @@ END_IF]]></ST>
     <Method Name="Get" Id="{cec2f89e-f52b-4f5e-9994-37aa8aef2d56}">
       <Declaration><![CDATA[METHOD Get : BOOL
 VAR_INPUT
-  profile : ProfileDesc;
+  input : ProfileDesc;
 END_VAR
 VAR_IN_OUT
   block : Block; 
@@ -158,13 +158,15 @@ END_VAR
 // Zero-limits special case
 IF THIS^.jMax = 0.0
 THEN
-  IF time_all_single_step(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax)
+  block.Pmin.SetBoundary(input);
+  
+  IF time_all_single_step(block.Pmin, THIS^.aMax, THIS^.aMin, THIS^.jMax)
   THEN
-    block.Pmin := validProfiles[0];
     block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
     AddInterval(block.A, block.Pmin, block.Pmin);
     IF ABS(a0) > Constants.DoubleEpsilon
     THEN
+	  block.A.Left := block.Tmin;
       block.A.Right := Constants.Infinity;
     END_IF
     
@@ -175,6 +177,7 @@ THEN
   RETURN;  
 END_IF
 
+validProfiles[0].SetBoundary(input);
 
 IF ABS(af) < Constants.DoubleEpsilon
 THEN
@@ -183,33 +186,33 @@ THEN
   aMin := SEL((vd >= 0), THIS^.aMax, THIS^.aMin);
   jMax := SEL((vd >= 0), -THIS^.jMax, THIS^.jMax);
   
-  time_none(profile, aMax, aMin, jMax, TRUE);
+  time_none(input, aMax, aMin, jMax, TRUE);
   IF ValidProfileCount >= 0
   THEN 
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc0(profile, aMax, aMin, jMax, TRUE);
+  time_acc0(input, aMax, aMin, jMax, TRUE);
   IF ValidProfileCount >= 0
   THEN 
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_none(profile, aMin, aMax, -jMax, TRUE);
+  time_none(input, aMin, aMax, -jMax, TRUE);
   IF ValidProfileCount >= 0
   THEN 
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc0(profile, aMin, aMax, -jMax, TRUE);
+  time_acc0(input, aMin, aMax, -jMax, TRUE);
 ELSE
-  time_none(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
-  time_none(profile, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
-  time_acc0(profile, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
-  time_acc0(profile, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
+  time_none(input, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
+  time_none(input, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
+  time_acc0(input, THIS^.aMax, THIS^.aMin, THIS^.jMax, FALSE);
+  time_acc0(input, THIS^.aMin, THIS^.aMax, -THIS^.jMax, FALSE);
 END_IF
 
 Get := CalculateBlock(block);]]></ST>
@@ -332,7 +335,6 @@ THEN
     profile.t[3] := vd / a0;
     IF profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
     THEN
-      AddProfile(profile);
       time_all_single_step := TRUE;
       RETURN;
     END_IF
@@ -342,7 +344,6 @@ THEN
  THEN
     IF profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
     THEN 
-      AddProfile(profile);
       time_all_single_step := TRUE;
       RETURN;
   END_IF

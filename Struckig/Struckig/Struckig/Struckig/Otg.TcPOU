@@ -310,7 +310,15 @@ DO
 END_FOR
 
 
-discrete_duration := (Discretization = DiscretizationType.discrete);
+discrete_duration := (Discretization = DiscretizationType.Discrete);
+
+IF (dofs = 0 AND_THEN MinDuration <> 0 AND_THEN discrete_duration <> 0)
+THEN 
+  _duration := _blocks[0].Tmin;
+  _profiles[0] := _blocks[0].Pmin;
+  RETURN;
+END_IF
+
 found_synchronization := Synchronize(discrete_duration, MinDuration, _duration, limiting_dof);
 IF NOT found_synchronization
 THEN
@@ -344,8 +352,8 @@ DO
     THEN
       _duration := _blocks[dof].Tmin;
       limiting_dof := dof;
-		END_IF
-	END_IF
+    END_IF
+  END_IF
 END_FOR
 
 IF (Duration = 0.0) THEN
@@ -353,7 +361,7 @@ IF (Duration = 0.0) THEN
   FOR dof:=0 TO _dofsEnd
   DO
     _profiles[dof] := _blocks[dof].Pmin;
-	END_FOR
+  END_FOR
   RETURN;
 END_IF
 
@@ -376,7 +384,6 @@ IF NOT discrete_duration AND_THEN noneSynchronizationCount = _dofsEnd
 THEN
   RETURN;
 END_IF
-
 
 IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
@@ -798,15 +805,7 @@ END_VAR
 
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (dofs = 0 AND_THEN Tmin <> 0 AND_THEN discrete_duration <> 0)
-THEN 
-  limiting_dof := 0;
-  t_sync := _blocks[0].Tmin;
-  _profiles[0] := _blocks[0].Pmin;
-  RETURN;
-END_IF
-
-// Possible t_syncs are the start times of the intervals and optional Tmin
+        <ST><![CDATA[// Possible t_syncs are the start times of the intervals and optional Tmin
 any_interval := FALSE;
 FOR dof := 0 TO _dofsEnd
 DO

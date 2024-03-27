@@ -503,6 +503,24 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="SetBoundary" Id="{fdfe1c1e-08a5-45e1-a4af-4f8d0e84c34a}">
+      <Declaration><![CDATA[/// Set boundary values for the position interface
+METHOD SetBoundary
+VAR_IN_OUT CONSTANT
+  profile : ProfileDesc;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[a[0] := profile.a[0];
+v[0] := profile.v[0];
+p[0] := profile.p[0];
+af := profile.af;
+vf := profile.vf;
+pf := profile.pf;
+Brake := profile.Brake;
+Accel := profile.Accel;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SetBoundaryPosition" Id="{bcaf6cf3-3cdf-411e-b9b2-105283f26c0e}">
       <Declaration><![CDATA[/// Set boundary values for the position interface
 METHOD SetBoundaryPosition

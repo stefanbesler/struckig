@@ -186,7 +186,7 @@ END_IF]]></ST>
     <Method Name="Get" Id="{1c1bdad0-f955-4d7e-82c0-f0b69b7c5251}">
       <Declaration><![CDATA[METHOD Get : BOOL
 VAR_INPUT
-  profile : REFERENCE TO ProfileDesc;
+  input : REFERENCE TO ProfileDesc;
   block : REFERENCE TO Block; 
 END_VAR
 VAR_INST
@@ -198,14 +198,16 @@ END_VAR]]></Declaration>
 // Zero-limits special case
 IF _jMax = 0.0 OR_ELSE _aMax = 0.0 OR_ELSE _aMin = 0.0 
 THEN
-  IF time_all_single_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax) 
+  block.Pmin.SetBoundary(input);
+
+  IF time_all_single_step(block.Pmin, _vMax, _vMin, _aMax, _aMin, _jMax) 
   THEN
-    block.Pmin := validProfiles[0];
     block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
     AddInterval(block.A, block.Pmin, block.Pmin);
     
     IF ABS(v0) > Constants.DoubleEpsilon OR_ELSE ABS(a0) > Constants.DoubleEpsilon
     THEN
+	  block.A.Left := block.Tmin;
       block.A.Right := Constants.Infinity;
     END_IF
     
@@ -216,6 +218,7 @@ THEN
   RETURN;
 END_IF
 
+validProfiles[0].SetBoundary(input);
 
 IF ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon
 THEN
@@ -227,57 +230,57 @@ THEN
   
   IF ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(pd) < Constants.DoubleEpsilon
   THEN
-    time_all_none_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax, TRUE);
+    time_all_none_acc0_acc1(input, vMax, vMin, aMax, aMin, jMax, TRUE);
   ELSE
     // There is no blocked interval when vf==0 && af==0, so return after first found profile
-    time_all_vel(profile, vMax, vMin, aMax, aMin, jMax, true);
+    time_all_vel(input, vMax, vMin, aMax, aMin, jMax, true);
     IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
-    time_all_none_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax, TRUE);
+    time_all_none_acc0_acc1(input, vMax, vMin, aMax, aMin, jMax, TRUE);
     IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
-    time_acc0_acc1(profile, vMax, vMin, aMax, aMin, jMax, true);
+    time_acc0_acc1(input, vMax, vMin, aMax, aMin, jMax, true);
     IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
     
-    time_all_vel(profile, vMin, vMax, aMin, aMax, -jMax, true);
+    time_all_vel(input, vMin, vMax, aMin, aMax, -jMax, true);
     IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
-    time_all_none_acc0_acc1(profile, vMin, vMax, aMin, aMax, -jMax, TRUE);
+    time_all_none_acc0_acc1(input, vMin, vMax, aMin, aMax, -jMax, TRUE);
     IF (validProfileCounter >= 0) THEN
       Get := CalculateBlock(block);
       RETURN;
     END_IF
-    time_acc0_acc1(profile, vMin, vMax, aMin, aMax, -jMax, true);
+    time_acc0_acc1(input, vMin, vMax, aMin, aMax, -jMax, true);
   END_IF     
 
 ELSE 
-  time_all_none_acc0_acc1(profile, _vMax, _vMin, _aMax, _aMin, _jMax, FALSE);
-  time_all_none_acc0_acc1(profile, _vMin, _vMax, _aMin, _aMax, -_jMax, false);
-  time_acc0_acc1(profile, _vMax, _vMin, _aMax, _aMin, _jMax, false);
-  time_acc0_acc1(profile, _vMin, _vMax, _aMin, _aMax, -_jMax, FALSE);
-  time_all_vel(profile, _vMax, _vMin, _aMax, _aMin, _jMax, FALSE);
-  time_all_vel(profile, _vMin, _vMax, _aMin, _aMax, -_jMax, false);  
+  time_all_none_acc0_acc1(input, _vMax, _vMin, _aMax, _aMin, _jMax, FALSE);
+  time_all_none_acc0_acc1(input, _vMin, _vMax, _aMin, _aMax, -_jMax, false);
+  time_acc0_acc1(input, _vMax, _vMin, _aMax, _aMin, _jMax, false);
+  time_acc0_acc1(input, _vMin, _vMax, _aMin, _aMax, -_jMax, FALSE);
+  time_all_vel(input, _vMax, _vMin, _aMax, _aMin, _jMax, FALSE);
+  time_all_vel(input, _vMin, _vMax, _aMin, _aMax, -_jMax, false);  
 END_IF    
 
 IF (validProfileCounter = -1)
 THEN
-  time_none_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_none_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_none_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_none_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
@@ -285,42 +288,42 @@ THEN
 	END_IF
   
 
-  time_acc0_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_acc0_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc0_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_acc0_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_vel_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_vel_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_vel_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_vel_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc1_vel_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_acc1_vel_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc1_vel_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_acc1_vel_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
@@ -330,14 +333,14 @@ END_IF
 
 IF (validProfileCounter = -1)
 THEN
-  time_none_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_none_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_none_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_none_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
@@ -345,42 +348,42 @@ THEN
 	END_IF
   
 
-  time_acc0_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_acc0_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc0_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_acc0_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_vel_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_vel_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_vel_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_vel_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc1_vel_two_step(profile, _vMax, _vMin, _aMax, _aMin, _jMax);
+  time_acc1_vel_two_step(input, _vMax, _vMin, _aMax, _aMin, _jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
     RETURN;
 	END_IF
   
-  time_acc1_vel_two_step(profile, _vMin, _vMax, _aMin, _aMax, -_jMax);
+  time_acc1_vel_two_step(input, _vMin, _vMax, _aMin, _aMax, -_jMax);
   IF validProfileCounter >= 0
   THEN
     Get := CalculateBlock(block);
@@ -872,7 +875,7 @@ THEN
     
     // Solution 1
     profile.t[3] := (-v0 + q) / a0;
-    IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
+    IF profile.t[3] >= 0.0 AND_THEN profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
     THEN
       AddProfile(profile);
       time_all_single_step := TRUE;
@@ -894,7 +897,6 @@ THEN
   profile.t[3] := pd / v0;
   IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
   THEN
-    AddProfile(profile);
     time_all_single_step := TRUE;
     RETURN;
   END_IF
@@ -903,7 +905,6 @@ ELSIF ABS(pd) < Constants.DoubleEpsilon
 THEN 
   IF profile.CheckVel(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin, aMax, aMin, FALSE)
   THEN
-    AddProfile(profile);
     time_all_single_step := TRUE;
     RETURN;
   END_IF      
