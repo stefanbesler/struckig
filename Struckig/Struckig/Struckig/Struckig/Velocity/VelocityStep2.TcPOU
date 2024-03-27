@@ -3,7 +3,7 @@
   <POU Name="VelocityStep2" Id="{44d0404d-f840-43a5-b935-c3fca779d43d}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL VelocityStep2 
 VAR
-  tf, a0, af, vd : LREAL;
+  tf, a0, af, vd, ad : LREAL;
   aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
     <Implementation>
@@ -55,7 +55,9 @@ THIS^.af := af;
 THIS^.aMax := aMax;
 THIS^.aMin := aMin;
 THIS^.jMax := jMax;
-THIS^.vd := vf - v0;]]></ST>
+THIS^.vd := vf - v0;
+THIS^.ad := af - a0;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{139ae830-064a-498c-9553-ea8f79b368be}">
@@ -77,7 +79,7 @@ IF h1 >= 0
 THEN
   h1 := SQRT(h1);
   
-  profile.t[0] := (af - a0)/(2*jMax) + (tf - h1)/2;
+  profile.t[0] := ad/(2*jMax) + (tf - h1)/2;
   profile.t[1] := h1;
   profile.t[2] := tf - (profile.t[0] + h1);
   profile.t[3] := 0;
@@ -93,17 +95,17 @@ THEN
 END_IF
 
 // UU Solution
-h1 := (a0 - af + jMax*tf);
+h1 := (jMax*tf - ad);
 
-profile.t[0] := -Power2(af - a0)/(2*jMax*h1) + (vd - a0*tf)/h1;
-profile.t[1] := (a0 - af)/jMax + tf;
+profile.t[0] := -ad*ad/(2*jMax*h1) + (vd - a0*tf)/h1;
+profile.t[1] := -ad/jMax + tf;
 profile.t[2] := 0;
 profile.t[3] := 0;
-profile.t[4] := tf - (profile.t[0] + profile.t[1]);
+profile.t[4] := 0;
 profile.t[5] := 0;
-profile.t[6] := 0;
+profile.t[6] := tf - (profile.t[0] + profile.t[1]);
 
-IF (profile.CheckForVelocity(ProfileJerkSigns.udud, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF (profile.CheckForVelocity(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
 THEN
   profile.pf := profile.p[7];
   time_acc0 := TRUE;
@@ -112,14 +114,14 @@ END_IF
 
 // UU Solution - 2 step
 profile.t[0] := 0;
-profile.t[1] := (a0 - af)/jMax + tf;
+profile.t[1] := -ad/jMax + tf;
 profile.t[2] := 0;
 profile.t[3] := 0;
-profile.t[4] := (af - a0)/jMax;
+profile.t[4] := 0;
 profile.t[5] := 0;
-profile.t[6] := 0;
+profile.t[6] := ad/jMax;
 
-IF (profile.CheckForVelocity(ProfileJerkSigns.udud, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF (profile.CheckForVelocity(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
 THEN
   profile.pf := profile.p[7];
   time_acc0 := TRUE;
