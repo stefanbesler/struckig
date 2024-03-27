@@ -467,14 +467,15 @@ DO
   END_IF
   
   // Check if the final time corresponds to an extremal profile calculated in step 1
+  // Use 2*eps because of numerical robustness in duration discretization
   IF (ABS(t_profile - _blocks[dof].Tmin) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
       CONTINUE;
-  ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(t_profile - _blocks[dof].A.Right) < Constants.Epsilon)
+  ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(t_profile - _blocks[dof].A.Right) < 2 * Constants.Epsilon16)
   THEN
       p := _blocks[dof].A.Profile;
       CONTINUE;
-  ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(t_profile - _blocks[dof].B.Right) < Constants.Epsilon)
+  ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(t_profile - _blocks[dof].B.Right) < 2 * Constants.Epsilon16)
   THEN
       p := _blocks[dof].B.Profile;
       CONTINUE;
@@ -842,7 +843,7 @@ THEN
 		END_IF
     
     remainder := Fmod(possible_t_sync, CycleTime); // in [0, delta_time)
-    IF remainder > 0 THEN
+    IF remainder > Constants.Epsilon16 THEN
       possible_t_sync := possible_t_sync + CycleTime - remainder;
     END_IF     
   END_FOR

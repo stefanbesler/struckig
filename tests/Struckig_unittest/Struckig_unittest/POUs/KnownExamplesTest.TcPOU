@@ -1071,7 +1071,7 @@ END_VAR
         <ST><![CDATA[TEST('Example-33');
 
 otg();
-AssertEquals_LREAL(Expected := 0.048,
+AssertEquals_LREAL(Expected := 0.044,
              Actual := CheckCalculation(otg),
              DELTA := 1E-7,
              Message := '');
