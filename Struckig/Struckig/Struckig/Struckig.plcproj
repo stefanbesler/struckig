@@ -89,10 +89,10 @@
     <Compile Include="Struckig\Otg1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Position\PositionStep1.TcPOU">
+    <Compile Include="Struckig\Position\PositionThirdOrderStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Position\PositionStep2.TcPOU">
+    <Compile Include="Struckig\Position\PositionThirdOrderStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">
@@ -116,10 +116,10 @@
     <Compile Include="Struckig\Otg.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Velocity\VelocityStep1.TcPOU">
+    <Compile Include="Struckig\Velocity\VelocityThirdOrderStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Velocity\VelocityStep2.TcPOU">
+    <Compile Include="Struckig\Velocity\VelocityThirdOrderStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\_DataTypes\ControlInterfaceType.TcDUT">

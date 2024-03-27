@@ -32,10 +32,10 @@ VAR
   _blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;  
   _profiles : ARRAY[0..ParameterList.MaxDoFs] OF ProfileDesc;
   _independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;	
-  _positionStep1 : PositionStep1;
-  _positionStep2 : PositionStep2;
-  _velocityStep1 : VelocityStep1;
-  _velocityStep2 : VelocityStep2;  
+  _positionStep1 : PositionThirdOrderStep1;
+  _positionStep2 : PositionThirdOrderStep2;
+  _velocityStep1 : VelocityThirdOrderStep1;
+  _velocityStep2 : VelocityThirdOrderStep2;  
   
   _inp_min_velocity, _inp_min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _inp_per_dof_control_interface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface
