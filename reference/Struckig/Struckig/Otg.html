@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/4e83d214824989b4ed34b6451f9d15d10e32f28f/docs/reference/Struckig/Struckig/Otg.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/695b7fd58e1c3ef99c0c42de499a5586b548738f/docs/reference/Struckig/Struckig/Otg.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -118,7 +118,7 @@ FUNCTION_BLOCK Otg IMPLEMENTS Struckig.IOtg (
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="CycleTime"></a><dt><code>CycleTime</code> LREAL<dd><p></p></dd><a name="Dofs"></a><dt><code>Dofs</code> INT<dd><p></p></dd><a name="Enabled"></a><dt><code>Enabled</code> ARRAY[0..ParameterList.MaxDoFs] OF BOOL<dd><p></p></dd><a name="ControlInterface"></a><dt><code>ControlInterface</code> <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p></p></dd><a name="Synchronization"></a><dt><code>Synchronization</code> <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p></p></dd><a name="PerDofControlInterface"></a><dt><code>PerDofControlInterface</code> ARRAY[0..ParameterList.MaxDoFs] OF <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p></p></dd><a name="PerDofSynchronization"></a><dt><code>PerDofSynchronization</code> ARRAY[0..ParameterList.MaxDoFs] OF <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p></p></dd><a name="Discretization"></a><dt><code>Discretization</code> <a class="xref" href="_DataTypes/DiscretizationType.html">DiscretizationType</a><dd><p></p></dd><a name="CurrentPosition"></a><dt><code>CurrentPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="CurrentVelocity"></a><dt><code>CurrentVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="CurrentAcceleration"></a><dt><code>CurrentAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="TargetPosition"></a><dt><code>TargetPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="TargetVelocity"></a><dt><code>TargetVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="TargetAcceleration"></a><dt><code>TargetAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MaxVelocity"></a><dt><code>MaxVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MaxAcceleration"></a><dt><code>MaxAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MaxJerk"></a><dt><code>MaxJerk</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MinVelocity"></a><dt><code>MinVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MinAcceleration"></a><dt><code>MinAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL<dd><p></p></dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL<dd><p></p></dd></dl>
 <h4 class="section">Outputs</h4><dl class="parameters">
-<a name="NewPosition"></a><dt><code>NewPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewVelocity"></a><dt><code>NewVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL<dd><p></p></dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL<dd><p></p></dd></dl>
+<a name="NewPosition"></a><dt><code>NewPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewVelocity"></a><dt><code>NewVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewJerk"></a><dt><code>NewJerk</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL<dd><p></p></dd><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL<dd><p></p></dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL<dd><p></p></dd></dl>
 <h2 class="section" id="constructors">Constructor</h2>
 <h3 id="Struckig.Otg_FB_init" data-uid="Struckig.Otg.FB_init">
 FB_init
@@ -184,10 +184,11 @@ METHOD AtTime (
  new_position : POINTER TO LREAL,
  new_velocity : POINTER TO LREAL,
  new_acceleration : POINTER TO LREAL,
+ new_jerk : POINTER TO LREAL,
  new_section : POINTER TO INT)
 </code></pre></div>
 <h4 class="section">Inputs</h4><dl class="parameters">
-<a name="t"></a><dt><code>t</code> LREAL<dd><p></p></dd><a name="new_position"></a><dt><code>new_position</code> POINTER TO LREAL<dd><p></p></dd><a name="new_velocity"></a><dt><code>new_velocity</code> POINTER TO LREAL<dd><p></p></dd><a name="new_acceleration"></a><dt><code>new_acceleration</code> POINTER TO LREAL<dd><p></p></dd><a name="new_section"></a><dt><code>new_section</code> POINTER TO INT<dd><p></p></dd></dl>
+<a name="t"></a><dt><code>t</code> LREAL<dd><p></p></dd><a name="new_position"></a><dt><code>new_position</code> POINTER TO LREAL<dd><p></p></dd><a name="new_velocity"></a><dt><code>new_velocity</code> POINTER TO LREAL<dd><p></p></dd><a name="new_acceleration"></a><dt><code>new_acceleration</code> POINTER TO LREAL<dd><p></p></dd><a name="new_jerk"></a><dt><code>new_jerk</code> POINTER TO LREAL<dd><p></p></dd><a name="new_section"></a><dt><code>new_section</code> POINTER TO INT<dd><p></p></dd></dl>
 <h3 id="Struckig.Otg_AtTime1" data-uid="Struckig.Otg.AtTime1">
 AtTime1
 </h3><a name="AtTime1"></a>
@@ -200,10 +201,11 @@ METHOD AtTime1 (
  t : LREAL,
  new_position : REFERENCE TO LREAL,
  new_velocity : REFERENCE TO LREAL,
- new_acceleration : REFERENCE TO LREAL)
+ new_acceleration : REFERENCE TO LREAL,
+ new_jerk : REFERENCE TO LREAL)
 </code></pre></div>
 <h4 class="section">Inputs</h4><dl class="parameters">
-<a name="t"></a><dt><code>t</code> LREAL<dd><p></p></dd><a name="new_position"></a><dt><code>new_position</code> REFERENCE TO LREAL<dd><p></p></dd><a name="new_velocity"></a><dt><code>new_velocity</code> REFERENCE TO LREAL<dd><p></p></dd><a name="new_acceleration"></a><dt><code>new_acceleration</code> REFERENCE TO LREAL<dd><p></p></dd></dl>
+<a name="t"></a><dt><code>t</code> LREAL<dd><p></p></dd><a name="new_position"></a><dt><code>new_position</code> REFERENCE TO LREAL<dd><p></p></dd><a name="new_velocity"></a><dt><code>new_velocity</code> REFERENCE TO LREAL<dd><p></p></dd><a name="new_acceleration"></a><dt><code>new_acceleration</code> REFERENCE TO LREAL<dd><p></p></dd><a name="new_jerk"></a><dt><code>new_jerk</code> REFERENCE TO LREAL<dd><p></p></dd></dl>
 <h3 id="Struckig.Otg_Calculate" data-uid="Struckig.Otg.Calculate">
 Calculate
 </h3><a name="Calculate"></a>
