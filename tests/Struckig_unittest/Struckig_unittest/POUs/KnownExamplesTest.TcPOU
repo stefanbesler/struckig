@@ -1180,7 +1180,7 @@ VAR_INST
     ControlInterface := ControlInterfaceType.Position,
     Discretization := DiscretizationType.Continuous
   );
-  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state   
+  NewPosition, NewVelocity, NewAcceleration, NewJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; // Current state   
   NewSection : INT; 
 END_VAR
 ]]></Declaration>
@@ -1193,7 +1193,7 @@ AssertEquals_LREAL(Expected := 3.99333,
              DELTA := 1E-5,
              Message := '');
              
-otg.AtTime(otg.Duration / 2, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(newSection));
+otg.AtTime(otg.Duration / 2, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(newSection));
 AssertEquals_LREAL(NewPosition[0], 0.033333, 1E-5, '');
 AssertEquals_LREAL(NewPosition[1], 0.000833, 1E-5, '');
 

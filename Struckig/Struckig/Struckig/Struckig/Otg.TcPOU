@@ -20,7 +20,7 @@ VAR_INPUT
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
 END_VAR
 VAR_OUTPUT
-  NewPosition, NewVelocity, NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
   CurrentTime : LREAL;
 END_VAR
@@ -98,7 +98,7 @@ THEN
 END_IF
 
 CurrentTime := CurrentTime + _dt;
-AtTime(CurrentTime, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(_newSection));
+AtTime(CurrentTime, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(_newSection));
 
 _currentPosition := NewPosition;
 _currentVelocity := NewVelocity;
@@ -137,6 +137,7 @@ VAR_INPUT
   new_position : POINTER TO LREAL;
   new_velocity : POINTER TO LREAL;
   new_acceleration : POINTER TO LREAL;
+  new_jerk : POINTER TO LREAL;
   new_section : POINTER TO INT;
 END_VAR
 VAR
@@ -151,6 +152,7 @@ END_VAR]]></Declaration>
   //new_section := 1;
   FOR dof:=0 TO _dofsEnd DO
     Integrate(t - (_profiles[dof].Brake.Duration + _profiles[dof].t_sum[6]), _profiles[dof].p[7], _profiles[dof].v[7], _profiles[dof].a[7], 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    new_jerk[dof] := 0;
   END_FOR
   RETURN;
 END_IF
@@ -170,6 +172,7 @@ FOR dof:=0 TO _dofsEnd DO
       END_IF
 
       Integrate(t_diff, p.Brake.p[index], p.Brake.v[index], p.Brake.a[index], p.Brake.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+      new_jerk[dof] := p.Brake.j[index];
       CONTINUE;
     ELSE
       t_diff := t_diff - p.Brake.Duration;
@@ -193,6 +196,7 @@ FOR dof:=0 TO _dofsEnd DO
   IF (t_diff >= p.t_sum[6]) THEN
     // Keep constant acceleration
     Integrate(t_diff - p.t_sum[6], p.p[7], p.v[7], p.a[7], 0, p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+    new_jerk[dof] := 0;    
     CONTINUE;
   END_IF
 
@@ -208,6 +212,7 @@ FOR dof:=0 TO _dofsEnd DO
   END_IF
 
   Integrate(t_diff, p.p[index], p.v[index], p.a[index], p.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
+  new_jerk[dof] := p.j[index];      
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -222,11 +227,12 @@ VAR_INPUT
   new_position : REFERENCE TO LREAL;
   new_velocity : REFERENCE TO LREAL;
   new_acceleration : REFERENCE TO LREAL;
+  new_jerk : REFERENCE TO LREAL;  
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF _dofs = 1
 THEN
-  AtTime(t, ADR(new_position), ADR(new_velocity), ADR(new_acceleration), 0);
+  AtTime(t, ADR(new_position), ADR(new_velocity), ADR(new_acceleration), ADR(new_jerk), 0);
 END_IF]]></ST>
       </Implementation>
     </Method>

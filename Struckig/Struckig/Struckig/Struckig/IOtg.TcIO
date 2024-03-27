@@ -12,6 +12,7 @@ VAR_INPUT
   new_position : POINTER TO LREAL;
   new_velocity : POINTER TO LREAL;
   new_acceleration : POINTER TO LREAL;
+  new_jerk : POINTER TO LREAL;  
   new_section : POINTER TO INT;
 END_VAR]]></Declaration>
     </Method>
@@ -24,6 +25,7 @@ VAR_INPUT
   new_position : REFERENCE TO LREAL;
   new_velocity : REFERENCE TO LREAL;
   new_acceleration : REFERENCE TO LREAL;
+  new_jerk : REFERENCE TO LREAL;
 END_VAR]]></Declaration>
     </Method>
     <Method Name="Cyclic" Id="{d26b89d9-5de1-4e69-9c66-3af979a1e1cd}">

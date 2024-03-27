@@ -48,7 +48,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   NewSection : INT;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
@@ -64,22 +64,33 @@ otg();
 AssertEquals_INT(Expected := Struckig.TrajectoryState.busy, Actual := otg.State, Message := '');
 AssertEquals_LREAL(4.0, otg.Duration, 1E-9, Message:='');
 
-otg.AtTime(0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-9, message:='p(0) should be CurrentPosition');
 AssertArrayEquals_LREAL(otg.CurrentVelocity, NewVelocity, 1E-9, message:='v(0) should be CurrentVelocity');
 AssertArrayEquals_LREAL(otg.CurrentAcceleration, NewAcceleration, 1E-9, message:='a(0) should be CurrentAcceleration');
 
-otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 AssertArrayEquals_LREAL(otg.TargetPosition, NewPosition, 1E-9, message:='p(0) should be TargetPosition');
 AssertArrayEquals_LREAL(otg.TargetVelocity, NewVelocity, 1E-9, message:='v(0) should be TargetVelocity');
 AssertArrayEquals_LREAL(otg.TargetAcceleration, NewAcceleration, 1E-9, message:='a(0) should be TargetAcceleration');
 
-otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] := 1.0;
 AssertArrayEquals_LREAL(values, NewPosition, 1E-9, message:='');
 
+
+values[0] := 0.0;
+values[1] := 0.0;
+values[2] := -1.0;
+AssertArrayEquals_LREAL(values, NewJerk, 1E-9, message:='');
+
+otg.AtTime(5.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
+values[0] := 0.0;
+values[1] := 0.0;
+values[2] :=0.0;
+AssertArrayEquals_LREAL(values, NewJerk, 1E-9, message:='');
 TEST_FINISHED();]]></ST>
       </Implementation>
     </Method>
@@ -101,7 +112,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  newPosition, newVelocity, newAcceleration : LREAL;
+  newPosition, newVelocity, newAcceleration, newJerk : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('AtTime1');
@@ -112,13 +123,13 @@ otg();
 AssertEquals_INT(Expected := Struckig.TrajectoryState.Busy, Actual := otg.State, Message := '');
 AssertEquals_LREAL(3.1748, otg.Duration, 1E-4, Message:='');
 
-otg.AtTime1(0, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(0, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(otg.CurrentPosition[0], newPosition, 1E-5, Message:='');
 
-otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(0.5, newPosition, 1E-4, Message:='');
 
-otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(1.0, newPosition, 1E-4, Message:='');
 AssertEquals_LREAL(0.0, newVelocity, 1E-4, Message:='');
 AssertEquals_LREAL(0.0, newAcceleration, 1E-4, Message:='');
@@ -145,7 +156,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  newPosition, newVelocity, newAcceleration : LREAL;
+  newPosition, newVelocity, newAcceleration, newJerk : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('AtTime1_2');
@@ -157,13 +168,13 @@ AssertEquals_INT(Expected := Struckig.TrajectoryState.Busy, Actual := otg.State,
 AssertEquals_LREAL(3.1748, otg.Duration, 1E-4, Message:='');
 
 newPosition := 5;
-otg.AtTime1(0, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(0, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
 
-otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(3.1748 / 2, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
 
-otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration);
+otg.AtTime1(3.1748, newPosition, newVelocity, newAcceleration, newJerk);
 AssertEquals_LREAL(5.0, newPosition, 1E-4, Message:='No calculation with AtTime1 if DoF != 1');
 
 
@@ -187,7 +198,7 @@ VAR
   result : Struckig.TrajectoryState;
   busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
   NewSection : INT;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
@@ -198,7 +209,7 @@ otg();
 result := otg.State;
 AssertEquals(busy, result, Message := '');
 AssertEquals_LREAL(otg.Duration, 4.5, 1E-6, Message := ''); 
-otg.AtTime(4.5, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(4.5, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 1.0;
 values[1] := -3.0;
 values[2] := 2.0;
@@ -225,7 +236,7 @@ END_VAR
 VAR
   result : Struckig.TrajectoryState;
   busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   NewSection : INT;
 END_VAR]]></Declaration>
       <Implementation>
@@ -236,12 +247,12 @@ result := otg.State;
 AssertEquals(busy, result, Message := '');
 AssertEquals_LREAL(otg.Duration, 3.1748021039, 1E-6, Message := ''); 
 
-otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 AssertArrayEquals_LREAL(otg.CurrentPosition, NewPosition, 1E-6, '');
 AssertArrayEquals_LREAL(otg.CurrentVelocity, NewVelocity, 1E-6, '');
 AssertArrayEquals_LREAL(otg.CurrentAcceleration, NewAcceleration, 1E-6, '');
 
-otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(otg.Duration, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := otg.TargetPosition[0];
 values[1] := -1.6825197896;
 values[2] := -1.0079368399;
@@ -718,7 +729,7 @@ VAR_INST
 END_VAR
 VAR
   result : Struckig.TrajectoryState;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   NewSection : INT;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
@@ -730,7 +741,7 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.5;
 values[1] := -2.6871268303;
 values[2] :=  1.0;
@@ -742,7 +753,7 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 1.095445115, 1E-6, message:='Duration not met');
 
-otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.0;
 values[1] := -1.8641718534;
 values[2] :=  0.0;
@@ -756,7 +767,7 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.5;
 values[1] := -1.8528486838;
 values[2] := 1.0;
@@ -770,7 +781,7 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.5;
 values[1] := -1.5643167673;
 values[2] := 1.0;
@@ -787,7 +798,7 @@ otg();
 AssertEquals_INT(otg.State, Struckig.TrajectoryState.Busy, message:='State should be busy');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, message:='Duration not met');
 
-otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(2.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 values[0] := 0.7482143874;
 values[1] := -2.6871268303;
 values[2] := 1.0;
@@ -935,7 +946,7 @@ VAR
   result : Struckig.TrajectoryState;
   busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
   NewSection : INT;
-  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   positionExtrema : Struckig.PositionExtremaDesc;
   rtime, rvel, racc : LREAL;
   profiles : POINTER TO ProfileDesc := ADR(otg._profiles);
@@ -950,7 +961,7 @@ AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := '');
 AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
 AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := ''); 
 
-otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 SetVector3(ADR(values), 0.0833333333, -2.0833333333, 0.1666666667);
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
@@ -968,7 +979,7 @@ otg();
 result := otg.State;
 AssertEquals(busy, result, Message := '');
 AssertEquals_LREAL(otg.Duration, 4.0, 1E-6, Message := ''); 
-otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(1.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 SetVector3(ADR(values), 0.833333333, -2.0833333333, 0.1666666667);
 AssertArrayEquals_LREAL(values, NewPosition, 1E-6, '');
 AssertArrayEquals_LREAL( profiles[0].t, profiles[1].t, 1E-6, Message := ''); 
@@ -979,7 +990,7 @@ AssertArrayEquals_LREAL( profiles[0].t, profiles[2].t, 1E-6, Message := '');
 SetVector3(ADR(otg.CurrentPosition), 1,-2,3);
 SetVector3(ADR(otg.TargetPosition), 1,-2,3);
 otg();
-otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewSection));
+otg.AtTime(0.0, ADR(NewPosition), ADR(NewVelocity), ADR(NewAcceleration), ADR(NewJerk), ADR(NewSection));
 AssertEquals_LREAL(otg.Duration, 0.0, 1E-6, Message := '');
 AssertEquals_INT(TrajectoryState.Idle, otg.State, '');
 SetVector3(ADR(values), 1, -2, 3);

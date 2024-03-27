@@ -18,7 +18,7 @@ VAR_INPUT
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
 END_VAR
 VAR_OUTPUT
-  NewPosition, NewVelocity, NewAcceleration : LREAL;
+  NewPosition, NewVelocity, NewAcceleration, NewJerk : LREAL;
   NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
   CurrentTime : LREAL;
 END_VAR
@@ -54,6 +54,7 @@ CurrentAcceleration := _otg.CurrentAcceleration[0];
 NewPosition := _otg.NewPosition[0];
 NewVelocity := _otg.NewVelocity[0];
 NewAcceleration := _otg.NewAcceleration[0];
+NewJerk := _otg.NewJerk[0];
 CurrentTime := _otg.CurrentTime;
 
 ]]></ST>
@@ -67,10 +68,11 @@ VAR_INPUT
   new_position : POINTER TO LREAL;
   new_velocity : POINTER TO LREAL;
   new_acceleration : POINTER TO LREAL;
+  new_jerk : POINTER TO LREAL;
   new_section : POINTER TO INT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_otg.AtTime(t, new_position, new_velocity, new_acceleration, new_section);]]></ST>
+        <ST><![CDATA[_otg.AtTime(t, new_position, new_velocity, new_acceleration, new_jerk, new_section);]]></ST>
       </Implementation>
     </Method>
     <Method Name="AtTime1" Id="{1d694463-453a-4697-a59a-2e7b7e0e0ffd}">
@@ -82,9 +84,10 @@ VAR_INPUT
   new_position : REFERENCE TO LREAL;
   new_velocity : REFERENCE TO LREAL;
   new_acceleration : REFERENCE TO LREAL;
+  new_jerk : REFERENCE TO LREAL;  
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_otg.AtTime1(t, new_position, new_velocity, new_acceleration);]]></ST>
+        <ST><![CDATA[_otg.AtTime1(t, new_position, new_velocity, new_acceleration, new_jerk);]]></ST>
       </Implementation>
     </Method>
     <Method Name="Cyclic" Id="{222cfd84-0828-4551-b3bf-cdb6fa696da0}">

@@ -4,7 +4,7 @@
     <Declaration><![CDATA[/// Integrate with constant jerk for duration t. Returns new position, new velocity, and new acceleration.
 FUNCTION INTERNAL Integrate
 VAR_INPUT
-  t, p0, v0, a0, j  : LREAL;
+  t, p0, v0, a0, j : LREAL;
 END_VAR
 VAR_IN_OUT
   p, v, a : LREAL;
