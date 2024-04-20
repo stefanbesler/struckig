@@ -187,17 +187,20 @@ IF (ABS(a) < Constants.DoubleEpsilon)
 THEN
   IF (ABS(b) < Constants.DoubleEpsilon)
   THEN
-    // Linear equation
-    h := (-d / c);
-    IF ABS(c) > Constants.DoubleEpsilon AND_THEN h >= 0
+    IF ABS(c) > Constants.DoubleEpsilon
     THEN
-      roots[rootCount+1] := h;
-      rootCount := rootCount + 1;
-    END_IF
+      // Linear equation
+      h := (-d / c);
+      IF ABS(c) > Constants.DoubleEpsilon AND_THEN h >= 0
+      THEN
+        roots[rootCount+1] := h;
+        rootCount := rootCount + 1;
+      END_IF
+    END_IF    
   ELSE
     // Quadratic equation
     discriminant := c * c - 4 * b * d;
-    IF (discriminant >= 0)
+    IF discriminant >= 0 AND_THEN ABS(b) > Constants.DoubleEpsilon
     THEN
       inv2b := 1.0 / (2 * b);
       y := SQRT(discriminant);
@@ -393,15 +396,32 @@ IF (ABS(dd) < Constants.DoubleEpsilon) THEN
   IF (ABS(dd) < Constants.DoubleEpsilon) THEN
     p1 := p2 := a / 2;
   ELSE
+    
+    IF dd < 0
+    THEN
+      RETURN;
+    END_IF
+    
     sqrtD := SQRT(dd);
     p1 := (a + sqrtD) / 2;
     p2 := (a - sqrtD) / 2;
   END_IF
 ELSE
+  IF dd < 0
+  THEN
+    RETURN;
+  END_IF
+	
   sqrtD := SQRT(dd);
   q1 := (y + sqrtD) / 2;
   q2 := (y - sqrtD) / 2;
   // g1 + g2 = a AND_THEN g1*h2 + g2*h1 = c   ( AND_THEN g === p )  Krammer
+  
+  IF ABS(q1 - q2) < Constants.DoubleEpsilon
+  THEN
+    RETURN;
+  END_IF
+  
   p1 := (a * q1 - c) / (q1 - q2);
   p2 := (c - a * q2) / (q1 - q2);
 END_IF

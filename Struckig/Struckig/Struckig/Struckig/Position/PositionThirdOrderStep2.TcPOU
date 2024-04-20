@@ -883,7 +883,7 @@ DO
   IF t < t_min OR_ELSE t > t_max
   THEN
     CONTINUE;
-	END_IF
+  END_IF
 
   // Single Newton step (regarding pd)
   h0 := jMax*(2*t - tf) - ad;
@@ -1022,7 +1022,7 @@ DO
   IF t > tf OR_ELSE t > (aMax - a0)/jMax
   THEN
     CONTINUE;
-	END_IF
+  END_IF
 
   h1 := ad_ad/(2*jMax_jMax) + (a0*(t + tf) - af*t + jMax*t*tf - vd)/jMax;
   IF h1 >= 0
@@ -1103,7 +1103,7 @@ Roots.SolveCub(ADR(polynom), rootCount:=d_extremasCount, roots:=d_extremas);
 FOR i:=0 TO d_extremasCount
 DO
   t := d_extremas[i];
-  IF t <= 0.0 OR_ELSE ABS(t-tf) > Constants.DoubleEpsilon OR_ELSE ad = 0
+  IF ABS(t) < Constants.DoubleEpsilon OR_ELSE t > tf OR_ELSE ABS(t-tf) < Constants.DoubleEpsilon
   THEN
     CONTINUE;
   END_IF
