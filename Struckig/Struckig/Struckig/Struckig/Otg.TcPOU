@@ -14,7 +14,8 @@ VAR_INPUT
   Discretization : DiscretizationType; //< Whether the duration should be a discrete multiple of the control cycle (off by default)
   CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
-  MaxVelocity, MaxAcceleration, MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  MaxVelocity, MaxAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints, may be Infinity (Struckig.Constants.Infinity)
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
@@ -285,15 +286,33 @@ DO
   CASE _inp_per_dof_control_interface[dof]
   OF
     ControlInterfaceType.Position:
-      p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+    
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN
+        p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      ELSE
+        p.Brake.SecondOrderPositionBrakeTrajectory(CurrentVelocity[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
+      END_IF    
+
       p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
-      
+
     ControlInterfaceType.Velocity:
-      p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN    
+        p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+      ELSE
+        p.Brake.SecondOrderVelocityBrakeTrajectory();        
+      END_IF
+      
       p.SetBoundaryVelocity(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetVelocity[dof], TargetAcceleration[dof]);      
 	END_CASE
   
-  p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
+  IF NOT IsInfinity(MaxJerk[dof])
+  THEN
+    p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
+  ELSE
+    p.Brake.FinalizeSecondOrder(p.p[0], p.v[0], p.a[0]);    
+  END_IF
 
   CASE _inp_per_dof_control_interface[dof]
   OF

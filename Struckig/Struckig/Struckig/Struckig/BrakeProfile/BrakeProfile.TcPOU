@@ -83,6 +83,29 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="FinalizeSecondOrder" Id="{75063da7-6df2-4dc8-a3e9-7c13e02c2b78}">
+      <Declaration><![CDATA[/// Finalize third-order braking by integrating along kinematic state
+METHOD FinalizeSecondOrder
+VAR_IN_OUT
+  ps : LREAL;
+  vs : LREAL;
+  as : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF t[0] <= 0.0 AND_THEN t[1] <= 0.0
+THEN
+  Duration := 0;
+  RETURN;
+END_IF
+
+Duration := t[0];
+p[0] := ps;
+v[0] := vs;
+Integrate(t[0], p0:=ps, v0:=vs, a0:=a[0], j:=j[0], p:=ps, v:=vs, a:=as);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="PositionBrakeTrajectory" Id="{95c53b9d-c397-464e-b5fb-c3d4cad36b7c}">
       <Declaration><![CDATA[/// Calculate brake trajectory for third-order position interface
 METHOD PositionBrakeTrajectory
@@ -116,6 +139,51 @@ THEN
   VelocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax);      
 END_IF
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SecondOrderPositionBrakeTrajectory" Id="{5a7eb56a-bf46-49f0-bf23-96b722fbed89}">
+      <Declaration><![CDATA[/// Calculate brake trajectory for third-order position interface
+METHOD SecondOrderPositionBrakeTrajectory
+VAR_INPUT
+  v0 : LREAL;
+  vMax, vMin : LREAL;
+  aMax, aMin : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[t[0] := 0.0;
+t[1] := 0.0;
+j[0] := 0.0;
+j[1] := 0.0;
+a[0] := 0.0;
+a[1] := 0.0;
+
+IF aMax = 0.0 OR_ELSE aMin = 0.0
+THEN
+  RETURN; // Ignore braking for zero-limits 
+END_IF
+
+IF v0 > vMax
+THEN
+  a[0] := aMin;
+  t[0] := (vMax - v0)/aMin + Constants.Epsilon;   
+ELSIF v0 < vMin
+THEN
+  j[0] := aMax;
+  t[0] := (vMin - v0)/aMax + Constants.Epsilon;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SecondOrderVelocityBrakeTrajectory" Id="{50f427f5-11c2-4e9d-965a-157c6b7a0bbe}">
+      <Declaration><![CDATA[/// Calculate brake trajectory for third-order position interface
+METHOD SecondOrderVelocityBrakeTrajectory
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="VelocityAtTime" Id="{f532e452-5e4d-4b4e-a9b9-55765c5c49dc}">
