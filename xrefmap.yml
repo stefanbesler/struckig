@@ -19,6 +19,12 @@ references:
 - uid: Struckig.IOtg
   name: IOtg
   href: reference/Struckig/Struckig/IOtg.html
+- uid: Struckig.IsInfinity
+  name: IsInfinity
+  href: reference/Struckig/Struckig/Math/IsInfinity.html
+- uid: Struckig.IsNaN
+  name: IsNaN
+  href: reference/Struckig/Struckig/Math/IsNaN.html
 - uid: Struckig.Otg
   name: Otg
   href: reference/Struckig/Struckig/Otg.html

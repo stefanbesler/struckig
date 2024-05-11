@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Otg1 | html </title>
+      <title>Otg1 | Struckig </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Otg1 | html ">
+      <meta name="title" content="Otg1 | Struckig ">
       
       
       <link rel="icon" href="../../../favicon.ico">
@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b9ca5aa700e8a879824e18173b1e809e9e4dd1a9/docs/reference/Struckig/Struckig/Otg1.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/45a7d4f134c5f5f1bd3c6d029879c7b7c08c18ea/docs/reference/Struckig/Struckig/Otg1.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -114,9 +114,28 @@ FUNCTION_BLOCK Otg1 IMPLEMENTS Struckig.IOtg (
  EnableAutoPropagate : BOOL)
 </code></pre></div>
 <h4 class="section">Inputs</h4><dl class="parameters">
-<a name="CycleTime"></a><dt><code>CycleTime</code> LREAL<dd><p></p></dd><a name="ControlInterface"></a><dt><code>ControlInterface</code> <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p></p></dd><a name="Synchronization"></a><dt><code>Synchronization</code> <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p></p></dd><a name="PerDofControlInterface"></a><dt><code>PerDofControlInterface</code> <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p></p></dd><a name="PerDofSynchronization"></a><dt><code>PerDofSynchronization</code> <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p></p></dd><a name="Discretization"></a><dt><code>Discretization</code> <a class="xref" href="_DataTypes/DiscretizationType.html">DiscretizationType</a><dd><p></p></dd><a name="CurrentPosition"></a><dt><code>CurrentPosition</code> LREAL<dd><p></p></dd><a name="CurrentVelocity"></a><dt><code>CurrentVelocity</code> LREAL<dd><p></p></dd><a name="CurrentAcceleration"></a><dt><code>CurrentAcceleration</code> LREAL<dd><p></p></dd><a name="TargetPosition"></a><dt><code>TargetPosition</code> LREAL<dd><p></p></dd><a name="TargetVelocity"></a><dt><code>TargetVelocity</code> LREAL<dd><p></p></dd><a name="TargetAcceleration"></a><dt><code>TargetAcceleration</code> LREAL<dd><p></p></dd><a name="MaxVelocity"></a><dt><code>MaxVelocity</code> LREAL<dd><p></p></dd><a name="MaxAcceleration"></a><dt><code>MaxAcceleration</code> LREAL<dd><p></p></dd><a name="MaxJerk"></a><dt><code>MaxJerk</code> LREAL<dd><p></p></dd><a name="MinVelocity"></a><dt><code>MinVelocity</code> LREAL<dd><p></p></dd><a name="MinAcceleration"></a><dt><code>MinAcceleration</code> LREAL<dd><p></p></dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL<dd><p></p></dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL<dd><p></p></dd></dl>
+<a name="CycleTime"></a><dt><code>CycleTime</code> LREAL<dd><p></p></dd><a name="ControlInterface"></a><dt><code>ControlInterface</code> <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p><p>The default position interface controls the full kinematic state.</p>
+</dd><a name="Synchronization"></a><dt><code>Synchronization</code> <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p><p>Synchronization behavior of multiple DoFs</p>
+</dd><a name="PerDofControlInterface"></a><dt><code>PerDofControlInterface</code> <a class="xref" href="_DataTypes/ControlInterfaceType.html">ControlInterfaceType</a><dd><p><p>Per-DoF control interface (overwrites global ControlInterface)</p>
+</dd><a name="PerDofSynchronization"></a><dt><code>PerDofSynchronization</code> <a class="xref" href="_DataTypes/SynchronizationType.html">SynchronizationType</a><dd><p><p>Per-DoF synchronization (overwrites global Synchronization)</p>
+</dd><a name="Discretization"></a><dt><code>Discretization</code> <a class="xref" href="_DataTypes/DiscretizationType.html">DiscretizationType</a><dd><p><p>Whether the duration should be a discrete multiple of the control cycle (off by default)</p>
+</dd><a name="CurrentPosition"></a><dt><code>CurrentPosition</code> LREAL<dd><p><p>Current state</p>
+</dd><a name="CurrentVelocity"></a><dt><code>CurrentVelocity</code> LREAL<dd><p><p>Current state</p>
+</dd><a name="CurrentAcceleration"></a><dt><code>CurrentAcceleration</code> LREAL<dd><p><p>Current state</p>
+</dd><a name="TargetPosition"></a><dt><code>TargetPosition</code> LREAL<dd><p><p>Target state</p>
+</dd><a name="TargetVelocity"></a><dt><code>TargetVelocity</code> LREAL<dd><p><p>Target state</p>
+</dd><a name="TargetAcceleration"></a><dt><code>TargetAcceleration</code> LREAL<dd><p><p>Target state</p>
+</dd><a name="MaxVelocity"></a><dt><code>MaxVelocity</code> LREAL<dd><p><p>Kinematic constraints</p>
+</dd><a name="MaxAcceleration"></a><dt><code>MaxAcceleration</code> LREAL<dd><p><p>Kinematic constraints</p>
+</dd><a name="MaxJerk"></a><dt><code>MaxJerk</code> LREAL<dd><p><p>Kinematic constraints</p>
+</dd><a name="MinVelocity"></a><dt><code>MinVelocity</code> LREAL<dd><p><p>Optional kindematic constraints</p>
+</dd><a name="MinAcceleration"></a><dt><code>MinAcceleration</code> LREAL<dd><p><p>Optional kindematic constraints</p>
+</dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL<dd><p><p>Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none</p>
+</dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL<dd><p><p>If set to true, PassOutputToInput is automatically called internally after calling the function block's body</p>
+</dd></dl>
 <h4 class="section">Outputs</h4><dl class="parameters">
-<a name="NewPosition"></a><dt><code>NewPosition</code> LREAL<dd><p></p></dd><a name="NewVelocity"></a><dt><code>NewVelocity</code> LREAL<dd><p></p></dd><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> LREAL<dd><p></p></dd><a name="NewJerk"></a><dt><code>NewJerk</code> LREAL<dd><p></p></dd><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL<dd><p></p></dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL<dd><p></p></dd></dl>
+<a name="NewPosition"></a><dt><code>NewPosition</code> LREAL<dd><p></p></dd><a name="NewVelocity"></a><dt><code>NewVelocity</code> LREAL<dd><p></p></dd><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> LREAL<dd><p></p></dd><a name="NewJerk"></a><dt><code>NewJerk</code> LREAL<dd><p></p></dd><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL<dd><p><p>Was a new trajectory calculation performed in the last cycle?</p>
+</dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL<dd><p></p></dd></dl>
 <h2 class="section" id="constructors">Constructor</h2>
 <h3 id="Struckig.Otg1_FB_init" data-uid="Struckig.Otg1.FB_init">
 FB_init
@@ -265,6 +284,9 @@ METHOD ValidateInput (
 
 </article>
 
+        <div class="contribution d-print-none">
+          <a href="https://github.com/stefanbesler/struckig/blob/45a7d4f134c5f5f1bd3c6d029879c7b7c08c18ea/docs/reference/Struckig/Struckig/Otg1.md/#L1" class="edit-link">Edit this page</a>
+        </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
 

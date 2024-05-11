@@ -144,6 +144,26 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/Struckig/Math/IsInfinity.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/Struckig/Math/IsInfinity.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/Struckig/Math/IsNaN.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/Struckig/Math/IsNaN.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "reference/Struckig/Struckig/Otg.md",
       "output": {
         ".html": {
