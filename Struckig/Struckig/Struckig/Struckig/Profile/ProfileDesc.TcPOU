@@ -18,6 +18,111 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="CheckForSecondOrderVelocity" Id="{98d640fa-ba4c-4586-9f8c-bed3ada54742}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForSecondOrderVelocity : BOOL
+VAR_INPUT
+  jerkSigns : ProfileJerkSigns;
+  limits : ReachedLimits;  
+  af : LREAL;
+END_VAR
+VAR
+  i : INT;
+  aUppLim : LREAL;
+  aLowLim : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// ReachedLimits::ACC0
+IF t[1] < 0.0
+THEN
+  RETURN;
+END_IF
+
+t_sum[0] := 0;
+t_sum[1] := t[1];
+t_sum[2] := t[1];
+t_sum[3] := t[1];
+t_sum[4] := t[1];
+t_sum[5] := t[1];
+t_sum[6] := t[1];
+
+// For numerical reasons, is that needed?
+IF t_sum[6] > Constants.Tmax
+THEN
+  RETURN;
+END_IF
+
+
+j[0] := 0;
+j[1] := 0;
+j[2] := 0;
+j[3] := 0;
+j[4] := 0;
+j[5] := 0;
+j[6] := 0;
+
+a[0] := 0;
+a[1] := af;
+a[2] := 0;
+a[3] := 0;
+a[4] := 0;
+a[5] := 0;
+a[6] := 0;
+
+FOR i:=0 TO 6
+DO
+  v[i+1] := v[i] + t[i] * a[i];
+  p[i+1] := p[i] + t[i] * (v[i] + t[i] * a[i] / 2);
+END_FOR
+
+THIS^.JerkSigns := jerkSigns;
+THIS^.Limits := limits;
+THIS^.Direction := SEL(af > 0, ProfileDirection.Down, ProfileDirection.Up);
+
+// Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
+CheckForSecondOrderVelocity := ABS(v[6] - vf) < Constants.VelocityPrecision;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CheckForSecondOrderVelocityWithTiming" Id="{268274ba-8baf-4ee0-a4bb-6de0fd1ae36e}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForSecondOrderVelocityWithTiming : BOOL
+VAR_INPUT
+  jerkSigns : ProfileJerkSigns;
+  limits : ReachedLimits;  
+  af : LREAL;
+END_VAR
+VAR
+  i : INT;
+  aUppLim : LREAL;
+  aLowLim : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckForSecondOrderVelocityWithTiming := CheckForSecondOrderVelocity(jerkSigns, limits, af); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CheckForSecondOrderVelocityWithTiming2" Id="{915c6be4-07ad-4bf6-8b4d-9b5951f90edc}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForSecondOrderVelocityWithTiming2 : BOOL
+VAR_INPUT
+  jerkSigns : ProfileJerkSigns;
+  limits : ReachedLimits;  
+  tf : LREAL;
+  af : LREAL;
+  aMax : LREAL;
+  aMin : LREAL;
+END_VAR
+VAR
+  i : INT;
+  aUppLim : LREAL;
+  aLowLim : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckForSecondOrderVelocityWithTiming2 :=
+ (aMin - Constants.Epsilon < af)
+ AND_THEN (af < aMax + Constants.Epsilon)
+ AND_THEN CheckForSecondOrderVelocityWithTiming(jerkSigns, limits, af); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CheckForVelocity" Id="{dec39d38-9a64-41bc-99b6-6a7b67c016da}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForVelocity : BOOL

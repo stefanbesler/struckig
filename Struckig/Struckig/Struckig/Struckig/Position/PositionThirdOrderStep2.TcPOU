@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="PositionThirdOrderStep2" Id="{76034b67-20c8-4cde-bd76-8a31c34aeac6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK INTERNAL PositionThirdOrderStep2
+    <Declaration><![CDATA[/// Mathematical equations for Step 2 in third order position interface: Time synchronization
+FUNCTION_BLOCK INTERNAL PositionThirdOrderStep2
 VAR
   minimize_jerk : BOOL;
   v0, a0 : LREAL;

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.35">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.5">
 	<Project ProjectGUID="{09E32258-5E9C-4B4C-B0F4-0DD7C43D94DC}" Target64Bit="true" ShowHideConfigurations="#x106">
 		<System>
 			<Settings MaxCpus="4" NonWinCpus="1">
@@ -13,12 +13,12 @@
 		</System>
 		<Plc>
 			<Project GUID="{D01D1C3D-8E1A-4350-AEDC-05EAE2EFCF27}" Name="Struckig_unittest" PrjFilePath="Struckig_unittest\Struckig_unittest.plcproj" TmcFilePath="Struckig_unittest\Struckig_unittest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="Struckig_unittest\Struckig_unittest.tmc" TmcHash="{82C2D832-E383-5EDC-7D9B-5C61E2215D48}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{C7DA745A-4D7C-22E7-5D93-42950B3C4842}" TmcPath="Struckig_unittest\Struckig_unittest.tmc">
 					<Name>Struckig_unittest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
 						<Context>
-							<Id NeedCalleeCall="true">0</Id>
+							<Id>0</Id>
 							<Name>PlcTask</Name>
 							<ManualConfig>
 								<OTCID>#x02010030</OTCID>

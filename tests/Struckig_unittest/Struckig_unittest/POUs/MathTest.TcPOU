@@ -8,6 +8,9 @@ Test_LrealFromBits();
 Test_Ceil();
 Test_Fmod();
 Test_Clamp();
+Test_IsInfinity();
+Test_IsNaN();
+
 ]]></ST>
     </Implementation>
     <Method Name="Test_Cbrt" Id="{fb4f66a2-1f91-4a1e-b1d2-83e0fdba8205}">
@@ -119,6 +122,54 @@ AssertEquals_LREAL(5, actual, 1E-20, message:='');
 
 actual := Struckig.Fmod(123.123, 0.121);
 AssertEquals_LREAL(0.066, actual, 1E-8, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IsInfinity" Id="{afbf6fd7-bb1e-46d7-8597-d224d2d12388}">
+      <Declaration><![CDATA[METHOD Test_IsInfinity
+VAR
+  actual : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('IsInfinity');
+
+actual := Struckig.IsInfinity(5);
+AssertFalse(actual, message:='');
+
+actual := Struckig.IsInfinity(-5);
+AssertFalse(actual, message:='');
+
+actual := Struckig.IsInfinity(Struckig.Constants.Infinity);
+AssertTrue(actual, message:='');
+
+actual := Struckig.IsInfinity(-Struckig.Constants.Infinity);
+AssertTrue(actual, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IsNaN" Id="{61a1ea2d-3942-48ff-8713-ea83e5beea49}">
+      <Declaration><![CDATA[METHOD Test_IsNaN
+VAR
+  actual : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('IsNaN');
+
+actual := Struckig.IsNaN(5);
+AssertFalse(actual, message:='');
+
+actual := Struckig.IsNaN(-5);
+AssertFalse(actual, message:='');
+
+actual := Struckig.IsNaN(SQRT(-1));
+AssertTrue(actual, message:='');
+
+actual := Struckig.IsNaN(-SQRT(-1));
+AssertTrue(actual, message:='');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

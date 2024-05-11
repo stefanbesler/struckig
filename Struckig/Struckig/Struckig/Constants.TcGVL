@@ -3,7 +3,7 @@
   <GVL Name="Constants" Id="{2aa9bca8-7d9a-4e76-bf88-1bddc5102572}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'hide'}
-VAR_GLOBAL INTERNAL CONSTANT
+VAR_GLOBAL CONSTANT
   BrakeEpsilon : LREAL := 2.2E-14;
   DoubleEpsilon : LREAL := 2.2204460492503131E-016; // smallest such that 1.0+Constants.DoubleEpsilon != 1.0
   Epsilon : LREAL := 1E-8;

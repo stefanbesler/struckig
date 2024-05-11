@@ -31,11 +31,17 @@ VAR
   _newSection : INT; //< not used in Struckig, ruckig pro feature
   _blocks : ARRAY[0..ParameterList.MaxDoFs] OF Block;  
   _profiles : ARRAY[0..ParameterList.MaxDoFs] OF ProfileDesc;
-  _independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;	
-  _positionStep1 : PositionThirdOrderStep1;
-  _positionStep2 : PositionThirdOrderStep2;
-  _velocityStep1 : VelocityThirdOrderStep1;
-  _velocityStep2 : VelocityThirdOrderStep2;  
+  _independentMinDurations : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  
+  _positionThirdOrderStep1 : PositionThirdOrderStep1;
+  _positionThirdOrderStep2 : PositionThirdOrderStep2;
+  _velocityThirdOrderStep1 : VelocityThirdOrderStep1;
+  _velocityThirdOrderStep2 : VelocityThirdOrderStep2;
+  
+  //_positionSecondOrderStep1 : PositionSecondOrderStep1;
+  //_positionSecondOrderStep2 : PositionSecondOrderStep2;
+  _velocitySecondOrderStep1 : VelocitySecondOrderStep1;
+  _velocitySecondOrderStep2 : VelocitySecondOrderStep2;    
   
   _inp_min_velocity, _inp_min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _inp_per_dof_control_interface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface
@@ -292,11 +298,24 @@ DO
   CASE _inp_per_dof_control_interface[dof]
   OF
     ControlInterfaceType.Position:
-      _positionStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_profile := _positionStep1.Get(p, _blocks[dof]);
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN
+        _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);      
+      ELSE
+        _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);          
+      END_IF
+
     ControlInterfaceType.Velocity:
-      _velocityStep1.Set(p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_profile := _velocityStep1.Get(p, _blocks[dof]);
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN    
+        _velocityThirdOrderStep1.Set(p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_profile := _velocityThirdOrderStep1.Get(p, _blocks[dof]);
+      ELSE
+        _velocitySecondOrderStep1.Set(p.v[0], p.vf, MaxAcceleration[dof], _inp_min_acceleration[dof]);
+        found_profile := _velocitySecondOrderStep1.Get(p, _blocks[dof]);       
+      END_IF        
 	END_CASE
   
   IF NOT found_profile
@@ -484,12 +503,25 @@ DO
   CASE (_inp_per_dof_control_interface[dof])
   OF  
     ControlInterfaceType.Position: 
-      _positionStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_time_synchronization := _positionStep2.Get(p);
+    
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN       
+        _positionThirdOrderStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_time_synchronization := _positionThirdOrderStep2.Get(p);
+      ELSE
+        _positionThirdOrderStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_time_synchronization := _positionThirdOrderStep2.Get(p);        
+      END_IF
 
     ControlInterfaceType.Velocity: 
-      _velocityStep2.Set(t_profile, p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      found_time_synchronization := _velocityStep2.Get(p);
+      IF NOT IsInfinity(MaxJerk[dof])
+      THEN    
+        _velocityThirdOrderStep2.Set(t_profile, p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        found_time_synchronization := _velocityThirdOrderStep2.Get(p);
+      ELSE
+        _velocitySecondOrderStep2.Set(t_profile, p.v[0], p.vf, MaxAcceleration[dof], _inp_min_acceleration[dof]);
+        found_time_synchronization := _velocitySecondOrderStep2.Get(p);
+      END_IF
   END_CASE
 
   IF NOT found_time_synchronization

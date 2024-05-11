@@ -50,7 +50,8 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="Finalize" Id="{0fcf778f-80e5-4f55-9da3-b7c243c42728}">
-      <Declaration><![CDATA[METHOD Finalize
+      <Declaration><![CDATA[/// Finalize third-order braking by integrating along kinematic state
+METHOD Finalize
 VAR_IN_OUT
   ps : LREAL;
   vs : LREAL;
@@ -83,7 +84,8 @@ END_IF
       </Implementation>
     </Method>
     <Method Name="PositionBrakeTrajectory" Id="{95c53b9d-c397-464e-b5fb-c3d4cad36b7c}">
-      <Declaration><![CDATA[METHOD PositionBrakeTrajectory
+      <Declaration><![CDATA[/// Calculate brake trajectory for third-order position interface
+METHOD PositionBrakeTrajectory
 VAR_INPUT
   v0, a0 : LREAL;
   vMax, vMin : LREAL;
@@ -175,7 +177,8 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="VelocityBrakeTrajectory" Id="{33c02e8e-5511-4646-952e-73b09c9f73ca}">
-      <Declaration><![CDATA[METHOD VelocityBrakeTrajectory
+      <Declaration><![CDATA[/// Calculate brake trajectory for third-order velocity interface
+METHOD VelocityBrakeTrajectory
 VAR_INPUT
   v0, a0 : LREAL;
   aMax, aMin : LREAL;
