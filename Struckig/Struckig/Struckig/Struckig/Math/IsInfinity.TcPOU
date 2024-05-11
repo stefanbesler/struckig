@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="IsInfinity" Id="{d2100733-1537-4ab5-ad1d-c169a14f6240}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION IsInfinity : BOOL
+VAR_INPUT
+  value : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsInfinity := value = Constants.Infinity OR_ELSE value = -Constants.Infinity;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

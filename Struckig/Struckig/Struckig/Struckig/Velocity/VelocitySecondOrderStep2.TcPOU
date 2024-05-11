@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="VelocitySecondOrderStep2" Id="{c768c75a-7183-4e5d-bca5-aa13c5eae104}" SpecialFunc="None">
+    <Declaration><![CDATA[/// Mathematical equations for Step 1 in third order velocity interface: Extremal profiles
+FUNCTION_BLOCK INTERNAL VelocitySecondOrderStep2 
+VAR
+  _aMax : LREAL;
+  _aMin : LREAL;
+  tf : LREAL;
+  vd : LREAL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Get" Id="{1da34274-94e2-41bd-b621-5012dcb0c1ef}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+  profile : ProfileDesc;
+END_VAR
+VAR
+  af : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[af := vd / tf;
+profile.t[0] := 0;
+profile.t[1] := tf;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, af, _aMax, _aMin)
+THEN
+  profile.pf := profile.p[6];
+  Get := TRUE;
+  RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{05faaf4e-d54e-47d4-a927-bc48b448272d}">
+      <Declaration><![CDATA[METHOD Set
+VAR_INPUT
+  tf : LREAL;
+  v0, vf : LREAL; 
+  aMax, aMin : LREAL;  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^._aMax := aMax;
+THIS^._aMin := aMin;
+THIS^.tf := tf;
+THIS^.vd := vf - v0;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

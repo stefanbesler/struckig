@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="IsNaN" Id="{ea1d8573-8eaa-4d73-a977-92472b6d58b4}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION IsNaN : BOOL
+VAR_INPUT
+  value : LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IsNaN := value <> value;]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
