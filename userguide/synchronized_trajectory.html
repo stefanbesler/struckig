@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/45a7d4f134c5f5f1bd3c6d029879c7b7c08c18ea/docs/userguide/synchronized_trajectory.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/5f8ae4f4bb80d14f854e225db34190d6bbfc4462/docs/userguide/synchronized_trajectory.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -83,13 +83,62 @@
         <article data-uid="">
 <h1 id="synchronized-trajectory">Synchronized trajectory</h1>
 
-<h1 id="time-synchronization">Time Synchronization</h1>
-<h1 id="phase-synchronization">Phase Synchronization</h1>
+<p>This graphs shows two trajectories with three degree-of-freedem, respectively.
+The settings for both trajectories are the same with the exception of the synchronization mode.
+While red curves show the phase-synchronized trajectory, the blue ones show the time-sychronized trajectory.</p>
+<h2 id="jerk-limited-trajectory-third-order-trajectory">Jerk-limited trajectory (third-order trajectory)</h2>
+<pre><code>  otgTimeSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  EnableAutoPropagate := TRUE,
+                  Synchronization := SynchronizationType.TimeSync,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+                  MaxJerk :=             [ 1.0, 1.0, 1.0 ]
+  ); 
+  
+  otgPhaseSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  EnableAutoPropagate := TRUE,
+                  Synchronization := SynchronizationType.Phase,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+                  MaxJerk :=             [ 1.0, 1.0, 1.0 ]
+  ); 
+</code></pre>
 <div class="gallery">
   <div class="gallery-item">
     <figure>
       <img src="../images/synchronization_phase_vs_time.png" alt="Visualization overview">
-      <figcaption>This graph shows two trajectories with three degree-of-freedem, respectively. The settings for both trajectories are the same with the exception of the synchronization mode. While red curves show the phase-synchronized trajectory, the blue ones show the time-sychronized trajectory.</figcaption>
+    </figure>
+  </div>
+</div>
+<h2 id="infinite-jerk-trajectory-second-order-trajectory">Infinite-jerk trajectory (second-order trajectory)</h2>
+<pre><code>  otgTimeSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  EnableAutoPropagate := TRUE,
+                  Synchronization := SynchronizationType.TimeSync,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
+                  // note: MaxJerk by default is Struckig.Constants.Infinity -&gt; no jerk limit
+  ); 
+  
+  otgPhaseSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  EnableAutoPropagate := TRUE,
+                  Synchronization := SynchronizationType.Phase,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
+                  // note: MaxJerk by default is Struckig.Constants.Infinity -&gt; no jerk limit
+  ); 
+</code></pre>
+<div class="gallery">
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/synchronization_phase_vs_time.png" alt="Visualization overview">
     </figure>
   </div>
 </div>
@@ -97,7 +146,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/45a7d4f134c5f5f1bd3c6d029879c7b7c08c18ea/docs/userguide/synchronized_trajectory.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/5f8ae4f4bb80d14f854e225db34190d6bbfc4462/docs/userguide/synchronized_trajectory.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

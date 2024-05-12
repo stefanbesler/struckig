@@ -83,6 +83,16 @@
       "version": ""
     },
     {
+      "type": "Resource",
+      "source_relative_path": "images/synchronization_phase_vs_time_2nd_order.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/synchronization_phase_vs_time_2nd_order.png"
+        }
+      },
+      "version": ""
+    },
+    {
       "type": "Conceptual",
       "source_relative_path": "index.md",
       "output": {
