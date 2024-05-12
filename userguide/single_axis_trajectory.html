@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/5f8ae4f4bb80d14f854e225db34190d6bbfc4462/docs/userguide/single_axis_trajectory.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/31267a810889b5e904cb7bd1a48cfca35fd6892d/docs/userguide/single_axis_trajectory.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -83,12 +83,34 @@
         <article data-uid="">
 <h1 id="single-axis-trajectory">Single axis trajectory</h1>
 
-<p>tbd</p>
+<p>This example shows how to calculate a single axis with some kinematics and a minimum duration constraint</p>
+<pre><code>  otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
+          EnableAutoPropagate := TRUE,
+          Synchronization := SynchronizationType.TimeSync, // one axis -&gt; no synchronistation is required
+          MinDuration := 10.0, // if MinDuration is set to a value &gt; 0 it is considered in trajectory calculation
+          MaxVelocity := [ 2000.0 ],
+          MaxAcceleration := [ 20000.0 ],
+          MaxJerk := [ 800000.0 ],
+          CurrentPosition := [ 0 ],
+          CurrentVelocity := [ 0 ],
+          CurrentAcceleration := [ 0 ],
+          TargetPosition := [ 100 ],
+          TargetVelocity := [ 0.0, 0.0, 0.0 ],
+          TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+  );
+</code></pre>
+<div class="gallery">
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/single_axis_trajectory.png" alt="Visualization overview">
+    </figure>
+  </div>
+</div>
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/5f8ae4f4bb80d14f854e225db34190d6bbfc4462/docs/userguide/single_axis_trajectory.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/31267a810889b5e904cb7bd1a48cfca35fd6892d/docs/userguide/single_axis_trajectory.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

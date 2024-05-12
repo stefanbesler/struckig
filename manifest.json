@@ -74,6 +74,16 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "images/single_axis_trajectory.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/single_axis_trajectory.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "images/synchronization_phase_vs_time.png",
       "output": {
         "resource": {
