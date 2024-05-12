@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="Integrate" Id="{16cb42c4-19cc-4adb-a52f-74081b68ccf0}" SpecialFunc="None">
-    <Declaration><![CDATA[/// Integrate with constant jerk for duration t. Returns new position, new velocity, and new acceleration.
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Integrate with constant jerk for duration t. Returns new position, new velocity, and new acceleration.
 FUNCTION INTERNAL Integrate
 VAR_INPUT
   t, p0, v0, a0, j : LREAL;

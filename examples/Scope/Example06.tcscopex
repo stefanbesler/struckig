@@ -26,8 +26,8 @@
   <ImagesDeleteMode>Disabled</ImagesDeleteMode>
   <Layout>&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;Layout&gt;
-  &lt;Window Guid="0b232ff2-3b6f-45eb-ae62-6cbdf73df8f6" LastFocused="133600213915646235" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="3a05e574-9c3b-446f-9655-8701d5762654" DocumentIndexInWindowGroup="1" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
-  &lt;Window Guid="6465cfee-9ca5-4795-a461-12766f33b7d4" LastFocused="133600213909075913" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="3a05e574-9c3b-446f-9655-8701d5762654" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
+  &lt;Window Guid="0b232ff2-3b6f-45eb-ae62-6cbdf73df8f6" LastFocused="133600214612447284" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="3a05e574-9c3b-446f-9655-8701d5762654" DocumentIndexInWindowGroup="1" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
+  &lt;Window Guid="6465cfee-9ca5-4795-a461-12766f33b7d4" LastFocused="133600214535470372" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="3a05e574-9c3b-446f-9655-8701d5762654" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
   &lt;DocumentContainer Dock="5"&gt;
     &lt;SplitLayoutSystem WorkingSize="250, 400" SplitMode="0"&gt;
       &lt;ControlLayoutSystem WorkingSize="250, 400" Guid="3a05e574-9c3b-446f-9655-8701d5762654" Collapsed="0" SelectedControl="0b232ff2-3b6f-45eb-ae62-6cbdf73df8f6"&gt;
@@ -42,7 +42,9 @@
   <MainServer>127.0.0.1.1.1</MainServer>
   <Name>Scope Project</Name>
   <RecordTime>6000000000</RecordTime>
-  <ServerVersions />
+  <ServerVersions>
+    <Version>3.4.3146.11</Version>
+  </ServerVersions>
   <SortPriority>100</SortPriority>
   <StopMode>AutoStop</StopMode>
   <SubMember>
@@ -81,7 +83,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>dd0afbb7-2474-4416-a54b-31e4d49742dc</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534408</IndexOffset>
+          <IndexOffset>648480</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[0]</Name>
           <Oversample>0</Oversample>
@@ -163,7 +165,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>776d7377-b527-441f-828b-ec0fadd13b7b</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534416</IndexOffset>
+          <IndexOffset>648488</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[1]</Name>
           <Oversample>0</Oversample>
@@ -245,7 +247,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>41879157-344a-489a-955e-e4d1957c6e7c</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534424</IndexOffset>
+          <IndexOffset>648496</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[2]</Name>
           <Oversample>0</Oversample>
@@ -327,7 +329,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>9ed58070-e080-4fce-a2fb-2b2d83e11c51</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534472</IndexOffset>
+          <IndexOffset>648544</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[0]</Name>
           <Oversample>0</Oversample>
@@ -409,7 +411,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>ccfc9410-4e4c-415b-89c2-39baacd901b3</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534480</IndexOffset>
+          <IndexOffset>648552</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[1]</Name>
           <Oversample>0</Oversample>
@@ -491,7 +493,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>4c2f46a7-8cc6-400d-9195-3aaf7827bab2</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534488</IndexOffset>
+          <IndexOffset>648560</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[2]</Name>
           <Oversample>0</Oversample>
@@ -573,7 +575,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>fe7b7495-0423-4a8f-bee2-895731d149a0</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534536</IndexOffset>
+          <IndexOffset>648608</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[0]</Name>
           <Oversample>0</Oversample>
@@ -655,7 +657,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>cc154da2-c767-4c99-a718-81902cf51b5f</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534544</IndexOffset>
+          <IndexOffset>648616</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[1]</Name>
           <Oversample>0</Oversample>
@@ -737,7 +739,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>e90a969f-de13-497b-997d-57f4f80f3c1f</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534552</IndexOffset>
+          <IndexOffset>648624</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[2]</Name>
           <Oversample>0</Oversample>
@@ -819,7 +821,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>93321c2a-6858-462f-ad31-9edc7d150d56</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509872</IndexOffset>
+          <IndexOffset>605040</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[0] (1)</Name>
           <Oversample>0</Oversample>
@@ -901,7 +903,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>dd64c8fc-8e92-4433-ae5c-c2cba711f2a6</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509880</IndexOffset>
+          <IndexOffset>605048</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[1] (1)</Name>
           <Oversample>0</Oversample>
@@ -983,7 +985,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>6c94561e-3ed2-4d26-b913-2e34d0ce0ffb</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509888</IndexOffset>
+          <IndexOffset>605056</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[2] (1)</Name>
           <Oversample>0</Oversample>
@@ -1065,7 +1067,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>699b6cd1-a1b8-4098-a234-f1d7ae3b8f3c</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509936</IndexOffset>
+          <IndexOffset>605104</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[0] (1)</Name>
           <Oversample>0</Oversample>
@@ -1147,7 +1149,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>e0907b57-eb14-4cc2-bdb9-faeeaa727d08</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509944</IndexOffset>
+          <IndexOffset>605112</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[1] (1)</Name>
           <Oversample>0</Oversample>
@@ -1229,7 +1231,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>6d73f6b0-8ec4-40d5-b986-6a2d956122c3</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509952</IndexOffset>
+          <IndexOffset>605120</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[2] (1)</Name>
           <Oversample>0</Oversample>
@@ -1311,7 +1313,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>d2256ab3-9143-44f0-866c-7dddda8abf44</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510000</IndexOffset>
+          <IndexOffset>605168</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[0] (1)</Name>
           <Oversample>0</Oversample>
@@ -1393,7 +1395,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>6a563c46-eb1e-40b4-a260-5556fe4a6a15</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510008</IndexOffset>
+          <IndexOffset>605176</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[1] (1)</Name>
           <Oversample>0</Oversample>
@@ -1475,7 +1477,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>21241215-9383-4a1c-abaf-b22f133aef91</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510016</IndexOffset>
+          <IndexOffset>605184</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[2] (1)</Name>
           <Oversample>0</Oversample>
@@ -1557,7 +1559,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>c22e3719-12b8-411f-9731-d25face188cc</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534408</IndexOffset>
+          <IndexOffset>735360</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[0] (2)</Name>
           <Oversample>0</Oversample>
@@ -1639,7 +1641,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>48711bbf-d3ce-4d3e-94f9-a0247e68b16f</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534416</IndexOffset>
+          <IndexOffset>735368</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[1] (2)</Name>
           <Oversample>0</Oversample>
@@ -1721,7 +1723,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>342d53c4-6d20-4f46-879b-915d130f9f9e</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534424</IndexOffset>
+          <IndexOffset>735376</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[2] (2)</Name>
           <Oversample>0</Oversample>
@@ -1803,7 +1805,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>8e7c8cf7-c0b9-4bca-95ea-93c305cd393c</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534472</IndexOffset>
+          <IndexOffset>735424</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[0] (2)</Name>
           <Oversample>0</Oversample>
@@ -1885,7 +1887,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>22096d83-babe-483c-ae05-bc529b89a42d</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534480</IndexOffset>
+          <IndexOffset>735432</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[1] (2)</Name>
           <Oversample>0</Oversample>
@@ -1967,7 +1969,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>8d6bf5d6-fbb8-46af-83fb-87a6efea2ddf</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534488</IndexOffset>
+          <IndexOffset>735440</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[2] (2)</Name>
           <Oversample>0</Oversample>
@@ -2049,7 +2051,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>6cb0d72d-4d6b-4649-9393-acc75c0fc4c9</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534536</IndexOffset>
+          <IndexOffset>735488</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[0] (2)</Name>
           <Oversample>0</Oversample>
@@ -2131,7 +2133,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>087b31d6-9454-4b2a-ac13-daf6434cd2a5</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534544</IndexOffset>
+          <IndexOffset>735496</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[1] (2)</Name>
           <Oversample>0</Oversample>
@@ -2213,7 +2215,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>9a423d2b-a6dc-470d-8c49-f910ee45cdfe</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>534552</IndexOffset>
+          <IndexOffset>735504</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[2] (2)</Name>
           <Oversample>0</Oversample>
@@ -2295,7 +2297,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>5dd01882-803e-4eda-a16c-ea86ab7a2b10</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509872</IndexOffset>
+          <IndexOffset>691920</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[0] (3)</Name>
           <Oversample>0</Oversample>
@@ -2377,7 +2379,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>9308888b-f1a0-4d75-96cd-68f5507fa6f9</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509880</IndexOffset>
+          <IndexOffset>691928</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[1] (3)</Name>
           <Oversample>0</Oversample>
@@ -2459,7 +2461,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>062c8077-4b42-486a-8020-5b64968083b1</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509888</IndexOffset>
+          <IndexOffset>691936</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewPosition[2] (3)</Name>
           <Oversample>0</Oversample>
@@ -2541,7 +2543,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>cd58b751-e874-4929-8bd8-17dde9bde784</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509936</IndexOffset>
+          <IndexOffset>691984</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[0] (3)</Name>
           <Oversample>0</Oversample>
@@ -2623,7 +2625,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>55c01392-77f4-409b-bc2f-4064179c8208</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509944</IndexOffset>
+          <IndexOffset>691992</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[1] (3)</Name>
           <Oversample>0</Oversample>
@@ -2705,7 +2707,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>35b8cc5f-e852-469c-b2c9-915e96541349</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>509952</IndexOffset>
+          <IndexOffset>692000</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewVelocity[2] (3)</Name>
           <Oversample>0</Oversample>
@@ -2787,7 +2789,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>d750c36b-1afe-4d62-a218-b8651d93b700</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510000</IndexOffset>
+          <IndexOffset>692048</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[0] (3)</Name>
           <Oversample>0</Oversample>
@@ -2869,7 +2871,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>ce93b22c-ead3-4253-8513-0e644d4dc209</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510008</IndexOffset>
+          <IndexOffset>692056</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[1] (3)</Name>
           <Oversample>0</Oversample>
@@ -2951,7 +2953,7 @@
           <ForceOversampling>false</ForceOversampling>
           <Guid>1f444ea8-98f9-4e1b-a4f6-296854f07e45</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>510016</IndexOffset>
+          <IndexOffset>692064</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>NewAcceleration[2] (3)</Name>
           <Oversample>0</Oversample>
@@ -5290,7 +5292,7 @@
               <ScaleOnZoom>true</ScaleOnZoom>
               <SortPriority>100</SortPriority>
               <Title>ChartZoomStyle_470</Title>
-              <YZoom>true</YZoom>
+              <YZoom>false</YZoom>
             </ChartZoomStyle>
             <ChartMenuStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <ButtonSize>

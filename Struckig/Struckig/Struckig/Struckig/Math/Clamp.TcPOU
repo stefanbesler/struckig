@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="Clamp" Id="{33b80c2e-f513-4ac6-8fcc-f24e2eb4571f}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION Clamp : LREAL
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+FUNCTION Clamp : LREAL
 VAR_INPUT
   value : LREAL;
   minimum : LREAL;

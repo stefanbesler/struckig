@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="BrakeProfile" Id="{1eceebc8-e02e-4905-a883-8b9d67dc9558}" SpecialFunc="None">
-    <Declaration><![CDATA[/// Calculates (pre- or post-) profile to get current or final state below the limits
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Calculates (pre- or post-) profile to get current or final state below the limits
 FUNCTION_BLOCK INTERNAL BrakeProfile
 VAR_INPUT
   Duration : LREAL; //! Overall duration

@@ -21,11 +21,12 @@
   <Guid>01919f4a-989a-4e32-8b02-1ce3d4050e08</Guid>
   <HeadlessServer />
   <HeadlessServerConnectionId>00000000-0000-0000-0000-000000000000</HeadlessServerConnectionId>
-  <IsFileBased>true</IsFileBased>
-  <IsTemplate>false</IsTemplate>
+  <ImageAutoDeleteCapacity>0</ImageAutoDeleteCapacity>
+  <ImageAutoDeleteOlderThan>0</ImageAutoDeleteOlderThan>
+  <ImagesDeleteMode>Disabled</ImagesDeleteMode>
   <Layout>&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;Layout&gt;
-  &lt;Window Guid="083a97ad-bb97-428d-8acb-df20aa9c1a74" LastFocused="132744711088222391" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
+  &lt;Window Guid="083a97ad-bb97-428d-8acb-df20aa9c1a74" LastFocused="133600219990043678" DockedSize="200" PopupSize="0" FloatingLocation="-1, -1" FloatingSize="550, 400" LastOpenDockSituation="Document" LastFixedDockSituation="Document" LastFixedDockLocation="Right" LastFloatingWindowGuid="00000000-0000-0000-0000-000000000000" LastDockContainerCount="0" LastDockContainerIndex="0" DockedWorkingSize="250, 400" DockedWindowGroupGuid="00000000-0000-0000-0000-000000000000" DockedIndexInWindowGroup="0" DockedSplitPath="0" DocumentWorkingSize="250, 400" DocumentWindowGroupGuid="2100c557-32fc-425a-8ca9-42158f0dbb9d" DocumentIndexInWindowGroup="0" DocumentSplitPath="0" FloatingWorkingSize="250, 400" FloatingWindowGroupGuid="00000000-0000-0000-0000-000000000000" FloatingIndexInWindowGroup="0" FloatingSplitPath="0" /&gt;
   &lt;DocumentContainer Dock="5"&gt;
     &lt;SplitLayoutSystem WorkingSize="250, 400" SplitMode="0"&gt;
       &lt;ControlLayoutSystem WorkingSize="250, 400" Guid="2100c557-32fc-425a-8ca9-42158f0dbb9d" Collapsed="0" SelectedControl="083a97ad-bb97-428d-8acb-df20aa9c1a74"&gt;
@@ -39,6 +40,9 @@
   <MainServer>127.0.0.1.1.1</MainServer>
   <Name>Scope Project</Name>
   <RecordTime>6000000000</RecordTime>
+  <ServerVersions>
+    <Version>3.4.3146.11</Version>
+  </ServerVersions>
   <SortPriority>100</SortPriority>
   <StopMode>AutoStop</StopMode>
   <SubMember>
@@ -46,7 +50,6 @@
       <Comment />
       <DisplayColor>Black</DisplayColor>
       <Guid>ab676000-2c9a-437d-9bc6-54ac469151b3</Guid>
-      <IsFileBased>false</IsFileBased>
       <Name>DataPool</Name>
       <SortPriority>0</SortPriority>
       <SubMember>
@@ -56,7 +59,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Current state</Comment>
+          <Comment>&lt; Current state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -73,12 +77,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>1</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>a42f7f67-81eb-4169-b141-fc66074ac4ae</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489424</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>560880</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentPosition[0]</Name>
           <Oversample>0</Oversample>
@@ -118,10 +121,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -138,7 +141,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Current state</Comment>
+          <Comment>&lt; Current state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -155,12 +159,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>2</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>0fc1f96b-ae6e-4d27-ae6f-ad34e083a4e3</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489488</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>560944</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentVelocity[0]</Name>
           <Oversample>0</Oversample>
@@ -200,10 +203,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -220,7 +223,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Current state</Comment>
+          <Comment>&lt; Current state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -237,12 +241,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>3</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>40bd0011-56cc-4cc1-87a6-8bfbb290bdd8</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489552</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>561008</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>CurrentAcceleration[0]</Name>
           <Oversample>0</Oversample>
@@ -282,10 +285,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.CurrentAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -302,7 +305,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Target state</Comment>
+          <Comment>&lt; Target state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -319,12 +323,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>4</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>9f0345cf-de77-4027-84cc-8e723b603752</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489616</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>561072</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>TargetPosition[0]</Name>
           <Oversample>0</Oversample>
@@ -364,10 +367,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.TargetPosition[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -384,7 +387,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Target state</Comment>
+          <Comment>&lt; Target state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -401,12 +405,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>5</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>0b647e4a-02cc-4d0b-8b1c-2c514a2678a9</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489680</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>561136</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>TargetVelocity[0]</Name>
           <Oversample>0</Oversample>
@@ -446,10 +449,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.TargetVelocity[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -466,7 +469,8 @@
           <ArrayLength>0</ArrayLength>
           <BaseSampleTime>10000</BaseSampleTime>
           <ChannelStyleInformation />
-          <Comment> Target state</Comment>
+          <Comment>&lt; Target state</Comment>
+          <CompressionMode>Uncompressed</CompressionMode>
           <ContextMask>0</ContextMask>
           <DataAccess>
             <DataAccessMode>
@@ -483,12 +487,11 @@
           <DataType>REAL64</DataType>
           <DisplayColor>Black</DisplayColor>
           <Enabled>true</Enabled>
-          <FileHandle>6</FileHandle>
+          <FileHandle>0</FileHandle>
           <ForceOversampling>false</ForceOversampling>
           <Guid>db316f6a-9096-42f8-9f24-2ffc055cd7aa</Guid>
           <IndexGroup>16448</IndexGroup>
-          <IndexOffset>489744</IndexOffset>
-          <IsFileBased>false</IsFileBased>
+          <IndexOffset>561200</IndexOffset>
           <IsHistorical>false</IsHistorical>
           <Name>TargetAcceleration[0]</Name>
           <Oversample>0</Oversample>
@@ -528,10 +531,10 @@
               <UserPrefix>none</UserPrefix>
             </UserUnit>
           </RawUnit>
+          <SaveOption>IncludeDataInSVDX</SaveOption>
           <ServerHandle>0</ServerHandle>
           <SortPriority>10</SortPriority>
           <SubMember />
-          <Suffix>.svacq</Suffix>
           <SymbolBased>true</SymbolBased>
           <SymbolName>Example05_1DoFs_MinDuration.otg.TargetAcceleration[0]</SymbolName>
           <TargetPort>851</TargetPort>
@@ -543,30 +546,29 @@
           <VariableSize>8</VariableSize>
         </AdsAcquisition>
       </SubMember>
-      <Suffix>.svdp</Suffix>
       <Title>DataPool_4</Title>
     </DataPool>
     <TriggerModule AssemblyName="TwinCAT.Measurement.Scope.API.Model">
       <Comment />
       <DisplayColor>Black</DisplayColor>
       <Guid>55a91272-6fd6-4b69-9273-232011ab3aef</Guid>
-      <IsFileBased>false</IsFileBased>
       <Name>Trigger</Name>
-      <SortPriority>100</SortPriority>
+      <SortPriority>10000</SortPriority>
       <SubMember />
-      <Suffix>.svtm</Suffix>
       <Title>TriggerModule_16</Title>
     </TriggerModule>
     <YTChart AssemblyName="TwinCAT.Measurement.Scope.API.Model">
+      <AnchorTimestamp>0</AnchorTimestamp>
       <AssignedCore>0</AssignedCore>
       <AutoStart>true</AutoStart>
       <Comment />
+      <ConnectedTimeMemberGuid>00000000-0000-0000-0000-000000000000</ConnectedTimeMemberGuid>
       <DefaultDisplayWidth>100000000</DefaultDisplayWidth>
       <DisplayColor>-986896</DisplayColor>
       <DisplayOverwriteMode>false</DisplayOverwriteMode>
+      <DurationLength>0</DurationLength>
       <ForeColor>-16777216</ForeColor>
       <Guid>083a97ad-bb97-428d-8acb-df20aa9c1a74</Guid>
-      <IsFileBased>false</IsFileBased>
       <MasterChart>00000000-0000-0000-0000-000000000000</MasterChart>
       <Name>YT Chart</Name>
       <ShowImageChart>false</ShowImageChart>
@@ -577,11 +579,9 @@
           <DisplayColor>-1</DisplayColor>
           <ForeColor>-16777216</ForeColor>
           <Guid>54c65321-ced1-4050-8015-c2e662a00aef</Guid>
-          <IsFileBased>false</IsFileBased>
           <Name>Overview Chart</Name>
           <OverviewVisible>false</OverviewVisible>
           <SortPriority>100</SortPriority>
-          <Suffix>.svochart</Suffix>
           <Title>OverviewChart_184</Title>
         </OverviewChart>
         <ChartStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -589,7 +589,6 @@
           <DisplayColor>Black</DisplayColor>
           <GradientBackground>1</GradientBackground>
           <Guid>46fd5c50-163b-4196-8d63-ce30ce32955c</Guid>
-          <IsFileBased>false</IsFileBased>
           <Name>Chart Style</Name>
           <ShowName>false</ShowName>
           <SortPriority>100</SortPriority>
@@ -599,11 +598,9 @@
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Guid>8cd1f260-f09b-4d22-9817-255b2c80c551</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>Chartzoom Style</Name>
               <ScaleOnZoom>true</ScaleOnZoom>
               <SortPriority>100</SortPriority>
-              <Suffix>.svstyle</Suffix>
               <Title>ChartZoomStyle_188</Title>
               <YZoom>false</YZoom>
             </ChartZoomStyle>
@@ -614,13 +611,12 @@
               </ButtonSize>
               <Comment />
               <DisplayColor>Black</DisplayColor>
-              <EnabledButtons>3900669951</EnabledButtons>
+              <EnabledButtons>RunButton PauseButton Splitter1 DisplaywidthTextBox Splitter2 ScrollBackBig ScrollBackSmall ScrollForwardSmall ScrollForwardBig Splitter3 PositionTextBox Splitter4 UndoButton RedoButton Splitter5 PanXButton PanXYButton ZoomXButton ZoomXYButton UnzoomButton ZoomOutMaxButton OverviewButton CopyToClipboard OpenCurveCreatorButton</EnabledButtons>
               <EnabledTimeLabels>All</EnabledTimeLabels>
               <Guid>73d4fa09-f0f6-4527-b703-eab2727dd285</Guid>
-              <IsFileBased>false</IsFileBased>
+              <IndexNavigation>false</IndexNavigation>
               <Name>Chartmenu Style</Name>
               <SortPriority>100</SortPriority>
-              <Suffix>.svstyle</Suffix>
               <TimeStripFontSize>8.25</TimeStripFontSize>
               <Title>ChartMenuStyle_190</Title>
               <ToolStripFontSize>8.25</ToolStripFontSize>
@@ -629,7 +625,6 @@
               <VisibleToolStrip>true</VisibleToolStrip>
             </ChartMenuStyle>
           </SubMember>
-          <Suffix>.svstyle</Suffix>
           <Title>ChartStyle_186</Title>
           <ToolTipEnabled>true</ToolTipEnabled>
         </ChartStyle>
@@ -638,7 +633,6 @@
           <DisplayColor>-1</DisplayColor>
           <Enabled>true</Enabled>
           <Guid>f23eba01-f717-4735-bba5-9ffd52045cd5</Guid>
-          <IsFileBased>false</IsFileBased>
           <Name>Axis Group</Name>
           <SortPriority>10</SortPriority>
           <SubMember>
@@ -647,7 +641,6 @@
               <DisplayColor>-16744448</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>ba107825-f8d5-478e-b8a4-c29fcf9b09d4</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>CurrentPosition[0]</Name>
               <SortPriority>10</SortPriority>
               <SubMember>
@@ -657,7 +650,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>13b494f3-4244-4264-aa56-12c400c83e6c</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: CurrentPosition[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -697,9 +689,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_194</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -707,7 +699,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>c74da66b-8800-4f3f-9e15-1d402f7aa6f9</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -718,7 +709,6 @@
                       <FillColor>838893568</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>f456fe81-9203-43c0-8527-140ca2c0e318</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>-16744448</MarkColor>
                       <MarkSize>2</MarkSize>
@@ -726,39 +716,32 @@
                       <Name>Series Style</Name>
                       <SeriesType>Line</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_210</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>d6bd7244-ec57-443f-8f65-845a1b7d9d63</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_211</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>385bf309-22aa-4b99-ada6-793bfc3bca6a</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_212</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_212</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_200</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_196</Title>
             </Channel>
             <ValueAxis AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -766,7 +749,6 @@
               <DisplayColor>Black</DisplayColor>
               <Guid>2770cc57-dd7b-4d2e-8658-24cf406cb8a7</Guid>
               <Inverted>false</Inverted>
-              <IsFileBased>false</IsFileBased>
               <Logarithmic>false</Logarithmic>
               <ManualMax>0.5</ManualMax>
               <ManualMin>-0.5</ManualMin>
@@ -783,7 +765,6 @@
                   <GridDivisions>10</GridDivisions>
                   <GridLineWidth>1</GridLineWidth>
                   <Guid>96907348-959d-401e-a349-c4783d4538af</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <LineWidth>1</LineWidth>
                   <Name>Axis Style (1)</Name>
                   <Precision>6</Precision>
@@ -791,23 +772,19 @@
                   <SortPriority>100</SortPriority>
                   <SubGrid>false</SubGrid>
                   <SubGridDivisions>5</SubGridDivisions>
-                  <Suffix>.svstyle</Suffix>
                   <Title>AxisStyle_204</Title>
                   <Visible>true</Visible>
                 </AxisStyle>
               </SubMember>
-              <Suffix>.svaxis</Suffix>
               <Title>Position (mm)</Title>
             </ValueAxis>
             <MarkerContainer AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Guid>3af0c9d4-2885-42fe-bdbd-a3f355570f3d</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>Marker Container</Name>
               <SortPriority>100</SortPriority>
               <SubMember />
-              <Suffix>.svmc</Suffix>
               <Title>MarkerContainer_208</Title>
             </MarkerContainer>
             <Channel AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -815,7 +792,6 @@
               <DisplayColor>Black</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>500e523d-b007-4c06-8731-15fffda003cb</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>TargetPosition[0]</Name>
               <SortPriority>11</SortPriority>
               <SubMember>
@@ -825,7 +801,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>099605d5-ad6a-486a-8f9d-246b88c47472</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: TargetPosition[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -865,9 +840,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_134</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -875,7 +850,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>ddbfe8eb-0a1c-4b12-8a8f-48ed99bfc423</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style (7)</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -886,7 +860,6 @@
                       <FillColor>838860800</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>333a4b1a-0958-41ba-80e0-05ecc229ce9d</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>Black</MarkColor>
                       <MarkSize>1</MarkSize>
@@ -894,39 +867,32 @@
                       <Name>Series Style (7)</Name>
                       <SeriesType>Stair</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_138</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>d3176717-a382-4e28-ad13-e82fbc345e0d</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style (6)</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_139</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>41485fd1-8a29-400c-a8e4-bdfa6aa549e0</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_140</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_140</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_136</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_132</Title>
             </Channel>
             <TimeAxis AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -934,7 +900,6 @@
               <DisplayColor>Black</DisplayColor>
               <Guid>9691e47d-2b6d-42f5-8c4c-a2cea302a0bf</Guid>
               <Inverted>false</Inverted>
-              <IsFileBased>false</IsFileBased>
               <Logarithmic>false</Logarithmic>
               <ManualMax>100000000</ManualMax>
               <ManualMin>-0.5</ManualMin>
@@ -951,7 +916,6 @@
                   <GridDivisions>10</GridDivisions>
                   <GridLineWidth>1</GridLineWidth>
                   <Guid>1c258e91-5b76-40f2-b9fe-e20b939682c2</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <LineWidth>1</LineWidth>
                   <Name>Axis Style</Name>
                   <Precision>6</Precision>
@@ -959,16 +923,13 @@
                   <SortPriority>100</SortPriority>
                   <SubGrid>false</SubGrid>
                   <SubGridDivisions>5</SubGridDivisions>
-                  <Suffix>.svstyle</Suffix>
                   <Title>AxisStyle_204</Title>
                   <Visible>true</Visible>
                 </AxisStyle>
               </SubMember>
-              <Suffix>.svaxis</Suffix>
               <Title>Time Axis</Title>
             </TimeAxis>
           </SubMember>
-          <Suffix>.svagroup</Suffix>
           <Title>AxisGroup_198</Title>
         </AxisGroup>
         <AxisGroup AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -976,7 +937,6 @@
           <DisplayColor>-1</DisplayColor>
           <Enabled>true</Enabled>
           <Guid>235d31cb-fd07-4213-baa9-a2c53af421b6</Guid>
-          <IsFileBased>false</IsFileBased>
           <Name>Axis Group (2)</Name>
           <SortPriority>11</SortPriority>
           <SubMember>
@@ -985,7 +945,6 @@
               <DisplayColor>-23296</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>1d4408df-5dac-46ae-ab96-b9cca576672a</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>CurrentVelocity[0]</Name>
               <SortPriority>10</SortPriority>
               <SubMember>
@@ -995,7 +954,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>d7b7d0c9-e0be-4263-ae26-5f28ddd047c1</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: CurrentVelocity[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -1035,9 +993,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_194</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -1045,7 +1003,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>663b7c9f-a6b6-4829-98e7-2437be118f77</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style (2)</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -1056,7 +1013,6 @@
                       <FillColor>855614720</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>96880f4c-5f8d-4a43-8e01-b3cb7fc1dc22</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>-23296</MarkColor>
                       <MarkSize>2</MarkSize>
@@ -1064,39 +1020,32 @@
                       <Name>Series Style (2)</Name>
                       <SeriesType>Line</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_210</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>064994b3-6228-435d-871c-cb2f63652cc7</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style (2)</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_233</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>356b29b6-2017-40cd-b68d-f1004f748803</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_234</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_234</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_200</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_196</Title>
             </Channel>
             <ValueAxis AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -1104,7 +1053,6 @@
               <DisplayColor>Black</DisplayColor>
               <Guid>8ff9f30f-d3db-4107-baf9-dd7de75235c4</Guid>
               <Inverted>false</Inverted>
-              <IsFileBased>false</IsFileBased>
               <Logarithmic>false</Logarithmic>
               <ManualMax>0.5</ManualMax>
               <ManualMin>-0.5</ManualMin>
@@ -1121,7 +1069,6 @@
                   <GridDivisions>10</GridDivisions>
                   <GridLineWidth>1</GridLineWidth>
                   <Guid>be21bd72-7f5a-4444-95a7-1b9ca356430b</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <LineWidth>1</LineWidth>
                   <Name>Axis Style (3)</Name>
                   <Precision>6</Precision>
@@ -1129,23 +1076,19 @@
                   <SortPriority>100</SortPriority>
                   <SubGrid>false</SubGrid>
                   <SubGridDivisions>5</SubGridDivisions>
-                  <Suffix>.svstyle</Suffix>
                   <Title>AxisStyle_204</Title>
                   <Visible>true</Visible>
                 </AxisStyle>
               </SubMember>
-              <Suffix>.svaxis</Suffix>
               <Title>Velocity (mm/s)</Title>
             </ValueAxis>
             <MarkerContainer AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Guid>69948fcb-e3f8-4a26-8f82-63ed33727886</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>Marker Container (2)</Name>
               <SortPriority>100</SortPriority>
               <SubMember />
-              <Suffix>.svmc</Suffix>
               <Title>MarkerContainer_231</Title>
             </MarkerContainer>
             <Channel AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -1153,7 +1096,6 @@
               <DisplayColor>Black</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>787090e5-2875-4b5e-ae1d-8d14c6de68f5</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>TargetVelocity[0]</Name>
               <SortPriority>11</SortPriority>
               <SubMember>
@@ -1163,7 +1105,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>3d6d3d9b-1b92-45fa-8626-3b7bac9371a5</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: TargetVelocity[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -1203,9 +1144,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_134</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -1213,7 +1154,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>8174e91e-d46b-4c5b-ae5b-2d9b931cfc1d</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style (9)</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -1224,7 +1164,6 @@
                       <FillColor>838860800</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>4f7327f0-6d66-4eed-a782-82aac3bc2289</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>Black</MarkColor>
                       <MarkSize>1</MarkSize>
@@ -1232,44 +1171,36 @@
                       <Name>Series Style (9)</Name>
                       <SeriesType>Stair</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_138</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>0b477d7b-6018-4f76-818b-4b962e7cfbef</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style (8)</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_153</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>2897e8bc-ae23-4f5f-ae2e-6c0f5f222a1a</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_154</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_154</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_136</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_132</Title>
             </Channel>
             <RefGuid-TimeAxis>9691e47d-2b6d-42f5-8c4c-a2cea302a0bf</RefGuid-TimeAxis>
           </SubMember>
-          <Suffix>.svagroup</Suffix>
           <Title>AxisGroup_198</Title>
         </AxisGroup>
         <AxisGroup AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -1277,7 +1208,6 @@
           <DisplayColor>-1</DisplayColor>
           <Enabled>true</Enabled>
           <Guid>20209a3e-c377-4891-87ac-884e8089cf4b</Guid>
-          <IsFileBased>false</IsFileBased>
           <Name>Axis Group (4)</Name>
           <SortPriority>12</SortPriority>
           <SubMember>
@@ -1286,7 +1216,6 @@
               <DisplayColor>-14774017</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>1495092e-8835-498b-931a-c9664e063b4d</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>CurrentAcceleration[0]</Name>
               <SortPriority>10</SortPriority>
               <SubMember>
@@ -1296,7 +1225,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>268fd181-bc64-4ce1-b84c-b9928eb0cafd</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: CurrentAcceleration[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -1336,9 +1264,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_194</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -1346,7 +1274,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>a8f5622c-643e-4abb-b115-5abbd40a2305</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style (4)</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -1357,7 +1284,6 @@
                       <FillColor>840863999</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>cb5fee4f-bd79-4873-a27f-888ffc719976</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>-14774017</MarkColor>
                       <MarkSize>2</MarkSize>
@@ -1365,39 +1291,32 @@
                       <Name>Series Style (4)</Name>
                       <SeriesType>Line</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_210</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>e392c3b2-3081-423c-bba6-81a43991ea5b</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style (4)</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_255</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>45a647da-d4be-4a9f-bf61-5d2328baa7af</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_256</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_256</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_200</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_196</Title>
             </Channel>
             <RefGuid-TimeAxis>9691e47d-2b6d-42f5-8c4c-a2cea302a0bf</RefGuid-TimeAxis>
@@ -1406,7 +1325,6 @@
               <DisplayColor>Black</DisplayColor>
               <Guid>35992cb3-6f79-4c69-ae24-726c850d9503</Guid>
               <Inverted>false</Inverted>
-              <IsFileBased>false</IsFileBased>
               <Logarithmic>false</Logarithmic>
               <ManualMax>0.5</ManualMax>
               <ManualMin>-0.5</ManualMin>
@@ -1423,7 +1341,6 @@
                   <GridDivisions>10</GridDivisions>
                   <GridLineWidth>1</GridLineWidth>
                   <Guid>0ca2d255-5d93-4dca-abd2-e6a088c220a1</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <LineWidth>1</LineWidth>
                   <Name>Axis Style (5)</Name>
                   <Precision>6</Precision>
@@ -1431,23 +1348,19 @@
                   <SortPriority>100</SortPriority>
                   <SubGrid>false</SubGrid>
                   <SubGridDivisions>5</SubGridDivisions>
-                  <Suffix>.svstyle</Suffix>
                   <Title>AxisStyle_204</Title>
                   <Visible>true</Visible>
                 </AxisStyle>
               </SubMember>
-              <Suffix>.svaxis</Suffix>
               <Title>Acceleration (mm/s²)</Title>
             </ValueAxis>
             <MarkerContainer AssemblyName="TwinCAT.Measurement.Scope.API.Model">
               <Comment />
               <DisplayColor>Black</DisplayColor>
               <Guid>2bd0884a-afc3-4e8d-8333-2b7a2680a9e8</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>Marker Container (4)</Name>
               <SortPriority>100</SortPriority>
               <SubMember />
-              <Suffix>.svmc</Suffix>
               <Title>MarkerContainer_253</Title>
             </MarkerContainer>
             <Channel AssemblyName="TwinCAT.Measurement.Scope.API.Model">
@@ -1455,7 +1368,6 @@
               <DisplayColor>Black</DisplayColor>
               <Enabled>true</Enabled>
               <Guid>cfe0b045-cf98-4ea7-b7e4-e957ed99d482</Guid>
-              <IsFileBased>false</IsFileBased>
               <Name>TargetAcceleration[0]</Name>
               <SortPriority>11</SortPriority>
               <SubMember>
@@ -1465,7 +1377,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>c7164438-a1a8-4df3-99e1-f34d2bd0151d</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Y: TargetAcceleration[0]</Name>
                   <Offset>0</Offset>
                   <ResultingUnit>
@@ -1505,9 +1416,9 @@
                     </UserUnit>
                   </ResultingUnit>
                   <ScaleFactor>1</ScaleFactor>
+                  <ShortInfo />
                   <SortPriority>2</SortPriority>
                   <SubMember />
-                  <Suffix>.svai</Suffix>
                   <Title>AcquisitionInterpreter_134</Title>
                   <Usage>Y</Usage>
                 </AcquisitionInterpreter>
@@ -1515,7 +1426,6 @@
                   <Comment />
                   <DisplayColor>Black</DisplayColor>
                   <Guid>debd5176-4550-4166-8794-985af7367e54</Guid>
-                  <IsFileBased>false</IsFileBased>
                   <Name>Channel Style (11)</Name>
                   <SortPriority>100</SortPriority>
                   <SubMember>
@@ -1526,7 +1436,6 @@
                       <FillColor>838860800</FillColor>
                       <FillMode>None</FillMode>
                       <Guid>eb929ae0-8259-40af-9ef5-10da7560ef55</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <LineWidth>1</LineWidth>
                       <MarkColor>Black</MarkColor>
                       <MarkSize>1</MarkSize>
@@ -1534,57 +1443,49 @@
                       <Name>Series Style (11)</Name>
                       <SeriesType>Stair</SeriesType>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>SeriesStyle_138</Title>
                     </SeriesStyle>
                     <MinMaxStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>2522860f-88c7-4f21-bb12-2b5d7cc96759</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>Min/Max Style (10)</Name>
                       <ShowMax>false</ShowMax>
                       <ShowMin>false</ShowMin>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svstyle</Suffix>
                       <Title>MinMaxStyle_167</Title>
                     </MinMaxStyle>
                     <TimeShiftStyle AssemblyName="TwinCAT.Measurement.Scope.API.Model">
                       <Comment />
                       <DisplayColor>Black</DisplayColor>
                       <Guid>55bfa966-40f0-41e4-8bc9-6db2d61efaf2</Guid>
-                      <IsFileBased>false</IsFileBased>
                       <Name>TimeShiftStyle_168</Name>
                       <SortPriority>100</SortPriority>
-                      <Suffix>.svtss</Suffix>
                       <TimeShift>0</TimeShift>
                       <Title>TimeShiftStyle_168</Title>
                     </TimeShiftStyle>
                   </SubMember>
-                  <Suffix>.svstyle</Suffix>
                   <Title>ChannelStyle_136</Title>
                   <Visible>true</Visible>
                 </ChannelStyle>
               </SubMember>
-              <Suffix>.svchannel</Suffix>
               <Title>Channel_132</Title>
             </Channel>
           </SubMember>
-          <Suffix>.svagroup</Suffix>
           <Title>AxisGroup_198</Title>
         </AxisGroup>
       </SubMember>
-      <Suffix>.svchart</Suffix>
+      <TimeOffset>0</TimeOffset>
+      <TimeRefreshMode>Explicit</TimeRefreshMode>
       <Title>YTChart_183</Title>
+      <TriggerGroupOffset>0</TriggerGroupOffset>
     </YTChart>
   </SubMember>
-  <Suffix>.tcscopex</Suffix>
   <SynchronisationMode>Default</SynchronisationMode>
   <TargetConnectionIds />
   <Title>ScopeProject_3</Title>
   <UseAutoSave>false</UseAutoSave>
   <UseFileStore>true</UseFileStore>
-  <UseUserSettings>true</UseUserSettings>
-  <Version>1.0.0.0</Version>
+  <Version>1.0.0.2</Version>
   <ViewDetailLevel>ExtendedXYOnly</ViewDetailLevel>
 </ScopeProject>

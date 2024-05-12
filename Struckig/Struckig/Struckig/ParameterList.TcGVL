@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <GVL Name="ParameterList" Id="{6cef246a-2041-4266-a931-0bae0d434120}" ParameterList="True">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+{attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
   MaxDoFs : INT := 7;
   MaxIterations : BYTE := 127; // Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)

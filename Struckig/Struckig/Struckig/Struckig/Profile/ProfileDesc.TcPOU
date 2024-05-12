@@ -1,7 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="ProfileDesc" Id="{1331731c-0677-4d13-b754-67c3077cc0c4}" SpecialFunc="None">
-    <Declaration><![CDATA[/// The state Profile for position, velocity, acceleration and jerk for a single DoF
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// The state Profile for position, velocity, acceleration and jerk for a single DoF
 {attribute 'hide'}
 FUNCTION_BLOCK ProfileDesc
 VAR_INPUT

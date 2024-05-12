@@ -1,5 +1,7 @@
 .Zeugwerk/libraries
 # TwinCAT files
+*.db
+*.db:encryptable
 *.tpy
 *.tclrs
 *.compiled-library
