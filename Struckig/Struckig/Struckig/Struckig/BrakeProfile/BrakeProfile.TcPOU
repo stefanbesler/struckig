@@ -93,7 +93,7 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF t[0] <= 0.0 AND_THEN t[1] <= 0.0
+        <ST><![CDATA[IF t[0] <= 0.0
 THEN
   Duration := 0;
   RETURN;
@@ -169,7 +169,7 @@ THEN
   t[0] := (vMax - v0)/aMin + Constants.Epsilon;   
 ELSIF v0 < vMin
 THEN
-  j[0] := aMax;
+  a[0] := aMax;
   t[0] := (vMin - v0)/aMax + Constants.Epsilon;
 END_IF
 

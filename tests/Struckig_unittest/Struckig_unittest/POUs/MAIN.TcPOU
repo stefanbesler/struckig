@@ -16,6 +16,8 @@ VAR
   propagateTest : PropagateTest;
   otg1Test : Otg1Test;
   zeroLimitsTest : ZeroLimitsTest;
+  randomTest : RandomTest;
+  
   // generatedTest : GeneratedTest;
 END_VAR
 ]]></Declaration>

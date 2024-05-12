@@ -46,6 +46,9 @@ The initial state assumes that the trajectory is in stillstand and target veloci
 allow for a shorter travel time, but  if `MinDuration` together with Synchronization = SynchronizationType.TimeSync is set,
 the `MinDuration` parameter is considered instead.
 
+If you only want to have a acceleration-constrained trajectory, you can also omit the `MaxJerk` 
+as well as the CurrentAcceleration and TargetAcceleration value.
+
 ```
 PROGRAM Example
 VAR

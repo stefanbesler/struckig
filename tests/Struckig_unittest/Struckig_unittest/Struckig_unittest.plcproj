@@ -28,6 +28,9 @@
     <Compile Include="POUs\Otg1Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\RandomTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\SetVector3.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -70,10 +73,28 @@
     <Compile Include="POUs\ZeroLimitsTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Randomizer\Randomizer.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Random\IRandom.TcIO">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Random\RandomGaussian.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Random\RandomUniform.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Random\_Test\RandomGaussianTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="Random" />
+    <Folder Include="Randomizer" />
+    <Folder Include="Random\_Test" />
     <Folder Include="VISUs" />
     <Folder Include="POUs" />
   </ItemGroup>
@@ -108,6 +129,10 @@
       <DefaultResolution>Struckig, 0.9.3.0 (Stefan Besler)</DefaultResolution>
       <Namespace>Struckig</Namespace>
     </PlaceholderReference>
+    <PlaceholderReference Include="Tc2_System">
+      <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
+      <Namespace>Tc2_System</Namespace>
+    </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
@@ -115,32 +140,7 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter>
-          <Key>XUNITENABLEPUBLISH</Key>
-          <Value>TRUE</Value>
-        </Parameter>
-        <Parameter>
-          <Key>XUNITFILEPATH</Key>
-          <Value>'C:\TwinCAT\3.1\Boot\TcUnit_xUnit_results.xml'</Value>
-        </Parameter>
-        <Parameter>
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PlaceholderResolution Include="Struckig">
-      <Resolution>Struckig, 0.9.3.0 (Stefan Besler)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="Tc3_Module">
-      <Resolution>Tc3_Module, * (Beckhoff Automation GmbH)</Resolution>
-    </PlaceholderResolution>
-    <PlaceholderResolution Include="TcUnit">
-      <Resolution>TcUnit, * (www.tcunit.org)</Resolution>
-    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

@@ -13,7 +13,8 @@
           "references": {
             "*": [
               "Struckig=0.9.3.0",
-              "Tc3_Module=*",
+              "Tc2_System=*",
+			  "Tc3_Module=*",
               "TcUnit=*"
             ]
           },

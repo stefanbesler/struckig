@@ -182,7 +182,7 @@ END_VAR]]></Declaration>
         <ST><![CDATA[validProfileCounter := -1;
 
 // Zero-limits special case
-IF _vMax = 0.0 AND_THEN _vMax = 0.0
+IF _vMax = 0.0 AND_THEN _vMin = 0.0
 THEN
   block.Pmin.SetBoundary(input);
 
@@ -237,10 +237,10 @@ THEN
     RETURN;
   END_IF 
 ELSE
-  time_none(input, vMax, vMin, aMax, aMin, FALSE);
-  time_none(input, vMin, vMax, aMin, aMax, FALSE);
-  time_acc0(input, vMax, vMin, aMax, aMin, FALSE);
-  time_acc0(input, vMin, vMax, aMin, aMax, FALSE);
+  time_none(input, _vMax, _vMin, _aMax, _aMin, FALSE);
+  time_none(input, _vMin, _vMax, _aMin, _aMax, FALSE);
+  time_acc0(input, _vMax, _vMin, _aMax, _aMin, FALSE);
+  time_acc0(input, _vMin, _vMax, _aMin, _aMax, FALSE);
   
   IF (validProfileCounter >= 0) THEN
     Get := CalculateBlock(block);

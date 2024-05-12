@@ -20,10 +20,27 @@ VAR
                   MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
                   MaxJerk :=             [ 1.0, 1.0, 1.0 ]
   ); 
+  otgTimeSync2 : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  Synchronization := SynchronizationType.TimeSync,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
+  ); 
+  
+  otgPhaseSync2 : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
+                  Synchronization := SynchronizationType.Phase,
+                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
+                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
+  );   
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[otgTimeSync(EnableAutoPropagate := TRUE);
-otgPhaseSync(EnableAutoPropagate := TRUE);]]></ST>
+otgPhaseSync(EnableAutoPropagate := TRUE);
+otgTimeSync2(EnableAutoPropagate := TRUE);
+otgPhaseSync2(EnableAutoPropagate := TRUE);]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

@@ -60,9 +60,6 @@ END_VAR
 VAR_INPUT
   Profile : REFERENCE TO ProfileDesc;
 END_VAR
-VAR_INST
-  vMax, vMin, aMax, aMin, jMax : LREAL;
-END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Test all cases to get ones that match

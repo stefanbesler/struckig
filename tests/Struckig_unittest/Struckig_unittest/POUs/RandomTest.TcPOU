@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="RandomTest" Id="{c0321a05-a31c-407a-a37d-8b8ccd67b8f9}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK RandomTest EXTENDS TcUnit.FB_TestSuite
+VAR
+  _number_trajectories : UDINT := 256 * 1024; // Some user variable you want to be able to set
+  _position_second_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);  
+  _velocity_second_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);
+  
+  _positionDist : RandomGaussian(seed:=45, mu:=0, sigma:=4);
+  _dynamicDist : RandomGaussian(seed:=46, mu:=0, sigma:=0.8);
+  _limitDist : RandomUniform(seed:=47, lowerBound:=0.08, upperBound:=16.0);
+  _limitDistHigh : RandomUniform(seed:=48, lowerBound:=10, upperBound:=1000000.0);
+  _minLimitDist : RandomUniform(seed:=49, lowerBound:=-16, upperBound:=-0.08);
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_VelocitySecondRandom3();
+Test_PositionSecondRandom3();
+
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="Test_PositionSecondRandom3" Id="{ec6501ea-e268-403a-9de1-148baf96b070}">
+      <Declaration><![CDATA[METHOD Test_PositionSecondRandom3
+VAR_INST
+  p : Randomizer(_positionDist);
+  d : Randomizer(_dynamicDist);
+  l : Randomizer(_limitDist);
+  
+
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := ControlInterfaceType.Position
+  );
+   
+END_VAR
+VAR
+  i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionSecondRandom3');
+
+FOR i:=0 TO _position_second_random_3
+DO
+
+  IF i < _position_second_random_3 / 2
+  THEN
+    otg.Synchronization := SynchronizationType.Phase;
+  ELSE
+    otg.Synchronization := SynchronizationType.TimeSync;    
+  END_IF
+  
+  IF i < _position_second_random_3 / 20
+  THEN
+    otg.Discretization := DiscretizationType.Discrete;
+  ELSE
+    otg.Discretization := DiscretizationType.Continuous;    
+  END_IF  
+
+  p.Fill(ADR(otg.CurrentPosition), 3);
+  d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
+  
+  p.Fill(ADR(otg.TargetPosition), 3);
+  d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.7);
+  d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.6);
+  
+  l.FillMax(ADR(otg.MaxVelocity), 3, ADR(otg.TargetVelocity));
+  l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  
+  IF NOT otg.ValidateInput(FALSE, TRUE)
+  THEN
+    i := i - 1;
+  END_IF
+  
+  CheckCalculation(otg);
+  
+END_FOR
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_VelocitySecondRandom3" Id="{1ec2d2ff-1986-47b7-9d46-dca41acb61ff}">
+      <Declaration><![CDATA[METHOD Test_VelocitySecondRandom3
+VAR_INST
+  p : Randomizer(_positionDist);
+  d : Randomizer(_dynamicDist);
+  l : Randomizer(_limitDist);
+  min_l : Randomizer(_minLimitDist);
+  
+
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+   
+END_VAR
+VAR
+  i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_VelocitySecondRandom3');
+
+otg.CurrentPosition[0] := 0;
+otg.CurrentPosition[1] := 0;
+otg.CurrentPosition[2] := 0;
+
+FOR i:=0 TO _velocity_second_random_3
+DO
+  d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
+  d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.9);
+  l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  
+  CheckCalculation(otg);
+  
+END_FOR
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

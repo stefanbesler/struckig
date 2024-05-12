@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <Itf Name="IRandom" Id="{40ab6b77-e8c8-46c2-aa45-71150d6fb8b1}">
+    <Declaration><![CDATA[INTERFACE IRandom
+]]></Declaration>
+    <Method Name="Next" Id="{0bd8e0e8-7498-48a4-be55-845cfcc9e131}">
+      <Declaration><![CDATA[/// Returns the next random variable
+METHOD Next : LREAL]]></Declaration>
+    </Method>
+    <Method Name="SetSeed" Id="{874775a6-aa07-4087-9b58-128db7f5fca4}">
+      <Declaration><![CDATA[METHOD SetSeed
+VAR_INPUT
+  seed : INT;
+END_VAR
+]]></Declaration>
+    </Method>
+  </Itf>
+</TcPlcObject>

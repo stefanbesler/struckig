@@ -5,8 +5,8 @@
   <Children>
     <Node>
       <Title>Example03</Title>
-      <Expanded>True</Expanded>
-      <FileName>Z:\struckig\examples\Scope\Example03.tcscopex</FileName>
+      <Expanded>False</Expanded>
+      <FileName>E:\struckig\examples\Scope\Example03.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
@@ -89,7 +89,7 @@
         </Node>
         <Node>
           <Title>YT Chart</Title>
-          <Expanded>True</Expanded>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -230,8 +230,8 @@
     </Node>
     <Node>
       <Title>Example04</Title>
-      <Expanded>True</Expanded>
-      <FileName>Z:\struckig\examples\Scope\Example04.tcscopex</FileName>
+      <Expanded>False</Expanded>
+      <FileName>E:\struckig\examples\Scope\Example04.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
@@ -455,8 +455,8 @@
     </Node>
     <Node>
       <Title>Example05</Title>
-      <Expanded>True</Expanded>
-      <FileName>Z:\struckig\examples\Scope\Example05.tcscopex</FileName>
+      <Expanded>False</Expanded>
+      <FileName>E:\struckig\examples\Scope\Example05.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
@@ -576,7 +576,7 @@
     <Node>
       <Title>Example06</Title>
       <Expanded>True</Expanded>
-      <FileName>Z:\struckig\examples\Scope\Example06.tcscopex</FileName>
+      <FileName>E:\struckig\examples\Scope\Example06.tcscopex</FileName>
       <Children>
         <Node>
           <Title>DataPool</Title>
@@ -596,6 +596,18 @@
               <Children />
             </Node>
             <Node>
+              <Title>NewAcceleration[0] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewAcceleration[0] (3)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>NewAcceleration[1]</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -603,6 +615,18 @@
             </Node>
             <Node>
               <Title>NewAcceleration[1] (1)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewAcceleration[1] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewAcceleration[1] (3)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -620,6 +644,18 @@
               <Children />
             </Node>
             <Node>
+              <Title>NewAcceleration[2] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewAcceleration[2] (3)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>NewPosition[0]</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -627,6 +663,18 @@
             </Node>
             <Node>
               <Title>NewPosition[0] (1)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewPosition[0] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewPosition[0] (3)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -644,6 +692,18 @@
               <Children />
             </Node>
             <Node>
+              <Title>NewPosition[1] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewPosition[1] (3)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>NewPosition[2]</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -651,6 +711,18 @@
             </Node>
             <Node>
               <Title>NewPosition[2] (1)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewPosition[2] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewPosition[2] (3)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -668,6 +740,18 @@
               <Children />
             </Node>
             <Node>
+              <Title>NewVelocity[0] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewVelocity[0] (3)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
               <Title>NewVelocity[1]</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
@@ -675,6 +759,18 @@
             </Node>
             <Node>
               <Title>NewVelocity[1] (1)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewVelocity[1] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewVelocity[1] (3)</Title>
               <Expanded>False</Expanded>
               <FileName></FileName>
               <Children />
@@ -691,11 +787,23 @@
               <FileName></FileName>
               <Children />
             </Node>
+            <Node>
+              <Title>NewVelocity[2] (2)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
+            <Node>
+              <Title>NewVelocity[2] (3)</Title>
+              <Expanded>False</Expanded>
+              <FileName></FileName>
+              <Children />
+            </Node>
           </Children>
         </Node>
         <Node>
-          <Title>Phase Synchronization (red) vs. Time Synchronization (blue)</Title>
-          <Expanded>True</Expanded>
+          <Title>Phase Synchronization 3rd order (red) vs. Time Synchronization (blue)</Title>
+          <Expanded>False</Expanded>
           <FileName></FileName>
           <Children>
             <Node>
@@ -821,6 +929,142 @@
                 </Node>
                 <Node>
                   <Title>NewAcceleration[2] (1)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+          </Children>
+        </Node>
+        <Node>
+          <Title>Phase Synchronization 2nd order (red) vs. Time Synchronization (blue)</Title>
+          <Expanded>True</Expanded>
+          <FileName></FileName>
+          <Children>
+            <Node>
+              <Title>Position (1)</Title>
+              <Expanded>True</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>NewPosition[0] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewPosition[1] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewPosition[2] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewPosition[0] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewPosition[1] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewPosition[2] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+            <Node>
+              <Title>Velocity (1)</Title>
+              <Expanded>True</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>NewVelocity[0] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewVelocity[1] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewVelocity[2] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewVelocity[0] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewVelocity[1] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewVelocity[2] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+              </Children>
+            </Node>
+            <Node>
+              <Title>Acceleration (1)</Title>
+              <Expanded>True</Expanded>
+              <FileName></FileName>
+              <Children>
+                <Node>
+                  <Title>NewAcceleration[0] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewAcceleration[1] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewAcceleration[2] (2)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewAcceleration[0] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewAcceleration[1] (3)</Title>
+                  <Expanded>False</Expanded>
+                  <FileName></FileName>
+                  <Children />
+                </Node>
+                <Node>
+                  <Title>NewAcceleration[2] (3)</Title>
                   <Expanded>False</Expanded>
                   <FileName></FileName>
                   <Children />

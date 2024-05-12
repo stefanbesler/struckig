@@ -22,7 +22,7 @@ END_VAR]]></Declaration>
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrder : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   aUp, aDown : LREAL;
   vMax, vMin : LREAL;
@@ -35,7 +35,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// ReachedLimits::ACC0
-IF t[1] < 0.0
+IF t[0] < 0.0
 THEN
   RETURN;
 END_IF
@@ -81,23 +81,33 @@ THEN
   RETURN;        
 END_IF
 
-IF jerkSigns = ProfileControlSigns.Uddu
+j[0] := 0;
+j[1] := 0;
+j[2] := 0;
+j[3] := 0;
+j[4] := 0;
+j[5] := 0;
+j[6] := 0;
+
+IF controlSigns = ProfileControlSigns.Uddu
 THEN
-  j[0] := SEL(t[0] > 0, 0, aUp);
-  j[1] := 0;
-  j[2] := SEL(t[2] > 0, 0, aDown);
-  j[3] := 0;
-  j[4] := SEL(t[4] > 0, 0, aDown);
-  j[5] := 0;
-  j[6] := SEL(t[6] > 0, 0, aUp);          
+  a[0] := SEL(t[0] > 0, 0, aUp);
+  a[1] := 0;
+  a[2] := SEL(t[2] > 0, 0, aDown);
+  a[3] := 0;
+  a[4] := SEL(t[4] > 0, 0, aDown);
+  a[5] := 0;
+  a[6] := SEL(t[6] > 0, 0, aUp);
+  a[7] := af;
 ELSE
-  j[0] := SEL(t[0] > 0, 0, aUp);
-  j[1] := 0;
-  j[2] := SEL(t[2] > 0, 0, aDown);
-  j[3] := 0;
-  j[4] := SEL(t[4] > 0, 0, aUp);
-  j[5] := 0;
-  j[6] := SEL(t[6] > 0, 0, aDown); 
+  a[0] := SEL(t[0] > 0, 0, aUp);
+  a[1] := 0;
+  a[2] := SEL(t[2] > 0, 0, aDown);
+  a[3] := 0;
+  a[4] := SEL(t[4] > 0, 0, aUp);
+  a[5] := 0;
+  a[6] := SEL(t[6] > 0, 0, aDown);
+  a[7] := af;
 END_IF
 
 direction := SEL(vMax > 0, ProfileDirection.Down, ProfileDirection.Up);
@@ -109,41 +119,23 @@ FOR i:= 0 TO 6
 DO
   v[i+1] := v[i] + t[i] * a[i];
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * a[i] / 2);
-
-  IF limits = ReachedLimits.Acc0Acc1Vel OR_ELSE limits = ReachedLimits.Acc0Acc1 OR_ELSE limits = ReachedLimits.Acc0Vel OR_ELSE limits = ReachedLimits.Acc1Vel OR_ELSE limits = ReachedLimits.Vel
-  THEN
-    IF i = 2
-    THEN
-     a[3] := 0.0;
-    END_IF
-  END_IF
-  
-  IF i > 1 AND_THEN a[i+1] * a[i] < -Constants.Epsilon
-  THEN
-    v_a_zero := v[i] - (a[i] * a[i]) / (2 * j[i]);
-    IF (v_a_zero > vUppLim OR_ELSE v_a_zero < vLowLim)
-    THEN
-      RETURN;
-    END_IF
-  END_IF
-
 END_FOR
 
 
-THIS^.ControlSigns := jerkSigns;
+THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
 CheckForSecondOrder := ABS(p[7] - pf) < Constants.PositionPrecision AND_THEN ABS(v[7] - vf) < Constants.VelocityPrecision
-    AND_THEN v[3] <= vUppLim AND_THEN v[4] <= vUppLim AND_THEN v[5] <= vUppLim AND_THEN v[6] <= vUppLim
-    AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim;]]></ST>
+    AND_THEN v[2] <= vUppLim AND_THEN v[3] <= vUppLim AND_THEN v[4] <= vUppLim AND_THEN v[5] <= vUppLim AND_THEN v[6] <= vUppLim
+    AND_THEN v[2] >= vLowLim AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim;]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderVelocity" Id="{98d640fa-ba4c-4586-9f8c-bed3ada54742}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrderVelocity : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   aUp : LREAL;
 END_VAR
@@ -196,7 +188,7 @@ DO
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * a[i] / 2);
 END_FOR
 
-THIS^.ControlSigns := jerkSigns;
+THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 THIS^.Direction := SEL(aUp > 0, ProfileDirection.Down, ProfileDirection.Up);
 
@@ -208,7 +200,7 @@ CheckForSecondOrderVelocity := ABS(v[6] - vf) < Constants.VelocityPrecision;]]><
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrderVelocityWithTiming : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   aUp : LREAL;
 END_VAR
@@ -218,14 +210,14 @@ VAR
   aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CheckForSecondOrderVelocityWithTiming := CheckForSecondOrderVelocity(jerkSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
+        <ST><![CDATA[CheckForSecondOrderVelocityWithTiming := CheckForSecondOrderVelocity(controlSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderVelocityWithTiming2" Id="{915c6be4-07ad-4bf6-8b4d-9b5951f90edc}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrderVelocityWithTiming2 : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   tf : LREAL;
   aUp : LREAL;
@@ -241,14 +233,14 @@ END_VAR]]></Declaration>
         <ST><![CDATA[CheckForSecondOrderVelocityWithTiming2 :=
  (aMin - Constants.Epsilon < aUp)
  AND_THEN (aUp < aMax + Constants.Epsilon)
- AND_THEN CheckForSecondOrderVelocityWithTiming(jerkSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
+ AND_THEN CheckForSecondOrderVelocityWithTiming(controlSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderWithTiming" Id="{add5d654-e57e-4ae8-b083-d5a062804107}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrderWithTiming : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   tf : LREAL;
   aUp, aDown : LREAL;
@@ -260,14 +252,14 @@ VAR
   aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CheckForSecondOrderWithTiming := CheckForSecondOrder(jerkSigns, limits, aUp, aDown, vMax, vMin);]]></ST>
+        <ST><![CDATA[CheckForSecondOrderWithTiming := CheckForSecondOrder(controlSigns, limits, aUp, aDown, vMax, vMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderWithTiming2" Id="{2570a4cc-90d1-47de-bf99-989113385597}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrderWithTiming2 : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   tf : LREAL;
   aUp, aDown : LREAL;
@@ -281,16 +273,18 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderWithTiming2 := 
-  (aMin - Constants.AccelerationEpsilon < aDown) 
-  AND_THEN (aUp < aMax + Constants.JerkEpsilon)
-  AND_THEN CheckForSecondOrderWithTiming(jerkSigns, limits, tf, aUp, aDown, vMax, vMin);]]></ST>
+    (aMin - Constants.AccelerationEpsilon < aUp)
+    AND_THEN (aUp < aMax + Constants.AccelerationEpsilon)
+    AND_THEN (aMin - Constants.AccelerationEpsilon < aDown)
+    AND_THEN (aDown < aMax + Constants.AccelerationEpsilon)
+    AND_THEN CheckForSecondOrderWithTiming(controlSigns, limits,tf, aUp, aDown, vMax, vMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForVelocity" Id="{dec39d38-9a64-41bc-99b6-6a7b67c016da}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForVelocity : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   jf : LREAL;
   aMax : LREAL;
@@ -333,7 +327,7 @@ THEN
   RETURN;        
 END_IF
 
-IF jerkSigns = ProfileControlSigns.Uddu
+IF controlSigns = ProfileControlSigns.Uddu
 THEN
   j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
@@ -361,7 +355,7 @@ DO
 END_FOR
 
       
-THIS^.ControlSigns := jerkSigns;
+THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
 aUppLim := SEL((aMax > 0), aMin, aMax) + 5E-12;
@@ -378,7 +372,7 @@ CheckForVelocity := ABS(v[7] - vf) < Constants.VelocityPrecision
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForVelocityWithTiming : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;
+  controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   jf : LREAL;
   aMax : LREAL;
@@ -392,7 +386,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(jerkSigns, limits, jf, aMax, aMin);
+CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(controlSigns, limits, jf, aMax, aMin);
 
 
 ]]></ST>
@@ -475,7 +469,7 @@ END_IF
       <Declaration><![CDATA[/// For position interface
 METHOD CheckVel : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;    
+  controlSigns : ProfileControlSigns;    
   limits : ReachedLimits;
   jf : LREAL;
   vMax : LREAL;
@@ -536,7 +530,7 @@ THEN
   RETURN;        
 END_IF
         
-IF jerkSigns = ProfileControlSigns.Uddu
+IF controlSigns = ProfileControlSigns.Uddu
 THEN
   j[0] := SEL(t[0] > 0, 0, jf);
   j[1] := 0;
@@ -605,7 +599,7 @@ DO
 END_FOR
 
 
-THIS^.ControlSigns := jerkSigns;
+THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
 aUppLim := SEL(direction = ProfileDirection.Up, aMin, aMax) + Constants.AccelerationEpsilon;
@@ -625,7 +619,7 @@ CheckVel := ABS(p[7] - pf) < Constants.PositionPrecision
     <Method Name="CheckWithTiming" Id="{a762f8df-7f20-4c45-819e-1ecbfa908ad5}">
       <Declaration><![CDATA[METHOD CheckWithTiming : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;    
+  controlSigns : ProfileControlSigns;    
   limits : ReachedLimits;
   tf : LREAL;
   jf : LREAL;
@@ -637,13 +631,13 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every Profile has a: tf - ... equation
-CheckWithTiming := CheckVel(jerkSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE); // && (std::abs(t_sum[6] - tf) < Constants.TimePrecision)]]></ST>
+CheckWithTiming := CheckVel(controlSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE); // && (std::abs(t_sum[6] - tf) < Constants.TimePrecision)]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckWithTiming2" Id="{c707d6dc-e662-4300-aebc-c29e90e74532}">
       <Declaration><![CDATA[METHOD CheckWithTiming2 : BOOL
 VAR_INPUT
-  jerkSigns : ProfileControlSigns;    
+  controlSigns : ProfileControlSigns;    
   limits : ReachedLimits;
   tf : LREAL;
   jf : LREAL;
@@ -655,7 +649,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CheckWithTiming2 := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckWithTiming(jerkSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
+        <ST><![CDATA[CheckWithTiming2 := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckWithTiming(controlSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="FirstStateAtPosition" Id="{0159e4a6-0809-4a0c-b389-030aa446ea6f}">

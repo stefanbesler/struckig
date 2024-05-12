@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="RandomGaussian" Id="{f867848b-9e99-4c77-ad60-d50f0ee9a8da}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK RandomGaussian IMPLEMENTS IRandom
+VAR
+  _mu : LREAL;
+  _sigma : LREAL;    
+  _rnd : Tc2_System.DRAND;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="FB_init" Id="{c4f8b591-bc5f-4e63-b859-a1d0657be1db}">
+      <Declaration><![CDATA[METHOD FB_init : BOOL
+VAR_INPUT
+	bInitRetains : BOOL; // if TRUE, the retain variables are initialized (warm start / cold start)
+	bInCopyCode : BOOL;  // if TRUE, the instance afterwards gets moved into the copy code (online change)
+  seed : INT;  
+  mu : LREAL;
+  sigma : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SetSeed(seed);
+SetMean(mu);
+SetSigma(sigma);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Next" Id="{a5680f19-16f6-42de-83b9-4823a006e852}">
+      <Declaration><![CDATA[/// Implementation of the Box-Muller transform for normal distributed random
+/// variables. There are much faster methods for doing this.
+/// Implementation taken from [here](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)
+METHOD Next : LREAL
+VAR
+  u1, u2 : LREAL;
+END_VAR
+VAR CONSTANT
+  Pi : LREAL := 3.14159265358979323846;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//create two random numbers, make sure u1 is greater than epsilon
+REPEAT
+  _rnd(Num => u1);
+  _rnd(Num => u2);  
+UNTIL u1 > 1E-8 END_REPEAT
+
+//compute z0 and z1
+Next  := (_sigma * SQRT(-2.0 * LOG(u1))) * COS(2*Pi * u2) + _mu;
+
+// we do not need the 2nd randomly distributed variable
+// z1 := mag * SIN(2*Struckig.Constants.Pi  * u2) + mu;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetMean" Id="{774f7473-1d66-48f8-86d9-eb347068eac4}">
+      <Declaration><![CDATA[METHOD FINAL SetMean
+VAR_INPUT
+  mu : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_mu := mu;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetSeed" Id="{9b9df88d-eb58-400d-9a6f-dbb295df957c}">
+      <Declaration><![CDATA[METHOD FINAL SetSeed
+VAR_INPUT
+  seed : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_rnd.Seed := seed;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetSigma" Id="{1af195a2-705c-43e2-a184-66ec83162e53}">
+      <Declaration><![CDATA[METHOD FINAL SetSigma
+VAR_INPUT
+  sigma : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_sigma := sigma;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

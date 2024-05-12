@@ -14,8 +14,9 @@ VAR_INPUT
   Discretization : DiscretizationType; //< Whether the duration should be a discrete multiple of the control cycle (off by default)
   CurrentPosition, CurrentVelocity, CurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
   TargetPosition, TargetVelocity, TargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
-  MaxVelocity, MaxAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
-  MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints, may be Infinity (Struckig.Constants.Infinity)
+  MaxVelocity : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
+  MaxAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints, defaults to Infinity (Struckig.Constants.Infinity)
+  MaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints, defaults to Infinity (Struckig.Constants.Infinity)
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
@@ -664,6 +665,8 @@ END_VAR]]></Declaration>
 FOR i:=0 TO ParameterList.MaxDoFs
 DO
   Enabled[i] := i < dofs;
+  MaxAcceleration[i] := Constants.Infinity;  
+  MaxJerk[i] := Constants.Infinity;
 END_FOR
 _dt := THIS^.CycleTime := cycletime;]]></ST>
       </Implementation>
