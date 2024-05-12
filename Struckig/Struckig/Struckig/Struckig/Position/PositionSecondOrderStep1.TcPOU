@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="PositionSecondOrderStep1" Id="{f6249c2d-a5f9-4d91-9b03-a9e5fe5efeae}" SpecialFunc="None">
+    <Declaration><![CDATA[/// Mathematical equations for Step 1 in third-order position interface: Extremal profiles
+FUNCTION_BLOCK INTERNAL PositionSecondOrderStep1
+VAR
+  v0 : LREAL;
+  vf : LREAL;
+  _vMax, _vMin, _aMax, _aMin : LREAL;
+
+  // Pre-calculated expressions
+  pd : LREAL;
+  h1 : LREAL;
+  
+  validProfiles : ARRAY[0..5] OF ProfileDesc; // Max 5 valid profiles + 1 spare for numerical issues
+  validProfileCounter : INT := -1;
+  
+  left_duration, right_duration : LREAL;    
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddInterval" Id="{5e3e42ce-188b-4e01-a1f4-a6c641905a4f}">
+      <Declaration><![CDATA[METHOD AddInterval
+VAR_IN_OUT
+  interval : BlockInterval;
+  Left : ProfileDesc;
+  Right : ProfileDesc;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[left_duration := Left.t_sum[6] + Left.Brake.Duration + Left.Accel.Duration;
+right_duration := Right.t_sum[6] + Right.Brake.Duration + Right.Accel.Duration;
+IF (left_duration < right_duration)
+THEN
+  interval.Left := left_duration;
+  interval.Right := right_duration;
+  interval.Profile := Right;
+  interval.IsUsed := TRUE;
+ELSE
+  interval.Left := right_duration;
+  interval.Right := left_duration;
+  interval.Profile := Left;
+  interval.IsUsed := TRUE;  
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="AddProfile" Id="{cf226156-3ab6-4e9a-a5b3-04a715b6c637}">
+      <Declaration><![CDATA[METHOD AddProfile
+VAR_IN_OUT CONSTANT
+  Profile : ProfileDesc;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[validProfileCounter := validProfileCounter + 1;
+validProfiles[validProfileCounter] := Profile;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CalculateBlock" Id="{90bb598e-5ad2-4101-a6be-3d0657ecf514}">
+      <Declaration><![CDATA[METHOD CalculateBlock : BOOL
+VAR_IN_OUT
+  block : Block;
+END_VAR
+VAR
+  i, j : INT;
+  Tmin : LREAL;
+  idx_min : INT;
+  idx_else_1, idx_else_2, idx_else_3, idx_else_4 : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[block.A.IsUsed := FALSE;
+block.B.IsUsed := FALSE;
+
+IF validProfileCounter = 0
+THEN
+  block.Pmin := validProfiles[0];
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration; 
+  CalculateBlock := TRUE;
+
+ELSIF validProfileCounter = 1 
+THEN
+
+  IF ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 8*Constants.Epsilon
+  THEN
+    block.Pmin := validProfiles[0];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
+    CalculateBlock := TRUE;
+    RETURN;
+	END_IF
+  
+  IF ParameterList.NumericalRobust
+  THEN
+    idx_min := SEL(validProfiles[0].t_sum[6] < validProfiles[1].t_sum[6], 1, 0);
+    idx_else_1 := (idx_min + 1) MOD 2;
+
+    block.Pmin := validProfiles[idx_min];
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration; 
+    AddInterval(block.A, validProfiles[idx_min], validProfiles[idx_else_1]);
+    CalculateBlock := TRUE;
+    RETURN; 
+	END_IF
+
+// Only happens due to numerical issues
+ELSIF (validProfileCounter = 3) 
+THEN
+  // Find "identical" profiles
+  IF (ABS(validProfiles[0].t_sum[6] - validProfiles[1].t_sum[6]) < 32*Constants.Epsilon AND_THEN validProfiles[0].Direction <> validProfiles[1].Direction)
+  THEN
+    RemoveProfile(1);
+  ELSIF (ABS(validProfiles[2].t_sum[6] - validProfiles[3].t_sum[6]) < 256*Constants.Epsilon  AND_THEN validProfiles[2].Direction <> validProfiles[3].Direction)
+  THEN
+    RemoveProfile(3);
+  ELSIF (ABS(validProfiles[0].t_sum[6] - validProfiles[3].t_sum[6]) < 256*Constants.Epsilon AND_THEN validProfiles[0].Direction <> validProfiles[3].Direction)
+  THEN
+    RemoveProfile(3);
+  ELSE
+    RETURN;
+  END_IF
+
+ELSIF ((validProfileCounter+1) MOD 2 = 0)
+THEN
+  RETURN;
+END_IF
+
+// Find index of fastest Profile
+Tmin := Constants.Infinity;
+FOR i:=0 TO validProfileCounter
+DO
+  FOR j:=0 TO validProfileCounter
+  DO
+    IF validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration < validProfiles[j].t_sum[6] + validProfiles[j].Brake.Duration AND_THEN
+       validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration < Tmin
+    THEN
+      Tmin := validProfiles[i].t_sum[6] + validProfiles[i].Brake.Duration + validProfiles[i].Accel.Duration;
+      idx_min := i;
+		END_IF
+  END_FOR
+END_FOR
+
+block.Pmin := validProfiles[idx_min];
+block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+IF (validProfileCounter = 2)
+THEN
+  idx_else_1 := (idx_min + 1) MOD 3;
+  idx_else_2 := (idx_min + 2) MOD 3;
+  
+  AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+  CalculateBlock := TRUE;
+  RETURN;
+
+ ELSIF (validProfileCounter = 4)
+ THEN
+  idx_else_1 := (idx_min + 1) MOD 5;
+  idx_else_2 := (idx_min + 2) MOD 5;
+  idx_else_3 := (idx_min + 3) MOD 5;
+  idx_else_4 := (idx_min + 4) MOD 5;
+  
+  IF (validProfiles[idx_else_1].Direction = validProfiles[idx_else_2].Direction)
+  THEN
+    AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_2]);
+    AddInterval(block.B, validProfiles[idx_else_3], validProfiles[idx_else_4]);
+  ELSE 
+    AddInterval(block.A, validProfiles[idx_else_1], validProfiles[idx_else_4]);
+    AddInterval(block.B, validProfiles[idx_else_2], validProfiles[idx_else_3]);
+  END_IF
+  
+  CalculateBlock := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Get" Id="{ca4d9c2e-f3d8-412a-a55d-2b0e597e7fc4}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+  input : REFERENCE TO ProfileDesc;
+  block : REFERENCE TO Block; 
+END_VAR
+VAR_INST
+  vMax, vMin, aMax, aMin, jMax : LREAL;
+  profile : REFERENCE TO ProfileDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[validProfileCounter := -1;
+
+// Zero-limits special case
+IF _vMax = 0.0 AND_THEN _vMax = 0.0
+THEN
+  block.Pmin.SetBoundary(input);
+
+  IF time_all_single_step(block.Pmin, _vMax, _vMin, _aMax, _aMin) 
+  THEN
+    block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+    AddInterval(block.A, block.Pmin, block.Pmin);
+    
+    IF ABS(v0) > Constants.DoubleEpsilon 
+    THEN
+	    block.A.Left := block.Tmin;
+      block.A.Right := Constants.Infinity;
+    END_IF
+    
+    Get := TRUE;
+    RETURN; 
+  END_IF
+  
+  RETURN;
+END_IF
+
+validProfiles[0].SetBoundary(input);
+
+IF ABS(vf) < Constants.DoubleEpsilon
+THEN
+  vMax := SEL(pd >= 0, _vMin, _vMax);
+  vMin := SEL(pd >= 0, _vMax, _vMin);
+  aMax := SEL(pd >= 0, _aMin, _aMax);
+  aMin := SEL(pd >= 0, _aMax, _aMin);
+  
+  time_none(input, vMax, vMin, aMax, aMin, TRUE);
+  IF (validProfileCounter >= 0) THEN
+    Get := CalculateBlock(block);
+    RETURN;
+  END_IF
+  
+  time_acc0(input, vMax, vMin, aMax, aMin, TRUE);
+  IF (validProfileCounter >= 0) THEN
+    Get := CalculateBlock(block);
+    RETURN;
+  END_IF
+  
+  time_none(input, vMin, vMax, aMin, aMax, TRUE);
+  IF (validProfileCounter >= 0) THEN
+    Get := CalculateBlock(block);
+    RETURN;
+  END_IF
+  
+  time_acc0(input, vMin, vMax, aMin, aMax, TRUE);
+  IF (validProfileCounter >= 0) THEN
+    Get := CalculateBlock(block);
+    RETURN;
+  END_IF 
+ELSE
+  time_none(input, vMax, vMin, aMax, aMin, FALSE);
+  time_none(input, vMin, vMax, aMin, aMax, FALSE);
+  time_acc0(input, vMax, vMin, aMax, aMin, FALSE);
+  time_acc0(input, vMin, vMax, aMin, aMax, FALSE);
+  
+  IF (validProfileCounter >= 0) THEN
+    Get := CalculateBlock(block);
+    RETURN;
+  END_IF   
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RemoveProfile" Id="{34c2759c-3d7c-4a75-8e40-d063c2f1e331}">
+      <Declaration><![CDATA[METHOD PRIVATE RemoveProfile : BOOL
+VAR_INPUT
+  index : INT;
+END_VAR
+VAR
+  i : INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// todo, this is pretty slow in twincat
+FOR i:=index TO validProfileCounter-2
+DO
+  validProfiles[i] := validProfiles[i + 1];
+END_FOR
+
+validProfileCounter := validProfileCounter - 1;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{7e2e527a-a7f8-42c8-bf5a-66b7de41a552}">
+      <Declaration><![CDATA[METHOD Set
+VAR_INPUT
+  p0, v0 : LREAL;
+  pf, vf : LREAL;
+  vMax, vMin : LREAL;
+  aMax, aMin : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.v0 := v0;
+THIS^.vf := vf;
+THIS^._vMax := vMax;
+THIS^._vMin := vMin;
+THIS^._aMax := aMax;
+THIS^._aMin := aMin;
+
+pd := pf - p0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0" Id="{1eb7ff1b-6b41-429d-8d22-67419d6417d2}">
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;
+  return_after_found : BOOL;  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[profile.t[0] := (-v0 + vMax)/aMax;
+profile.t[1] := (v0*v0 + vf*vf)/(2*vMax*aMax) - vMax/aMax + pd/vMax;
+profile.t[2] := (-vf + vMax)/aMax;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, aMax, vMax, vMin)
+THEN
+  AddProfile(profile);
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_all_single_step" Id="{b4ff7a61-53de-4861-bac9-405e50e1bc0c}">
+      <Declaration><![CDATA[METHOD PRIVATE time_all_single_step : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(vf - v0) > Constants.DoubleEpsilon
+THEN
+  RETURN;
+END_IF
+
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF ABS(v0) > Constants.DoubleEpsilon
+THEN
+  profile.t[3] := pd / v0;
+  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin))
+  THEN
+    time_all_single_step := TRUE;
+  END_IF
+ELSIF ABS(pd) < Constants.DoubleEpsilon
+THEN
+  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin))
+  THEN
+    time_all_single_step := TRUE;
+  END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_none" Id="{20e438d3-6e26-4f8b-b3ce-ef89e552a5f5}">
+      <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
+METHOD PRIVATE time_none
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;
+  return_after_found : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h1 := (v0*v0 + vf*vf)/2 + aMax*pd;
+IF h1 >= 0.0
+THEN
+  h1 := SQRT(h1);
+  
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+  
+  // Solution 1
+  profile.t[0] := -(v0 + h1)/aMax;
+  profile.t[1] := 0;
+  profile.t[2] := -(vf + h1)/aMax;
+  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, vMax, vMin)
+  THEN
+    AddProfile(profile);
+    IF return_after_found
+    THEN
+      RETURN;
+    END_IF
+  END_IF
+
+  
+  // Solution 2
+  profile.t[0] := (-v0 + h1)/aMax;
+  profile.t[1] := 0;
+  profile.t[2] := (-vf + h1)/aMax;
+  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, vMax, vMin)
+  THEN
+    AddProfile(profile);
+    IF return_after_found
+    THEN
+      RETURN;
+    END_IF
+  END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

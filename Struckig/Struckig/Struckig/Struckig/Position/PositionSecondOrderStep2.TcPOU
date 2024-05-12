@@ -1,0 +1,220 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="PositionSecondOrderStep2" Id="{df06f5e0-6943-4373-ad78-510a6bbebea9}" SpecialFunc="None">
+    <Declaration><![CDATA[/// Mathematical equations for Step 2 in third-order position interface: Time synchronization
+FUNCTION_BLOCK INTERNAL PositionSecondOrderStep2
+VAR
+  minimize_jerk : BOOL;
+  v0, a0 : LREAL;
+  tf, vf, af : LREAL;
+  _vMax, _vMin, _aMax, _aMin, _jMax : LREAL;
+  
+  // Pre-calculated expressions
+  pd : LREAL;
+  tf_tf, tf_p3, tf_p4 : LREAL;
+  vd, vd_vd : LREAL;
+  ad, ad_ad : LREAL;
+  v0_v0, vf_vf : LREAL;
+  a0_a0, a0_p3, a0_p4, a0_p5, a0_p6 : LREAL;
+  af_af, af_p3, af_p4, af_p5, af_p6 : LREAL;
+  jMax_jMax : LREAL;
+  g1, g2 : LREAL;
+  t_min, t_max : LREAL;
+  up_first : BOOL;
+  
+  d_extremasCount : INT;
+  d_extremas : ARRAY[0..6] OF LREAL;
+  indices : ARRAY[0..6] OF INT;
+  
+  h0, h0a, h0b, h0c, h1, h2 : LREAL;  
+  h3, jf : LREAL;  
+  ph1, ph2, ph3, ph4 : LREAL;
+  t : LREAL; 
+  orig, deriv : LREAL;
+  i : INT;
+  ph0, ph5, ph6, ph7 : LREAL;
+  h1a : LREAL;
+  p1, val_max : LREAL;
+  polynom, deriva, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
+  dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
+  tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
+  deriv_newton, res, p_val, val_new : LREAL;    
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="CheckAll" Id="{60298b66-f7b0-423d-b93f-ad75de5c8a8e}">
+      <Declaration><![CDATA[METHOD CheckAll : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckAll := time_acc0(profile, vMax, vMin, aMax, aMin) OR_ELSE
+            time_none(profile, vMax, vMin, aMax, aMin);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Get" Id="{695041b4-2660-46e8-a991-4e98a0c92521}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+  Profile : REFERENCE TO ProfileDesc;
+END_VAR
+VAR_INST
+  vMax, vMin, aMax, aMin, jMax : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Test all cases to get ones that match
+// However we should guess which one is correct and try them first...
+IF pd > 0
+THEN
+  Get := CheckAll(profile, _vMax, _vMin, _aMax, _aMin) OR_ELSE CheckAll(profile, _vMin, _vMax, _aMin, _aMax);
+  RETURN;
+END_IF
+
+Get := CheckAll(profile, _vMin, _vMax, _aMin, _aMax) OR_ELSE CheckAll(profile, _vMax, _vMin, _aMax, _aMin);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{a43337bd-6481-4f05-9abf-e6af2809969a}">
+      <Declaration><![CDATA[METHOD Set
+VAR_INPUT
+  tf : LREAL;
+  p0, v0 : LREAL;
+  pf, vf : LREAL;
+  vMax, vMin : LREAL;
+  aMax, aMin : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.tf := tf;
+THIS^.v0 := v0;
+THIS^.vf := vf;
+THIS^._vMax := vMax;
+THIS^._vMin := vMin;
+THIS^._aMax := aMax;
+THIS^._aMin := aMin;
+
+pd := pf - p0;
+vd := vf - v0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_acc0" Id="{921a627a-8c18-4230-a258-998910334186}">
+      <Declaration><![CDATA[METHOD PRIVATE time_acc0 : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[h1 := (-vd*vd + 2*aMax*((v0 + vf)*tf - 2*pd))/(aMax*aMax) + tf*tf;
+IF h1 >= 0
+THEN
+  h1 := SQRT(h1);
+
+  profile.t[0] := vd/(2*aMax) + (tf - h1)/2;
+  profile.t[1] := h1;
+  profile.t[2] := tf - (profile.t[0] + h1);
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+
+  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+  THEN
+    profile.pf := profile.p[7];
+    time_acc0 := TRUE;
+    RETURN;
+  END_IF
+END_IF
+
+
+// UU Solution
+h1 := (-vd + aMax*tf);
+IF ABS(h1) > Constants.Epsilon AND_THEN ABS(2*aMax*h1) > Constants.Epsilon
+THEN
+
+  profile.t[0] := -vd*vd/(2*aMax*h1) + (pd - v0*tf)/h1;
+  profile.t[1] := -vd/aMax + tf;
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := tf - (profile.t[0] + profile.t[1]);
+  
+  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+  THEN
+    profile.pf := profile.p[7];
+    time_acc0 := TRUE;
+    RETURN;
+  END_IF
+END_IF
+
+
+// UU Solution - 2 step
+profile.t[0] := 0;
+profile.t[1] := -vd/aMax + tf;
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := vd/aMax;
+
+IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+THEN
+  profile.pf := profile.p[7];
+  time_acc0 := TRUE;
+  RETURN;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="time_none" Id="{34dea96e-c8a8-4b4c-bd17-f83f0d7f6c4d}">
+      <Declaration><![CDATA[/// Only for numerical issues, always return_after_found
+METHOD PRIVATE time_none : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+  vMax, vMin, aMax, aMin : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF ABS(v0) < Constants.DoubleEpsilon AND_THEN ABS(vf) < Constants.DoubleEpsilon AND_THEN ABS(pd) < Constants.DoubleEpsilon
+THEN
+  profile.t[0] := 0;
+  profile.t[1] := tf;
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+
+  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, aMax, vMax, vMin)
+  THEN
+    profile.pf := profile.p[7];
+    time_none := TRUE;
+    RETURN;        
+  END_IF
+END_IF
+
+// UD Solution 1/2
+h1 := 2*(vf*tf - pd);
+
+profile.t[0] := h1/vd;
+profile.t[1] := tf - profile.t[0];
+profile.t[2] := 0;
+profile.t[3] := 0;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+af := vd*vd/h1;
+
+IF ((aMin - 1E-12 < af) AND_THEN (af < aMax + 1E-12) AND_THEN profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, af, vMax, vMin))
+THEN
+  profile.pf := profile.p[7];
+  time_none := TRUE;
+  RETURN;        
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

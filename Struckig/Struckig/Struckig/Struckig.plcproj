@@ -98,7 +98,13 @@
     <Compile Include="Struckig\Position\PositionThirdOrderStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Position\PositionSecondOrderStep1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Position\PositionThirdOrderStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Position\PositionSecondOrderStep2.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">

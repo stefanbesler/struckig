@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="VelocitySecondOrderStep2" Id="{c768c75a-7183-4e5d-bca5-aa13c5eae104}" SpecialFunc="None">
-    <Declaration><![CDATA[/// Mathematical equations for Step 1 in third order velocity interface: Extremal profiles
+    <Declaration><![CDATA[/// Mathematical equations for Step 2 in second-order velocity interface: Time synchronization
 FUNCTION_BLOCK INTERNAL VelocitySecondOrderStep2 
 VAR
   _aMax : LREAL;

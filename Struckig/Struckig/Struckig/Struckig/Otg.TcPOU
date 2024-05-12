@@ -39,8 +39,8 @@ VAR
   _velocityThirdOrderStep1 : VelocityThirdOrderStep1;
   _velocityThirdOrderStep2 : VelocityThirdOrderStep2;
   
-  //_positionSecondOrderStep1 : PositionSecondOrderStep1;
-  //_positionSecondOrderStep2 : PositionSecondOrderStep2;
+  _positionSecondOrderStep1 : PositionSecondOrderStep1;
+  _positionSecondOrderStep2 : PositionSecondOrderStep2;
   _velocitySecondOrderStep1 : VelocitySecondOrderStep1;
   _velocitySecondOrderStep2 : VelocitySecondOrderStep2;    
   
@@ -322,8 +322,8 @@ DO
         _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
         found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);      
       ELSE
-        _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-        found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);          
+        _positionSecondOrderStep1.Set(p.p[0], p.v[0], p.pf, p.vf, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
+        found_profile := _positionSecondOrderStep1.Get(p, _blocks[dof]);          
       END_IF
 
     ControlInterfaceType.Velocity:
@@ -528,8 +528,8 @@ DO
         _positionThirdOrderStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
         found_time_synchronization := _positionThirdOrderStep2.Get(p);
       ELSE
-        _positionThirdOrderStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-        found_time_synchronization := _positionThirdOrderStep2.Get(p);        
+        _positionSecondOrderStep2.Set(t_profile, p.p[0], p.v[0], p.pf, p.vf, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
+        found_time_synchronization := _positionSecondOrderStep2.Get(p);        
       END_IF
 
     ControlInterfaceType.Velocity: 
