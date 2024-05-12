@@ -107,12 +107,12 @@ VAR_INPUT
   vMax, vMin, aMax, aMin : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h1 := (-vd*vd + 2*aMax*((v0 + vf)*tf - 2*pd))/(aMax*aMax) + tf*tf;
+        <ST><![CDATA[h1 := (2*aMax*(pd - tf*vf) - 2*aMin*(pd - tf*v0) + vd*vd)/(aMax*aMin) + tf*tf;
 IF h1 >= 0
 THEN
   h1 := SQRT(h1);
 
-  profile.t[0] := vd/(2*aMax) + (tf - h1)/2;
+  profile.t[0] := (aMax*vd - aMax*aMin*(tf - h1))/(aMax*(aMax - aMin));
   profile.t[1] := h1;
   profile.t[2] := tf - (profile.t[0] + h1);
   profile.t[3] := 0;
@@ -120,7 +120,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
 
-  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+  IF profile.CheckForSecondOrderWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, aMin, vMax, vMin)
   THEN
     profile.pf := profile.p[7];
     time_acc0 := TRUE;
@@ -142,7 +142,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := tf - (profile.t[0] + profile.t[1]);
   
-  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+  IF profile.CheckForSecondOrderWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, aMin, vMax, vMin)
   THEN
     profile.pf := profile.p[7];
     time_acc0 := TRUE;
@@ -160,7 +160,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := vd/aMax;
 
-IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, vMax, vMin)
+IF profile.CheckForSecondOrderWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, tf, aMax, aMin, vMax, vMin)
 THEN
   profile.pf := profile.p[7];
   time_acc0 := TRUE;
@@ -187,7 +187,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
 
-  IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, aMax, vMax, vMin)
+  IF profile.CheckForSecondOrderWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, aMax, aMin, vMax, vMin)
   THEN
     profile.pf := profile.p[7];
     time_none := TRUE;
@@ -208,7 +208,7 @@ profile.t[6] := 0;
 
 af := vd*vd/h1;
 
-IF ((aMin - 1E-12 < af) AND_THEN (af < aMax + 1E-12) AND_THEN profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, af, vMax, vMin))
+IF ((aMin - 1E-12 < af) AND_THEN (af < aMax + 1E-12) AND_THEN profile.CheckForSecondOrderWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, af, -af, vMax, vMin))
 THEN
   profile.pf := profile.p[7];
   time_none := TRUE;

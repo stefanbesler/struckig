@@ -297,14 +297,14 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[profile.t[0] := (-v0 + vMax)/aMax;
-profile.t[1] := (v0*v0 + vf*vf)/(2*vMax*aMax) - vMax/aMax + pd/vMax;
-profile.t[2] := (-vf + vMax)/aMax;
+profile.t[1] :=(aMin*v0*v0 - aMax*vf*vf)/(2*aMax*aMin*vMax) + vMax*(aMax - aMin)/(2*aMax*aMin) + pd/vMax;
+profile.t[2] := (vf - vMax)/aMin;
 profile.t[3] := 0;
 profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, aMax, vMax, vMin)
+IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, aMax, aMin, vMax, vMin)
 THEN
   AddProfile(profile);
 END_IF]]></ST>
@@ -333,13 +333,13 @@ profile.t[6] := 0;
 IF ABS(v0) > Constants.DoubleEpsilon
 THEN
   profile.t[3] := pd / v0;
-  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin))
+  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin))
   THEN
     time_all_single_step := TRUE;
   END_IF
 ELSIF ABS(pd) < Constants.DoubleEpsilon
 THEN
-  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, vMax, vMin))
+  IF (profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin))
   THEN
     time_all_single_step := TRUE;
   END_IF
@@ -369,8 +369,8 @@ THEN
   // Solution 1
   profile.t[0] := -(v0 + h1)/aMax;
   profile.t[1] := 0;
-  profile.t[2] := -(vf + h1)/aMax;
-  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, vMax, vMin)
+  profile.t[2] := (vf + h1)/aMin;
+  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin)
   THEN
     AddProfile(profile);
     IF return_after_found
@@ -383,8 +383,8 @@ THEN
   // Solution 2
   profile.t[0] := (-v0 + h1)/aMax;
   profile.t[1] := 0;
-  profile.t[2] := (-vf + h1)/aMax;
-  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, vMax, vMin)
+  profile.t[2] := (vf - h1)/aMin;
+  IF profile.CheckForSecondOrder(ProfileJerkSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin)
   THEN
     AddProfile(profile);
     IF return_after_found
