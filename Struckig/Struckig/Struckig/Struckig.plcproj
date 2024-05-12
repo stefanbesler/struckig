@@ -116,7 +116,7 @@
     <Compile Include="Struckig\Profile\_DataTypes\ProfileDirection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\ProfileJerkSigns.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileControlSigns.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Profile\_DataTypes\ReachedLimits.TcDUT">
@@ -155,6 +155,11 @@
     <Compile Include="Struckig\_DataTypes\TrajectoryState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Struckig.tmc">
+      <SubType>Content</SubType>
+    </None>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>

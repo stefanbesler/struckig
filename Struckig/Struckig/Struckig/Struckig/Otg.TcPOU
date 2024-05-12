@@ -58,7 +58,7 @@ VAR
   _currentPosition, _currentVelocity, _currentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Current state
   _targetPosition, _targetVelocity, _targetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Target state
   _maxVelocity, _maxAcceleration, _maxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Kinematic constraints
-  _new_max_jerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _new_phase_control : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
@@ -431,7 +431,7 @@ END_IF
 
 IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
-  IF IsInputCollinear(MaxJerk, p_limiting.Direction, limiting_dof, _new_max_jerk) THEN
+  IF IsInputCollinear(p_limiting.Direction, limiting_dof, _new_phase_control) THEN
     found_time_synchronization := TRUE;
     FOR dof:=0 TO _dofsEnd DO
       IF NOT Enabled[dof] OR_ELSE dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase THEN
@@ -442,40 +442,76 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
       t_profile := Duration - p.Brake.Duration - p.Accel.Duration;
 
       p.t := p_limiting.t; // Copy timing information from limiting DoF
-      p.JerkSigns := p_limiting.JerkSigns;
+      p.ControlSigns := p_limiting.ControlSigns;
 
       CASE _inp_per_dof_control_interface[dof]
       OF
         ControlInterfaceType.Position:
-          CASE p.JerkSigns
+          CASE p.ControlSigns
           OF
-            ProfileJerkSigns.Uddu:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+            ProfileControlSigns.Uddu:
+            
+              IF NOT IsInfinity(MaxJerk[dof])
               THEN
-                found_time_synchronization := FALSE;                        
+                IF NOT p.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
+              ELSE
+                IF NOT p.CheckForSecondOrderWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], -_new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
               END_IF
+            
           
-            ProfileJerkSigns.Udud:
-              IF NOT p.CheckWithTiming2(ProfileJerkSigns.Udud, ReachedLimits.None, t_profile, _new_max_jerk[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+            ProfileControlSigns.Udud:
+              IF NOT IsInfinity(MaxJerk[dof])
               THEN            
-                found_time_synchronization := FALSE;
-              END_IF
+                IF NOT p.CheckWithTiming2(ProfileControlSigns.Udud, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                THEN            
+                  found_time_synchronization := FALSE;
+                END_IF
+              ELSE
+                IF NOT p.CheckForSecondOrderWithTiming2(ProfileControlSigns.Udud, ReachedLimits.None, t_profile, _new_phase_control[dof], -_new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
+              END_IF                
           END_CASE
         
         ControlInterfaceType.Velocity:
-          CASE p.JerkSigns
+          CASE p.ControlSigns
           OF
-            ProfileJerkSigns.Uddu:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
-              THEN
-                found_time_synchronization := FALSE;                        
+            ProfileControlSigns.Uddu:
+            
+              IF NOT IsInfinity(MaxJerk[dof])
+              THEN  
+                IF NOT p.CheckForVelocityWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, _new_phase_control[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
+              ELSE
+                IF NOT p.CheckForSecondOrderVelocityWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
               END_IF
           
-            ProfileJerkSigns.Udud:
-              IF NOT p.CheckForVelocityWithTiming(ProfileJerkSigns.Udud, ReachedLimits.None, _new_max_jerk[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
-              THEN            
-                found_time_synchronization := FALSE;
-              END_IF
+            ProfileControlSigns.Udud:
+            
+              IF NOT IsInfinity(MaxJerk[dof])
+              THEN             
+                IF NOT p.CheckForVelocityWithTiming(ProfileControlSigns.Udud, ReachedLimits.None, _new_phase_control[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                THEN            
+                  found_time_synchronization := FALSE;
+                END_IF
+              ELSE
+                IF NOT p.CheckForSecondOrderVelocityWithTiming2(ProfileControlSigns.Udud, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
+              END_IF                
           END_CASE        
       END_CASE
   
@@ -692,10 +728,9 @@ END_VAR
       <Declaration><![CDATA[/// Is the trajectory (in principle) phase synchronizable?
 METHOD INTERNAL IsInputCollinear : BOOL
 VAR_INPUT
-  jMax : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   limitingDirection : ProfileDirection;
   limitingDof : INT;
-  new_max_jerk : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  new_phase_control : REFERENCE TO ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
 END_VAR
 VAR_INST
   scale_dof : INT := -1;
@@ -703,7 +738,7 @@ VAR_INST
   pd : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   scale_vector : POINTER TO LREAL;
   pd_scale, v0_scale, a0_scale, vf_scale, af_scale, scale, scale_limiting, current_scale : LREAL;
-  max_jerk_limiting : LREAL;
+  control_limiting : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -765,7 +800,13 @@ a0_scale := CurrentAcceleration[scale_dof] / scale;
 af_scale := TargetAcceleration[scale_dof] / scale;
 
 scale_limiting := scale_vector[limitingDof];
-max_jerk_limiting := SEL(limitingDirection = ProfileDirection.Up, -jMax[limitingDof], jMax[limitingDof]);
+control_limiting := SEL(limitingDirection = ProfileDirection.Up, -MaxJerk[limitingDof], MaxJerk[limitingDof]);
+
+IF IsInfinity(MaxJerk[limitingDof])
+THEN
+  control_limiting := SEL(limitingDirection = ProfileDirection.Up, _inp_min_acceleration[limitingDof], MaxAcceleration[limitingDof]);
+END_IF
+
 FOR dof:=0 TO _dofsEnd
 DO
   IF _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase
@@ -783,7 +824,7 @@ DO
     RETURN;
 	END_IF
   
-  new_max_jerk[dof] := max_jerk_limiting * current_scale / scale_limiting;
+  new_phase_control[dof] := control_limiting * current_scale / scale_limiting;
 END_FOR
 
 IsInputCollinear := TRUE;]]></ST>

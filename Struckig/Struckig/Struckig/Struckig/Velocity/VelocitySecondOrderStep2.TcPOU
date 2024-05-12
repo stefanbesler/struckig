@@ -30,7 +30,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, af, _aMax, _aMin)
+IF profile.CheckForSecondOrderVelocityWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, af, _aMax, _aMin)
 THEN
   profile.pf := profile.p[6];
   Get := TRUE;

@@ -162,7 +162,7 @@ Profile.t[4] := (af - aMax)/jMax + h1;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-time_acc0 := profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+time_acc0 := profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
 IF time_acc0
 THEN
   RETURN;
@@ -187,7 +187,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3]);
   
-  time_acc0 := profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0 := profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0
   THEN
     RETURN;
@@ -214,7 +214,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_acc0 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.ACC0, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0 := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.ACC0, tf, jMax, vMax, vMin, aMax, aMin);
 END_IF
 ]]></ST>
       </Implementation>
@@ -244,7 +244,7 @@ THEN
     Profile.t[5] := tf - (2*Profile.t[0] + Profile.t[1] + 2*Profile.t[4]);
     Profile.t[6] := Profile.t[4];
 
-    time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
+    time_acc0_acc1 := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
     RETURN;
   END_IF
 END_IF
@@ -267,7 +267,7 @@ THEN
     Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + 2*Profile.t[4] + af/jf);
     Profile.t[6] := Profile.t[4] + af/jf;
     
-    time_acc0_acc1 := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
+    time_acc0_acc1 := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jf, vMax, vMin, aMax, aMin, jMax);
     IF time_acc0_acc1
     THEN
       RETURN;
@@ -288,7 +288,7 @@ THEN
   profile.t[5] := tf - (profile.t[0] + profile.t[1] + profile.t[2] + profile.t[3] + 2*profile.t[4] + af/jMax);
   profile.t[6] := profile.t[4] + af/jMax;
   
-  time_acc0_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_acc1 := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_acc1
   THEN
     RETURN;
@@ -320,7 +320,7 @@ IF ABS(jMax) > Constants.DoubleEpsilon AND_THEN ((2*(aMax - aMin) + ad)/jMax < t
     Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] + af/jMax);
     Profile.t[6] := Profile.t[4] + af/jMax;
     
-    time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_acc0_acc1_vel
     THEN
       RETURN;
@@ -339,7 +339,7 @@ THEN
   Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] - af/jMax);
   Profile.t[6] := Profile.t[4] - af/jMax;
   
-  time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_acc1_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Acc0Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
 END_IF
 ]]></ST>
       </Implementation>
@@ -403,7 +403,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := af/jMax + t;
 
-  time_acc0_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -449,7 +449,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := -(af/jMax) + t;
 
-  time_acc0_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc0_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Acc0Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc0_vel
   THEN
     RETURN;
@@ -489,7 +489,7 @@ THEN
   Profile.t[5] := h1;
   Profile.t[6] := tf - (profile.t[0] + profile.t[2] + profile.t[5]);
   
-  time_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1 := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1
   THEN
     RETURN;
@@ -513,7 +513,7 @@ THEN
   Profile.t[5] := h1;
   Profile.t[6] := tf - (profile.t[5] + profile.t[4] + profile.t[2]);
   
-  time_acc1 := profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1 := profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1
   THEN
     RETURN;
@@ -538,7 +538,7 @@ THEN
   Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (af - aMin)/jMax);
   Profile.t[6] := (af - aMin)/jMax;
 	
-  time_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1 := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
   IF (time_acc1)
   THEN
     RETURN;
@@ -563,7 +563,7 @@ THEN
 	Profile.t[5] := tf - (Profile.t[2] + Profile.t[3] + Profile.t[4] + (-af + aMax)/jMax);
 	Profile.t[6] := (-af + aMax)/jMax;
 	
-	time_acc1 := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
+	time_acc1 := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Acc1, tf, jMax, vMax, vMin, aMax, aMin);
 	IF (time_acc1)
 	THEN
 	  RETURN;
@@ -633,7 +633,7 @@ DO
   Profile.t[5] := (h1 + aMin)/jMax;
   Profile.t[6] := Profile.t[4] + af/jMax;
 
-  time_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -675,7 +675,7 @@ DO
   Profile.t[5] := -(h1 + aMax)/jMax;
   Profile.t[6] := Profile.t[4] - af/jMax;
 
-  time_acc1_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
+  time_acc1_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Acc1Vel, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_acc1_vel
   THEN
     RETURN;
@@ -707,7 +707,7 @@ THEN
   Profile.t[4] := 0;
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[0];
-  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none THEN
     RETURN;
   END_IF
@@ -727,7 +727,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := Profile.t[4];
 
-  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.UDDU, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileControlSigns.UDDU, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -773,7 +773,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -833,7 +833,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none 
   THEN
     RETURN; 
@@ -858,7 +858,7 @@ END_FOR
     profile.t[5] := 0;
     profile.t[6] := (-h3 + 48*jMax_jMax*(tf*v0 - pd) - 6*(a0_a0 + af_af)*jMax*tf + 12*a0*af*jMax*tf + 6*(af + 3*a0 + jMax*tf)*tf_tf*jMax_jMax - h0)/h1;
 
-    time_none := Profile.checkWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.checkWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -908,7 +908,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN; 
@@ -932,7 +932,7 @@ END_FOR
     profile.t[5] := h0;
     profile.t[6] := (tf - profile.t[3] + ad/jMax - h0)/2;
     
-    time_none := Profile.checkWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.checkWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -993,7 +993,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (t + Profile.t[3] + Profile.t[4]);
   
-  time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none
   THEN
     RETURN;
@@ -1038,7 +1038,7 @@ DO
     Profile.t[5] := 0;
     Profile.t[6] := 0;
   
-    time_none := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -1061,7 +1061,7 @@ THEN
   Profile.t[5] := 0;
   Profile.t[6] := 0;
   
-  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -1085,7 +1085,7 @@ ELSE
     Profile.t[5] := 0;
     Profile.t[6] := 0;
     
-    time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none
     THEN
       RETURN;
@@ -1119,7 +1119,7 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := tf - (Profile.t[0] + Profile.t[1]);
   
-  time_none := Profile.CheckWithTiming2(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
+  time_none := Profile.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin, jMax);
   IF time_none
   THEN
     RETURN;
@@ -1136,7 +1136,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := tf - (Profile.t[0] + Profile.t[2]);
 
-time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -1152,7 +1152,7 @@ Profile.t[4] := 0;
 Profile.t[5] := 0;
 Profile.t[6] := 0;
 
-time_none := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin);
+time_none := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin);
 IF time_none
 THEN
   RETURN;
@@ -1184,7 +1184,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := tf - (profile.t[1] + profile.t[2] + profile.t[3]);
   
-  time_none_smooth := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none_smooth
   THEN
     RETURN;
@@ -1208,7 +1208,7 @@ THEN
   profile.t[5] := tf - (profile.t[0] + profile.t[1] + profile.t[2]);
   profile.t[6] := 0;
   
-  time_none_smooth := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none_smooth  
   THEN
     RETURN;
@@ -1234,7 +1234,7 @@ THEN
     profile.t[5] := 0;
     profile.t[6] := tf - (profile.t[0] + profile.t[2] + profile.t[3]);
     
-    time_none_smooth := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none_smooth  
     THEN
       RETURN;
@@ -1261,7 +1261,7 @@ THEN
   profile.t[5] := tf - (profile.t[2] + profile.t[3] + profile.t[4]);
   profile.t[6] := 0;
   
-  time_none_smooth := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+  time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
   IF time_none_smooth  
   THEN
     RETURN;
@@ -1288,7 +1288,7 @@ THEN
     profile.t[5] := h1/jMax;
     profile.t[6] := tf - (profile.t[0] + profile.t[4] + profile.t[5]);
     
-    time_none_smooth := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_none_smooth  
     THEN
       RETURN;
@@ -1348,7 +1348,7 @@ THEN
     profile.t[5] := 0;
     profile.t[6] := t;
     
-    time_vel := profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    time_vel := profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_vel THEN
       RETURN;
     END_IF
@@ -1465,7 +1465,7 @@ ELSE
       Profile.t[5] := 0;
       Profile.t[6] := h1 + af/jMax;
     
-      time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Uddu, ReachedLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
+      time_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
       IF time_vel
       THEN
         RETURN;
@@ -1614,7 +1614,7 @@ ELSE
     Profile.t[5] := 0;
     Profile.t[6] := h1 - af/jMax;
   
-    time_vel := Profile.CheckWithTiming(ProfileJerkSigns.Udud, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    time_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
     IF time_vel
     THEN
       RETURN;

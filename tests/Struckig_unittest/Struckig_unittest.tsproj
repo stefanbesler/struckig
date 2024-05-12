@@ -13,7 +13,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{D01D1C3D-8E1A-4350-AEDC-05EAE2EFCF27}" Name="Struckig_unittest" PrjFilePath="Struckig_unittest\Struckig_unittest.plcproj" TmcFilePath="Struckig_unittest\Struckig_unittest.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{F238B5F0-4569-65AB-472B-FE95343953B1}" TmcPath="Struckig_unittest\Struckig_unittest.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{72FE1329-DC49-7C2E-018E-5803F3A5D206}" TmcPath="Struckig_unittest\Struckig_unittest.tmc">
 					<Name>Struckig_unittest Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

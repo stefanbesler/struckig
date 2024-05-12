@@ -88,7 +88,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;
   
-  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.Acc0, jMax, aMax, aMin)) THEN
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.Acc0, jMax, aMax, aMin)) THEN
     profile.pf := profile.p[7];
     time_acc0 := TRUE;
     RETURN;
@@ -106,7 +106,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := tf - (profile.t[0] + profile.t[1]);
 
-IF (profile.CheckForVelocity(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF (profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
 THEN
   profile.pf := profile.p[7];
   time_acc0 := TRUE;
@@ -122,7 +122,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := ad/jMax;
 
-IF (profile.CheckForVelocity(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF (profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
 THEN
   profile.pf := profile.p[7];
   time_acc0 := TRUE;
@@ -152,7 +152,7 @@ END_VAR
   profile.t[5] := 0;
   profile.t[6] := 0;
   
-  IF (profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, jMax, aMax, aMin)) THEN
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin)) THEN
     profile.pf := profile.p[7];
     time_none := TRUE;
     RETURN;
@@ -172,7 +172,7 @@ THEN
   profile.t[6] := 0;
   
   jf := Power2(a0 - af)/h1;
-  IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.CheckForVelocity(ProfileJerkSigns.uddu, ReachedLimits.None, jf, aMax, aMin))
+  IF (ABS(jf) < ABS(jMax) + 1E-12 AND_THEN profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jf, aMax, aMin))
   THEN
     profile.pf := profile.p[7];
     time_none := TRUE;

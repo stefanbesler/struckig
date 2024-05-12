@@ -36,7 +36,7 @@ p.t[4] := 0;
 p.t[5] := 0;
 p.t[6] := 0;
 
-IF p.CheckForSecondOrderVelocity(ProfileJerkSigns.Uddu, ReachedLimits.Acc0, af)
+IF p.CheckForSecondOrderVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, af)
 THEN
   block.Tmin := p.t_sum[6] + p.Brake.Duration + p.Accel.Duration;
   Get := TRUE;
