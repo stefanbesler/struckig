@@ -27,10 +27,10 @@ THEN
   IF otg.State = TrajectoryState.Idle AND_THEN NOT switched
   THEN
     switched := TRUE;
-	otg.MaxVelocity[0] :=  10.0;
-	otg.TargetPosition[0] :=  9.0;
-	otg.TargetVelocity[0] :=  0.0;
-	otg.TargetAcceleration[0] :=  0.0;
+    otg.MaxVelocity[0] :=  10.0;
+    otg.TargetPosition[0] :=  9.0;
+    otg.TargetVelocity[0] :=  0.0;
+    otg.TargetAcceleration[0] :=  0.0;
   END_IF
 END_IF]]></ST>
     </Implementation>

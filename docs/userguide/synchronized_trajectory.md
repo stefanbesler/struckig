@@ -63,7 +63,7 @@ While red curves show the phase-synchronized trajectory, the blue ones show the 
 <div class="gallery">
   <div class="gallery-item">
     <figure>
-      <img src="../images/synchronization_phase_vs_time.png" alt="Visualization overview"/>
+      <img src="../images/synchronization_phase_vs_time_2nd_order.png" alt="Visualization overview"/>
     </figure>
   </div>
 </div>
