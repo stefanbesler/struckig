@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="KnownExamplesSecondOrderTest" Id="{cc54a2f5-f44f-47fe-bf39-b60e11bb7e36}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK KnownExamplesSecondOrderTest EXTENDS TcUnit.FB_TestSuite
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[example01();
+example02();
+example03();
+example04();
+example05();
+example06();
+
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="example01" Id="{2c872bba-48b8-4553-8afe-a1ad1bcb01ad}">
+      <Declaration><![CDATA[METHOD example01
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (  
+    MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    MaxJerk :=             [ Struckig.Constants.Infinity, Struckig.Constants.Infinity, Struckig.Constants.Infinity ],
+    CurrentPosition :=     [ 0.0, -2.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
+  );
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-01');
+
+otg();
+AssertEquals_LREAL(Expected := 3.0,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example02" Id="{283230e5-3394-4926-8311-2044a4019bad}">
+      <Declaration><![CDATA[METHOD example02
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (  
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, -2.0, 1.0 ],
+    CurrentVelocity :=     [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 1.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.5, 0.0 ]
+  );
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-02');
+
+otg();
+AssertEquals_LREAL(Expected := 2.0,
+             Actual := CheckCalculation(otg),
+             Delta := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example03" Id="{c76d8927-1ddf-4066-863c-8140bc4204a1}">
+      <Declaration><![CDATA[METHOD example03
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (  
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, -2.0, -2.0 ],
+    CurrentVelocity :=     [ 0.1, 0.1, 1.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1.0, -3.0, 2.0 ],
+    TargetVelocity :=      [ 1.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.5, 0.0 ]
+  );
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-03');
+
+otg();
+AssertEquals_LREAL(Expected := 3.24264068711928,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example04" Id="{93ba2b1c-d7ff-4a4f-9b54-19ba1500a60c}">
+      <Declaration><![CDATA[METHOD example04
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (       
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 1.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.0, 0.0, 0.0 ],
+    TargetVelocity :=      [ 0.0, 1.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
+  );
+  
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-04');
+
+otg();
+AssertEquals_LREAL(Expected := 0.0,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example05" Id="{9c689851-c433-4811-a39f-89bbcb1181ae}">
+      <Declaration><![CDATA[METHOD example05
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (  
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 1.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 0.0, 1E-4, 0.0 ],
+    TargetVelocity :=      [ 0.0, 1.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
+  );
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-05');
+
+otg();
+AssertEquals_LREAL(Expected := 0.0001,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="example06" Id="{da09cac0-8964-4409-8cc4-ac95f4f0fd52}">
+      <Declaration><![CDATA[METHOD example06
+VAR_INST
+  otg : Struckig.Otg(0.004, 3) := (  
+    MaxVelocity :=         [ 10.0, 10.0, 10.0 ],
+    MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
+    CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity :=     [ 0.0, 1.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1E-4, 0.0, 0.0 ],
+    TargetVelocity :=      [ 0.0, 1.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ]
+  );
+  
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Example-06');
+
+otg();
+AssertEquals_LREAL(Expected := 4.0,
+             Actual := CheckCalculation(otg),
+             DELTA := 1E-8,
+             Message := '');
+ 
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

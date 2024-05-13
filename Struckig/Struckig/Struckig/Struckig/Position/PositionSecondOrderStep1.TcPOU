@@ -372,7 +372,7 @@ VAR_INPUT
   return_after_found : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[h1 := (v0*v0 + vf*vf)/2 + aMax*pd;
+        <ST><![CDATA[h1 := (aMax*vf*vf - aMin*v0*v0 - 2*aMax*aMin*pd)/(aMax - aMin);
 IF h1 >= 0.0
 THEN
   h1 := SQRT(h1);

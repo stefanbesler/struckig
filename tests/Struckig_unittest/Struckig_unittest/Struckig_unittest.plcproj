@@ -25,6 +25,9 @@
     <Compile Include="POUs\DebuggedExamplesTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\KnownExamplesSecondOrderTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Otg1Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>
@@ -140,6 +143,12 @@
     <PlaceholderReference Include="TcUnit">
       <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
       <Namespace>TcUnit</Namespace>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>LOGEXTENDEDRESULTS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
   </ItemGroup>
   <ProjectExtensions>
