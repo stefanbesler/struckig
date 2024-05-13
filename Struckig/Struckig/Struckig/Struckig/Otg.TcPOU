@@ -1072,6 +1072,7 @@ DO
 	END_IF
 
   IF MaxAcceleration[i] <> MaxAcceleration[i] OR_ELSE // isnan
+     IsInfinity(MaxAcceleration[i]) OR_ELSE
      MaxAcceleration[i] < 0.0
   THEN
     AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum acceleration limit should be larger than or equal to zero'); 
@@ -1080,6 +1081,7 @@ DO
 
   aMin := SEL(MinAcceleration[i] = 0, MinAcceleration[i] ,-MaxAcceleration[i]);
   IF aMin <> aMin OR_ELSE // isnan
+     IsInfinity(aMin) OR_ELSE    
      aMin > 0
   THEN    
     AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum acceleration limit should be smaller than or equal zero'); 
