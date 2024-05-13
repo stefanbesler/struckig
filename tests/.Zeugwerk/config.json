@@ -6,13 +6,13 @@
 	  "name": "Struckig_unittest",
 	  "plcs": [
 		{
-          "version": "0.9.3.0",
+          "version": "0.10.0.0",
           "name": "Struckig_unittest",
           "type": "Application",
           "frameworks": {},
           "references": {
             "*": [
-              "Struckig=0.9.3.0",
+              "Struckig=0.10.0.0",
               "Tc2_System=*",
 			  "Tc3_Module=*",
               "TcUnit=*"
