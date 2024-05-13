@@ -66,31 +66,6 @@ DO
   t_sum[i+1] := t_sum[i] + t[i+1];  
 END_FOR
 
-IF limits = ReachedLimits.Acc0Acc1Vel OR_ELSE limits = ReachedLimits.Acc0Vel OR_ELSE limits = ReachedLimits.Acc1Vel OR_ELSE limits = ReachedLimits.Vel
-THEN
-  IF t[3] < Constants.Epsilon
-  THEN
-    RETURN;
-  END_IF
-END_IF
-
-IF limits = ReachedLimits.Acc0 OR_ELSE limits = ReachedLimits.Acc0Acc1
-THEN
-  IF t[1] < Constants.Epsilon
-  THEN
-    RETURN;
-  END_IF
-END_IF
-
-IF limits = ReachedLimits.Acc1 OR_ELSE limits = ReachedLimits.Acc0Acc1
-THEN
-  IF t[5] < Constants.Epsilon
-  THEN
-    RETURN;
-  END_IF
-END_IF
-
-
 IF t_sum[6] > Constants.Tmax // For numerical reasons, is that needed?}
 THEN
   RETURN;        
@@ -128,7 +103,6 @@ END_IF
 direction := SEL(vMax > 0, ProfileDirection.Down, ProfileDirection.Up);
 vUppLim := SEL(direction = ProfileDirection.Up, vMin, vMax) + Constants.VelocityEpsilon;
 vLowLim := SEL(direction = ProfileDirection.Up, vMax, vMin) - Constants.VelocityEpsilon;
-
 
 FOR i:= 0 TO 6 
 DO
