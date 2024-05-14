@@ -30,4 +30,4 @@ jobs:
         with:
           name: Struckig
           path: |
-            **/*.compiled-library    
+            **/*library    
