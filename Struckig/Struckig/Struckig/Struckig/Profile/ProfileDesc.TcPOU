@@ -17,6 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 /// The state Profile for position, velocity, acceleration and jerk for a single DoF
+/// A single-dof kinematic profile with position, velocity, acceleration and jerk
 {attribute 'hide'}
 FUNCTION_BLOCK ProfileDesc
 VAR_INPUT
@@ -33,6 +34,89 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="Bound" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
+      <Declaration><![CDATA[METHOD Bound : ProfileBound
+VAR_INPUT
+END_VAR
+VAR
+  i : INT;
+  t_current_sum : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Bound.Minimum := Constants.Infinity;
+Bound.Maximum := -Constants.Infinity;
+
+IF Brake.Duration > 0.0
+THEN
+  IF (Brake.t[0] > 0.0)
+  THEN
+    CheckStepForBound(0.0, Brake.t[0], Brake.p[0], Brake.v[0], Brake.a[0], Brake.j[0], Bound);
+  
+    IF (Brake.t[1] > 0.0) 
+    THEN
+      CheckStepForBound(Brake.t[0], Brake.t[1], Brake.p[1], Brake.v[1], Brake.a[1], Brake.j[1], Bound);            
+    END_IF
+  END_IF
+END_IF
+
+t_current_sum := 0;        
+FOR i:=0 TO 6
+DO
+  IF i > 0
+  THEN
+    t_current_sum := t_sum[i-1];
+	END_IF
+  
+  CheckStepForBound(t_current_sum + Brake.Duration, t[i], p[i], v[i], a[i], j[i], Bound);
+END_FOR 
+
+IF (pf < Bound.Minimum)
+THEN
+  Bound.Minimum := pf;
+  Bound.Tmin := t_sum[6] + Brake.Duration;
+END_IF 
+
+
+IF (pf > Bound.Maximum) 
+THEN
+  Bound.Maximum := pf;
+  Bound.Tmax := t_sum[6] + Brake.Duration;
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CheckBound" Id="{e3c5916b-156b-465a-87ae-6759453a325c}">
+      <Declaration><![CDATA[METHOD CheckBound : BOOL
+VAR_INPUT
+  t_ext, t_sum, t, p, v, a, j : LREAL;
+END_VAR
+VAR_IN_OUT
+  b : ProfileBound;     
+END_VAR
+VAR
+  p_ext, v_Ext, a_ext : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (0 < t_ext AND_THEN t_ext < t)
+THEN
+  Integrate(t_ext, p, v, a, j, p:=p_ext, v:=v_ext, a:=a_ext);
+  IF (a_ext > 0 AND_THEN p_ext < b.Minimum)
+  THEN
+    b.Minimum := p_ext;
+    b.Tmin := t_sum + t_ext;
+   ELSIF (a_ext < 0 AND_THEN p_ext > b.Maximum) 
+   THEN
+    b.Maximum := p_ext;
+    b.Tmax := t_sum + t_ext; 
+  END_IF
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CheckForFirstOrder" Id="{31212f13-d5a9-4742-8643-6d97fa16497a}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForFirstOrder : BOOL
@@ -464,59 +548,29 @@ CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="CheckPositionExtremum" Id="{e3c5916b-156b-465a-87ae-6759453a325c}">
-      <Declaration><![CDATA[METHOD CheckPositionExtremum : BOOL
-VAR_INPUT
-  t_ext, t_sum, t, p, v, a, j : LREAL;
-END_VAR
-VAR_IN_OUT
-  ext : PositionExtremaDesc;     
-END_VAR
-VAR
-  p_ext, v_Ext, a_ext : LREAL;
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF (0 < t_ext AND_THEN t_ext < t)
-THEN
-  Integrate(t_ext, p, v, a, j, p:=p_ext, v:=v_ext, a:=a_ext);
-  IF (a_ext > 0 AND_THEN p_ext < ext.Minimum)
-  THEN
-    ext.Minimum := p_ext;
-    ext.Tmin := t_sum + t_ext;
-   ELSIF (a_ext < 0 AND_THEN p_ext > ext.Maximum) 
-   THEN
-    ext.Maximum := p_ext;
-    ext.Tmax := t_sum + t_ext; 
-  END_IF
-END_IF
-
-]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="CheckStepForPositionExtremum" Id="{ce8df4c2-1570-4fbc-87ab-2de79032d446}">
-      <Declaration><![CDATA[METHOD CheckStepForPositionExtremum : BOOL
+    <Method Name="CheckStepForBound" Id="{ce8df4c2-1570-4fbc-87ab-2de79032d446}">
+      <Declaration><![CDATA[METHOD CheckStepForBound : BOOL
 VAR_INPUT
   t_sum, t, p, v, a, j : LREAL;
 END_VAR
 VAR_IN_OUT
-  ext : PositionExtremaDesc;  
+  b : ProfileBound;  
 END_VAR
 VAR
   d, d_sqrt : LREAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF (p < ext.Minimum)
+        <ST><![CDATA[IF (p < b.Minimum)
 THEN 
-  ext.Minimum := p;
-  ext.Tmin := t_sum;
+  b.Minimum := p;
+  b.Tmin := t_sum;
 END_IF
 
-IF (p > ext.Maximum)
+IF (p > b.Maximum)
 THEN 
-  ext.Maximum := p;
-  ext.Tmax := t_sum;
+  b.Maximum := p;
+  b.Tmax := t_sum;
 END_IF
 
 IF (j <> 0) 
@@ -524,12 +578,12 @@ THEN
   d := a * a - 2 * j * v;
   IF (ABS(d) < Constants.DoubleEpsilon)
   THEN
-    CheckPositionExtremum(-a / j, t_sum, t, p, v, a, j, ext:=ext);
+    CheckBound(-a / j, t_sum, t, p, v, a, j, b:=b);
    ELSIF (d > 0) 
    THEN
     d_sqrt := SQRT(d);
-    CheckPositionExtremum((-a - D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);
-    CheckPositionExtremum((-a + D_sqrt) / j, t_sum, t, p, v, a, j, ext:=ext);           
+    CheckBound((-a - D_sqrt) / j, t_sum, t, p, v, a, j, b:=b);
+    CheckBound((-a + D_sqrt) / j, t_sum, t, p, v, a, j, b:=b);           
   END_IF
 END_IF
 
@@ -782,59 +836,6 @@ THEN
   FirstStateAtPosition := TRUE;
   RETURN;      
 END_IF]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="PositionExtrema" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
-      <Declaration><![CDATA[METHOD PositionExtrema : PositionExtremaDesc
-VAR_INPUT
-END_VAR
-VAR
-  i : INT;
-  t_current_sum : LREAL;
-END_VAR]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[PositionExtrema.Minimum := Constants.Infinity;
-PositionExtrema.Maximum := -Constants.Infinity;
-
-IF Brake.Duration > 0.0
-THEN
-  IF (Brake.t[0] > 0.0)
-  THEN
-    CheckStepForPositionExtremum(0.0, Brake.t[0], Brake.p[0], Brake.v[0], Brake.a[0], Brake.j[0], PositionExtrema);
-  
-    IF (Brake.t[1] > 0.0) 
-    THEN
-      CheckStepForPositionExtremum(Brake.t[0], Brake.t[1], Brake.p[1], Brake.v[1], Brake.a[1], Brake.j[1], PositionExtrema);            
-    END_IF
-  END_IF
-END_IF
-
-t_current_sum := 0;        
-FOR i:=0 TO 6
-DO
-  IF i > 0
-  THEN
-    t_current_sum := t_sum[i-1];
-	END_IF
-  
-  CheckStepForPositionExtremum(t_current_sum + Brake.Duration, t[i], p[i], v[i], a[i], j[i], PositionExtrema);
-END_FOR 
-
-IF (pf < PositionExtrema.Minimum)
-THEN
-  PositionExtrema.Minimum := pf;
-  PositionExtrema.Tmin := t_sum[6] + Brake.Duration;
-END_IF 
-
-
-IF (pf > PositionExtrema.Maximum) 
-THEN
-  PositionExtrema.Maximum := pf;
-  PositionExtrema.Tmax := t_sum[6] + Brake.Duration;
-END_IF
-
-
-]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetBoundary" Id="{fdfe1c1e-08a5-45e1-a4af-4f8d0e84c34a}">

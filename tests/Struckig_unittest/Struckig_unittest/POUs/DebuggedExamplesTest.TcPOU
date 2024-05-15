@@ -26,7 +26,7 @@ VAR_INST
     TargetAcceleration := [ 523.43053514200096287823, 100.75104632855459385610, 320.80199262854853259341 ]
   );
   
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Trajectory_Profile[1]_Step2_TimeVel');
@@ -37,19 +37,19 @@ ruckig();
 AssertEquals_LREAL(Expected := 0.22338925049474450679, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 // Check duration for each phase
-positionExtrema := ruckig._profiles[0].positionExtrema();
+positionExtrema := ruckig._profiles[0].Bound();
 AssertEquals_LREAL(0.20657109030979783904, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
 AssertEquals_LREAL(-29.15176131633907630203, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
 AssertEquals_LREAL(0.00000000000000000000, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
 AssertEquals_LREAL(-54.94342725690739825950, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
-positionExtrema := ruckig._profiles[1].positionExtrema();
+positionExtrema := ruckig._profiles[1].Bound();
 AssertEquals_LREAL(0.19826331168683380968, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
 AssertEquals_LREAL(55.81702313192161568622, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
 AssertEquals_LREAL(0.01113968648909354625, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
 AssertEquals_LREAL(-71.74511835894615785492, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
-positionExtrema := ruckig._profiles[2].positionExtrema();
+positionExtrema := ruckig._profiles[2].Bound();
 AssertEquals_LREAL(0.22338925049474447904, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
 AssertEquals_LREAL(94.47974487226861128875, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
 AssertEquals_LREAL(0.02606362117094545780, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');

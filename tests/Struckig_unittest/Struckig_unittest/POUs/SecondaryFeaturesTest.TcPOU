@@ -5,7 +5,7 @@
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..2] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL; 
 END_VAR]]></Declaration>
     <Implementation>
@@ -50,7 +50,7 @@ VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   NewSection : INT;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 	output: INT;
 	trajectory: INT;
@@ -199,7 +199,7 @@ VAR
   busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
   NewSection : INT;
   NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -347,7 +347,7 @@ END_VAR
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -403,7 +403,7 @@ END_VAR
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -438,7 +438,7 @@ END_VAR
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -620,7 +620,7 @@ VAR
   nan : LREAL := SQRT(-1);  
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -731,7 +731,7 @@ VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
   NewSection : INT;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -947,7 +947,7 @@ VAR
   busy : Struckig.TrajectoryState := Struckig.TrajectoryState.Busy;
   NewSection : INT;
   NewPosition, NewVelocity, NewAcceleration, NewJerk, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
   profiles : POINTER TO ProfileDesc := ADR(otg._profiles);
 END_VAR]]></Declaration>
@@ -1123,7 +1123,7 @@ END_VAR
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
-  positionExtrema : Struckig.PositionExtremaDesc;
+  positionExtrema : Struckig.ProfileBound;
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
@@ -1131,19 +1131,19 @@ END_VAR]]></Declaration>
 
 otg();
 
-positionExtrema := otg._profiles[0].positionExtrema();
+positionExtrema := otg._profiles[0].Bound();
 AssertEquals_LREAL(4.0, positionExtrema.Tmax, 1E-9, message:='Profile[0] Tmax incorrect');
 AssertEquals_LREAL(1.0, positionExtrema.Maximum, 1E-9, message:='Profile[0] maximum incorrect');
 AssertEquals_LREAL(0.0, positionExtrema.Tmin, 1E-9, message:='Profile[0] Tmin incorrect');
 AssertEquals_LREAL(0.0, positionExtrema.Minimum, 1E-9, message:='Profile[0] minimum incorrect');
 
-positionExtrema := otg._profiles[1].positionExtrema();
+positionExtrema := otg._profiles[1].Bound();
 AssertEquals_LREAL(0.0, positionExtrema.Tmax, 1E-9, message:='Profile[1] Tmax incorrect');
 AssertEquals_LREAL(-2.0, positionExtrema.Maximum, 1E-9, message:='Profile[1] maximum incorrect');
 AssertEquals_LREAL(3.2254033308, positionExtrema.Tmin, 1E-9, message:='Profile[1] Tmin incorrect');
 AssertEquals_LREAL(-3.1549193338, positionExtrema.Minimum, 1E-9, message:='Profile[1] minimum incorrect');
 
-positionExtrema := otg._profiles[2].positionExtrema();
+positionExtrema := otg._profiles[2].Bound();
 AssertEquals_LREAL(4.0, positionExtrema.Tmax, 1E-9, message:='Profile[2] Tmax incorrect');
 AssertEquals_LREAL(2.0, positionExtrema.Maximum, 1E-9, message:='Profile[2] maximum incorrect');
 AssertEquals_LREAL(0.0, positionExtrema.Tmin, 1E-9, message:='Profile[2] Tmin incorrect');

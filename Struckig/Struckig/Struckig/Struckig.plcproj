@@ -116,7 +116,7 @@
     <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Struckig\Profile\_DataTypes\PositionExtremaDesc.TcDUT">
+    <Compile Include="Struckig\Profile\_DataTypes\ProfileBound.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Profile\_DataTypes\ProfileDirection.TcDUT">

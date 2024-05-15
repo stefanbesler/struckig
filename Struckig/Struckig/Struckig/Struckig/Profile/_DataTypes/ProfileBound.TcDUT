@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
-  <DUT Name="PositionExtremaDesc" Id="{b615dcba-8544-436f-9a57-30985945064e}">
+  <DUT Name="ProfileBound" Id="{b615dcba-8544-436f-9a57-30985945064e}">
     <Declaration><![CDATA[// Struckig
 // Copyright (C) 2022 Stefan Besler
 
@@ -17,7 +17,7 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'conditionalshow'}
-TYPE PositionExtremaDesc :
+TYPE ProfileBound :
 STRUCT
   Minimum, Maximum : LREAL; // The extreme position
   Tmin, Tmax : LREAL;  // Time when the positions are reached
