@@ -370,16 +370,14 @@ IF h1>=0
 THEN
   h1 := SQRT(h1);
   
-  profile.t[3] := 0;
-  profile.t[4] := 0;
-  profile.t[5] := 0;
-  profile.t[6] := 0;  
-  
   // Solution 1
   profile.t[0] := -(a0 + h1)/jMax;
   profile.t[1] := 0;
   profile.t[2] := -(af + h1)/jMax;
-
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;  
   
   IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin))
   THEN
@@ -394,6 +392,10 @@ THEN
   profile.t[0] := (-a0 + h1)/jMax;
   profile.t[1] := 0;
   profile.t[2] := (-af + h1)/jMax;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;    
   
   IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin)) THEN
     AddProfile(profile);  

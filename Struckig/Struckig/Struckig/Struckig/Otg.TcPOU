@@ -88,7 +88,7 @@ END_VAR]]></Declaration>
       <ST><![CDATA[NewCalculation := FALSE;
 SetBusy(TRUE);
 
-IF HasChanged() OR_ELSE NOT _inputInitialized
+IF NOT _inputInitialized OR_ELSE HasChanged() 
 THEN
   _dofsEnd := Dofs - 1; // for looping
 
@@ -285,6 +285,11 @@ FOR dof:=0 TO _dofsEnd
 DO
   p REF=_profiles[dof];
   
+  _inp_min_velocity[dof] := SEL(ABS(MinVelocity[dof]) < Constants.Epsilon, MinVelocity[dof], -MaxVelocity[dof]);
+  _inp_min_acceleration[dof] := SEL(ABS(MinAcceleration[dof]) < Constants.Epsilon, MinAcceleration[dof], -MaxAcceleration[dof]);
+  _inp_per_dof_control_interface[dof] := SEL(PerDofControlInterface[dof] = ControlInterfaceType.Undefined, PerDofControlInterface[dof], ControlInterface);
+  _inp_per_dof_synchronization[dof] := SEL(PerDofSynchronization[dof] = SynchronizationType.Undefined, PerDofSynchronization[dof], Synchronization); 
+  
   IF NOT Enabled[dof]
   THEN
     p.p[7] := CurrentPosition[dof];
@@ -296,11 +301,6 @@ DO
     _blocks[dof].B.IsUsed := FALSE;    
     CONTINUE;
 	END_IF
-  
-  _inp_min_velocity[dof] := SEL(ABS(MinVelocity[dof]) < Constants.Epsilon, MinVelocity[dof], -MaxVelocity[dof]);
-  _inp_min_acceleration[dof] := SEL(ABS(MinAcceleration[dof]) < Constants.Epsilon, MinAcceleration[dof], -MaxAcceleration[dof]);
-  _inp_per_dof_control_interface[dof] := SEL(PerDofControlInterface[dof] = ControlInterfaceType.Undefined, PerDofControlInterface[dof], ControlInterface);
-  _inp_per_dof_synchronization[dof] := SEL(PerDofSynchronization[dof] = SynchronizationType.Undefined, PerDofSynchronization[dof], Synchronization); 
   
   CASE _inp_per_dof_control_interface[dof]
   OF

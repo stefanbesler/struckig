@@ -198,7 +198,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[t[0] := 0;
+t[1] := 0;
+j[0] := 0;
+j[1] := 0;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="VelocityAtTime" Id="{f532e452-5e4d-4b4e-a9b9-55765c5c49dc}">
