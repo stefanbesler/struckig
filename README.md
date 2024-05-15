@@ -17,7 +17,7 @@
     <img src="https://img.shields.io/github/issues/stefanbesler/Struckig.svg" alt="Issues">
   </a>
   <a href="https://github.com/stefanbesler/struckig/releases">
-    <img src="https://img.shields.io/github/v/release/stefanbesler/ruckig.svg?include_prereleases&sort=semver" alt="Releases">
+    <img src="https://img.shields.io/github/v/release/stefanbesler/struckig.svg?include_prereleases&sort=semver" alt="Releases">
   </a>
   <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">
     <img src="https://img.shields.io/badge/license-GPLv3-green.svg" alt="GPLv3">
