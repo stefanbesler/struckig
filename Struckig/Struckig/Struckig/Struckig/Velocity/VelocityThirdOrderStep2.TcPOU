@@ -175,9 +175,9 @@ END_VAR
 END_IF
     
 // UD Solution 1/2
-IF ABS(af - a0) > Constants.DoubleEpsilon
+h1 := 2*(af*tf - vd);
+IF ABS(af - a0) > Constants.DoubleEpsilon AND_THEN ABS(h1) > Constants.Epsilon
 THEN
-  h1 := 2*(af*tf - vd);
   profile.t[0] := h1/(af - a0);
   profile.t[1] := tf - profile.t[0];
   profile.t[2] := 0;
