@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="PositionFirstOrderStep2" Id="{97410abf-a68b-4ccf-b273-1213573ff63e}" SpecialFunc="None">
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Mathematical equations for Step 2 in third-order position interface: Time synchronization
+FUNCTION_BLOCK INTERNAL PositionFirstOrderStep2
+VAR
+  minimize_jerk : BOOL;
+  v0, a0 : LREAL;
+  tf, vf, af : LREAL;
+  _vMax, _vMin : LREAL;
+  
+  // Pre-calculated expressions
+  pd : LREAL;
+  tf_tf, tf_p3, tf_p4 : LREAL;
+  vd, vd_vd : LREAL;
+  ad, ad_ad : LREAL;
+  v0_v0, vf_vf : LREAL;
+  a0_a0, a0_p3, a0_p4, a0_p5, a0_p6 : LREAL;
+  af_af, af_p3, af_p4, af_p5, af_p6 : LREAL;
+  jMax_jMax : LREAL;
+  g1, g2 : LREAL;
+  t_min, t_max : LREAL;
+  up_first : BOOL;
+  
+  d_extremasCount : INT;
+  d_extremas : ARRAY[0..6] OF LREAL;
+  indices : ARRAY[0..6] OF INT;
+  
+  h0, h0a, h0b, h0c, h1, h2 : LREAL;  
+  h3, jf : LREAL;  
+  ph1, ph2, ph3, ph4 : LREAL;
+  t : LREAL; 
+  orig, deriv : LREAL;
+  i : INT;
+  ph0, ph5, ph6, ph7 : LREAL;
+  h1a : LREAL;
+  p1, val_max : LREAL;
+  polynom, deriva, dderiv, ddderiv, root : ARRAY[0..6] OF LREAL;
+  dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
+  tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
+  deriv_newton, res, p_val, val_new : LREAL;    
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Get" Id="{027b85a0-fc83-4e11-9080-5186c519b127}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+  profile : REFERENCE TO ProfileDesc;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[vf := pd / tf;
+
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := tf;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+Get := profile.CheckForFirstOrderWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, tf, vf, _vMax, _vMin);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{6a8268f0-302f-4cc4-9446-504296e216f2}">
+      <Declaration><![CDATA[METHOD Set
+VAR_INPUT
+  tf : LREAL;
+  p0 : LREAL;
+  pf : LREAL;
+  vMax, vMin : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.tf := tf;
+THIS^.v0 := v0;
+THIS^.vf := vf;
+THIS^._vMax := vMax;
+THIS^._vMin := vMin;
+
+pd := pf - p0;
+vd := vf - v0;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

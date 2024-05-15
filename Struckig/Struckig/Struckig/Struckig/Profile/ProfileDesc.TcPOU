@@ -33,6 +33,113 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="CheckForFirstOrder" Id="{31212f13-d5a9-4742-8643-6d97fa16497a}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForFirstOrder : BOOL
+VAR_INPUT
+  controlSigns : ProfileControlSigns;
+  limits : ReachedLimits;  
+  vUp : LREAL;
+END_VAR
+VAR
+  i : INT;
+  vUppLim : LREAL;
+  vLowLim : LREAL;
+  v_a_zero : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// ReachedLimits::VEL
+IF t[3] < 0.0
+THEN
+  RETURN;
+END_IF
+
+t_sum[0] := 0;
+t_sum[1] := 0;
+t_sum[2] := 0;
+t_sum[3] := t[3];
+t_sum[4] := t[3];
+t_sum[5] := t[3];
+t_sum[6] := t[3];
+
+IF t_sum[6] > Constants.Tmax // For numerical reasons, is that needed?}
+THEN
+  RETURN;        
+END_IF
+
+j[0] := 0;
+j[1] := 0;
+j[2] := 0;
+j[3] := 0;
+j[4] := 0;
+j[5] := 0;
+j[6] := 0;
+
+a[0] := 0;
+a[1] := 0;
+a[2] := 0;
+a[3] := 0;
+a[4] := 0;
+a[5] := 0;
+a[6] := 0;
+a[7] := af;
+
+v[0] := 0;
+v[1] := 0;
+v[2] := 0;
+v[3] := SEL(t[3] > 0, 0, vUp);
+v[4] := 0;
+v[5] := 0;
+v[6] := 0;
+v[7] := vf;
+
+FOR i:= 0 TO 6 
+DO
+  p[i+1] := p[i] + t[i] * (v[i] + t[i] * a[i] / 2);
+END_FOR
+
+THIS^.Direction := SEL(vUp > 0, ProfileDirection.Down, ProfileDirection.Up);
+THIS^.ControlSigns := controlSigns;
+THIS^.Limits := limits;
+
+// Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
+CheckForFirstOrder := ABS(p[7] - pf) < Constants.PositionPrecision;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CheckForFirstOrderWithTiming" Id="{f2aee95d-8ed3-4a11-8ddd-b5d6faaeadf9}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForFirstOrderWithTiming : BOOL
+VAR_INPUT
+  controlSigns : ProfileControlSigns;
+  limits : ReachedLimits;  
+  vUp : LREAL;
+END_VAR
+VAR
+  i : INT;
+  aUppLim : LREAL;
+  aLowLim : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckForFirstOrderWithTiming := CheckForFirstOrder(controlSigns, limits, vUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="CheckForFirstOrderWithTiming2" Id="{45d59201-d920-42f5-a1d0-0ce0793e419d}">
+      <Declaration><![CDATA[/// For velocity interface
+METHOD CheckForFirstOrderWithTiming2 : BOOL
+VAR_INPUT
+  controlSigns : ProfileControlSigns;
+  limits : ReachedLimits;  
+  tf : LREAL;
+  vUp : LREAL;
+  vMax, vMin : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CheckForFirstOrderWithTiming2 :=
+  (vMin - Constants.VelocityEpsilon < vUp)
+  AND_THEN (vUp < vMax + Constants.VelocityEpsilon)
+  AND_THEN CheckForFirstOrderWithTiming(controlSigns, limits, vUp);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CheckForSecondOrder" Id="{d36e3565-cce0-4f73-83f9-ec95541ce2ef}">
       <Declaration><![CDATA[/// For velocity interface
 METHOD CheckForSecondOrder : BOOL
@@ -193,11 +300,6 @@ VAR_INPUT
   controlSigns : ProfileControlSigns;
   limits : ReachedLimits;  
   aUp : LREAL;
-END_VAR
-VAR
-  i : INT;
-  aUppLim : LREAL;
-  aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderVelocityWithTiming := CheckForSecondOrderVelocity(controlSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
@@ -213,16 +315,11 @@ VAR_INPUT
   aUp : LREAL;
   aMax : LREAL;
   aMin : LREAL;
-END_VAR
-VAR
-  i : INT;
-  aUppLim : LREAL;
-  aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderVelocityWithTiming2 :=
- (aMin - Constants.Epsilon < aUp)
- AND_THEN (aUp < aMax + Constants.Epsilon)
+ (aMin - Constants.AccelerationEpsilon < aUp)
+ AND_THEN (aUp < aMax + Constants.AccelerationEpsilon)
  AND_THEN CheckForSecondOrderVelocityWithTiming(controlSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
       </Implementation>
     </Method>
@@ -235,11 +332,6 @@ VAR_INPUT
   tf : LREAL;
   aUp, aDown : LREAL;
   vMax, vMin : LREAL;
-END_VAR
-VAR
-  i : INT;
-  aUppLim : LREAL;
-  aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderWithTiming := CheckForSecondOrder(controlSigns, limits, aUp, aDown, vMax, vMin);]]></ST>
@@ -255,11 +347,6 @@ VAR_INPUT
   aUp, aDown : LREAL;
   vMax, vMin : LREAL;
   aMax, aMin : LREAL;  
-END_VAR
-VAR
-  i : INT;
-  aUppLim : LREAL;
-  aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderWithTiming2 := 
@@ -368,11 +455,6 @@ VAR_INPUT
   aMax : LREAL;
   aMin : LREAL;  
   jMax : LREAL;  
-END_VAR
-VAR
-  i : INT;
-  aUppLim : LREAL;
-  aLowLim : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation

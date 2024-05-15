@@ -58,7 +58,10 @@ VAR
   _positionSecondOrderStep1 : PositionSecondOrderStep1;
   _positionSecondOrderStep2 : PositionSecondOrderStep2;
   _velocitySecondOrderStep1 : VelocitySecondOrderStep1;
-  _velocitySecondOrderStep2 : VelocitySecondOrderStep2;    
+  _velocitySecondOrderStep2 : VelocitySecondOrderStep2;
+  
+  _positionFirstOrderStep1 : PositionFirstOrderStep1;
+  _positionFirstOrderStep2 : PositionFirstOrderStep2;  
   
   _inp_min_velocity, _inp_min_acceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _inp_per_dof_control_interface : ARRAY[0..ParameterList.MaxDoFs] OF ControlInterfaceType; //< Per-DoF control interface
@@ -306,7 +309,8 @@ DO
       IF NOT IsInfinity(MaxJerk[dof])
       THEN
         p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      ELSE
+      ELSIF NOT IsInfinity(MaxAcceleration[dof])
+      THEN
         p.Brake.SecondOrderPositionBrakeTrajectory(CurrentVelocity[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
       END_IF    
 
@@ -316,7 +320,8 @@ DO
       IF NOT IsInfinity(MaxJerk[dof])
       THEN    
         p.Brake.VelocityBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
-      ELSE
+      ELSIF NOT IsInfinity(MaxAcceleration[dof])
+      THEN
         p.Brake.SecondOrderVelocityBrakeTrajectory();        
       END_IF
       
@@ -326,7 +331,8 @@ DO
   IF NOT IsInfinity(MaxJerk[dof])
   THEN
     p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
-  ELSE
+  ELSIF NOT IsInfinity(MaxAcceleration[dof])
+  THEN
     p.Brake.FinalizeSecondOrder(p.p[0], p.v[0], p.a[0]);    
   END_IF
 
@@ -337,9 +343,13 @@ DO
       THEN
         _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
         found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);      
-      ELSE
+      ELSIF NOT IsInfinity(MaxAcceleration[dof])
+      THEN
         _positionSecondOrderStep1.Set(p.p[0], p.v[0], p.pf, p.vf, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
         found_profile := _positionSecondOrderStep1.Get(p, _blocks[dof]);          
+      ELSE
+        _positionFirstOrderStep1.Set(p.p[0], p.pf, MaxVelocity[dof], _inp_min_velocity[dof]);
+        found_profile := _positionFirstOrderStep1.Get(p, _blocks[dof]);          
       END_IF
 
     ControlInterfaceType.Velocity:
@@ -347,10 +357,11 @@ DO
       THEN    
         _velocityThirdOrderStep1.Set(p.v[0], p.a[0], p.vf, p.af, MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
         found_profile := _velocityThirdOrderStep1.Get(p, _blocks[dof]);
-      ELSE
+      ELSIF NOT IsInfinity(MaxAcceleration[dof])
+      THEN
         _velocitySecondOrderStep1.Set(p.v[0], p.vf, MaxAcceleration[dof], _inp_min_acceleration[dof]);
-        found_profile := _velocitySecondOrderStep1.Get(p, _blocks[dof]);       
-      END_IF        
+        found_profile := _velocitySecondOrderStep1.Get(p, _blocks[dof]);    
+      END_IF  
 	END_CASE
   
   IF NOT found_profile
@@ -473,14 +484,19 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
                 THEN
                   found_time_synchronization := FALSE;                        
                 END_IF
-              ELSE
+              ELSIF NOT IsInfinity(MaxAcceleration[dof])
+              THEN
                 IF NOT p.CheckForSecondOrderWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], -_new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof])
+                THEN
+                  found_time_synchronization := FALSE;                        
+                END_IF
+              ELSE
+                IF NOT p.CheckForFirstOrderWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof])
                 THEN
                   found_time_synchronization := FALSE;                        
                 END_IF
               END_IF
             
-          
             ProfileControlSigns.Udud:
               IF NOT IsInfinity(MaxJerk[dof])
               THEN            
@@ -579,9 +595,13 @@ DO
       THEN       
         _positionThirdOrderStep2.Set(t_profile, p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
         found_time_synchronization := _positionThirdOrderStep2.Get(p);
-      ELSE
+      ELSIF NOT IsInfinity(MaxAcceleration[dof])
+      THEN
         _positionSecondOrderStep2.Set(t_profile, p.p[0], p.v[0], p.pf, p.vf, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
         found_time_synchronization := _positionSecondOrderStep2.Get(p);        
+      ELSE
+        _positionFirstOrderStep2.Set(t_profile, p.p[0], p.pf, MaxVelocity[dof], _inp_min_velocity[dof]);
+        found_time_synchronization := _positionFirstOrderStep2.Get(p);        
       END_IF
 
     ControlInterfaceType.Velocity: 
@@ -1072,7 +1092,6 @@ DO
 	END_IF
 
   IF MaxAcceleration[i] <> MaxAcceleration[i] OR_ELSE // isnan
-     IsInfinity(MaxAcceleration[i]) OR_ELSE
      MaxAcceleration[i] < 0.0
   THEN
     AbortErrorId(TrajectoryErrorCode.InvalidInput, 'maximum acceleration limit should be larger than or equal to zero'); 
@@ -1080,8 +1099,7 @@ DO
   END_IF
 
   aMin := SEL(MinAcceleration[i] = 0, MinAcceleration[i] ,-MaxAcceleration[i]);
-  IF aMin <> aMin OR_ELSE // isnan
-     IsInfinity(aMin) OR_ELSE    
+  IF aMin <> aMin OR_ELSE // isnan  
      aMin > 0
   THEN    
     AbortErrorId(TrajectoryErrorCode.InvalidInput, 'minimum acceleration limit should be smaller than or equal zero'); 

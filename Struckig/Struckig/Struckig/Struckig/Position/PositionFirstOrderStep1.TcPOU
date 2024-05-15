@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="PositionFirstOrderStep1" Id="{bcd8ff8d-6078-4041-a15c-bd88cb6ebb8d}" SpecialFunc="None">
+    <Declaration><![CDATA[// Struckig
+// Copyright (C) 2022 Stefan Besler
+
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Mathematical equations for Step 1 in third-order position interface: Extremal profiles
+FUNCTION_BLOCK INTERNAL PositionFirstOrderStep1
+VAR
+  v0 : LREAL;
+  vf : LREAL;
+  _vMax, _vMin : LREAL;
+
+  // Pre-calculated expressions
+  pd : LREAL;  
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="Get" Id="{33dc0d93-dfdc-4a11-94f3-ed7497087994}">
+      <Declaration><![CDATA[METHOD Get : BOOL
+VAR_INPUT
+  input : REFERENCE TO ProfileDesc;
+  block : REFERENCE TO Block; 
+END_VAR
+VAR_INST
+  vMax, vMin, aMax, aMin, jMax : LREAL;
+  profile : REFERENCE TO ProfileDesc;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[profile REF= block.Pmin;
+profile.SetBoundary(input);
+
+vf := SEL(pd > 0, _vMin, _vMax);
+profile.t[0] := 0;
+profile.t[1] := 0;
+profile.t[2] := 0;
+profile.t[3] := pd / vf;
+profile.t[4] := 0;
+profile.t[5] := 0;
+profile.t[6] := 0;
+
+IF profile.CheckForFirstOrder(ProfileControlSigns.Uddu, ReachedLimits.Vel, vf)
+THEN
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+  Get := TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Set" Id="{55c24eae-f5df-49dd-b3a7-8c94c09c4a67}">
+      <Declaration><![CDATA[METHOD Set
+VAR_INPUT
+  p0 : LREAL;
+  pf : LREAL;
+  vMax, vMin : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[THIS^.v0 := v0;
+THIS^.vf := vf;
+THIS^._vMax := vMax;
+THIS^._vMin := vMin;
+
+pd := pf - p0;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -4,8 +4,8 @@
     <Declaration><![CDATA[FUNCTION_BLOCK RandomTest EXTENDS TcUnit.FB_TestSuite
 VAR
   _number_trajectories : UDINT := 256 * 1024; // Some user variable you want to be able to set
-  _position_second_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);  
-  _velocity_second_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);
+  _position_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);  
+  _velocity_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);
   
   _positionDist : RandomGaussian(seed:=45, mu:=0, sigma:=4);
   _dynamicDist : RandomGaussian(seed:=46, mu:=0, sigma:=0.8);
@@ -15,13 +15,75 @@ VAR
 
 END_VAR]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Test_VelocitySecondRandom3();
+      <ST><![CDATA[Test_PositionFirstRandom3();
+
+Test_VelocitySecondRandom3();
 Test_PositionSecondRandom3();
+
+Test_VelocityThirdRandom3();
+Test_PositionThirdRandom3();
 
 
 
 ]]></ST>
     </Implementation>
+    <Method Name="Test_PositionFirstRandom3" Id="{b5cc2fa3-ea85-4b0b-a7de-10706e1810b9}">
+      <Declaration><![CDATA[METHOD Test_PositionFirstRandom3
+VAR_INST
+  p : Randomizer(_positionDist);
+  d : Randomizer(_dynamicDist);
+  l : Randomizer(_limitDist);
+  
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := ControlInterfaceType.Position
+  );
+   
+END_VAR
+VAR
+  i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionFirstRandom3');
+
+FOR i:=0 TO _position_random_3
+DO
+
+  IF i < _position_random_3 / 2
+  THEN
+    otg.Synchronization := SynchronizationType.Phase;
+  ELSE
+    otg.Synchronization := SynchronizationType.TimeSync;    
+  END_IF
+  
+  IF i < _position_random_3 / 20
+  THEN
+    otg.Discretization := DiscretizationType.Discrete;
+  ELSE
+    otg.Discretization := DiscretizationType.Continuous;    
+  END_IF  
+
+  p.Fill(ADR(otg.CurrentPosition), 3);
+  d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
+  
+  p.Fill(ADR(otg.TargetPosition), 3);
+  d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.7);
+  d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.6);
+  
+  l.FillMax(ADR(otg.MaxVelocity), 3, ADR(otg.TargetVelocity));
+  
+  IF NOT otg.ValidateInput(FALSE, TRUE)
+  THEN
+    i := i - 1;
+  END_IF
+  
+  CheckCalculation(otg);
+  
+END_FOR
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Test_PositionSecondRandom3" Id="{ec6501ea-e268-403a-9de1-148baf96b070}">
       <Declaration><![CDATA[METHOD Test_PositionSecondRandom3
 VAR_INST
@@ -41,17 +103,17 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[TEST('Test_PositionSecondRandom3');
 
-FOR i:=0 TO _position_second_random_3
+FOR i:=0 TO _position_random_3
 DO
 
-  IF i < _position_second_random_3 / 2
+  IF i < _position_random_3 / 2
   THEN
     otg.Synchronization := SynchronizationType.Phase;
   ELSE
     otg.Synchronization := SynchronizationType.TimeSync;    
   END_IF
   
-  IF i < _position_second_random_3 / 20
+  IF i < _position_random_3 / 20
   THEN
     otg.Discretization := DiscretizationType.Discrete;
   ELSE
@@ -68,6 +130,66 @@ DO
   
   l.FillMax(ADR(otg.MaxVelocity), 3, ADR(otg.TargetVelocity));
   l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  
+  IF NOT otg.ValidateInput(FALSE, TRUE)
+  THEN
+    i := i - 1;
+  END_IF
+  
+  CheckCalculation(otg);
+  
+END_FOR
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_PositionThirdRandom3" Id="{f9d8bba6-30a0-4f90-b014-69bae72e34c5}">
+      <Declaration><![CDATA[METHOD Test_PositionThirdRandom3
+VAR_INST
+  p : Randomizer(_positionDist);
+  d : Randomizer(_dynamicDist);
+  l : Randomizer(_limitDist);
+  
+
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := ControlInterfaceType.Position
+  );
+   
+END_VAR
+VAR
+  i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_PositionThirdRandom3');
+
+FOR i:=0 TO _position_random_3
+DO
+
+  IF i < _position_random_3 / 2
+  THEN
+    otg.Synchronization := SynchronizationType.Phase;
+  ELSE
+    otg.Synchronization := SynchronizationType.TimeSync;    
+  END_IF
+  
+  IF i < _position_random_3 / 20
+  THEN
+    otg.Discretization := DiscretizationType.Discrete;
+  ELSE
+    otg.Discretization := DiscretizationType.Continuous;    
+  END_IF  
+
+  p.Fill(ADR(otg.CurrentPosition), 3);
+  d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
+  
+  p.Fill(ADR(otg.TargetPosition), 3);
+  d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.7);
+  d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.6);
+  
+  l.FillMax(ADR(otg.MaxVelocity), 3, ADR(otg.TargetVelocity));
+  l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  l.Fill(ADR(otg.MaxJerk), 3);  
   
   IF NOT otg.ValidateInput(FALSE, TRUE)
   THEN
@@ -105,13 +227,53 @@ otg.CurrentPosition[0] := 0;
 otg.CurrentPosition[1] := 0;
 otg.CurrentPosition[2] := 0;
 
-FOR i:=0 TO _velocity_second_random_3
+FOR i:=0 TO _velocity_random_3
 DO
   d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
   d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
   d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.9);
   d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.9);
   l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  
+  CheckCalculation(otg);
+  
+END_FOR
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_VelocityThirdRandom3" Id="{3ed7c98b-8264-4c71-97d1-515a1c009c33}">
+      <Declaration><![CDATA[METHOD Test_VelocityThirdRandom3
+VAR_INST
+  p : Randomizer(_positionDist);
+  d : Randomizer(_dynamicDist);
+  l : Randomizer(_limitDist);
+  min_l : Randomizer(_minLimitDist);
+  
+
+  otg : Struckig.Otg(0.005, 3) := (
+    ControlInterface := ControlInterfaceType.Velocity
+  );
+   
+END_VAR
+VAR
+  i : UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Test_VelocityThirddRandom3');
+
+otg.CurrentPosition[0] := 0;
+otg.CurrentPosition[1] := 0;
+otg.CurrentPosition[2] := 0;
+
+FOR i:=0 TO _velocity_random_3
+DO
+  d.FillOrZero(ADR(otg.CurrentVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.CurrentAcceleration), 3, 0.9);
+  d.FillOrZero(ADR(otg.TargetVelocity), 3, 0.9);
+  d.FillOrZero(ADR(otg.TargetAcceleration), 3, 0.9);
+  l.FillMax(ADR(otg.MaxAcceleration), 3, ADR(otg.TargetAcceleration));
+  l.Fill(ADR(otg.MaxJerk), 3);
   
   CheckCalculation(otg);
   

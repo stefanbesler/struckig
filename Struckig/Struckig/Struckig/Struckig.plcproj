@@ -95,6 +95,12 @@
     <Compile Include="Struckig\Otg1.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Struckig\Position\PositionFirstOrderStep1.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Position\PositionFirstOrderStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Struckig\Position\PositionThirdOrderStep1.TcPOU">
       <SubType>Code</SubType>
     </Compile>

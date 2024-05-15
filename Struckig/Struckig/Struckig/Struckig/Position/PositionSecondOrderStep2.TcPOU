@@ -22,7 +22,7 @@ VAR
   minimize_jerk : BOOL;
   v0, a0 : LREAL;
   tf, vf, af : LREAL;
-  _vMax, _vMin, _aMax, _aMin, _jMax : LREAL;
+  _vMax, _vMin, _aMax, _aMin : LREAL;
   
   // Pre-calculated expressions
   pd : LREAL;
