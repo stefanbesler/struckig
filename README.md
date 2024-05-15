@@ -1,5 +1,5 @@
 <div align="center">
-  <h1 align="center">(ST)Ruckig</h1>
+  <h1 align="center">Struckig</h1>
   <h3 align="center">
     Instantaneous Motion Generation for Robots and Machines.<br>
     Port of ruckig to Structured Text, TwinCAT 3.
@@ -27,9 +27,17 @@
 This repository ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online-Trajectory-Generation to TwinCAT 3.
 Only the Community Version of Ruckig is ported and pro features are not available. **Struckig itself is dual licenced, you can use the source code provided here accordingly to GPLv3. If you want to use this commercially and not disclose your own source code, Struckig is also available with a custom licence**. In the latter case, contact [me](mailto:stefan@besler.me).
 
-# Porting progress
+# Porting progress and learnings
 
-The original project, `ruckig` is a submodule of this repository. The commit-hash reflects the commits that are ported already - I try to keep up with changes that are done in `ruckig`.
+This project started on June 14, 2021 and I am happy to say that after 3 years of working on this project, it finally catched up to the HEAD of the C++ counterpart on May 15, 2024.
+
+In hindsight, the hardest parts of the port were
+
+- Porting mathematical functions from C++ to Structured Text such that the same accuracy is achieved: Functions like `cbrt` are not available in Structured Text out-of-the-box and the functionality had to be ported in a way that calculation have the exact same value in the port as C++ compilers do it. 
+- Exception handling: While C++ allows control over how div0 exceptions are handled, this is not possible in Structured Text. While `ruckig` can just ignore div0 exceptions and then throw away calculations yielding NaN durations, this is not possible in Structured Text. This means that every calculation, which might produce a div0 exception have to be handled.
+
+The original project, `ruckig` is a submodule of this repository and the hashes in "ported" commits reflect the state of the port. Future commits in the will be continuously ported over to Struckig when time sees fit.
+
 
 # Continuous integration & Documentation
 
