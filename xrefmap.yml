@@ -34,9 +34,9 @@ references:
 - uid: Struckig.ParameterList
   name: ParameterList
   href: reference/Struckig/ParameterList.html
-- uid: Struckig.PositionExtremaDesc
-  name: PositionExtremaDesc
-  href: reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html
+- uid: Struckig.ProfileBound
+  name: ProfileBound
+  href: reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.html
 - uid: Struckig.SynchronizationType
   name: SynchronizationType
   href: reference/Struckig/Struckig/_DataTypes/SynchronizationType.html

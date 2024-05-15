@@ -204,10 +204,10 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.md",
+      "source_relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/PositionExtremaDesc.html"
+          "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.html"
         }
       },
       "version": ""
