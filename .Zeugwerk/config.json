@@ -8,6 +8,7 @@
         {
           "version": "0.14.0.0",
           "name": "Struckig",
+          "distributor-name": "Stefan Besler",
           "type": "Library"
         }
       ]
