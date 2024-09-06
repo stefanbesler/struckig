@@ -28,7 +28,7 @@
               "target": "TC3.1",
               "configuration": "Release",
               "distributor-name": "Stefan Besler"
-            },
+            }
           ],
           "references": {
             "*": [
