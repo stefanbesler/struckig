@@ -90,7 +90,13 @@ Note: Struckig supports motions with multiple degree of freedoms with the Otg fu
 utilize the specialized function block `Otg1`. The latter function block uses single variables instead of arrays, which simplifies the usage a bit.
 
 
+# Examples
 
+For more advanced examples, we created full applications, including a visualization. The source code of these examples can be found in the links below
+
+- [Flying Saw](https://github.com/Zeugwerk/FlyingSaw-Example): Struckig is used to match speed with a conveyor, which is moving at a constant speed
+- [Gear Synchronization][()](https://github.com/Zeugwerk/GearSim-Example): Struckig is used to thread-in and thread-out with one gear to another gear, which rotates at constant speed
+- [XY Table](https://github.com/stefanbesler/XyTable-Example): This demo shows of phase-synchronization of two axes
 
 
 
