@@ -5,8 +5,8 @@ on:
       - main
     paths:
       - 'Struckig/**'
-      - 'test/**'
-      - 'example/**'
+      - 'tests/**'
+      - 'examples/**'
   pull_request:
     branches: [ main ]
   workflow_dispatch:
