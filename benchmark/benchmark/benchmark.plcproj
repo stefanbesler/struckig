@@ -8,7 +8,7 @@
     <WriteProductVersion>false</WriteProductVersion>
     <GenerateTpy>false</GenerateTpy>
     <Name>benchmark</Name>
-    <ProgramVersion>3.1.4023.0</ProgramVersion>
+    <ProgramVersion>3.1.4026.13</ProgramVersion>
     <Application>{d06c59cf-f0a8-472c-b1f5-1515cf6b14a3}</Application>
     <TypeSystem>{bf771f2b-8575-41d1-b2f1-07fc3d22d977}</TypeSystem>
     <Implicit_Task_Info>{4cdcd58e-c9f7-4078-a49d-d06f0d46c947}</Implicit_Task_Info>

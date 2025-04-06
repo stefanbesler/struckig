@@ -5,8 +5,8 @@ import numpy as np
 
 
 ticks = ('1 DoF', '3 DoF', '6 DoF', '7 DoF')
-struckig_average_mean = [3, 17, 38, 47]
-struckig_average_err = [0.5, 2, 4, 6]
+struckig_average_mean = [2.8, 14.1, 31.2, 37]
+struckig_average_err = [0.2, 0.2, 0.7, 0.3]
 
 y_pos = np.arange(len(ticks))
 height = 0.35
