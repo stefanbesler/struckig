@@ -1124,6 +1124,11 @@ DO
     CONTINUE;
   END_IF
   
+  IF ABS(tf - t) < Constants.DoubleEpsilon OR_ELSE ABS(ad) < Constants.DoubleEpsilon
+  THEN
+    CONTINUE;
+  END_IF
+  
   jf := ad/(tf - t);
   
   Profile.t[0] := (2*(vd - a0*tf) + ad*(t - tf))/(2*jf*t);
