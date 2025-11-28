@@ -786,6 +786,7 @@ DO
   pd[dof] := TargetPosition[dof] - CurrentPosition[dof];
 END_FOR
 
+scale_dof := -1;
 FOR dof:=0 TO _dofsEnd
 DO
   IF _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase
