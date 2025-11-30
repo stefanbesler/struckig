@@ -1,48 +1,48 @@
 ### YamlMime:XRefMap
 sorted: true
 references:
+- uid: Struckig
+  name: Struckig
+  href: reference/Struckig.html
 - uid: Struckig.Ceil
   name: Ceil
-  href: reference/Struckig/Struckig/Math/Ceil.html
+  href: reference/Struckig/Ceil.html
 - uid: Struckig.Clamp
   name: Clamp
-  href: reference/Struckig/Struckig/Math/Clamp.html
+  href: reference/Struckig/Clamp.html
 - uid: Struckig.ControlInterfaceType
   name: ControlInterfaceType
-  href: reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.html
+  href: reference/Struckig/ControlInterfaceType.html
 - uid: Struckig.DiscretizationType
   name: DiscretizationType
-  href: reference/Struckig/Struckig/_DataTypes/DiscretizationType.html
+  href: reference/Struckig/DiscretizationType.html
 - uid: Struckig.Fmod
   name: Fmod
-  href: reference/Struckig/Struckig/Math/Fmod.html
+  href: reference/Struckig/Fmod.html
 - uid: Struckig.IOtg
   name: IOtg
-  href: reference/Struckig/Struckig/IOtg.html
+  href: reference/Struckig/IOtg.html
 - uid: Struckig.IsInfinity
   name: IsInfinity
-  href: reference/Struckig/Struckig/Math/IsInfinity.html
+  href: reference/Struckig/IsInfinity.html
 - uid: Struckig.IsNaN
   name: IsNaN
-  href: reference/Struckig/Struckig/Math/IsNaN.html
+  href: reference/Struckig/IsNaN.html
 - uid: Struckig.Otg
   name: Otg
-  href: reference/Struckig/Struckig/Otg.html
+  href: reference/Struckig/Otg.html
 - uid: Struckig.Otg1
   name: Otg1
-  href: reference/Struckig/Struckig/Otg1.html
-- uid: Struckig.ParameterList
-  name: ParameterList
-  href: reference/Struckig/ParameterList.html
+  href: reference/Struckig/Otg1.html
 - uid: Struckig.ProfileBound
   name: ProfileBound
-  href: reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.html
+  href: reference/Struckig/ProfileBound.html
 - uid: Struckig.SynchronizationType
   name: SynchronizationType
-  href: reference/Struckig/Struckig/_DataTypes/SynchronizationType.html
+  href: reference/Struckig/SynchronizationType.html
 - uid: Struckig.TrajectoryErrorCode
   name: TrajectoryErrorCode
-  href: reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.html
+  href: reference/Struckig/TrajectoryErrorCode.html
 - uid: Struckig.TrajectoryState
   name: TrajectoryState
-  href: reference/Struckig/Struckig/_DataTypes/TrajectoryState.html
+  href: reference/Struckig/TrajectoryState.html

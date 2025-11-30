@@ -114,150 +114,150 @@
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/ParameterList.md",
+      "source_relative_path": "reference/Struckig.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/ParameterList.html"
+          "relative_path": "reference/Struckig.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/IOtg.md",
+      "source_relative_path": "reference/Struckig/Ceil.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/IOtg.html"
+          "relative_path": "reference/Struckig/Ceil.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Ceil.md",
+      "source_relative_path": "reference/Struckig/Clamp.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Ceil.html"
+          "relative_path": "reference/Struckig/Clamp.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Clamp.md",
+      "source_relative_path": "reference/Struckig/ControlInterfaceType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Clamp.html"
+          "relative_path": "reference/Struckig/ControlInterfaceType.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/Fmod.md",
+      "source_relative_path": "reference/Struckig/DiscretizationType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/Fmod.html"
+          "relative_path": "reference/Struckig/DiscretizationType.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/IsInfinity.md",
+      "source_relative_path": "reference/Struckig/Fmod.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/IsInfinity.html"
+          "relative_path": "reference/Struckig/Fmod.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Math/IsNaN.md",
+      "source_relative_path": "reference/Struckig/IOtg.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Math/IsNaN.html"
+          "relative_path": "reference/Struckig/IOtg.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Otg.md",
+      "source_relative_path": "reference/Struckig/IsInfinity.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Otg.html"
+          "relative_path": "reference/Struckig/IsInfinity.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Otg1.md",
+      "source_relative_path": "reference/Struckig/IsNaN.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Otg1.html"
+          "relative_path": "reference/Struckig/IsNaN.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.md",
+      "source_relative_path": "reference/Struckig/Otg.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/Profile/_DataTypes/ProfileBound.html"
+          "relative_path": "reference/Struckig/Otg.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.md",
+      "source_relative_path": "reference/Struckig/Otg1.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/ControlInterfaceType.html"
+          "relative_path": "reference/Struckig/Otg1.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.md",
+      "source_relative_path": "reference/Struckig/ProfileBound.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/DiscretizationType.html"
+          "relative_path": "reference/Struckig/ProfileBound.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.md",
+      "source_relative_path": "reference/Struckig/SynchronizationType.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/SynchronizationType.html"
+          "relative_path": "reference/Struckig/SynchronizationType.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.md",
+      "source_relative_path": "reference/Struckig/TrajectoryErrorCode.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryErrorCode.html"
+          "relative_path": "reference/Struckig/TrajectoryErrorCode.html"
         }
       },
       "version": ""
     },
     {
       "type": "Conceptual",
-      "source_relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.md",
+      "source_relative_path": "reference/Struckig/TrajectoryState.md",
       "output": {
         ".html": {
-          "relative_path": "reference/Struckig/Struckig/_DataTypes/TrajectoryState.html"
+          "relative_path": "reference/Struckig/TrajectoryState.html"
         }
       },
       "version": ""
