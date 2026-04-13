@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/39160a21219ead90e98db759d9a387689c0dc95e/docs/reference/Struckig/Otg.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/95a1728fa80817395154c9c5577f039b403f4839/docs/reference/Struckig/Otg.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -113,6 +113,7 @@
  [input] MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL,
  [input] MinDuration : LREAL,
  [input] EnableAutoPropagate : BOOL,
+ [input] SmoothBrake : BOOL,
  [output] NewPosition : ARRAY[0..ParameterList.MaxDoFs] OF LREAL,
  [output] NewVelocity : ARRAY[0..ParameterList.MaxDoFs] OF LREAL,
  [output] NewAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL,
@@ -139,6 +140,7 @@
 </dd><a name="MinAcceleration"></a><dt><code>MinAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><dd><p><p>Optional kindematic constraints</p>
 </dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL <code>:= 0</code></dt><dd><p><p>Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none</p>
 </dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL</dt><dd><p><p>If set to true, PassOutputToInput is automatically called internally after calling the function block's body</p>
+</dd><a name="SmoothBrake"></a><dt><code>SmoothBrake</code> BOOL <code>:= ParameterList.SmoothBrake</code></dt><dd><p><p>Initialized from ParameterList; override per instance if needed</p>
 </dd></dl>
 <h4 class="section">Outputs</h4><dl class="parameters">
 <a name="NewPosition"></a><dt><code>NewPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewVelocity"></a><dt><code>NewVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewJerk"></a><dt><code>NewJerk</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL</dt><dd><p><p>Was a new trajectory calculation performed in the last cycle?</p>
@@ -355,7 +357,7 @@ its duration. Also, note that there are range constraints of the input due to nu
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/39160a21219ead90e98db759d9a387689c0dc95e/docs/reference/Struckig/Otg.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/95a1728fa80817395154c9c5577f039b403f4839/docs/reference/Struckig/Otg.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

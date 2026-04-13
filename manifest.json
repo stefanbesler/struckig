@@ -124,6 +124,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/BrakeProfile.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/BrakeProfile.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "reference/Struckig/Ceil.md",
       "output": {
         ".html": {
