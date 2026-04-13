@@ -18,6 +18,7 @@ VAR
   otg1Test : Otg1Test;
   zeroLimitsTest : ZeroLimitsTest;
   randomTest : RandomTest;
+  maxVelocitySwitchingTest : MaxVelocitySwitchingTest;
   
   // generatedTest : GeneratedTest;
 END_VAR

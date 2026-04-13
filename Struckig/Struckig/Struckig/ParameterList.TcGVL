@@ -19,8 +19,11 @@
 {attribute 'qualified_only'}
 VAR_GLOBAL CONSTANT
   MaxDoFs : INT := 7;
-  MaxIterations : BYTE := 127; // Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
+  MaxIterations : BYTE := 127; //< Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
   NumericalRobust : BOOL := TRUE;
+  
+  /// Default initial value for Otg.SmoothBrake / Otg1.SmoothBrake
+  SmoothBrake : BOOL := FALSE;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

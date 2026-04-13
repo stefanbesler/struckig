@@ -54,7 +54,12 @@ THEN
   
     IF (Brake.t[1] > 0.0) 
     THEN
-      CheckStepForBound(Brake.t[0], Brake.t[1], Brake.p[1], Brake.v[1], Brake.a[1], Brake.j[1], Bound);            
+      CheckStepForBound(Brake.t[0], Brake.t[1], Brake.p[1], Brake.v[1], Brake.a[1], Brake.j[1], Bound);
+      
+      IF (Brake.t[2] > 0.0)
+      THEN
+        CheckStepForBound(Brake.t[0] + Brake.t[1], Brake.t[2], Brake.p[2], Brake.v[2], Brake.a[2], Brake.j[2], Bound);
+      END_IF
     END_IF
   END_IF
 END_IF

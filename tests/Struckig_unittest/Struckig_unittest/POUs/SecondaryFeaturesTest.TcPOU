@@ -18,6 +18,7 @@ Test_EnabledDof();
 Test_FirstStateAtTime();
 Test_IndependentMinDurations();
 Test_IndependentMinDurations_1();
+Test_IndependentMinDurations_1_WithSmoothBrake();
 Test_InputInitalized();
 Test_InputValidation();
 Test_InvalidInput();
@@ -463,6 +464,43 @@ TEST_FINISHED();]]></ST>
 VAR_INST
   otg : Struckig.Otg(0.005, 3) := (
     Synchronization := SynchronizationType.None,
+    CurrentPosition :=     [ 1300.0, 0.0, 0.02 ],
+    CurrentVelocity :=     [ 1200.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition :=      [ 1400.0, 0.0, 0.02 ],
+    TargetVelocity :=      [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration :=  [ 0.0, 0.0, 0.0 ],
+    MaxVelocity :=         [ 800.0, 1.0, 1.0 ],
+    MaxAcceleration :=     [ 40000.0, 1.0, 1.0 ],
+    MaxJerk :=             [ 200000.0, 1.0, 1.0 ]
+  );
+    
+END_VAR
+VAR
+  result : Struckig.TrajectoryState;
+  NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+  positionExtrema : Struckig.ProfileBound;
+  rtime, rvel, racc : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('IndependentMinDurations_1');
+
+otg();
+AssertEquals_LREAL(otg.Duration, 0.167347, 1E-6, message:='');
+
+AssertEquals_LREAL(otg._independentMinDurations[0], otg.Duration, 1E-9, message:='');
+AssertEquals_LREAL(otg._independentMinDurations[1], 0, 1E-9, message:='');
+AssertEquals_LREAL(otg._independentMinDurations[2], 0, 1E-9, message:='');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_IndependentMinDurations_1_WithSmoothBrake" Id="{7fabc134-ffee-43e7-ab3c-9397d959ff77}">
+      <Declaration><![CDATA[METHOD Test_IndependentMinDurations_1_WithSmoothBrake
+VAR_INST
+  otg : Struckig.Otg(0.005, 3) := (
+    Synchronization := SynchronizationType.None,
+    SmoothBrake := TRUE,
     CurrentPosition :=     [ 1300.0, 0.0, 0.02 ],
     CurrentVelocity :=     [ 1200.0, 0.0, 0.0 ],
     CurrentAcceleration := [ 0.0, 0.0, 0.0 ],

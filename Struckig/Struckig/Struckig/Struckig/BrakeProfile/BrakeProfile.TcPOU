@@ -17,10 +17,10 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 /// Calculates (pre- or post-) profile to get current or final state below the limits
-FUNCTION_BLOCK INTERNAL BrakeProfile
+FUNCTION_BLOCK BrakeProfile
 VAR_INPUT
   Duration : LREAL; //! Overall duration
-  t, j, a, v, p : ARRAY[0..1] OF LREAL; //! Profile information for a two-step profile  
+  t, j, a, v, p : ARRAY[0..2] OF LREAL; //! Profile information for up to three-step profile  
   IsUsed : BOOL;
 END_VAR
 VAR
@@ -95,6 +95,15 @@ THEN
   Integrate(t[1], p0:=ps, v0:=vs, a0:=as, j:=j[1], p:=ps, v:=vs, a:=as);
 END_IF
 
+IF t[2] > 0
+THEN
+  Duration := Duration + t[2];
+  p[2] := ps;
+  v[2] := vs;
+  a[2] := as;
+  Integrate(t[2], p0:=ps, v0:=vs, a0:=as, j:=j[2], p:=ps, v:=vs, a:=as);
+END_IF
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -129,23 +138,38 @@ VAR_INPUT
   vMax, vMin : LREAL;
   aMax, aMin : LREAL;
   jMax : LREAL;
+  SmoothBrake : BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[t[0] := 0.0;
 t[1] := 0.0;
+t[2] := 0.0;
 j[0] := 0.0;
 j[1] := 0.0;
+j[2] := 0.0;
 
 IF jMax = 0 OR_ELSE aMax = 0 OR_ELSE aMin = 0
 THEN
-  RETURN; // Ignore braking for zero-limits
+  RETURN;
 ELSIF a0 > aMax
 THEN
   AccelerationBrake(v0, a0, vMax, vMin, aMax, aMin, jMax);
 ELSIF a0 < aMin
 THEN
   AccelerationBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax);
+ELSIF SmoothBrake AND_THEN v0 > vMax AND_THEN ABS(a0) < aMax
+THEN
+  SmoothVelocityBrake(v0, a0, vMax, aMax, jMax);
+  IF t[0] <= 0 THEN
+    VelocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax);
+  END_IF
+ELSIF SmoothBrake AND_THEN v0 < vMin AND_THEN ABS(a0) < aMax
+THEN
+  SmoothVelocityBrake(v0, a0, vMin, aMax, -jMax);
+  IF t[0] <= 0 THEN
+    VelocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax);
+  END_IF
 ELSIF ((v0 > vMax AND_THEN VelocityAtZeroAcceleration(v0, a0, -jMax) > vMin) OR_ELSE (a0 > 0 AND_THEN VelocityAtZeroAcceleration(v0, a0, jMax) > vMax))
 THEN
   VelocityBrake(v0, a0, vMax, vMin, aMax, aMin, jMax);
@@ -202,6 +226,87 @@ END_VAR
 t[1] := 0;
 j[0] := 0;
 j[1] := 0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SmoothVelocityBrake" Id="{d9f1a2b3-c4e5-6789-abcd-ef0123456789}">
+      <Declaration><![CDATA[/// Jerk-limited brake from (v0, a0) to (vTarget, a=0).
+/// Produces a 2- or 3-phase profile that ends with zero acceleration,
+/// so Step1 does not inherit a large residual deceleration.
+/// jMax > 0 means braking from above (v0 > vTarget), jMax < 0 means from below.
+/// If the profile cannot be computed (e.g. a0 opposes braking too strongly),
+/// t[0] remains 0 so the caller can fall back to legacy VelocityBrake.
+METHOD SmoothVelocityBrake
+VAR_INPUT
+  v0, a0 : LREAL;
+  vTarget : LREAL;
+  aMax : LREAL;
+  jMax : LREAL;
+END_VAR
+VAR
+  half_D, t1, t3, a_peak : LREAL;
+  v1, dv_phase3, t2, a_clamp : LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (jMax > 0 AND_THEN v0 <= vTarget) OR_ELSE (jMax < 0 AND_THEN v0 >= vTarget) THEN
+  RETURN;
+END_IF
+
+(* Solve quadratic for 2-phase brake from (v0,a0) to (vTarget,0):
+   Phase 1: j = -jMax, duration t1
+   Phase 3: j = +jMax, duration t3 = t1 - a0/jMax
+   jMax * t1^2 - 2*a0*t1 + (vTarget - v0 + a0^2/(2*jMax)) = 0
+   D/4 = a0^2/2 + jMax*(v0 - vTarget) *)
+half_D := a0*a0*0.5 + jMax*(v0 - vTarget);
+IF half_D < 0 THEN
+  RETURN;
+END_IF
+
+IF jMax > 0 THEN
+  t1 := (a0 + SQRT(half_D)) / jMax;
+ELSE
+  t1 := (a0 - SQRT(half_D)) / jMax;
+END_IF
+
+IF t1 < 0 THEN
+  RETURN;
+END_IF
+
+t3 := t1 - a0/jMax;
+a_peak := a0 - jMax*t1;
+
+IF ABS(a_peak) <= aMax THEN
+  j[0] := -jMax;
+  t[0] := t1;
+  j[1] := jMax;
+  t[1] := t3;
+  t[2] := 0;
+ELSE
+  (* 3-phase: clamp peak acceleration at ±aMax *)
+  IF jMax > 0 THEN
+    a_clamp := -aMax;
+  ELSE
+    a_clamp := aMax;
+  END_IF
+
+  t1 := (a0 - a_clamp) / jMax;
+  t3 := -a_clamp / jMax;
+  v1 := v0 + a0*t1 - 0.5*jMax*t1*t1;
+  dv_phase3 := a_clamp*t3 + 0.5*jMax*t3*t3;
+  t2 := (vTarget - v1 - dv_phase3) / a_clamp;
+
+  IF t2 < 0 THEN
+    RETURN;
+  END_IF
+
+  j[0] := -jMax;
+  t[0] := t1;
+  j[1] := 0;
+  t[1] := t2;
+  j[2] := jMax;
+  t[2] := t3;
+END_IF
 ]]></ST>
       </Implementation>
     </Method>
