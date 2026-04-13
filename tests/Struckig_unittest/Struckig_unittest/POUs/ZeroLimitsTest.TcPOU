@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="ZeroLimitsTest" Id="{ac7f32e5-ecad-400f-91b1-3253b77ac3df}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK ZeroLimitsTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK ZeroLimitsTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_PositionInterface();
 Test_PositionInterfaceValidateInput();

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="SecondaryFeaturesTest" Id="{78a4d410-064c-404a-a1d2-ebb5b6bc814b}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK SecondaryFeaturesTest EXTENDS TcUnit.FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK SecondaryFeaturesTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite
 VAR
   result : Struckig.TrajectoryState;
   NewPosition, NewVelocity, NewAcceleration, values : ARRAY[0..2] OF LREAL;
@@ -520,7 +520,7 @@ VAR
   rtime, rvel, racc : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[TEST('IndependentMinDurations_1');
+        <ST><![CDATA[TEST('Test_IndependentMinDurations_1_WithSmoothBrake');
 
 otg();
 AssertEquals_LREAL(otg.Duration, 0.167347, 1E-6, message:='');

@@ -2,32 +2,33 @@
   "fileversion": 1,
   "solution": "Struckig_unittest.sln",
   "projects": [
-	{
-	  "name": "Struckig_unittest",
-	  "plcs": [
-		{
+    {
+      "name": "Struckig_unittest",
+      "plcs": [
+        {
           "version": "0.15.5.0",
+          "distributor-name": "",
           "name": "Struckig_unittest",
           "type": "Application",
           "frameworks": {},
           "packages": [
             {
-              "version": "1.3.0.0",
-              "repository": "",
-              "name": "TcUnit",
-              "branch": "main",
-              "target": "TC3.1",
-              "configuration": "Release",
-              "distributor-name": "www.tcunit.org"
-            },
-            {
               "version": "0.15.5.0",
-              "repository": "bot",
               "name": "Struckig",
               "branch": "main",
               "target": "TC3.1",
               "configuration": "Release",
               "distributor-name": "Stefan Besler"
+            },
+            {
+              "version": "1.3.2",
+              "name": "TcUnit_Zeugwerk",
+              "branch": "master_zgwk",
+              "target": "TC3.1",
+              "configuration": "Release",
+              "distributor-name": "Zeugwerk GmbH",
+              "namespace": "TcUnit_Zeugwerk",
+              "options": {}
             }
           ],
           "references": {
@@ -37,9 +38,24 @@
             ]
           },
           "repositories": [],
-          "bindings": {}
+          "bindings": {},
+          "patches": {
+            "platform": {},
+            "argument": {},
+            "license": {}
+          },
+          "description": "",
+          "icon-file": "",
+          "project-url": "",
+          "display-name": "",
+          "authors": "",
+          "entitlement": "",
+          "license": "",
+          "license-file": "",
+          "license-tmc-file": ""
         }
       ]
     }
-  ]
+  ],
+  "directories": null
 }

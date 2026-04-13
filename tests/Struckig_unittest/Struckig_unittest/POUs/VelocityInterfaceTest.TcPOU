@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="VelocityInterfaceTest" Id="{8a002d40-1b8b-4a36-917f-04dd149a7db3}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK VelocityInterfaceTest EXTENDS TcUnit.FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK VelocityInterfaceTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite
 VAR
   ruckig : Struckig.Otg(0.001, 3) := (
   

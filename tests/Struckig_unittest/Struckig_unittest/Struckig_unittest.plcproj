@@ -143,27 +143,24 @@
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
     </PlaceholderReference>
-    <PlaceholderReference Include="TcUnit">
-      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
-      <Namespace>TcUnit</Namespace>
-      <Parameters>
-        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
-          <Key>LOGEXTENDEDRESULTS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
+    <PlaceholderReference Include="TcUnit_Zeugwerk">
+      <DefaultResolution>TcUnit_Zeugwerk, 1.3.2 (Zeugwerk GmbH)</DefaultResolution>
+      <Namespace>TcUnit_Zeugwerk</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Struckig">
       <Resolution>Struckig, 0.15.5.0 (Stefan Besler)</Resolution>
     </PlaceholderResolution>
+    <PlaceholderResolution Include="TcUnit_Zeugwerk">
+      <Resolution>TcUnit_Zeugwerk, 1.3.2 (Zeugwerk GmbH)</Resolution>
+    </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-  <Data>
-    <o xml:space="preserve" t="OptionKey">
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
@@ -224,14 +221,14 @@
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-  </Data>
-  <TypeList>
-    <Type n="Boolean">System.Boolean</Type>
-    <Type n="Hashtable">System.Collections.Hashtable</Type>
-    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-    <Type n="String">System.String</Type>
-  </TypeList>
-</XmlArchive>
+        </Data>
+        <TypeList>
+          <Type n="Boolean">System.Boolean</Type>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

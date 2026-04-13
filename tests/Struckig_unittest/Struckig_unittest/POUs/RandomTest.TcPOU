@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="RandomTest" Id="{c0321a05-a31c-407a-a37d-8b8ccd67b8f9}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK RandomTest EXTENDS TcUnit.FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK RandomTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite
 VAR
   _number_trajectories : UDINT := 256 * 1024; // Some user variable you want to be able to set
   _position_random_3 : UDINT  := MIN(250000, _number_trajectories / 25);  

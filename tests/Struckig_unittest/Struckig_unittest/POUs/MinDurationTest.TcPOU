@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="MinDurationTest" Id="{ca9b5d56-8561-4a49-8e91-3b4374d172fa}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK MinDurationTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK MinDurationTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_Trajectory_HasMinDuration_HasTargetAcceleration_1();
 Test_Trajectory_HasMinDuration_HasTargetAcceleration_2();

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="MaxVelocitySwitchingTest" Id="{65f7ebe2-1dc5-4c31-b662-a0f5a80c6510}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK MaxVelocitySwitchingTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK MaxVelocitySwitchingTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_Trajectory();
 Test_SmoothBrake_DuringAccel();

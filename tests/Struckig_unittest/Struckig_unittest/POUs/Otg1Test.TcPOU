@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="Otg1Test" Id="{8a6a17dd-e4ff-4937-8965-d44c2fc3cfa6}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK Otg1Test EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK Otg1Test EXTENDS TcUnit_Zeugwerk.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[example06();]]></ST>
     </Implementation>
