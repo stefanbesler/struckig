@@ -28,6 +28,9 @@
     <Compile Include="POUs\KnownExamplesSecondOrderTest.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="POUs\MaxVelocitySwitchingTest.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="POUs\Otg1Test.TcPOU">
       <SubType>Code</SubType>
     </Compile>

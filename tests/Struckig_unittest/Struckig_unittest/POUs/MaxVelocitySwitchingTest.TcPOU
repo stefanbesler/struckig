@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="MaxVelocitySwitchingTest" Id="{65f7ebe2-1dc5-4c31-b662-a0f5a80c6510}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MaxVelocitySwitchingTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Test_Trajectory();
+Test_SmoothBrake_DuringAccel();
+Test_SmoothBrake_FromCruise();
+Test_SmoothBrake_Disabled();
+Test_SmoothBrake_ReachesNewVelocity();
+]]></ST>
+    </Implementation>
+    <Method Name="Test_SmoothBrake_Disabled" Id="{c3d4e5f6-a7b8-4012-cdef-123456789012}">
+      <Declaration><![CDATA[METHOD Test_SmoothBrake_Disabled
+VAR_INST
+  otg : Struckig.Otg(0.001, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := FALSE,
+    MaxVelocity := [ 1000 ],
+    MaxAcceleration := [ 5000 ],
+    MaxJerk := [ 50000 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 50000 ],
+    TargetVelocity := [ 0 ],
+    TargetAcceleration := [ 0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('SmoothBrake_Disabled');
+
+otg();
+
+REPEAT 
+  otg.Cyclic();
+  otg.PassOutputToInput();
+UNTIL otg.CurrentTime >= otg._profiles[0].t_sum[2] + 0.05 END_REPEAT
+
+otg.MaxVelocity[0] := 500;
+
+REPEAT 
+  otg.Cyclic();
+  otg.PassOutputToInput();
+UNTIL otg.State <> Struckig.TrajectoryState.Busy END_REPEAT
+
+AssertTrue(otg.State <> Struckig.TrajectoryState.Error, Message := 'Legacy mode (SmoothBrake=FALSE) must complete without error');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SmoothBrake_DuringAccel" Id="{a8c3e901-2b4d-4f1e-9c2a-7d1e4f8a0b11}">
+      <Declaration><![CDATA[METHOD Test_SmoothBrake_DuringAccel
+VAR_INST
+  otg : Struckig.Otg(0.001, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := TRUE,
+    MaxVelocity := [ 1000 ],
+    MaxAcceleration := [ 5000 ],
+    MaxJerk := [ 50000 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 50000 ],
+    TargetVelocity := [ 0 ],
+    TargetAcceleration := [ 0 ]
+  );
+END_VAR
+VAR_INST
+  minV : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('SmoothBrake_DuringAccel');
+
+otg();
+
+REPEAT 
+  otg.Cyclic();
+  otg.PassOutputToInput();
+UNTIL otg.NewVelocity[0] > 900 OR_ELSE otg.CurrentTime > 5.0 END_REPEAT
+
+otg.MaxVelocity[0] := 500;
+
+minV := 1000;
+REPEAT 
+  otg.Cyclic();
+  IF otg.CurrentTime < otg._profiles[0].Brake.Duration + otg._profiles[0].t_sum[3] THEN
+    IF otg.NewVelocity[0] < minV THEN
+      minV := otg.NewVelocity[0];
+    END_IF
+  END_IF
+  otg.PassOutputToInput();
+UNTIL otg.State <> Struckig.TrajectoryState.Busy END_REPEAT
+
+AssertTrue(otg.State <> Struckig.TrajectoryState.Error, Message := 'OTG must not enter Error state');
+AssertTrue(minV > 400.0, Message := 'During accel, velocity must not dip far below new MaxVelocity (500)');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SmoothBrake_FromCruise" Id="{b2c3d4e5-f6a7-4901-bcde-f12345678901}">
+      <Declaration><![CDATA[METHOD Test_SmoothBrake_FromCruise
+VAR_INST
+  otg : Struckig.Otg(0.001, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := TRUE,
+    MaxVelocity := [ 1000 ],
+    MaxAcceleration := [ 5000 ],
+    MaxJerk := [ 50000 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 50000 ],
+    TargetVelocity := [ 0 ],
+    TargetAcceleration := [ 0 ]
+  );
+END_VAR
+VAR
+  minV : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('SmoothBrake_FromCruise');
+
+otg();
+
+REPEAT 
+  otg.Cyclic();
+  otg.PassOutputToInput();
+UNTIL otg.CurrentTime >= otg._profiles[0].t_sum[2] + 0.05 END_REPEAT
+
+otg.MaxVelocity[0] := 500;
+
+minV := 1000;
+REPEAT 
+  otg.Cyclic();
+  IF otg.CurrentTime < otg._profiles[0].Brake.Duration + otg._profiles[0].t_sum[3] THEN
+    IF otg.NewVelocity[0] < minV THEN
+      minV := otg.NewVelocity[0];
+    END_IF
+  END_IF
+  otg.PassOutputToInput();
+UNTIL otg.State <> Struckig.TrajectoryState.Busy END_REPEAT
+
+AssertTrue(otg.State <> Struckig.TrajectoryState.Error, Message := 'OTG must not enter Error state');
+AssertTrue(minV > 400.0, Message := 'From cruise, velocity must not dip far below new MaxVelocity (500)');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_SmoothBrake_ReachesNewVelocity" Id="{d4e5f6a7-b8c9-4123-def0-234567890123}">
+      <Declaration><![CDATA[METHOD Test_SmoothBrake_ReachesNewVelocity
+VAR_INST
+  otg : Struckig.Otg(0.001, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := TRUE,
+    MaxVelocity := [ 1000 ],
+    MaxAcceleration := [ 5000 ],
+    MaxJerk := [ 50000 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 50000 ],
+    TargetVelocity := [ 0 ],
+    TargetAcceleration := [ 0 ]
+  );
+END_VAR
+VAR
+  vAfter : LREAL;
+  captured : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('SmoothBrake_ReachesNewVelocity');
+
+otg();
+
+REPEAT 
+  otg.Cyclic();
+  otg.PassOutputToInput();
+UNTIL otg.CurrentTime >= otg._profiles[0].t_sum[2] + 0.05 END_REPEAT
+
+otg.MaxVelocity[0] := 500;
+
+captured := FALSE;
+REPEAT 
+  otg.Cyclic();
+  IF NOT captured AND_THEN otg.CurrentTime >= otg._profiles[0].Brake.Duration + otg._profiles[0].t_sum[2] + 0.01 THEN
+    vAfter := otg.NewVelocity[0];
+    captured := TRUE;
+  END_IF
+  otg.PassOutputToInput();
+UNTIL otg.State <> Struckig.TrajectoryState.Busy END_REPEAT
+
+AssertTrue(otg.State <> Struckig.TrajectoryState.Error, Message := 'OTG must not enter Error state');
+AssertTrue(vAfter > 490.0 AND_THEN vAfter < 510.0, Message := 'After transition, velocity should settle at new MaxVelocity (~500)');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory" Id="{958c7991-a21b-4113-96ca-86e91fddb567}">
+      <Declaration><![CDATA[METHOD Test_Trajectory
+VAR_INST
+  ruckig : Struckig.Otg(0.001, 1) := (
+    Synchronization := SynchronizationType.TimeSync,        
+    MaxVelocity := [ 10000.00000000000000000000 ],
+    MaxAcceleration := [ 20000.00000000000000000000 ],
+    MaxJerk := [ 800000.00000000000000000000 ],
+    CurrentPosition := [ 0 ],
+    CurrentVelocity := [ 0 ],
+    CurrentAcceleration := [ 0 ],
+    TargetPosition := [ 10000 ],
+    TargetVelocity := [ 0 ],
+    TargetAcceleration := [ 0 ]
+  );
+  
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory');
+
+ruckig();
+
+REPEAT 
+  ruckig.Cyclic();
+  ruckig.PassOutputToInput();
+UNTIL ruckig.CurrentTime >= ruckig._profiles[0].t_sum[2] + 0.05 END_REPEAT
+
+ruckig.MaxVelocity[0] := 9500;
+
+REPEAT 
+  ruckig.Cyclic();
+  ruckig.PassOutputToInput();
+UNTIL ruckig.State <> Struckig.TrajectoryState.Busy END_REPEAT
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

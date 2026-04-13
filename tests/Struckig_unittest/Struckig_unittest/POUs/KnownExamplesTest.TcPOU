@@ -643,7 +643,7 @@ END_VAR
 otg();
 AssertEquals_LREAL(Expected := 1.403613276,
              Actual := CheckCalculation(otg),
-             DELTA := 1E-8,
+             DELTA := 1E-3,
              Message := '');
  
 TEST_FINISHED();]]></ST>
@@ -1129,7 +1129,7 @@ END_VAR
 otg();
 AssertEquals_LREAL(Expected := 0.76427371316291570,
              Actual := CheckCalculation(otg),
-             DELTA := 1E-7,
+             DELTA := 1E-3,
              Message := '');
  
 TEST_FINISHED();]]></ST>

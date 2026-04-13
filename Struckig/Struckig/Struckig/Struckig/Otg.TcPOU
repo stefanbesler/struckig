@@ -35,6 +35,7 @@ VAR_INPUT
   MinVelocity, MinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
+  SmoothBrake : BOOL := ParameterList.SmoothBrake; //< Initialized from ParameterList; override per instance if needed
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration, NewJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
@@ -80,6 +81,7 @@ VAR
   _new_phase_control : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
+  _smoothBrake : BOOL;
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
   _errorId : INT;
   _errorMessage : STRING(255);
@@ -115,6 +117,7 @@ THEN
   _minVelocity := MinVelocity;
   _minAcceleration := MinAcceleration;
   _minDuration := MinDuration;
+  _smoothBrake := SmoothBrake;
   _perDofControlInterface := PerDofControlInterface;
   _perDofSynchronization := PerDofSynchronization;
   _dt := CycleTime;
@@ -192,9 +195,14 @@ FOR dof:=0 TO _dofsEnd DO
   // Brake pre-trajectory
   IF (p.Brake.Duration > 0) THEN
     IF (t_diff < p.Brake.Duration) THEN
-      index := SEL(t_diff < p.Brake.t[0], 1, 0);
-      IF (index > 0) THEN
-        t_diff := t_diff - p.Brake.t[index - 1];
+      IF t_diff < p.Brake.t[0] THEN
+        index := 0;
+      ELSIF t_diff < p.Brake.t[0] + p.Brake.t[1] THEN
+        index := 1;
+        t_diff := t_diff - p.Brake.t[0];
+      ELSE
+        index := 2;
+        t_diff := t_diff - p.Brake.t[0] - p.Brake.t[1];
       END_IF
 
       Integrate(t_diff, p.Brake.p[index], p.Brake.v[index], p.Brake.a[index], p.Brake.j[index], p:=new_position[dof], v:=new_velocity[dof], a:=new_acceleration[dof]);
@@ -273,6 +281,9 @@ VAR_INST
   t_profile : LREAL;
   noneSynchronizationCount, phaseSychronizations, phaseOrNoneSychronizationCount : INT;
   has_zero_limits : BOOL;
+  _smooth_profile : ProfileDesc;
+  _smooth_block : Block;
+  _smooth_found : BOOL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[SetBusy(TRUE);
@@ -308,7 +319,7 @@ DO
     
       IF NOT IsInfinity(MaxJerk[dof])
       THEN
-        p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+        p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], SmoothBrake := SmoothBrake);
       ELSIF NOT IsInfinity(MaxAcceleration[dof])
       THEN
         p.Brake.SecondOrderPositionBrakeTrajectory(CurrentVelocity[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof]);
@@ -363,7 +374,29 @@ DO
         found_profile := _velocitySecondOrderStep1.Get(p, _blocks[dof]);    
       END_IF  
 	END_CASE
-  
+
+  IF SmoothBrake
+     AND_THEN _inp_per_dof_control_interface[dof] = ControlInterfaceType.Position
+     AND_THEN NOT IsInfinity(MaxJerk[dof])
+     AND_THEN p.Brake.Duration > 0
+  THEN
+    _smooth_profile := p;
+    _smooth_block := _blocks[dof];
+    _smooth_found := found_profile;
+
+    p.Brake.PositionBrakeTrajectory(CurrentVelocity[dof], CurrentAcceleration[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof], SmoothBrake := FALSE);
+    p.SetBoundaryPosition(CurrentPosition[dof], CurrentVelocity[dof], CurrentAcceleration[dof], TargetPosition[dof], TargetVelocity[dof], TargetAcceleration[dof]);
+    p.Brake.Finalize(p.p[0], p.v[0], p.a[0]);
+    _positionThirdOrderStep1.Set(p.p[0], p.v[0], p.a[0], p.pf, p.vf, p.af, MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof]);
+    found_profile := _positionThirdOrderStep1.Get(p, _blocks[dof]);
+
+    IF _smooth_found AND_THEN (NOT found_profile OR_ELSE _smooth_block.Tmin <= _blocks[dof].Tmin) THEN
+      p := _smooth_profile;
+      _blocks[dof] := _smooth_block;
+      found_profile := TRUE;
+    END_IF
+  END_IF
+
   IF NOT found_profile
   THEN
     has_zero_limits := (MaxAcceleration[dof] = 0.0 OR_ELSE _inp_min_acceleration[dof] = 0.0 OR_ELSE MaxJerk[dof] = 0.0);
@@ -744,7 +777,8 @@ END_FOR
 IF NOT (_controlInterface = ControlInterface AND_THEN
    _synchronization = Synchronization AND_THEN
    _discretization = Discretization AND_THEN
-   _minDuration = MinDuration)   
+   _minDuration = MinDuration AND_THEN
+   _smoothBrake = SmoothBrake)   
 THEN
   HasChanged := TRUE;
   RETURN;

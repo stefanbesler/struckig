@@ -31,6 +31,7 @@ VAR_INPUT
   MinVelocity, MinAcceleration : LREAL; //< Optional kindematic constraints
   MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
+  SmoothBrake : BOOL := ParameterList.SmoothBrake; //< See Otg.SmoothBrake
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration, NewJerk : LREAL;
@@ -57,6 +58,7 @@ _otg.MinVelocity[0] := MinVelocity;
 _otg.MinAcceleration[0] := MinAcceleration;
 _otg.MinDuration := MinDuration;
 _otg.EnableAutoPropagate := EnableAutoPropagate;
+_otg.SmoothBrake := SmoothBrake;
 
 _otg(CycleTime := CycleTime,
      Dofs := 1,
