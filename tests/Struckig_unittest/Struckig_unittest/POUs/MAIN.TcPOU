@@ -24,7 +24,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[TcUnit.RUN();]]></ST>
+      <ST><![CDATA[TcUnit_Zeugwerk.RUN();]]></ST>
     </Implementation>
   </POU>
 </TcPlcObject>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="TargetPosAccTest" Id="{8107848c-6e84-4afc-a3b8-763285faacae}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK TargetPosAccTest EXTENDS TcUnit.FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK TargetPosAccTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite
 VAR
   ruckig : Struckig.Otg(0.001, 3) := (
   

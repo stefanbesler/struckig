@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="MathTest" Id="{db8e1fc4-323a-4e57-889c-7de3202bf79d}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK MathTest EXTENDS TcUnit.FB_TestSuite]]></Declaration>
+    <Declaration><![CDATA[FUNCTION_BLOCK MathTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite]]></Declaration>
     <Implementation>
       <ST><![CDATA[Test_Cbrt();
 Test_LrealFromBits();

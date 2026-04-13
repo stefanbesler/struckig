@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1">
   <POU Name="KnownExamplesSecondOrderTest" Id="{cc54a2f5-f44f-47fe-bf39-b60e11bb7e36}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK KnownExamplesSecondOrderTest EXTENDS TcUnit.FB_TestSuite
+    <Declaration><![CDATA[FUNCTION_BLOCK KnownExamplesSecondOrderTest EXTENDS TcUnit_Zeugwerk.FB_TestSuite
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[example01();
