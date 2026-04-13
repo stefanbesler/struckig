@@ -4,9 +4,6 @@ references:
 - uid: Struckig
   name: Struckig
   href: reference/Struckig.html
-- uid: Struckig.BrakeProfile
-  name: BrakeProfile
-  href: reference/Struckig/BrakeProfile.html
 - uid: Struckig.Ceil
   name: Ceil
   href: reference/Struckig/Ceil.html
