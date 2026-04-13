@@ -21,6 +21,7 @@ jobs:
         with:
           username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
           password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
+          skip-test: false
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
