@@ -1,0 +1,287 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>BrakeProfile | Struckig </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="BrakeProfile | Struckig ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/12209884fe72feee65021e98c9f7998053b0d504/docs/reference/Struckig/BrakeProfile.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Struckig.BrakeProfile">
+<h1 id="brakeprofile">BrakeProfile</h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="BrakeProfile.html">Struckig</a></dd></dl>
+  
+  </div>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">FUNCTION_BLOCK BrakeProfile (
+ [input] Duration : LREAL,
+ [input] t : ARRAY[0..2] OF LREAL,
+ [input] j : ARRAY[0..2] OF LREAL,
+ [input] a : ARRAY[0..2] OF LREAL,
+ [input] v : ARRAY[0..2] OF LREAL,
+ [input] p : ARRAY[0..2] OF LREAL,
+ [input] IsUsed : BOOL)
+<p></p></code></pre></div>
+<p>Calculates (pre- or post-) profile to get current or final state below the limits</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="Duration"></a><dt><code>Duration</code> LREAL</dt><a name="t"></a><dt><code>t</code> ARRAY[0..2] OF LREAL</dt><a name="j"></a><dt><code>j</code> ARRAY[0..2] OF LREAL</dt><a name="a"></a><dt><code>a</code> ARRAY[0..2] OF LREAL</dt><a name="v"></a><dt><code>v</code> ARRAY[0..2] OF LREAL</dt><a name="p"></a><dt><code>p</code> ARRAY[0..2] OF LREAL</dt><a name="IsUsed"></a><dt><code>IsUsed</code> BOOL</dt></dl>
+<h2 class="section" id="methods">Methods</h2>
+<h3 id="Struckig_BrakeProfile_AccelerationBrake" data-uid="Struckig.BrakeProfile.AccelerationBrake">
+AccelerationBrake
+</h3><a name="AccelerationBrake"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD AccelerationBrake (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] vMax : LREAL,
+ [input] vMin : LREAL,
+ [input] aMax : LREAL,
+ [input] aMin : LREAL,
+ [input] jMax : LREAL)
+</code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="vMax"></a><dt><code>vMax</code> LREAL</dt><a name="vMin"></a><dt><code>vMin</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_Finalize" data-uid="Struckig.BrakeProfile.Finalize">
+Finalize
+</h3><a name="Finalize"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD Finalize (
+ [inout] ps : LREAL,
+ [inout] vs : LREAL,
+ [inout] as : LREAL)
+</code></pre></div>
+<p>Finalize third-order braking by integrating along kinematic state</p>
+<h4 class="section">InOuts</h4><dl class="parameters">
+<a name="ps"></a><dt><code>ps</code> LREAL</dt><a name="vs"></a><dt><code>vs</code> LREAL</dt><a name="as"></a><dt><code>as</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_FinalizeSecondOrder" data-uid="Struckig.BrakeProfile.FinalizeSecondOrder">
+FinalizeSecondOrder
+</h3><a name="FinalizeSecondOrder"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD FinalizeSecondOrder (
+ [inout] ps : LREAL,
+ [inout] vs : LREAL,
+ [inout] as : LREAL)
+</code></pre></div>
+<p>Finalize third-order braking by integrating along kinematic state</p>
+<h4 class="section">InOuts</h4><dl class="parameters">
+<a name="ps"></a><dt><code>ps</code> LREAL</dt><a name="vs"></a><dt><code>vs</code> LREAL</dt><a name="as"></a><dt><code>as</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_PositionBrakeTrajectory" data-uid="Struckig.BrakeProfile.PositionBrakeTrajectory">
+PositionBrakeTrajectory
+</h3><a name="PositionBrakeTrajectory"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD PositionBrakeTrajectory (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] vMax : LREAL,
+ [input] vMin : LREAL,
+ [input] aMax : LREAL,
+ [input] aMin : LREAL,
+ [input] jMax : LREAL,
+ [input] SmoothBrake : BOOL)
+</code></pre></div>
+<p>Calculate brake trajectory for third-order position interface</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="vMax"></a><dt><code>vMax</code> LREAL</dt><a name="vMin"></a><dt><code>vMin</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt><a name="SmoothBrake"></a><dt><code>SmoothBrake</code> BOOL</dt></dl>
+<h3 id="Struckig_BrakeProfile_SecondOrderPositionBrakeTrajectory" data-uid="Struckig.BrakeProfile.SecondOrderPositionBrakeTrajectory">
+SecondOrderPositionBrakeTrajectory
+</h3><a name="SecondOrderPositionBrakeTrajectory"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD SecondOrderPositionBrakeTrajectory (
+ [input] v0 : LREAL,
+ [input] vMax : LREAL,
+ [input] vMin : LREAL,
+ [input] aMax : LREAL,
+ [input] aMin : LREAL)
+</code></pre></div>
+<p>Calculate brake trajectory for third-order position interface</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="vMax"></a><dt><code>vMax</code> LREAL</dt><a name="vMin"></a><dt><code>vMin</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_SecondOrderVelocityBrakeTrajectory" data-uid="Struckig.BrakeProfile.SecondOrderVelocityBrakeTrajectory">
+SecondOrderVelocityBrakeTrajectory
+</h3><a name="SecondOrderVelocityBrakeTrajectory"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD SecondOrderVelocityBrakeTrajectory ()
+</code></pre></div>
+<p>Calculate brake trajectory for third-order position interface</p>
+<h3 id="Struckig_BrakeProfile_SmoothVelocityBrake" data-uid="Struckig.BrakeProfile.SmoothVelocityBrake">
+SmoothVelocityBrake
+</h3><a name="SmoothVelocityBrake"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD SmoothVelocityBrake (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] vTarget : LREAL,
+ [input] aMax : LREAL,
+ [input] jMax : LREAL)
+</code></pre></div>
+<p>Jerk-limited brake from (v0, a0) to (vTarget, a=0).
+Produces a 2- or 3-phase profile that ends with zero acceleration,
+so Step1 does not inherit a large residual deceleration.
+jMax &gt; 0 means braking from above (v0 &gt; vTarget), jMax &lt; 0 means from below.
+If the profile cannot be computed (e.g. a0 opposes braking too strongly),
+t[0] remains 0 so the caller can fall back to legacy VelocityBrake.</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="vTarget"></a><dt><code>vTarget</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_VelocityAtTime" data-uid="Struckig.BrakeProfile.VelocityAtTime">
+VelocityAtTime
+</h3><a name="VelocityAtTime"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD VelocityAtTime (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] j : LREAL,
+ [input] t : LREAL) : LREAL
+</code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="j"></a><dt><code>j</code> LREAL</dt><a name="t"></a><dt><code>t</code> LREAL</dt></dl>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>LREAL</dt>
+    <dd></dd>
+  </dl>
+<h3 id="Struckig_BrakeProfile_VelocityAtZeroAcceleration" data-uid="Struckig.BrakeProfile.VelocityAtZeroAcceleration">
+VelocityAtZeroAcceleration
+</h3><a name="VelocityAtZeroAcceleration"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD VelocityAtZeroAcceleration (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] j : LREAL) : LREAL
+</code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="j"></a><dt><code>j</code> LREAL</dt></dl>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>LREAL</dt>
+    <dd></dd>
+  </dl>
+<h3 id="Struckig_BrakeProfile_VelocityBrake" data-uid="Struckig.BrakeProfile.VelocityBrake">
+VelocityBrake
+</h3><a name="VelocityBrake"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD VelocityBrake (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] vMax : LREAL,
+ [input] vMin : LREAL,
+ [input] aMax : LREAL,
+ [input] aMin : LREAL,
+ [input] jMax : LREAL)
+</code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="vMax"></a><dt><code>vMax</code> LREAL</dt><a name="vMin"></a><dt><code>vMin</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt></dl>
+<h3 id="Struckig_BrakeProfile_VelocityBrakeTrajectory" data-uid="Struckig.BrakeProfile.VelocityBrakeTrajectory">
+VelocityBrakeTrajectory
+</h3><a name="VelocityBrakeTrajectory"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD VelocityBrakeTrajectory (
+ [input] v0 : LREAL,
+ [input] a0 : LREAL,
+ [input] aMax : LREAL,
+ [input] aMin : LREAL,
+ [input] jMax : LREAL)
+</code></pre></div>
+<p>Calculate brake trajectory for third-order velocity interface</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt></dl>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/stefanbesler/struckig/blob/12209884fe72feee65021e98c9f7998053b0d504/docs/reference/Struckig/BrakeProfile.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation powered by <a href="https://github.com/Zeugwerk/zkdoc-action">zkdoc</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
