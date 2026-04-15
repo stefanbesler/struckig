@@ -31,7 +31,7 @@ VAR
   jMax_jMax : LREAL;
   
   // runtime  calculated expressions
-  polynom_none, polynom_acc0, polynom_acc1, polynom_acc0_min : ARRAY[0..4] OF LREAL;
+  polynom_none, polynom_acc0, polynom_acc1 : ARRAY[0..4] OF LREAL;
   orig : LREAL;
   deriv : LREAL;
   t : LREAL;
@@ -42,7 +42,6 @@ VAR
   validProfiles : ARRAY[0..5] OF ProfileDesc; // Max 5 valid profiles + 1 spare for numerical issues
   validProfileCounter : INT := -1;
   
-  polynom_acc0_has_solution, polynom_acc1_has_solution : BOOL;
   num_roots_none, num_roots_acc0, num_roots_acc1  : INT;
   roots_none, roots_acc0, roots_acc1 : ARRAY[0..6] OF LREAL;
   roots_none_indices, roots_acc0_indices, roots_acc1_indices : ARRAY[0..6] OF INT;
@@ -686,35 +685,14 @@ polynom_acc1[1] := (5*a0_a0 + aMin*(aMin - 6*a0) + 2*jMax*v0)/jMax_jMax;
 polynom_acc1[2] := 2*(a0 - aMin)*h2_acc1/(jMax_jMax*jMax);
 polynom_acc1[3] := h0_acc1/(jMax_jMax*jMax_jMax);
 
-
-// Budan's theorem
-polynom_acc0_min := polynom_acc0;
-polynom_acc0_min[0] := polynom_acc0_min[0] + 4 * t_min_acc0;
-polynom_acc0_min[1] := polynom_acc0_min[1] + (3 * polynom_acc0[0] + 6 * t_min_acc0) * t_min_acc0;
-polynom_acc0_min[2] := polynom_acc0_min[2] + (2 * polynom_acc0[1] + (3 * polynom_acc0[0] + 4 * t_min_acc0) * t_min_acc0) * t_min_acc0;
-polynom_acc0_min[3] := polynom_acc0_min[3] + (polynom_acc0[2] + (polynom_acc0[1] + (polynom_acc0[0] + t_min_acc0) * t_min_acc0) * t_min_acc0) * t_min_acc0;
-
-// polynom_none_has_solution = (polynom_none_min[0] < 0.0) || (polynom_none_min[1] < 0.0) || (polynom_none_min[2] < 0.0) || (polynom_none_min[3] <= 0.0);
-polynom_acc0_has_solution := (polynom_acc0_min[0] < 0.0) OR_ELSE (polynom_acc0_min[1] < 0.0) OR_ELSE (polynom_acc0_min[2] < 0.0) OR_ELSE (polynom_acc0_min[3] <= 0.0);
-polynom_acc1_has_solution := (polynom_acc1[0] < 0.0) OR_ELSE (polynom_acc1[1] < 0.0) OR_ELSE (polynom_acc1[2] < 0.0) OR_ELSE (polynom_acc1[3] <= 0.0);
-
 Roots.SolveQuartMonic(ADR(polynom_none), 4, rootCount:=num_roots_none, roots:=roots_none);
-IF polynom_acc0_has_solution
-THEN
-  Roots.SolveQuartMonic(ADR(polynom_acc0), 4, rootCount:=num_roots_acc0, roots:=roots_acc0);
-ELSE
-  num_roots_acc0 := -1;
-END_IF
+Roots.SolveQuartMonic(ADR(polynom_acc0), 4, rootCount:=num_roots_acc0, roots:=roots_acc0);
+Roots.SolveQuartMonic(ADR(polynom_acc1), 4, rootCount:=num_roots_acc1, roots:=roots_acc1);
 
-IF polynom_acc1_has_solution
-THEN
-  Roots.SolveQuartMonic(ADR(polynom_acc1), 4, rootCount:=num_roots_acc1, roots:=roots_acc1);
-ELSE
-  num_roots_acc1 := -1;
-END_IF
 BubbleSortLreal(ADR(roots_none), num_roots_none, ADR(roots_none_indices));
 BubbleSortLreal(ADR(polynom_acc0), num_roots_acc0, ADR(roots_acc0_indices));
 BubbleSortLreal(ADR(polynom_acc1), num_roots_acc1, ADR(roots_acc1_indices));
+
 FOR i:=0 TO num_roots_none
 DO
   t := roots_none[roots_none_indices[i]];
