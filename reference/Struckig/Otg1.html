@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Otg1 | Struckig </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Otg1 | Struckig ">
+      
+      
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="../toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/100c9d99371059c9ad411bcc0493ca616bc87c7b/docs/reference/Struckig/Otg1.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="Struckig.Otg1">
+<h1 id="otg1">Otg1</h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd><a class="xref" href="Otg1.html">Struckig</a></dd></dl>
+  
+  </div>
+<dl class="typelist implements"><dt>Implements</dt><dd>
+<div><a class="xref" href="IOtg.html">IOtg</a></div>
+</dd></dl>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">FUNCTION_BLOCK Otg1 IMPLEMENTS Struckig.IOtg (
+ [input] CycleTime : LREAL,
+ [input] ControlInterface : ControlInterfaceType,
+ [input] Synchronization : SynchronizationType,
+ [input] PerDofControlInterface : ControlInterfaceType,
+ [input] PerDofSynchronization : SynchronizationType,
+ [input] Discretization : DiscretizationType,
+ [input] CurrentPosition : LREAL,
+ [input] CurrentVelocity : LREAL,
+ [input] CurrentAcceleration : LREAL,
+ [input] TargetPosition : LREAL,
+ [input] TargetVelocity : LREAL,
+ [input] TargetAcceleration : LREAL,
+ [input] MaxVelocity : LREAL,
+ [input] MaxAcceleration : LREAL,
+ [input] MaxJerk : LREAL,
+ [input] MinVelocity : LREAL,
+ [input] MinAcceleration : LREAL,
+ [input] MinDuration : LREAL,
+ [input] EnableAutoPropagate : BOOL,
+ [input] SmoothBrake : BOOL,
+ [output] NewPosition : LREAL,
+ [output] NewVelocity : LREAL,
+ [output] NewAcceleration : LREAL,
+ [output] NewJerk : LREAL,
+ [output] NewCalculation : BOOL,
+ [output] CurrentTime : LREAL)
+<p></p></code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="CycleTime"></a><dt><code>CycleTime</code> LREAL</dt><a name="ControlInterface"></a><dt><code>ControlInterface</code> <a class="xref" href="ControlInterfaceType.html">ControlInterfaceType</a> <code>:= ControlInterfaceType.Position</code></dt><dd><p><p>The default position interface controls the full kinematic state.</p>
+</dd><a name="Synchronization"></a><dt><code>Synchronization</code> <a class="xref" href="SynchronizationType.html">SynchronizationType</a> <code>:= SynchronizationType.TimeSync</code></dt><dd><p><p>Synchronization behavior of multiple DoFs</p>
+</dd><a name="PerDofControlInterface"></a><dt><code>PerDofControlInterface</code> <a class="xref" href="ControlInterfaceType.html">ControlInterfaceType</a></dt><dd><p><p>Per-DoF control interface (overwrites global ControlInterface)</p>
+</dd><a name="PerDofSynchronization"></a><dt><code>PerDofSynchronization</code> <a class="xref" href="SynchronizationType.html">SynchronizationType</a></dt><dd><p><p>Per-DoF synchronization (overwrites global Synchronization)</p>
+</dd><a name="Discretization"></a><dt><code>Discretization</code> <a class="xref" href="DiscretizationType.html">DiscretizationType</a></dt><dd><p><p>Whether the duration should be a discrete multiple of the control cycle (off by default)</p>
+</dd><a name="CurrentPosition"></a><dt><code>CurrentPosition</code> LREAL</dt><dd><p><p>Current state</p>
+</dd><a name="CurrentVelocity"></a><dt><code>CurrentVelocity</code> LREAL</dt><dd><p><p>Current state</p>
+</dd><a name="CurrentAcceleration"></a><dt><code>CurrentAcceleration</code> LREAL</dt><dd><p><p>Current state</p>
+</dd><a name="TargetPosition"></a><dt><code>TargetPosition</code> LREAL</dt><dd><p><p>Target state</p>
+</dd><a name="TargetVelocity"></a><dt><code>TargetVelocity</code> LREAL</dt><dd><p><p>Target state</p>
+</dd><a name="TargetAcceleration"></a><dt><code>TargetAcceleration</code> LREAL</dt><dd><p><p>Target state</p>
+</dd><a name="MaxVelocity"></a><dt><code>MaxVelocity</code> LREAL</dt><dd><p><p>Kinematic constraints</p>
+</dd><a name="MaxAcceleration"></a><dt><code>MaxAcceleration</code> LREAL</dt><dd><p><p>Kinematic constraints</p>
+</dd><a name="MaxJerk"></a><dt><code>MaxJerk</code> LREAL</dt><dd><p><p>Kinematic constraints</p>
+</dd><a name="MinVelocity"></a><dt><code>MinVelocity</code> LREAL</dt><dd><p><p>Optional kindematic constraints</p>
+</dd><a name="MinAcceleration"></a><dt><code>MinAcceleration</code> LREAL</dt><dd><p><p>Optional kindematic constraints</p>
+</dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL <code>:= 0</code></dt><dd><p><p>Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none</p>
+</dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL</dt><dd><p><p>If set to true, PassOutputToInput is automatically called internally after calling the function block's body</p>
+</dd><a name="SmoothBrake"></a><dt><code>SmoothBrake</code> BOOL <code>:= ParameterList.SmoothBrake</code></dt><dd><p><p>See Otg.SmoothBrake</p>
+</dd></dl>
+<h4 class="section">Outputs</h4><dl class="parameters">
+<a name="NewPosition"></a><dt><code>NewPosition</code> LREAL</dt><a name="NewVelocity"></a><dt><code>NewVelocity</code> LREAL</dt><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> LREAL</dt><a name="NewJerk"></a><dt><code>NewJerk</code> LREAL</dt><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL</dt><dd><p><p>Was a new trajectory calculation performed in the last cycle?</p>
+</dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL</dt></dl>
+<h2 class="section" id="constructors">Constructor</h2>
+<h3 id="Struckig_Otg1_FB_init" data-uid="Struckig.Otg1.FB_init">
+FB_init
+</h3><a name="FB_init"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD FB_init (
+ [input] bInitRetains : BOOL,
+ [input] bInCopyCode : BOOL,
+ [input] cycletime : LREAL) : BOOL
+</code></pre></div>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="bInitRetains"></a><dt><code>bInitRetains</code> BOOL</dt><a name="bInCopyCode"></a><dt><code>bInCopyCode</code> BOOL</dt><a name="cycletime"></a><dt><code>cycletime</code> LREAL</dt></dl>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>BOOL</dt>
+    <dd></dd>
+  </dl>
+<h2 class="section" id="properties">Properties</h2>
+<h3 id="Struckig_Otg1_Duration" data-uid="Struckig.Otg1.Duration">
+Duration
+</h3><a name="Duration"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">PROPERTY Duration : LREAL
+</code></pre></div>
+<h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt>LREAL</dt>
+    <dd></dd>
+  </dl>
+<h3 id="Struckig_Otg1_State" data-uid="Struckig.Otg1.State">
+State
+</h3><a name="State"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">PROPERTY State : TrajectoryState
+</code></pre></div>
+<h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="TrajectoryState.html">TrajectoryState</a></dt>
+    <dd></dd>
+  </dl>
+<h2 class="section" id="methods">Methods</h2>
+<h3 id="Struckig_Otg1_AtTime" data-uid="Struckig.Otg1.AtTime">
+AtTime
+</h3><a name="AtTime"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD AtTime (
+ [input] t : LREAL,
+ [input] new_position : POINTER TO LREAL,
+ [input] new_velocity : POINTER TO LREAL,
+ [input] new_acceleration : POINTER TO LREAL,
+ [input] new_jerk : POINTER TO LREAL,
+ [input] new_section : POINTER TO INT)
+</code></pre></div>
+<p>Get the kinematic state at a given time</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="t"></a><dt><code>t</code> LREAL</dt><a name="new_position"></a><dt><code>new_position</code> POINTER TO LREAL</dt><a name="new_velocity"></a><dt><code>new_velocity</code> POINTER TO LREAL</dt><a name="new_acceleration"></a><dt><code>new_acceleration</code> POINTER TO LREAL</dt><a name="new_jerk"></a><dt><code>new_jerk</code> POINTER TO LREAL</dt><a name="new_section"></a><dt><code>new_section</code> POINTER TO INT</dt></dl>
+<h3 id="Struckig_Otg1_AtTime1" data-uid="Struckig.Otg1.AtTime1">
+AtTime1
+</h3><a name="AtTime1"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD AtTime1 (
+ [input] t : LREAL,
+ [input] new_position : REFERENCE TO LREAL,
+ [input] new_velocity : REFERENCE TO LREAL,
+ [input] new_acceleration : REFERENCE TO LREAL,
+ [input] new_jerk : REFERENCE TO LREAL)
+</code></pre></div>
+<p>Get the kinematic state and current section at a given time without vectors for a single DoF.
+Using this method is only allowed for DoF = 1, for higher degrees of freedom use
+<a class="xref" href="Otg.html#AtTime">AtTime</a>. Using this method for DoF &gt; 0 will not yield any result</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="t"></a><dt><code>t</code> LREAL</dt><a name="new_position"></a><dt><code>new_position</code> REFERENCE TO LREAL</dt><a name="new_velocity"></a><dt><code>new_velocity</code> REFERENCE TO LREAL</dt><a name="new_acceleration"></a><dt><code>new_acceleration</code> REFERENCE TO LREAL</dt><a name="new_jerk"></a><dt><code>new_jerk</code> REFERENCE TO LREAL</dt></dl>
+<h3 id="Struckig_Otg1_Cyclic" data-uid="Struckig.Otg1.Cyclic">
+Cyclic
+</h3><a name="Cyclic"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD Cyclic ()
+</code></pre></div>
+<p>This method simply calls the body of the function block</p>
+<h3 id="Struckig_Otg1_ErrorCode" data-uid="Struckig.Otg1.ErrorCode">
+ErrorCode
+</h3><a name="ErrorCode"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD ErrorCode () : TrajectoryErrorCode
+</code></pre></div>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="TrajectoryErrorCode.html">TrajectoryErrorCode</a></dt>
+    <dd></dd>
+  </dl>
+<h3 id="Struckig_Otg1_ErrorMessage" data-uid="Struckig.Otg1.ErrorMessage">
+ErrorMessage
+</h3><a name="ErrorMessage"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD ErrorMessage () : STRING(255)
+</code></pre></div>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>STRING(255)</dt>
+    <dd></dd>
+  </dl>
+<h3 id="Struckig_Otg1_PassOutputToInput" data-uid="Struckig.Otg1.PassOutputToInput">
+PassOutputToInput
+</h3><a name="PassOutputToInput"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD PassOutputToInput ()
+</code></pre></div>
+<h3 id="Struckig_Otg1_Reset" data-uid="Struckig.Otg1.Reset">
+Reset
+</h3><a name="Reset"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD Reset ()
+</code></pre></div>
+<p>Resets the instance (e.g. to force a new calculation on the next update).
+This method can be used to trigger a new trajectory even if inputs do not change.</p>
+<h3 id="Struckig_Otg1_ValidateInput" data-uid="Struckig.Otg1.ValidateInput">
+ValidateInput
+</h3><a name="ValidateInput"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD ValidateInput (
+ [input] checkCurrentStateWithinLimits : BOOL,
+ [input] checkTargetStateWithinLimits : BOOL) : BOOL
+</code></pre></div>
+<p>To check that <em>Struckig</em> is able to generate a trajectory before the actual calculation step,</p>
+<pre><code class="lang-st">ruckig.ValidateInput(input, currentState: FALSE, targetState: TRUE);
+// returns boolean
+</code></pre>
+<p>returns <code>FALSE</code> if an input is not valid. The two boolean arguments check that the current or target state are
+within the limits. The check includes a typical catch of jerk-limited trajectory generation:
+When the current state is at maximal velocity, any positive acceleration will inevitable lead to a velocity violation
+<em>at a future timestep</em>. In general, this condition is fulfilled when</p>
+<pre><code>Abs(acceleration) &lt;= Sqrt(2 * max_jerk * (max_velocity - Abs(velocity))).
+</code></pre>
+<p>If both arguments are set to true, the calculated trajectory is guaranteed to be <em>within the kinematic limits throughout</em>
+its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="checkCurrentStateWithinLimits"></a><dt><code>checkCurrentStateWithinLimits</code> BOOL</dt><a name="checkTargetStateWithinLimits"></a><dt><code>checkTargetStateWithinLimits</code> BOOL</dt></dl>
+<h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt>BOOL</dt>
+    <dd></dd>
+  </dl>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/stefanbesler/struckig/blob/100c9d99371059c9ad411bcc0493ca616bc87c7b/docs/reference/Struckig/Otg1.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation powered by <a href="https://github.com/Zeugwerk/zkdoc-action">zkdoc</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
