@@ -38,6 +38,15 @@ In hindsight, the hardest parts of the port were
 
 The original project, `ruckig` is a submodule of this repository and the hashes in "ported" commits reflect the state of the port. Future commits in the will be continuously ported over to Struckig when time sees fit.
 
+# New features
+
+## Feature flags
+
+While the port strives to be faithful to upstream, some additional features are available that can be enabled via feature flags. Flags can be toggled directly on the `Otg` function block or globally in the parameter list of the library.
+
+| Flag | Description |
+|------|-------------|
+| `SmoothBrake` | In ruckig, reducing `MaxVelocity` below the current velocity triggers a brake ramp that decelerates to `velocity=0` before transitioning to the new limit. Enable this flag to bypass that behavior and switch to the new `MaxVelocity` immediately. |
 
 # Continuous integration & Documentation
 
