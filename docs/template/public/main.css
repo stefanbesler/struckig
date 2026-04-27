@@ -138,11 +138,6 @@
 }
 
 /* API reference specific styling */
-.content article h1[data-uid] {
-  position: relative;
-  padding-right: 1.6rem;
-}
-
 .content article h3[data-uid] {
   position: relative;
   margin-top: 2em;
@@ -192,6 +187,11 @@
 
 .content article dl.parameters > dt {
   margin: 0.85rem 0 0.35rem;
+}
+
+.content article dl.parameters > dt > code {
+  margin-right: 0.4em;
+  font-size: 0.875em;
 }
 
 .content article td.term,
