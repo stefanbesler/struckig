@@ -24,6 +24,11 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>Read the Documentation:</strong><br>
+  <a href="https://stefanbesler.github.io/struckig/">https://stefanbesler.github.io/struckig/</a>
+</p>
+
 Struckig ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text and brings open-source online trajectory generation to TwinCAT 3.
 It targets deterministic PLC task loops and multi-axis synchronization in machine control scenarios.
 
