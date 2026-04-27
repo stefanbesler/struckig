@@ -52,7 +52,17 @@
   font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   font-size: 18px;
   line-height: 1.72;
-  font-weight: 420;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* macOS/Safari can render variable fonts heavier than expected */
+@supports (font: -apple-system-body) {
+  .content article {
+    font-weight: 390;
+  }
 }
 
 @media (min-width: 1400px) {
