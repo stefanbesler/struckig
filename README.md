@@ -1,4 +1,5 @@
 <div align="center">
+  <img src="docs/images/struckig-logo.svg" alt="Struckig logo" width="120">
   <h1 align="center">Struckig</h1>
   <h3 align="center">
     Instantaneous Motion Generation for Robots and Machines.<br>
@@ -24,82 +25,65 @@
   </a>
 </p>
 
-This repository ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text to bring open-source powered Online-Trajectory-Generation to TwinCAT 3.
-Only the Community Version of Ruckig is ported and pro features are not available. **Struckig itself is dual licenced, you can use the source code provided here accordingly to GPLv3. If you want to use this commercially and not disclose your own source code, Struckig is also available with a custom licence**. In the latter case, contact [me](mailto:stefan@besler.me).
+Struckig ports [pantor/ruckig](https://github.com/pantor/ruckig) to Structured Text and brings open-source online trajectory generation to TwinCAT 3.
+It targets deterministic PLC task loops and multi-axis synchronization in machine control scenarios.
 
-# Porting progress and learnings
+Only the Community Version of Ruckig is ported and pro features are not available.
+Struckig is dual licensed:
 
-This project started on June 14, 2021 and I am happy to say that after 3 years of working on this project, it finally catched up to the HEAD of the C++ counterpart on May 15, 2024.
+- GPLv3 for open-source usage
+- commercial custom license for closed-source usage (contact [stefan@besler.me](mailto:stefan@besler.me))
 
-In hindsight, the hardest parts of the port were
+## Documentation
 
-- Porting mathematical functions from C++ to Structured Text such that the same accuracy is achieved: Functions like `cbrt` are not available in Structured Text out-of-the-box and the functionality had to be ported in a way that calculation have the exact same value in the port as C++ compilers do it. 
-- Exception handling: While C++ allows control over how div0 exceptions are handled, this is not possible in Structured Text. While `ruckig` can just ignore div0 exceptions and then throw away calculations yielding NaN durations, this is not possible in Structured Text. This means that every calculation, which might produce a div0 exception have to be handled.
+- Full docs: [stefanbesler.github.io/struckig](https://stefanbesler.github.io/struckig/)
+- Installation guide: [User guide installation](https://stefanbesler.github.io/struckig/userguide/installation.html)
+- API reference: [API Reference](https://stefanbesler.github.io/struckig/api/Struckig.html)
 
-The original project, `ruckig` is a submodule of this repository and the hashes in "ported" commits reflect the state of the port. Future commits in the will be continuously ported over to Struckig when time sees fit.
+## Installation
 
-# New features
+1. Download the latest release from [Releases](https://github.com/stefanbesler/struckig/releases).
+2. Add the library to your TwinCAT project.
+3. Instantiate `Struckig.Otg` and call `otg()` once per PLC cycle.
 
-## Feature flags
+For screenshots and TwinCAT step-by-step instructions, use the [installation docs](https://stefanbesler.github.io/struckig/userguide/installation.html).
 
-While the port strives to be faithful to upstream, some additional features are available that can be enabled via feature flags. Flags can be toggled directly on the `Otg` function block or globally in the parameter list of the library.
+## Quick example (single axis)
 
-| Flag | Description |
-|------|-------------|
-| `SmoothBrake` | In ruckig, reducing `MaxVelocity` below the current velocity triggers a brake ramp that decelerates to `velocity=0` before transitioning to the new limit. Enable this flag to bypass that behavior and switch to the new `MaxVelocity` immediately. |
-
-# Continuous integration & Documentation
-
-This project is using [zkbuild](https://github.com/Zeugwerk/zkbuild-action) for continuous integration and [zkdoc](https://github.com/Zeugwerk/zkdoc-action) for generating the [documentation](https://stefanbesler.github.io/Struckig/).
-To run the tests manually, get a copy of [TcUnit](http://www.tcunit.org/) and activate the testing solution *test\Struckig\Struckig_unittest.sln*
-
-
-
-# Example: Create time-based profile for 1 axis
-
-This examples shows how to create a single-axis trajectory from point A=0mm to point B=100mm.
-The initial state assumes that the trajectory is in stillstand and target velocity and acceleration is set to
-0. The `MinDuration` parameter is set to `10s`. Please not that `MaxVelocity`, `MaxAcceleration` and `MaxJerk` would
-allow for a shorter travel time, but  if `MinDuration` together with Synchronization = SynchronizationType.TimeSync is set,
-the `MinDuration` parameter is considered instead.
-
-If you only want to have a acceleration-constrained trajectory, you can also omit the `MaxJerk` 
-as well as the CurrentAcceleration and TargetAcceleration value.
-
-```
+```st
 PROGRAM Example
 VAR
   otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
-    EnableAutoPropagate := TRUE, //< Automatically copies the new trajectory state to the current trajectory state with every otg() call
-    Synchronization :=     SynchronizationType.TimeSync, //< Set to TimeSync, otherwise MinDuration is ignored
-    MinDuration :=         10.0, //< if MinDuration > 0 and Synchronization is set to TimeSync this sets the duration of the trajectory (if the other limitations would yields a shorter duration)
-    MaxVelocity :=         [ 2000.0 ],
-    MaxAcceleration :=     [ 20000.0 ],
-    MaxJerk :=             [ 800000.0 ],
-    CurrentPosition :=     [ 0.0 ],
-    CurrentVelocity :=     [ 0.0 ],
-    CurrentAcceleration := [ 0.0 ],
-    TargetPosition :=      [ 100.0 ],
-    TargetVelocity :=      [ 0.0 ],
-    TargetAcceleration :=  [ 0.0 ]
+    EnableAutoPropagate := TRUE,
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 10.0,
+    MaxVelocity := [2000.0],
+    MaxAcceleration := [20000.0],
+    MaxJerk := [800000.0],
+    CurrentPosition := [0.0],
+    CurrentVelocity := [0.0],
+    CurrentAcceleration := [0.0],
+    TargetPosition := [100.0],
+    TargetVelocity := [0.0],
+    TargetAcceleration := [0.0]
   );
 END_VAR
 
-// =====================================================================================================================
-
 otg();
-// axis.SetTargetPosition(otg.NewPosition[0]); send the new position to your axis, which should be in a cyclic position mode
-// axis.SetVelocityOffset(otg.NewVelocity[0]); send the new velocity to your axis, e.g. with a velocity feedforward
-// axis.SetTorqueOffset( accelerationTorqueFactor * otg.NewAcceleration[0]) send the new acceleration to your acces, e.g. with a current feedforward
 ```
 
-![image](https://user-images.githubusercontent.com/11271989/129452181-57d28187-cafb-44be-b1ad-f73a5ed80556.png)
+Map `otg.NewPosition`, `otg.NewVelocity`, and optionally `otg.NewAcceleration` to your axis interface each cycle.
 
-Note: Struckig supports motions with multiple degree of freedoms with the Otg function block. If you need to use only 1 degree of freedom you can also
-utilize the specialized function block `Otg1`. The latter function block uses single variables instead of arrays, which simplifies the usage a bit.
+## Extra features
 
+- While the port stays close to upstream, additional behavior can be enabled via feature flags on `Otg` or globally in library parameters.
 
+| Flag | Description |
+|------|-------------|
+| `SmoothBrake` | In ruckig, reducing `MaxVelocity` below the current velocity triggers a brake ramp to `velocity = 0` before transitioning to the new limit. Enable this flag to bypass that behavior and switch to the new `MaxVelocity` immediately. |
 
+## Development
 
-
-
+- CI uses [zkbuild](https://github.com/Zeugwerk/zkbuild-action)
+- Docs generation uses [zkdoc](https://github.com/Zeugwerk/zkdoc-action)
+- Unit tests can be run with [TcUnit](http://www.tcunit.org/) via `test\Struckig\Struckig_unittest.sln`
