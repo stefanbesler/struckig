@@ -16,10 +16,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Internal power helper that preserves sign for negative bases.
+/// Evaluates `sign(v) * |v|^e`.
 FUNCTION INTERNAL Power : LREAL
 VAR_INPUT
-  v : LREAL;
-  e : LREAL;
+  v : LREAL; //< Base value.
+  e : LREAL; //< Exponent.
 END_VAR
 
 ]]></Declaration>

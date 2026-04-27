@@ -16,11 +16,14 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Clamps `value` to the closed interval `[minimum, maximum]`.
+/// If `value` is below `minimum`, returns `minimum`.
+/// If `value` is above `maximum`, returns `maximum`.
 FUNCTION Clamp : LREAL
 VAR_INPUT
-  value : LREAL;
-  minimum : LREAL;
-  maximum : LREAL;
+  value : LREAL; //< Input value to clamp.
+  minimum : LREAL; //< Lower bound.
+  maximum : LREAL; //< Upper bound.
 END_VAR
 ]]></Declaration>
     <Implementation>

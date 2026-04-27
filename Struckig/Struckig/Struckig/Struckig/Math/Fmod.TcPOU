@@ -16,10 +16,13 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Floating-point remainder operation.
+/// Returns the remainder of `x / y` with truncation toward zero:
+/// `x - TRUNC(x / y) * y`.
 FUNCTION Fmod : LREAL
 VAR_INPUT
-  x : LREAL;
-  y : LREAL;
+  x : LREAL; //< Dividend.
+  y : LREAL; //< Divisor.
 END_VAR
 ]]></Declaration>
     <Implementation>

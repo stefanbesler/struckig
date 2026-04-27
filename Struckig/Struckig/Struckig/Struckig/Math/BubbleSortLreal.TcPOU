@@ -17,11 +17,13 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'hide'}
+/// Internal bubble-sort helper for `LREAL` arrays.
+/// Returns sorted index positions in `indicesSorted` without modifying input `data`.
 FUNCTION BubbleSortLreal : BOOL
 VAR_INPUT
-  data : POINTER TO LREAL; // input unsorted array
-  size : INT; // elements in the data array
-  indicesSorted : POINTER TO INT; // actual output, sorted indices
+  data : POINTER TO LREAL; //< Input unsorted array.
+  size : INT; //< Number of elements in `data`.
+  indicesSorted : POINTER TO INT; //< Output sorted indices.
 END_VAR
 VAR
   i, j, h : INT;

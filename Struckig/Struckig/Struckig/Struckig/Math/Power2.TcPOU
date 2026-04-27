@@ -16,9 +16,11 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Internal square helper.
+/// Returns `v * v`.
 FUNCTION INTERNAL Power2 : LREAL
 VAR_INPUT
-  v : LREAL;
+  v : LREAL; //< Input value.
 END_VAR
 ]]></Declaration>
     <Implementation>

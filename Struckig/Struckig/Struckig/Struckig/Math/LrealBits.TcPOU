@@ -17,9 +17,10 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'hide'}
+/// Internal bit-cast helper from `LREAL` to raw IEEE-754 bits.
 FUNCTION LrealBits : ULINT
 VAR_INPUT
-  x : LREAL;
+  x : LREAL; //< Input floating-point value.
 END_VAR
 VAR
   b : POINTER TO ULINT := ADR(x);
