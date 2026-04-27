@@ -1,0 +1,199 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Cycle Integration | Struckig </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Cycle Integration | Struckig ">
+      
+      
+      <link rel="icon" href="../images/struckig-logo.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/cycle_integration.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/struckig-logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="cycle-integration">Cycle Integration</h1>
+
+<p>This guide focuses on how to integrate Struckig into a PLC task loop safely and predictably.</p>
+<h2 id="recommended-loop-structure">Recommended loop structure</h2>
+<p>Use a stable three-part cycle:</p>
+<ol>
+<li>update targets and limits at well-defined step boundaries</li>
+<li>call <code>otg()</code> exactly once per PLC cycle</li>
+<li>map outputs to axis setpoints and handle state/errors</li>
+</ol>
+<pre><code class="lang-st">// 1) Update targets on sequence events (not shown here)
+
+// 2) Cyclic update
+otg();
+
+// 3) Output mapping and safety checks
+IF otg.State = Struckig.TrajectoryState.Error THEN
+  Abort(otg.ErrorMessage());
+ELSE
+  axisX.SetInterpolatedPosition(THIS^, otg.CurrentPosition[0]);
+  axisY.SetInterpolatedPosition(THIS^, otg.CurrentPosition[1]);
+  axisX.SetInterpolatedVelocity(THIS^, otg.CurrentVelocity[0]);
+  axisY.SetInterpolatedVelocity(THIS^, otg.CurrentVelocity[1]);
+END_IF
+</code></pre>
+<h2 id="task-cycle-time">Task cycle time</h2>
+<ul>
+<li>Set <code>cycletime</code> to the real PLC task period in seconds.</li>
+<li>If task time changes dynamically, update <code>CycleTime</code> before running <code>otg()</code>.</li>
+<li>Keep jitter low in motion tasks to avoid setpoint quality degradation.</li>
+</ul>
+<h2 id="state-handling">State handling</h2>
+<p>Typical state flow:</p>
+<ul>
+<li><code>Busy</code>: trajectory is active</li>
+<li><code>Idle</code>: target reached within internal checks</li>
+<li><code>Error</code>: invalid input or infeasible constraints</li>
+</ul>
+<p>Use transitions on <code>Idle</code> to trigger the next machine step.</p>
+<p>Important nuance:</p>
+<ul>
+<li><code>Idle</code> means final target state is reached.</li>
+<li>If target velocity or acceleration is non-zero, physical movement can still be expected in downstream drive behavior even when the trajectory state is complete for the requested target.</li>
+</ul>
+<h2 id="target-update-timing">Target update timing</h2>
+<p>Do:</p>
+<ul>
+<li>write complete target vectors atomically at step entry</li>
+<li>reset current state only when starting a new independent segment</li>
+</ul>
+<p>Avoid:</p>
+<ul>
+<li>partial per-element target updates across multiple cycles</li>
+<li>changing hard limits continuously unless this is a deliberate feature</li>
+</ul>
+<h2 id="input-validation-flow">Input validation flow</h2>
+<p>Before applying new targets from external logic, validate input:</p>
+<pre><code class="lang-st">IF NOT otg.ValidateInput(
+  checkCurrentStateWithinLimits := FALSE,
+  checkTargetStateWithinLimits := TRUE
+) THEN
+  Abort(otg.ErrorMessage());
+END_IF
+</code></pre>
+<p>This catches invalid values earlier and gives better diagnostics than handling errors only after <code>otg()</code>.</p>
+<h2 id="multi-axis-notes">Multi-axis notes</h2>
+<ul>
+<li>Keep all axis constraints in realistic mechanical range.</li>
+<li>Use <code>Phase</code> synchronization for coordinated path execution.</li>
+<li>Use <code>TimeSync</code> for simultaneous arrivals with less strict geometric coupling.</li>
+<li>Use <code>None</code> when independent axis completion is preferred, for example emergency deceleration behavior.</li>
+</ul>
+<h2 id="per-dof-runtime-control">Per-DoF runtime control</h2>
+<p>You can mix interfaces or synchronization modes per axis:</p>
+<pre><code class="lang-st">otg.ControlInterface := Struckig.ControlInterfaceType.Position;
+otg.PerDofControlInterface[1] := Struckig.ControlInterfaceType.Velocity;
+
+otg.Synchronization := Struckig.SynchronizationType.TimeSync;
+otg.PerDofSynchronization[2] := Struckig.SynchronizationType.None;
+</code></pre>
+<p>Use this carefully, as mixed policies can change trajectory shape and duration in non-obvious ways.</p>
+<h2 id="integration-checklist">Integration checklist</h2>
+<ul>
+<li><code>cycletime</code> matches task period</li>
+<li>consistent units across all vectors</li>
+<li>one <code>otg()</code> call per cycle</li>
+<li>explicit <code>Error</code> handling path</li>
+<li>axis outputs mapped every cycle</li>
+<li><code>ValidateInput</code> is used at setpoint handover boundaries</li>
+</ul>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/cycle_integration.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation powered by <a href="https://github.com/Zeugwerk/zkdoc-action">zkdoc</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

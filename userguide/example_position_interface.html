@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-      <title>Installation and First Motion | Struckig </title>
+      <title>Position Interface Example | Struckig </title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="title" content="Installation and First Motion | Struckig ">
+      <meta name="title" content="Position Interface Example | Struckig ">
       
       
       <link rel="icon" href="../images/struckig-logo.svg">
@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/installation.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/example_position_interface.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -81,81 +81,32 @@
         </div>
 
         <article data-uid="">
-<h1 id="installation-and-first-motion">Installation and First Motion</h1>
+<h1 id="position-interface-example">Position Interface Example</h1>
 
-<p>This page gets Struckig running in a TwinCAT project and validates the setup with a minimal 1-DoF trajectory.</p>
-<h2 id="1-install-the-library">1) Install the library</h2>
-<p>Choose one of the following:</p>
-<ul>
-<li>Download a precompiled release from <a href="https://github.com/stefanbesler/Struckig/releases">GitHub Releases</a>.</li>
-<li>Build from source in the <a href="https://github.com/stefanbesler/Struckig">repository</a>.</li>
-</ul>
-<p>For TwinCAT users, the fastest route is usually the precompiled <code>.compiled-library</code> package.</p>
-<h2 id="2-add-struckig-to-your-plc-project">2) Add Struckig to your PLC project</h2>
-<ol>
-<li>Open your TwinCAT solution.</li>
-<li>In the PLC project, right-click <code>References</code>.</li>
-<li>Select <code>Add library...</code>.</li>
-<li>Search for <code>Struckig</code> and confirm.</li>
-</ol>
-<p>After this step, <code>Struckig</code> types like <code>Struckig.Otg</code> are available in Structured Text.</p>
-<div class="gallery">
-  <div class="gallery-item">
-    <figure>
-      <img src="../images/installation_addlibrary.png" alt="Add library in TwinCAT">
-      <figcaption>Add library in TwinCAT</figcaption>
-    </figure>
-  </div>
-  <div class="gallery-item">
-    <figure>
-      <img src="../images/installation_addlibrary2.png" alt="Select Struckig library">
-      <figcaption>Select Struckig library</figcaption>
-    </figure>
-  </div>
-</div>
-<h2 id="3-run-a-minimal-1-axis-example">3) Run a minimal 1-axis example</h2>
-<p>Create or replace your <code>MAIN</code> program:</p>
-<pre><code class="lang-st">PROGRAM MAIN
+<p>Use this as the default setup for point-to-point motion with full kinematic state control.</p>
+<pre><code class="lang-st">PROGRAM Example01_Position
 VAR
-  otg : Struckig.Otg(cycletime := 0.001, dofs := 1) := (
+  otg : Struckig.Otg(cycletime := 0.01, dofs := 3) := (
     EnableAutoPropagate := TRUE,
-    MaxVelocity :=         [2000.0],
-    MaxAcceleration :=     [20000.0],
-    MaxJerk :=             [800000.0],
-    CurrentPosition :=     [0.0],
-    CurrentVelocity :=     [0.0],
-    CurrentAcceleration := [0.0],
-    TargetPosition :=      [100.0],
-    TargetVelocity :=      [0.0],
-    TargetAcceleration :=  [0.0]
+    CurrentPosition :=     [0.0,  0.0,  0.5],
+    CurrentVelocity :=     [0.0, -2.2, -0.5],
+    CurrentAcceleration := [0.0,  2.5, -0.5],
+    TargetPosition :=      [5.0, -2.0, -3.5],
+    TargetVelocity :=      [0.0, -0.5, -2.0],
+    TargetAcceleration :=  [0.0,  0.0,  0.5],
+    MaxVelocity :=         [3.0,  1.0,  3.0],
+    MaxAcceleration :=     [3.0,  2.0,  1.0],
+    MaxJerk :=             [4.0,  3.0,  2.0]
   );
-  axisTargetPosition : LREAL;
 END_VAR
 
 otg();
-axisTargetPosition := otg.NewPosition[0];
 </code></pre>
-<h2 id="4-verify-behavior">4) Verify behavior</h2>
-<ul>
-<li><code>otg.State</code> should be <code>Busy</code> while the move is active, then <code>Idle</code>.</li>
-<li><code>otg.NewPosition[0]</code> should move smoothly from <code>0.0</code> to <code>100.0</code>.</li>
-<li>Your PLC task cycle time should match <code>cycletime</code>.</li>
-</ul>
-<div class="TIP">
-<h5>Tip</h5>
-<p><code>EnableAutoPropagate := TRUE</code> is the standard online mode. Struckig automatically copies <code>New*</code> values back into <code>Current*</code> after each cycle.</p>
-</div>
-<h2 id="5-next-steps">5) Next steps</h2>
-<ul>
-<li>Learn parameter details in <a href="single_axis_trajectory.html">Single Axis Trajectory</a>.</li>
-<li>Learn multi-axis synchronization in <a href="synchronized_trajectory.html">Synchronized Trajectory</a>.</li>
-<li>See more practical snippets in <a href="examples_structured_text.html">Examples</a>.</li>
-</ul>
 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/installation.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/example_position_interface.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

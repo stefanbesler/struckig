@@ -7,7 +7,7 @@
       <meta name="title" content="Single axis trajectory | Struckig ">
       
       
-      <link rel="icon" href="../favicon.ico">
+      <link rel="icon" href="../images/struckig-logo.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
       <meta name="docfx:navrel" content="../toc.html">
@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/userguide/single_axis_trajectory.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/single_axis_trajectory.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +44,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../logo.svg" alt="">
+            <img id="logo" class="svg" src="../images/struckig-logo.svg" alt="">
             
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,26 +83,162 @@
         <article data-uid="">
 <h1 id="single-axis-trajectory">Single axis trajectory</h1>
 
-<p>This example shows how to calculate a single axis with some kinematics and a minimum duration constraint</p>
-<pre><code>  otg : Struckig.Otg(cycletime:=0.001, dofs:=1) := (
-          EnableAutoPropagate := TRUE,
-          Synchronization := SynchronizationType.TimeSync, // one axis -&gt; no synchronistation is required
-          MinDuration := 10.0, // if MinDuration is set to a value &gt; 0 it is considered in trajectory calculation
-          MaxVelocity := [ 2000.0 ],
-          MaxAcceleration := [ 20000.0 ],
-          MaxJerk := [ 800000.0 ],
-          CurrentPosition := [ 0 ],
-          CurrentVelocity := [ 0 ],
-          CurrentAcceleration := [ 0 ],
-          TargetPosition := [ 100 ],
-          TargetVelocity := [ 0.0, 0.0, 0.0 ],
-          TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+<p>This example configures a time-constrained move for one axis.</p>
+<h2 id="example">Example</h2>
+<pre><code class="lang-st">PROGRAM ExampleSingleAxis
+VAR
+  otg : Struckig.Otg(cycletime := 0.001, dofs := 1) := (
+    EnableAutoPropagate := TRUE,
+    Synchronization := Struckig.SynchronizationType.TimeSync,
+    MinDuration := 10.0, // considered when synchronization is TimeSync
+    MaxVelocity :=         [2000.0],
+    MaxAcceleration :=     [20000.0],
+    MaxJerk :=             [800000.0],
+    CurrentPosition :=     [0.0],
+    CurrentVelocity :=     [0.0],
+    CurrentAcceleration := [0.0],
+    TargetPosition :=      [100.0],
+    TargetVelocity :=      [0.0],
+    TargetAcceleration :=  [0.0]
   );
+END_VAR
+
+otg();
+</code></pre>
+<h2 id="notes">Notes</h2>
+<ul>
+<li><code>MinDuration</code> stretches the motion only when the unconstrained solution would be faster.</li>
+<li>Use consistent units per axis, for example <code>mm</code>, <code>mm/s</code>, <code>mm/s^2</code>, <code>mm/s^3</code>.</li>
+<li>To run acceleration-only profiles, omit jerk constraints by leaving <code>MaxJerk</code> at infinity defaults.</li>
+</ul>
+<h2 id="visualization-presets-and-matching-st-code">Visualization presets and matching ST code</h2>
+<p>These presets match the single-axis trajectories visualized in <a href="https://gui.ruckig.com">Ruckig Web Visualization</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th style="text-align: right;">current_position</th>
+<th style="text-align: right;">current_velocity</th>
+<th style="text-align: right;">target_position</th>
+<th style="text-align: right;">target_velocity</th>
+<th style="text-align: right;">max_velocity</th>
+<th style="text-align: right;">max_acceleration</th>
+<th style="text-align: right;">max_jerk</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Position</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Velocity</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr>
+<td>Constraints</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="position-preset">Position preset</h3>
+<pre><code class="lang-st">PROGRAM ExampleSingleAxisPositionPreset
+VAR
+  otg : Struckig.Otg(cycletime := 0.001, dofs := 1) := (
+    EnableAutoPropagate := TRUE,
+    CurrentPosition :=     [0.0],
+    CurrentVelocity :=     [0.0],
+    CurrentAcceleration := [0.0],
+    TargetPosition :=      [10.0],
+    TargetVelocity :=      [0.0],
+    TargetAcceleration :=  [0.0],
+    MaxVelocity :=         [3.0],
+    MaxAcceleration :=     [2.0],
+    MaxJerk :=             [5.0]
+  );
+END_VAR
+
+otg();
+</code></pre>
+<h3 id="velocity-preset">Velocity preset</h3>
+<pre><code class="lang-st">PROGRAM ExampleSingleAxisVelocityPreset
+VAR
+  otg : Struckig.Otg(cycletime := 0.001, dofs := 1) := (
+    EnableAutoPropagate := TRUE,
+    CurrentPosition :=     [0.0],
+    CurrentVelocity :=     [2.0],
+    CurrentAcceleration := [0.0],
+    TargetPosition :=      [8.0],
+    TargetVelocity :=      [1.5],
+    TargetAcceleration :=  [0.0],
+    MaxVelocity :=         [3.0],
+    MaxAcceleration :=     [2.0],
+    MaxJerk :=             [5.0]
+  );
+END_VAR
+
+otg();
+</code></pre>
+<h3 id="constraint-limited-preset">Constraint-limited preset</h3>
+<pre><code class="lang-st">PROGRAM ExampleSingleAxisConstraintPreset
+VAR
+  otg : Struckig.Otg(cycletime := 0.001, dofs := 1) := (
+    EnableAutoPropagate := TRUE,
+    CurrentPosition :=     [0.0],
+    CurrentVelocity :=     [0.0],
+    CurrentAcceleration := [0.0],
+    TargetPosition :=      [10.0],
+    TargetVelocity :=      [0.0],
+    TargetAcceleration :=  [0.0],
+    MaxVelocity :=         [1.5],
+    MaxAcceleration :=     [0.8],
+    MaxJerk :=             [1.0]
+  );
+END_VAR
+
+otg();
 </code></pre>
 <div class="gallery">
   <div class="gallery-item">
     <figure>
-      <img src="../images/single_axis_trajectory.png" alt="Visualization overview">
+      <img src="../images/single_axis_trajectory.png" alt="Single axis trajectory chart">
+      <figcaption>Single-axis trajectory profile</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/ruckig_gui_position.png" alt="Ruckig GUI position preset">
+      <figcaption>Position preset (Ruckig GUI)</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/ruckig_gui_velocity.png" alt="Ruckig GUI velocity preset">
+      <figcaption>Velocity preset (Ruckig GUI)</figcaption>
+    </figure>
+  </div>
+  <div class="gallery-item">
+    <figure>
+      <img src="../images/ruckig_gui_constraints.png" alt="Ruckig GUI constraints preset">
+      <figcaption>Constraint-limited preset (Ruckig GUI)</figcaption>
     </figure>
   </div>
 </div>
@@ -110,7 +246,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/userguide/single_axis_trajectory.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/single_axis_trajectory.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

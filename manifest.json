@@ -74,10 +74,60 @@
     },
     {
       "type": "Resource",
+      "source_relative_path": "images/ruckig_gui_constraints.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/ruckig_gui_constraints.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/ruckig_gui_position.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/ruckig_gui_position.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/ruckig_gui_velocity.png",
+      "output": {
+        "resource": {
+          "relative_path": "images/ruckig_gui_velocity.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
       "source_relative_path": "images/single_axis_trajectory.png",
       "output": {
         "resource": {
           "relative_path": "images/single_axis_trajectory.png"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/struckig-logo-readme.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/struckig-logo-readme.svg"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "images/struckig-logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "images/struckig-logo.svg"
         }
       },
       "version": ""
@@ -313,6 +363,106 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "userguide/concepts.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/concepts.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/cycle_integration.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/cycle_integration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/example_minimum_duration.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/example_minimum_duration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/example_position_interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/example_position_interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/example_runtime_dofs.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/example_runtime_dofs.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/example_stop_trajectory.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/example_stop_trajectory.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/example_velocity_interface.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/example_velocity_interface.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/examples_structured_text.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/examples_structured_text.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/faq.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/faq.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/feature_scope.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/feature_scope.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "userguide/installation.md",
       "output": {
         ".html": {
@@ -380,6 +530,16 @@
         },
         ".json": {
           "relative_path": "userguide/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "userguide/troubleshooting.md",
+      "output": {
+        ".html": {
+          "relative_path": "userguide/troubleshooting.html"
         }
       },
       "version": ""

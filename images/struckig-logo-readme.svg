@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 272 56" role="img" aria-label="Struckig">
+  <defs>
+    <linearGradient id="struckigMintModernReadme" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#74c3d1"/>
+      <stop offset="100%" stop-color="#4a9ead"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="7" width="40" height="40" rx="10" fill="url(#struckigMintModernReadme)"/>
+  <path d="M14 16h12c3 0 5.5 2.4 5.5 5.5S29 27 26 27h-8c-3 0-5.5 2.5-5.5 5.5S15 38 18 38h12"
+        fill="none" stroke="#eaf7f9" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="54" y="35.5" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="26" font-weight="650" letter-spacing="0" fill="#1f2933">Struckig</text>
+</svg>

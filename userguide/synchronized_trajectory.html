@@ -7,7 +7,7 @@
       <meta name="title" content="Synchronized trajectory | Struckig ">
       
       
-      <link rel="icon" href="../favicon.ico">
+      <link rel="icon" href="../images/struckig-logo.svg">
       <link rel="stylesheet" href="../public/docfx.min.css">
       <link rel="stylesheet" href="../public/main.css">
       <meta name="docfx:navrel" content="../toc.html">
@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/userguide/synchronized_trajectory.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/synchronized_trajectory.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +44,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../index.html">
-            <img id="logo" class="svg" src="../logo.svg" alt="">
+            <img id="logo" class="svg" src="../images/struckig-logo.svg" alt="">
             
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,62 +83,48 @@
         <article data-uid="">
 <h1 id="synchronized-trajectory">Synchronized trajectory</h1>
 
-<p>This graphs shows two trajectories with three degree-of-freedem, respectively.
-The settings for both trajectories are the same with the exception of the synchronization mode.
-While red curves show the phase-synchronized trajectory, the blue ones show the time-sychronized trajectory.</p>
-<h2 id="jerk-limited-trajectory-third-order-trajectory">Jerk-limited trajectory (third-order trajectory)</h2>
-<pre><code>  otgTimeSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
-                  EnableAutoPropagate := TRUE,
-                  Synchronization := SynchronizationType.TimeSync,
-                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
-                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
-                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
-                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
-                  MaxJerk :=             [ 1.0, 1.0, 1.0 ]
-  ); 
-  
-  otgPhaseSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
-                  EnableAutoPropagate := TRUE,
-                  Synchronization := SynchronizationType.Phase,
-                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
-                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
-                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
-                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ],
-                  MaxJerk :=             [ 1.0, 1.0, 1.0 ]
-  ); 
+<p>For multiple DoFs, synchronization determines how axes arrive at the target.</p>
+<h2 id="time-synchronization">Time synchronization</h2>
+<p>All axes start and finish together, but can follow different geometric progress along the path.</p>
+<pre><code class="lang-st">otgTimeSync : Struckig.Otg(cycletime := 0.001, dofs := 3) := (
+  EnableAutoPropagate := TRUE,
+  Synchronization := Struckig.SynchronizationType.TimeSync,
+  CurrentPosition := [0.0, 0.0, 0.0],
+  TargetPosition :=  [1.0, -1.0, 2.0],
+  MaxVelocity :=     [1.0, 1.0, 1.0],
+  MaxAcceleration := [1.0, 1.0, 1.0],
+  MaxJerk :=         [1.0, 1.0, 1.0]
+);
 </code></pre>
+<h2 id="phase-synchronization">Phase synchronization</h2>
+<p>Axes maintain a shared phase relation over time, which is useful for coordinated Cartesian motion.</p>
+<pre><code class="lang-st">otgPhaseSync : Struckig.Otg(cycletime := 0.001, dofs := 3) := (
+  EnableAutoPropagate := TRUE,
+  Synchronization := Struckig.SynchronizationType.Phase,
+  CurrentPosition := [0.0, 0.0, 0.0],
+  TargetPosition :=  [1.0, -1.0, 2.0],
+  MaxVelocity :=     [1.0, 1.0, 1.0],
+  MaxAcceleration := [1.0, 1.0, 1.0],
+  MaxJerk :=         [1.0, 1.0, 1.0]
+);
+</code></pre>
+<h2 id="second-order-profile-optional">Second-order profile (optional)</h2>
+<p>If you leave <code>MaxJerk</code> at default infinity values, Struckig computes an acceleration-limited profile.</p>
+<div class="TIP">
+<h5>Tip</h5>
+<p>For path-following machines, <code>Phase</code> is usually the better default. For independent coordinated arrivals, use <code>TimeSync</code>.</p>
+</div>
 <div class="gallery">
   <div class="gallery-item">
     <figure>
-      <img src="../images/synchronization_phase_vs_time.png" alt="Visualization overview">
+      <img src="../images/synchronization_phase_vs_time.png" alt="Phase vs time synchronization with jerk limit">
+      <figcaption>Phase vs time synchronization (third-order)</figcaption>
     </figure>
   </div>
-</div>
-<h2 id="infinite-jerk-trajectory-second-order-trajectory">Infinite-jerk trajectory (second-order trajectory)</h2>
-<pre><code>  otgTimeSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
-                  EnableAutoPropagate := TRUE,
-                  Synchronization := SynchronizationType.TimeSync,
-                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
-                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
-                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
-                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
-                  // note: MaxJerk by default is Struckig.Constants.Infinity -&gt; no jerk limit
-  ); 
-  
-  otgPhaseSync : Struckig.Otg(cycletime:=0.001, dofs:=3) := (
-                  EnableAutoPropagate := TRUE,
-                  Synchronization := SynchronizationType.Phase,
-                  CurrentPosition :=     [ 0.0, 0.0, 0.0 ],
-                  TargetPosition :=      [ 1.0, -1.0, 2.0 ],
-                  MaxVelocity :=         [ 1.0, 1.0, 1.0 ],
-                  MaxAcceleration :=     [ 1.0, 1.0, 1.0 ]
-                  // note: MaxJerk by default is Struckig.Constants.Infinity -&gt; no jerk limit
-  ); 
-</code></pre>
-<div class="gallery">
   <div class="gallery-item">
     <figure>
-      <img src="../images/synchronization_phase_vs_time_2nd_order.png" alt="Visualization overview">
+      <img src="../images/synchronization_phase_vs_time_2nd_order.png" alt="Phase vs time synchronization second order">
+      <figcaption>Phase vs time synchronization (second-order)</figcaption>
     </figure>
   </div>
 </div>
@@ -146,7 +132,7 @@ While red curves show the phase-synchronized trajectory, the blue ones show the 
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/userguide/synchronized_trajectory.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/synchronized_trajectory.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

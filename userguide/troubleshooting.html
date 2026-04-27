@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Troubleshooting | Struckig </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Troubleshooting | Struckig ">
+      
+      
+      <link rel="icon" href="../images/struckig-logo.svg">
+      <link rel="stylesheet" href="../public/docfx.min.css">
+      <link rel="stylesheet" href="../public/main.css">
+      <meta name="docfx:navrel" content="../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/troubleshooting.md/#L1">
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+  </head>
+
+  <script type="module" src="./../public/docfx.min.js"></script>
+
+  <script>
+    const theme = localStorage.getItem('theme') || 'auto'
+    document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+  </script>
+
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../index.html">
+            <img id="logo" class="svg" src="../images/struckig-logo.svg" alt="">
+            
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" style="margin-top: -.65em; margin-left: -.8em" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="">
+<h1 id="troubleshooting">Troubleshooting</h1>
+
+<p>Common issues when integrating Struckig in PLC projects.</p>
+<h2 id="trajectorystateerror-right-after-start"><code>TrajectoryState.Error</code> right after start</h2>
+<p>Likely causes:</p>
+<ul>
+<li>negative or zero limits where positive limits are required</li>
+<li>inconsistent vector size for configured DoFs</li>
+<li>impossible target state for active constraints</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>all <code>Max*</code> limits are sensible and positive</li>
+<li>each array has exactly <code>dofs</code> entries</li>
+<li>current and target state values are in consistent units</li>
+<li>inspect <code>ErrorCode()</code> in addition to <code>ErrorMessage()</code></li>
+</ul>
+<h2 id="zero-limits-conflict-errors"><code>Zero limits conflict</code> errors</h2>
+<p>Likely causes:</p>
+<ul>
+<li>one or more axes use zero acceleration or jerk limits while target states still require constrained motion</li>
+<li>synchronization forces coupling with another DoF that cannot satisfy zero-limit constraints</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>avoid mixing zero limits with aggressive target velocity/acceleration requests</li>
+<li>test with <code>SynchronizationType.None</code> to isolate per-axis feasibility</li>
+<li>reintroduce synchronization after each axis is individually valid</li>
+</ul>
+<h2 id="motion-looks-too-slow-or-too-fast">Motion looks too slow or too fast</h2>
+<p>Likely causes:</p>
+<ul>
+<li><code>cycletime</code> does not match actual task period</li>
+<li>unit mismatch (<code>mm</code> vs <code>m</code>, <code>deg</code> vs <code>rad</code>)</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>task period in TwinCAT and <code>cycletime</code> are equal</li>
+<li>velocity, acceleration, jerk are scaled to your position unit</li>
+</ul>
+<h2 id="never-reaches-idle">Never reaches <code>Idle</code></h2>
+<p>Likely causes:</p>
+<ul>
+<li>target is overwritten each cycle by other logic</li>
+<li>external sequence logic modifies <code>Current*</code> continuously</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>write targets at state boundaries, not continuously</li>
+<li>avoid changing <code>CurrentPosition/Velocity/Acceleration</code> during active segments unless intentional</li>
+<li>verify whether target velocity or target acceleration is intentionally non-zero</li>
+</ul>
+<h2 id="axis-movement-is-jerky">Axis movement is jerky</h2>
+<p>Likely causes:</p>
+<ul>
+<li>jerk limits too high for mechanics</li>
+<li>output updates are not applied every cycle</li>
+<li>drive interpolation mode mismatch</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>reduce <code>MaxJerk</code> and test again</li>
+<li>ensure cyclic setpoint mapping runs unconditionally</li>
+<li>validate axis mode and interpolation settings</li>
+<li>consider <code>DiscretizationType.Discrete</code> for cycle-aligned durations</li>
+</ul>
+<h2 id="unexpected-path-shape-in-multi-axis-motion">Unexpected path shape in multi-axis motion</h2>
+<p>Likely causes:</p>
+<ul>
+<li>synchronization mode does not match path intent</li>
+<li>constraints differ strongly between axes</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>try <code>SynchronizationType.Phase</code> for geometric path consistency</li>
+<li>align relative limits between axes where possible</li>
+<li>avoid partial per-DoF overrides unless required</li>
+</ul>
+<h2 id="validation-passes-but-runtime-still-errors">Validation passes, but runtime still errors</h2>
+<p>Likely causes:</p>
+<ul>
+<li>parameters changed between <code>ValidateInput</code> and <code>otg()</code> call</li>
+<li>external logic writes NaN or invalid numbers during runtime</li>
+</ul>
+<p>What to check:</p>
+<ul>
+<li>keep setpoint update and <code>otg()</code> call in the same deterministic code region</li>
+<li>guard external writes and sanitize values</li>
+<li>log parameter snapshots on transition edges</li>
+</ul>
+<h2 id="diagnostic-workflow">Diagnostic workflow</h2>
+<ol>
+<li>log <code>State</code> and <code>ErrorMessage()</code> when errors occur</li>
+<li>log current and target vectors at segment entry</li>
+<li>verify cycle time, units, and limit ranges</li>
+<li>reduce complexity to a 1-axis move, then scale back up</li>
+</ol>
+
+</article>
+
+        <div class="contribution d-print-none">
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/userguide/troubleshooting.md/#L1" class="edit-link">Edit this page</a>
+        </div>
+
+        <div class="next-article d-print-none border-top" id="nextArticle"></div>
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          Documentation powered by <a href="https://github.com/Zeugwerk/zkdoc-action">zkdoc</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

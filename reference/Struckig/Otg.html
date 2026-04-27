@@ -7,7 +7,7 @@
       <meta name="title" content="Otg | Struckig ">
       
       
-      <link rel="icon" href="../../favicon.ico">
+      <link rel="icon" href="../../images/struckig-logo.svg">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
       <meta name="docfx:navrel" content="../../toc.html">
@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/reference/Struckig/Otg.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/reference/Struckig/Otg.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -44,7 +44,7 @@
       <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
         <div class="container-xxl flex-nowrap">
           <a class="navbar-brand" href="../../index.html">
-            <img id="logo" class="svg" src="../../logo.svg" alt="">
+            <img id="logo" class="svg" src="../../images/struckig-logo.svg" alt="">
             
           </a>
           <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,6 +121,29 @@
  [output] NewCalculation : BOOL,
  [output] CurrentTime : LREAL)
 <p></p></code></pre></div>
+<p>Online trajectory generator for multiple DoFs.
+Call the function block cyclically to generate smooth, time-optimal motion
+under position, velocity, acceleration, and jerk limits.</p>
+<p>Typical cycle:</p>
+<ol>
+<li>Set current state, target state, and limits.</li>
+<li>Call the function block every PLC cycle.</li>
+<li>Use <code>NewPosition</code>, <code>NewVelocity</code>, <code>NewAcceleration</code>, and <code>NewJerk</code> as command values.</li>
+<li>Optionally call <a class="xref" href="Otg.html#PassOutputToInput">PassOutputToInput</a> or enable
+<code>EnableAutoPropagate</code> for state propagation.</li>
+</ol>
+<pre><code class="lang-st">otg(
+  CycleTime := 0.001,
+  Dofs := 2,
+  ControlInterface := ControlInterfaceType.Position,
+  Synchronization := SynchronizationType.TimeSync
+);
+
+IF otg.State = TrajectoryState.Busy THEN
+  Axis1.Setpoint := otg.NewPosition[0];
+  Axis2.Setpoint := otg.NewPosition[1];
+END_IF
+</code></pre>
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="CycleTime"></a><dt><code>CycleTime</code> LREAL</dt><a name="Dofs"></a><dt><code>Dofs</code> INT</dt><a name="Enabled"></a><dt><code>Enabled</code> ARRAY[0..ParameterList.MaxDoFs] OF BOOL</dt><a name="ControlInterface"></a><dt><code>ControlInterface</code> <a class="xref" href="ControlInterfaceType.html">ControlInterfaceType</a> <code>:= ControlInterfaceType.Position</code></dt><dd><p><p>The default position interface controls the full kinematic state.</p>
 </dd><a name="Synchronization"></a><dt><code>Synchronization</code> <a class="xref" href="SynchronizationType.html">SynchronizationType</a> <code>:= SynchronizationType.TimeSync</code></dt><dd><p><p>Synchronization behavior of multiple DoFs</p>
@@ -144,7 +167,8 @@
 </dd></dl>
 <h4 class="section">Outputs</h4><dl class="parameters">
 <a name="NewPosition"></a><dt><code>NewPosition</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewVelocity"></a><dt><code>NewVelocity</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewJerk"></a><dt><code>NewJerk</code> ARRAY[0..ParameterList.MaxDoFs] OF LREAL</dt><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL</dt><dd><p><p>Was a new trajectory calculation performed in the last cycle?</p>
-</dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL</dt></dl>
+</dd><a name="CurrentTime"></a><dt><code>CurrentTime</code> LREAL</dt><dd><p><p>Time elapsed on the current trajectory in seconds.</p>
+</dd></dl>
 <h2 class="section" id="constructors">Constructor</h2>
 <h3 id="Struckig_Otg_FB_init" data-uid="Struckig.Otg.FB_init">
 FB_init
@@ -170,6 +194,10 @@ Duration
 <div class="codewrapper">
     <pre><code class="lang-st hljs">PROPERTY Duration : LREAL
 </code></pre></div>
+<p>Total planned trajectory duration in seconds.
+The value is set after successful calculation and remains valid until inputs
+change or <a class="xref" href="Otg.html#Reset">Reset</a> is called.</p>
+<p>In synchronized operation this is the common duration for all participating DoFs.</p>
 <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt>LREAL</dt>
@@ -181,6 +209,14 @@ State
 <div class="codewrapper">
     <pre><code class="lang-st hljs">PROPERTY State : TrajectoryState
 </code></pre></div>
+<p>Current state of the trajectory generator.</p>
+<ul>
+<li><code>Busy</code>: active trajectory is running.</li>
+<li><code>Idle</code>: trajectory reached end state.</li>
+<li><code>Error</code>: invalid input or unsynchronizable profile.</li>
+</ul>
+<p>Check this property to decide whether to continue commanding setpoints,
+hold final values, or handle a fault.</p>
 <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><a class="xref" href="TrajectoryState.html">TrajectoryState</a></dt>
@@ -211,7 +247,11 @@ AtTime
  [input] new_jerk : POINTER TO LREAL,
  [input] new_section : POINTER TO INT)
 </code></pre></div>
-<p>Get the kinematic state at a given time</p>
+<p>Gets the kinematic state at absolute trajectory time <code>t</code>.
+This method evaluates the active profile sections and returns position, velocity,
+acceleration, and jerk for each configured DoF.</p>
+<p>For <code>t &gt;= Duration</code>, the final state is extended with constant acceleration behavior.
+For single-axis access without vector pointers, see <a class="xref" href="Otg.html#AtTime1">AtTime1</a>.</p>
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="t"></a><dt><code>t</code> LREAL</dt><a name="new_position"></a><dt><code>new_position</code> POINTER TO LREAL</dt><a name="new_velocity"></a><dt><code>new_velocity</code> POINTER TO LREAL</dt><a name="new_acceleration"></a><dt><code>new_acceleration</code> POINTER TO LREAL</dt><a name="new_jerk"></a><dt><code>new_jerk</code> POINTER TO LREAL</dt><a name="new_section"></a><dt><code>new_section</code> POINTER TO INT</dt></dl>
 <h3 id="Struckig_Otg_AtTime1" data-uid="Struckig.Otg.AtTime1">
@@ -249,6 +289,8 @@ ErrorCode
 <div class="codewrapper">
     <pre><code class="lang-st hljs">METHOD ErrorCode () : TrajectoryErrorCode
 </code></pre></div>
+<p>Returns the current error code.
+Use together with <a class="xref" href="Otg.html#ErrorMessage">ErrorMessage</a> for diagnostics.</p>
 <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="TrajectoryErrorCode.html">TrajectoryErrorCode</a></dt>
@@ -260,6 +302,9 @@ ErrorMessage
 <div class="codewrapper">
     <pre><code class="lang-st hljs">METHOD ErrorMessage () : STRING(255)
 </code></pre></div>
+<p>Returns a human-readable error description.
+If no custom error text exists, a default description is derived from
+<a class="xref" href="Otg.html#ErrorCode">ErrorCode</a>.</p>
 <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>STRING(255)</dt>
@@ -282,6 +327,15 @@ PassOutputToInput
 <div class="codewrapper">
     <pre><code class="lang-st hljs">METHOD PassOutputToInput ()
 </code></pre></div>
+<p>Copies <code>NewPosition</code>, <code>NewVelocity</code>, and <code>NewAcceleration</code>
+to the corresponding current-state inputs.
+This helper connects one cycle output to the next cycle input and is useful
+in closed-loop PLC applications.</p>
+<p>Equivalent to manually assigning:</p>
+<pre><code class="lang-st">CurrentPosition := NewPosition;
+CurrentVelocity := NewVelocity;
+CurrentAcceleration := NewAcceleration;
+</code></pre>
 <h3 id="Struckig_Otg_Reset" data-uid="Struckig.Otg.Reset">
 Reset
 </h3><a name="Reset"></a>
@@ -289,7 +343,9 @@ Reset
     <pre><code class="lang-st hljs">METHOD Reset ()
 </code></pre></div>
 <p>Resets the instance (e.g. to force a new calculation on the next update).
-This method can be used to trigger a new trajectory even if inputs do not change.</p>
+This method can be used to trigger a new trajectory even if inputs do not change.
+Use this when external state jumps occur (manual jog, homing, drive reset)
+and the generator must reinitialize from the new measured state.</p>
 <h3 id="Struckig_Otg_SetBusy" data-uid="Struckig.Otg.SetBusy">
 SetBusy
 </h3><a name="SetBusy"></a>
@@ -319,6 +375,14 @@ When the current state is at maximal velocity, any positive acceleration will in
 </code></pre>
 <p>If both arguments are set to true, the calculated trajectory is guaranteed to be <em>within the kinematic limits throughout</em>
 its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.</p>
+<p>Recommended usage before applying new targets:</p>
+<pre><code class="lang-st">IF otg.ValidateInput(TRUE, TRUE) THEN
+  // inputs are valid, call cyclic calculation
+  otg();
+ELSE
+  // inspect otg.ErrorCode() and otg.ErrorMessage()
+END_IF
+</code></pre>
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="checkCurrentStateWithinLimits"></a><dt><code>checkCurrentStateWithinLimits</code> BOOL</dt><a name="checkTargetStateWithinLimits"></a><dt><code>checkTargetStateWithinLimits</code> BOOL</dt></dl>
 <h4 class="section">Returns</h4>
@@ -346,6 +410,14 @@ When the current state is at maximal velocity, any positive acceleration will in
 </code></pre>
 <p>If both arguments are set to true, the calculated trajectory is guaranteed to be <em>within the kinematic limits throughout</em>
 its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.</p>
+<p>Recommended usage before applying new targets:</p>
+<pre><code class="lang-st">IF otg.ValidateInput(TRUE, TRUE) THEN
+  // inputs are valid, call cyclic calculation
+  otg();
+ELSE
+  // inspect otg.ErrorCode() and otg.ErrorMessage()
+END_IF
+</code></pre>
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="checkCurrentStateWithinLimits"></a><dt><code>checkCurrentStateWithinLimits</code> BOOL</dt><a name="checkTargetStateWithinLimits"></a><dt><code>checkTargetStateWithinLimits</code> BOOL</dt></dl>
 <h4 class="section">Returns</h4>
@@ -357,7 +429,7 @@ its duration. Also, note that there are range constraints of the input due to nu
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/eee6877c4b5c323b900e91145eb287dce8bb5ea4/docs/reference/Struckig/Otg.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/b00f4f0432b85f3d55711d2086f9b986a39e5d8f/docs/reference/Struckig/Otg.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
