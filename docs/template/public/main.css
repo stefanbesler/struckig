@@ -176,8 +176,7 @@
   margin-right: 0.35rem;
 }
 
-.content article dl.typelist > dt,
-.content article dl.parameters > dt {
+.content article dl.typelist > dt {
   font-weight: 600;
 }
 
@@ -187,11 +186,13 @@
 
 .content article dl.parameters > dt {
   margin: 0.85rem 0 0.35rem;
+  font-size: 0.9em;
+  font-weight: 400;
 }
 
 .content article dl.parameters > dt > code {
   margin-right: 0.4em;
-  font-size: 0.875em;
+  font-size: 0.95em;
 }
 
 .content article td.term,
