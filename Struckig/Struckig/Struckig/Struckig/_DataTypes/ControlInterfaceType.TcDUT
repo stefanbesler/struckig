@@ -18,11 +18,14 @@
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'qualified_only'}
 {attribute 'strict'}
+/// Defines the controlled state variables for trajectory generation.
+/// The selected mode changes which boundary values and limits are interpreted
+/// during validation and profile generation.
 TYPE ControlInterfaceType :
 (
-  Undefined,
-  Position, // Position-control: Full control over the entire kinematic state (Default)
-  Velocity // Velocity-control: Ignores the current position, target position, and velocity limits
+  Undefined, //< Use global/default configuration.
+  Position, //< Full control over position, velocity, and acceleration.
+  Velocity //< Controls only velocity and acceleration states.
 );
 END_TYPE
 ]]></Declaration>

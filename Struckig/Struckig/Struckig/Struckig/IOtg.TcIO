@@ -16,6 +16,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
+/// Public interface for Struckig online trajectory generators.
+/// The interface unifies access to both [Otg](xref:Struckig.Otg) (multi-DoF)
+/// and [Otg1](xref:Struckig.Otg1) (single-DoF wrapper), so user code can
+/// switch implementation without changing call sites.
+///
+/// A typical pattern is:
+/// 1. Call `Cyclic` each PLC cycle.
+/// 2. Monitor `State`.
+/// 3. Read command setpoints from the concrete implementation outputs.
+/// 4. Use `Reset` and `ValidateInput` for robust operation.
 INTERFACE IOtg
 ]]></Declaration>
     <Method Name="AtTime" Id="{41ff6a58-6de0-469e-96e7-a3465afa5f08}">
@@ -51,7 +61,8 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="Duration" Id="{8c0faacd-e13f-4137-8331-68d5ef9a1818}">
-      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Duration
+PROPERTY Duration : LREAL]]></Declaration>
       <Get Name="Get" Id="{279d889d-1482-438e-9f3b-c645ec4f089b}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>
@@ -85,7 +96,8 @@ END_VAR
 ]]></Declaration>
     </Method>
     <Property Name="State" Id="{1fb2d035-21ef-4a96-839a-0735632d15bd}">
-      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#State
+PROPERTY State : TrajectoryState]]></Declaration>
       <Get Name="Get" Id="{4517957e-24b2-4a50-b177-5b0b420d1e7f}">
         <Declaration><![CDATA[]]></Declaration>
       </Get>

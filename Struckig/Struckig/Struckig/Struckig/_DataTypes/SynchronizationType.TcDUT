@@ -18,9 +18,12 @@
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'qualified_only'}
 {attribute 'strict'}
+/// Defines how multiple DoFs are synchronized to a common trajectory timing.
+/// This setting is evaluated together with per-axis overrides (`PerDofSynchronization`)
+/// in [Otg](xref:Struckig.Otg).
 TYPE SynchronizationType :
 (
-  Undefined,
+  Undefined, //< Use global/default configuration.
   TimeSync, //< Always synchronize the DoFs to reach the target at the same time (Default)
   TimeIfNecessarySync, //< Synchronize only when necessary (e.g. for non-zero target velocity or acceleration)
   Phase,  //< Phase synchronize the DoFs when this is possible, else fallback to "Time" strategy. Phase synchronization will result a straight-line trajectory

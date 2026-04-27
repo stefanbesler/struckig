@@ -17,6 +17,30 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'conditionalshow_all_locals'}
+/// Online trajectory generator for multiple DoFs.
+/// Call the function block cyclically to generate smooth, time-optimal motion
+/// under position, velocity, acceleration, and jerk limits.
+///
+/// Typical cycle:
+/// 1. Set current state, target state, and limits.
+/// 2. Call the function block every PLC cycle.
+/// 3. Use `NewPosition`, `NewVelocity`, `NewAcceleration`, and `NewJerk` as command values.
+/// 4. Optionally call [PassOutputToInput](xref:Struckig.Otg#PassOutputToInput) or enable
+///    `EnableAutoPropagate` for state propagation.
+///
+/// ```st
+/// otg(
+///   CycleTime := 0.001,
+///   Dofs := 2,
+///   ControlInterface := ControlInterfaceType.Position,
+///   Synchronization := SynchronizationType.TimeSync
+/// );
+///
+/// IF otg.State = TrajectoryState.Busy THEN
+///   Axis1.Setpoint := otg.NewPosition[0];
+///   Axis2.Setpoint := otg.NewPosition[1];
+/// END_IF
+/// ```
 FUNCTION_BLOCK Otg IMPLEMENTS IOtg
 VAR_INPUT
   CycleTime : LREAL;
@@ -40,7 +64,7 @@ END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration, NewJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
   NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
-  CurrentTime : LREAL;
+  CurrentTime : LREAL; //< Time elapsed on the current trajectory in seconds.
 END_VAR
 VAR
   _duration : LREAL;
@@ -158,7 +182,12 @@ _errorId := errorId;]]></ST>
       </Implementation>
     </Method>
     <Method Name="AtTime" Id="{bf1093a4-cb3c-415c-bc2d-e44ec3ea9553}">
-      <Declaration><![CDATA[/// Get the kinematic state at a given time
+      <Declaration><![CDATA[/// Gets the kinematic state at absolute trajectory time `t`.
+/// This method evaluates the active profile sections and returns position, velocity,
+/// acceleration, and jerk for each configured DoF.
+///
+/// For `t >= Duration`, the final state is extended with constant acceleration behavior.
+/// For single-axis access without vector pointers, see [AtTime1](xref:Struckig.Otg#AtTime1).
 {attribute 'conditionalshow'}
 METHOD AtTime
 VAR_INPUT
@@ -667,7 +696,12 @@ END_VAR
       </Implementation>
     </Method>
     <Property Name="Duration" Id="{22144de6-ee66-4178-90aa-defacda9f48a}">
-      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Declaration><![CDATA[/// Total planned trajectory duration in seconds.
+/// The value is set after successful calculation and remains valid until inputs
+/// change or [Reset](xref:Struckig.Otg#Reset) is called.
+///
+/// In synchronized operation this is the common duration for all participating DoFs.
+PROPERTY Duration : LREAL]]></Declaration>
       <Get Name="Get" Id="{073fe594-e12c-4fbb-b64f-b5d845294008}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -678,7 +712,9 @@ END_VAR
       </Get>
     </Property>
     <Method Name="ErrorCode" Id="{df1856aa-ddd6-43c2-8198-e93b1db87e8a}">
-      <Declaration><![CDATA[METHOD ErrorCode : TrajectoryErrorCode
+      <Declaration><![CDATA[/// Returns the current error code.
+/// Use together with [ErrorMessage](xref:Struckig.Otg#ErrorMessage) for diagnostics.
+METHOD ErrorCode : TrajectoryErrorCode
 VAR_INPUT
 END_VAR
 ]]></Declaration>
@@ -687,7 +723,10 @@ END_VAR
       </Implementation>
     </Method>
     <Method Name="ErrorMessage" Id="{ff9991e9-176b-43d5-a3fb-79c9a996762a}">
-      <Declaration><![CDATA[METHOD ErrorMessage : STRING(255)
+      <Declaration><![CDATA[/// Returns a human-readable error description.
+/// If no custom error text exists, a default description is derived from
+/// [ErrorCode](xref:Struckig.Otg#ErrorCode).
+METHOD ErrorMessage : STRING(255)
 VAR_INPUT
 END_VAR
 ]]></Declaration>
@@ -909,7 +948,18 @@ IsInputCollinear := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="PassOutputToInput" Id="{94fb36df-eba6-444f-9aba-af59065260ef}">
-      <Declaration><![CDATA[METHOD PassOutputToInput
+      <Declaration><![CDATA[/// Copies `NewPosition`, `NewVelocity`, and `NewAcceleration`
+/// to the corresponding current-state inputs.
+/// This helper connects one cycle output to the next cycle input and is useful
+/// in closed-loop PLC applications.
+///
+/// Equivalent to manually assigning:
+/// ```st
+/// CurrentPosition := NewPosition;
+/// CurrentVelocity := NewVelocity;
+/// CurrentAcceleration := NewAcceleration;
+/// ```
+METHOD PassOutputToInput
 VAR_INPUT
 END_VAR
 ]]></Declaration>
@@ -929,6 +979,8 @@ CurrentAcceleration := NewAcceleration;
     <Method Name="Reset" Id="{b7bf29bd-f032-40ea-9301-3dafba0e7b6f}">
       <Declaration><![CDATA[/// Resets the instance (e.g. to force a new calculation on the next update).
 /// This method can be used to trigger a new trajectory even if inputs do not change.
+/// Use this when external state jumps occur (manual jog, homing, drive reset)
+/// and the generator must reinitialize from the new measured state.
 METHOD Reset
 VAR_INPUT
 END_VAR
@@ -948,7 +1000,14 @@ END_VAR
       </Implementation>
     </Method>
     <Property Name="State" Id="{931901e4-919f-4a68-b320-69d9626c0ea2}">
-      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Declaration><![CDATA[/// Current state of the trajectory generator.
+/// - `Busy`: active trajectory is running.
+/// - `Idle`: trajectory reached end state.
+/// - `Error`: invalid input or unsynchronizable profile.
+///
+/// Check this property to decide whether to continue commanding setpoints,
+/// hold final values, or handle a fault.
+PROPERTY State : TrajectoryState]]></Declaration>
       <Get Name="Get" Id="{8fa2d4b4-f170-4b7b-a2e0-16c3339d4da1}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -1086,6 +1145,16 @@ END_FOR
 /// ```
 /// If both arguments are set to true, the calculated trajectory is guaranteed to be *within the kinematic limits throughout* 
 /// its duration. Also, note that there are range constraints of the input due to numerical reasons, see below for more details.
+///
+/// Recommended usage before applying new targets:
+/// ```st
+/// IF otg.ValidateInput(TRUE, TRUE) THEN
+///   // inputs are valid, call cyclic calculation
+///   otg();
+/// ELSE
+///   // inspect otg.ErrorCode() and otg.ErrorMessage()
+/// END_IF
+/// ```
 {attribute 'conditionalshow'}
 METHOD ValidateInput : BOOL
 VAR_INPUT

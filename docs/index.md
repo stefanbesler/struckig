@@ -1,26 +1,42 @@
+---
+toc_rel: userguide/toc.yml
+toc_href: userguide/
+_tocRel: userguide/toc.yml
+_tocHref: userguide/
+_disableToc: false
+---
+
 # Struckig
 
-This library is a port of [pantor/ruckig](https://github.com/pantor/ruckig) to **IEC61131-3 Structured Text** and brings free software powered Online Trajectory Generation to Codesys and TwinCAT 3. The library is dual licenced. You can use it under the terms of [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html), which summarized says that you can use it, redistribute it, study it, modify it as long as you distribute your code **under the same terms and conditions**. If you do not agree with the terms of the GPL and want to keep your source closed, [contact me](mailto:stefan@besler.me) to get a commercial license for Struckig.
+Struckig is the Structured Text port of [Ruckig](https://docs.ruckig.com), bringing online trajectory generation to TwinCAT 3 and other IEC 61131-3 environments.
 
+It computes jerk-limited, acceleration-limited, and velocity-limited trajectories in real time, cycle by cycle, from your current kinematic state to a target state.
 
-## Why GPLv3
+> [!IMPORTANT]
+> Struckig ports the open-source Ruckig Community feature set. Ruckig Pro features are not part of this project.
 
-While a lot of free software projects nowadays use the **MIT license** instead of the **GPLv3 license**, I decided to use the latter one for *Struckig*. Free software, or as people like to call it open-source software, is not the same as **free beer**. You should either value its principles by using a copy-left license on your source code as well, or if you can not you should contribute to the community, which is using their **spare time** to implement this kind of software. For this project you can do this by supporting [pantor by getting a pro version of ruckig](https://ruckig.com/) or by [contacting me for support with Struckig](mailto:stefan@besler.me).
+## Start Here
 
+- New to Struckig: go to [Installation](userguide/installation.md) and then [Single Axis Trajectory](userguide/single_axis_trajectory.md).
+- Learn the model first: read [Concepts](userguide/concepts.md).
+- Check applicability boundaries: [Feature Scope](userguide/feature_scope.md).
+- Building machine logic with state machines and segments: read [Examples](userguide/examples_structured_text.md).
+- Integrating with cyclic PLC execution: read [Cycle Integration](userguide/cycle_integration.md).
+- Using multi-axis coordination: read [Synchronized Trajectory](userguide/synchronized_trajectory.md).
+- If behavior is off: check [Troubleshooting](userguide/troubleshooting.md).
+- Common questions: [FAQ](userguide/faq.md).
 
-## Install Struckig
+## Why Struckig
 
-Before you can use this library to blazingly fast calculate trajectories for your PLC project, you'll need to <a href="userguide/installation.html">install it</a>. The simplest way to install the latest version of Struckig is by using the [Twinpack Package Manager](https://github.com/Zeugwerk/Twinpack).
+- Online trajectory generation directly in PLC code.
+- Deterministic cycle-by-cycle updates based on your task cycle time.
+- Same algorithmic core and terminology as Ruckig where applicable.
+- Native Structured Text API with arrays and TwinCAT-friendly integration.
 
-But you can also compile the library ourself or use a precompiled library. *Struckig* doesn't have any dependencies to properitary libraries, so usually the precompiled library *just works*.
+## Licensing
 
+Struckig is dual-licensed.
 
-## Getting started
-
-After you installed Struckig you are ready to use it, but still have to reference it in your PLC, learn how to <a href="userguide/installation.html">add the *Struckig* library</a> to your PLC and how to use it to calculate your very first trajectory.
-
-
-## Documentation
-
-The <a href="userguide/installation.html">API reference</a> provides insights into the internals of Struckig.
+- Open-source usage is available under [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
+- If your project cannot comply with GPL requirements, contact [stefan@besler.me](mailto:stefan@besler.me) for a commercial license.
 

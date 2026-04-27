@@ -1,12 +1,33 @@
 - name: Installation
   href: installation.md
+- name: Concepts
+  href: concepts.md
+- name: Feature scope
+  href: feature_scope.md
 - name: Examples
-  items: 
+  href: examples_structured_text.md
+  items:
   - name: Single axis trajectory
     href: single_axis_trajectory.md
   - name: Synchronized trajectory
     href: synchronized_trajectory.md
+  - name: Position interface example
+    href: example_position_interface.md
+  - name: Velocity interface example
+    href: example_velocity_interface.md
+  - name: Stop trajectory example
+    href: example_stop_trajectory.md
+  - name: Minimum duration example
+    href: example_minimum_duration.md
+  - name: Runtime-selected DoFs example
+    href: example_runtime_dofs.md
+- name: Cycle integration
+  href: cycle_integration.md
+- name: Troubleshooting
+  href: troubleshooting.md
+- name: FAQ
+  href: faq.md
 - name: License
   href: license.md
 - name: Notices
-  href: notices.md  
+  href: notices.md

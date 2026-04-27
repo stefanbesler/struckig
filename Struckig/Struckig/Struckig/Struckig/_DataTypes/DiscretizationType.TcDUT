@@ -18,10 +18,11 @@
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'qualified_only'}
 {attribute 'strict'}
+/// Defines whether synchronized trajectory duration is continuous or cycle-discrete.
 TYPE DiscretizationType :
 (
-  Continuous, /// Every trajectory synchronization duration is allowed (Default)
-  Discrete /// The trajectory synchronization duration must be a multiple of the control cycle
+  Continuous, //< Every synchronization duration is allowed.
+  Discrete //< Synchronization duration must be a multiple of cycle time.
 );
 END_TYPE
 ]]></Declaration>

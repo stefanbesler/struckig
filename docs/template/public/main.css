@@ -1,0 +1,249 @@
+/* Struckig DocFX UX overrides */
+
+:root {
+  --struckig-accent: #5cafc0;
+  --struckig-accent-strong: #4a9ead;
+  --struckig-accent-soft: #d8edf0;
+  --struckig-border: #c8dde1;
+  --struckig-text: #1f2933;
+  --struckig-text-muted: #52606d;
+  --struckig-surface: #ffffff;
+}
+
+.navbar {
+  background: linear-gradient(90deg, var(--struckig-accent-strong), var(--struckig-accent));
+  border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.navbar-brand,
+.navbar-nav > li > a {
+  font-weight: 600;
+  color: #ffffff !important;
+}
+
+.navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.navbar-brand img {
+  height: 34px;
+  width: auto;
+}
+
+.navbar-nav > li > a {
+  font-size: 14px;
+}
+
+.navbar-form .form-control {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #ffffff;
+}
+
+.navbar-form .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.content article {
+  max-width: 980px;
+  color: var(--struckig-text);
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 18px;
+  line-height: 1.72;
+  font-weight: 420;
+}
+
+@media (min-width: 1400px) {
+  .container-xxl {
+    max-width: 1400px;
+  }
+}
+
+.content article h1,
+.content article h2,
+.content article h3 {
+  color: #102a43;
+  letter-spacing: 0;
+  font-weight: 650;
+}
+
+.content article h1 {
+  margin: 0 0 1rem;
+  font-size: 2.05rem;
+  line-height: 1.22;
+  font-weight: 700;
+}
+
+.content article h2 {
+  margin: 1.85rem 0 0.7rem;
+  font-size: 1.52rem;
+  line-height: 1.34;
+  font-weight: 650;
+}
+
+.content article h3 {
+  margin: 1.2rem 0 0.45rem;
+  font-size: 1.2rem;
+  line-height: 1.38;
+  font-weight: 620;
+}
+
+.content article p {
+  margin: 0 0 0.95rem;
+}
+
+.content article ul,
+.content article ol {
+  margin: 0.35rem 0 1rem;
+  padding-left: 1.4rem;
+}
+
+.content article li {
+  margin: 0.2rem 0;
+}
+
+.content article strong {
+  font-weight: 650;
+}
+
+.content-wrap {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0.4rem 0.8rem 1rem;
+  margin-top: 0.3rem;
+}
+
+.content article code {
+  background: #eef7f8;
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  color: #1f5f6a;
+  font-size: 0.92em;
+}
+
+.content article pre code {
+  background: transparent;
+  padding: 0;
+  color: #2c3e46;
+}
+
+.content article pre {
+  border: 1px solid var(--struckig-border);
+  border-radius: 6px;
+  padding: 0.75rem 0.9rem;
+  background: #f8fcfd;
+}
+
+.content article a {
+  color: #357b88;
+  text-decoration: none;
+}
+
+.content article a:hover {
+  text-decoration: underline;
+}
+
+.sidefilter,
+.sidetoc {
+  border-right: 1px solid var(--struckig-border);
+}
+
+.sidetoc,
+.sideaffix {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.toc .nav > li > a {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.toc .nav > li > a:focus,
+.toc .nav > li > a:hover,
+.toc .nav > li.active > a {
+  background: var(--struckig-accent-soft);
+  border-left: 3px solid var(--struckig-accent);
+  color: #1f2d3d;
+}
+
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--struckig-accent);
+  border-color: var(--struckig-accent-strong);
+}
+
+.NOTE,
+.TIP,
+.IMPORTANT,
+.WARNING {
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+
+/* Dark theme readability */
+[data-bs-theme="dark"] .content article {
+  color: #d7e2ea;
+}
+
+[data-bs-theme="dark"] .content article h1,
+[data-bs-theme="dark"] .content article h2,
+[data-bs-theme="dark"] .content article h3 {
+  color: #f1f7fb;
+}
+
+[data-bs-theme="dark"] .content article p,
+[data-bs-theme="dark"] .content article li {
+  color: #d7e2ea;
+}
+
+[data-bs-theme="dark"] .content article a {
+  color: #83d0de;
+}
+
+[data-bs-theme="dark"] .content article a:hover {
+  color: #a7e3ee;
+}
+
+[data-bs-theme="dark"] .content article code {
+  background: #1f343a;
+  color: #a9e2ec;
+}
+
+[data-bs-theme="dark"] .content article pre {
+  background: #14252a;
+  border-color: #35515a;
+}
+
+[data-bs-theme="dark"] .content article pre code {
+  color: #d7e2ea;
+}
+
+[data-bs-theme="dark"] .sidefilter,
+[data-bs-theme="dark"] .sidetoc {
+  border-right-color: #2e4650;
+}
+
+[data-bs-theme="dark"] .toc .nav > li > a {
+  color: #b8c9d3;
+}
+
+[data-bs-theme="dark"] .toc .nav > li > a:focus,
+[data-bs-theme="dark"] .toc .nav > li > a:hover,
+[data-bs-theme="dark"] .toc .nav > li.active > a {
+  background: #1f3f47;
+  border-left-color: #7fc9d8;
+  color: #eaf4f8;
+}
+
+[data-bs-theme="dark"] .NOTE,
+[data-bs-theme="dark"] .TIP,
+[data-bs-theme="dark"] .IMPORTANT,
+[data-bs-theme="dark"] .WARNING {
+  background: #18272c;
+  border: 1px solid #35515a;
+}

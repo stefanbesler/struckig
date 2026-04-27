@@ -1,5 +1,11 @@
 {
   "build": {
+    "globalMetadata": {
+      "_appTitle": "Struckig Documentation",
+      "_appFooter": "Struckig: online trajectory generation for Structured Text and TwinCAT 3.",
+      "_appLogoPath": "images/struckig-logo.svg",
+      "_appFaviconPath": "images/struckig-logo.svg"
+    },
     "content": [
       {
         "files": [
@@ -15,7 +21,10 @@
     ],
     "resource": [
       {
-        "files": ["images/**"]
+        "files": [
+          "images/**",
+          "styles/**"
+        ]
       }
     ],
     "dest": "html",

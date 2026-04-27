@@ -1,5 +1,8 @@
 .Zeugwerk/libraries
 # TwinCAT files
+~.u
+docs/html/
+*deploy-key*
 *.db
 *.db:encryptable
 *.tpy

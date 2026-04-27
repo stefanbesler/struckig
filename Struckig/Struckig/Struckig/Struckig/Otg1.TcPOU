@@ -17,6 +17,19 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'conditionalshow_all_locals'}
+/// Convenience wrapper for single-DoF trajectory generation.
+/// This function block forwards all calls to an internal `Otg` instance with `Dofs = 1`.
+/// Use this block when your application controls exactly one axis and you want
+/// scalar I/O instead of vectors.
+///
+/// ```st
+/// otg1(
+///   CycleTime := 0.001,
+///   ControlInterface := ControlInterfaceType.Position,
+///   Synchronization := SynchronizationType.TimeSync
+/// );
+/// Axis.Setpoint := otg1.NewPosition;
+/// ```
 FUNCTION_BLOCK Otg1 IMPLEMENTS IOtg
 VAR_INPUT
   CycleTime : LREAL;
@@ -36,7 +49,7 @@ END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration, NewJerk : LREAL;
   NewCalculation : BOOL; //< Was a new trajectory calculation performed in the last cycle?
-  CurrentTime : LREAL;
+  CurrentTime : LREAL; //< Time elapsed on the current trajectory in seconds.
 END_VAR
 VAR
   _otg : Otg(0,0);
@@ -118,7 +131,8 @@ END_VAR
       </Implementation>
     </Method>
     <Property Name="Duration" Id="{c500a90d-2d0a-4395-8368-a7e5a4ac6445}">
-      <Declaration><![CDATA[PROPERTY Duration : LREAL]]></Declaration>
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#Duration
+PROPERTY Duration : LREAL]]></Declaration>
       <Get Name="Get" Id="{4d73abcd-1d4b-4970-898c-c561217a1ac1}">
         <Declaration><![CDATA[VAR
 END_VAR
@@ -181,7 +195,8 @@ END_VAR
       </Implementation>
     </Method>
     <Property Name="State" Id="{b5ac2802-49ba-47cc-be5c-251e2733bfd0}">
-      <Declaration><![CDATA[PROPERTY State : TrajectoryState]]></Declaration>
+      <Declaration><![CDATA[/// \copydoc Struckig.Otg#State
+PROPERTY State : TrajectoryState]]></Declaration>
       <Get Name="Get" Id="{1e97f762-4d10-4dd6-8a07-2ee620b245a0}">
         <Declaration><![CDATA[VAR
 END_VAR
