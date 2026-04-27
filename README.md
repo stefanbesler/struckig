@@ -1,6 +1,5 @@
 <div align="center">
-  <img src="docs/images/struckig-logo.svg" alt="Struckig logo" width="120">
-  <h1 align="center">Struckig</h1>
+  <img src="docs/images/struckig-logo-readme.svg" alt="Struckig logo" width="260">
   <h3 align="center">
     Instantaneous Motion Generation for Robots and Machines.<br>
     Port of ruckig to Structured Text, TwinCAT 3.
