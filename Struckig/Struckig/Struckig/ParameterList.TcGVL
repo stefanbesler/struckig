@@ -17,12 +17,16 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'qualified_only'}
+/// Global configuration constants for Struckig.
+/// These values define library limits and algorithm defaults that are
+/// referenced by trajectory generation and numerical helper routines.
 VAR_GLOBAL CONSTANT
-  MaxDoFs : INT := 7;
+  MaxDoFs : INT := 7; //< Maximum number of degrees of freedom supported by `Otg`.
   MaxIterations : BYTE := 127; //< Maximum iterations when [shrinking an interval](xref:Struckig.Roots#ShrinkInterval)
-  NumericalRobust : BOOL := TRUE;
+  NumericalRobust : BOOL := TRUE; //< Enables additional guards for numerically robust calculations.
   
   /// Default initial value for Otg.SmoothBrake / Otg1.SmoothBrake
+  /// If enabled, braking profiles prefer smooth acceleration transitions.
   SmoothBrake : BOOL := FALSE;
 END_VAR]]></Declaration>
   </GVL>

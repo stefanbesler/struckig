@@ -17,10 +17,16 @@
 // You should have received a copy of the GNU General Public License
 // along with THIS PROGRAM.  IF NOT, see <http://www.gnu.org/licenses/>.
 {attribute 'conditionalshow'}
+/// Positional envelope of a single-DoF profile.
+/// The structure stores minimum/maximum position and the corresponding
+/// times where these extrema occur along the generated trajectory.
+///
+/// It is returned by profile-bound checks to answer questions such as:
+/// "What is the furthest negative/positive excursion and when does it happen?"
 TYPE ProfileBound :
 STRUCT
-  Minimum, Maximum : LREAL; // The extreme position
-  Tmin, Tmax : LREAL;  // Time when the positions are reached
+  Minimum, Maximum : LREAL; //< Extreme positions reached by the profile.
+  Tmin, Tmax : LREAL;  //< Times at which `Minimum` and `Maximum` are reached.
 END_STRUCT
 END_TYPE
 ]]></Declaration>
