@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/1779abbb0e912076295e00a2f22453c4f40a1ed5/docs/reference/Struckig/Clamp.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/b064702b0d4402ef9ed60a2c8116994a92725369/docs/reference/Struckig/Clamp.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -93,8 +93,14 @@
  [input] minimum : LREAL,
  [input] maximum : LREAL) : LREAL
 </code></pre></div>
+<p>Clamps <code>value</code> to the closed interval <code>[minimum, maximum]</code>.
+If <code>value</code> is below <code>minimum</code>, returns <code>minimum</code>.
+If <code>value</code> is above <code>maximum</code>, returns <code>maximum</code>.</p>
 <h4 class="section">Inputs</h4><dl class="parameters">
-<a name="value"></a><dt><code>value</code> LREAL</dt><a name="minimum"></a><dt><code>minimum</code> LREAL</dt><a name="maximum"></a><dt><code>maximum</code> LREAL</dt></dl>
+<a name="value"></a><dt><code>value</code> LREAL</dt><dd><p><p>Input value to clamp.</p>
+</dd><a name="minimum"></a><dt><code>minimum</code> LREAL</dt><dd><p><p>Lower bound.</p>
+</dd><a name="maximum"></a><dt><code>maximum</code> LREAL</dt><dd><p><p>Upper bound.</p>
+</dd></dl>
 <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>LREAL</dt>
@@ -104,7 +110,7 @@
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/1779abbb0e912076295e00a2f22453c4f40a1ed5/docs/reference/Struckig/Clamp.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/b064702b0d4402ef9ed60a2c8116994a92725369/docs/reference/Struckig/Clamp.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
