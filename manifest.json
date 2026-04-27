@@ -114,16 +114,6 @@
     },
     {
       "type": "Resource",
-      "source_relative_path": "images/struckig-logo-readme.svg",
-      "output": {
-        "resource": {
-          "relative_path": "images/struckig-logo-readme.svg"
-        }
-      },
-      "version": ""
-    },
-    {
-      "type": "Resource",
       "source_relative_path": "images/struckig-logo.svg",
       "output": {
         "resource": {
