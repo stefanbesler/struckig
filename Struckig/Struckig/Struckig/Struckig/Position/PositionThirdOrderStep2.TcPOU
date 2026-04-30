@@ -1086,7 +1086,7 @@ ELSE
   h1 := (3*(a0 + af)*tf - 2*vd)*(3*(a0 + af)*tf - 2*vd) + 24*ad*g2;
   h2 := -ad_ad + jf*(2*(a0 + af)*tf + jf*tf_tf - 4*vd);
   
-  IF h1 >=0 AND_THEN h2 >= 0
+  IF h1 >=0 AND_THEN h2 >= 0 AND_THEN ABS(g2) >= Constants.DoubleEpsilon
   THEN
     h1 := ABS(jMax)/jMax*SQRT(h1);
     jf := (3*(a0_a0 - af_af)*tf + ad*(6*vd - h1))/(12*g2);  
