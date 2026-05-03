@@ -1282,19 +1282,21 @@ THEN
   h1 := SQRT(h1) * ABS(jMax) / jMax;
   h2 := 4*a0_p3 - 4*af_p3 + 12*a0*af*ad - 12*jMax_jMax*(pd - tf*vf) - 6*jMax_jMax*af*tf_tf + 12*ad*jMax*(vd - af*tf);
   h3 := jMax*h0;
-  
-  profile.t[0] := 0;
-  profile.t[1] := 0;
-  profile.t[2] := (h1a + h1)/h3;
-  profile.t[3] := -(h2 + h1)/h3;
-  profile.t[4] := (h2 - h1)/h3;
-  profile.t[5] := tf - (profile.t[2] + profile.t[3] + profile.t[4]);
-  profile.t[6] := 0;
-  
-  time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
-  IF time_none_smooth  
+  IF ABS(h3) > Constants.DoubleEpsilon
   THEN
-    RETURN;
+    profile.t[0] := 0;
+    profile.t[1] := 0;
+    profile.t[2] := (h1a + h1)/h3;
+    profile.t[3] := -(h2 + h1)/h3;
+    profile.t[4] := (h2 - h1)/h3;
+    profile.t[5] := tf - (profile.t[2] + profile.t[3] + profile.t[4]);
+    profile.t[6] := 0;
+    
+    time_none_smooth := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, jMax, vMax, vMin, aMax, aMin);
+    IF time_none_smooth  
+    THEN
+      RETURN;
+    END_IF
   END_IF
 END_IF
         
