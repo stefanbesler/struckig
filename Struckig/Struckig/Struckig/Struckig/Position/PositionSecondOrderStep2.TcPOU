@@ -210,21 +210,24 @@ END_IF
 // UD Solution 1/2
 h1 := 2*(vf*tf - pd);
 
-profile.t[0] := h1/vd;
-profile.t[1] := tf - profile.t[0];
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := 0;
-
-af := vd*vd/h1;
-
-IF ((aMin - 1E-12 < af) AND_THEN (af < aMax + 1E-12) AND_THEN profile.CheckForSecondOrderWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, af, -af, vMax, vMin))
+IF ABS(vd) > Constants.DoubleEpsilon AND_THEN ABS(h1) > Constants.Epsilon
 THEN
-  profile.pf := profile.p[7];
-  time_none := TRUE;
-  RETURN;        
+  profile.t[0] := h1/vd;
+  profile.t[1] := tf - profile.t[0];
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := 0;
+
+  af := vd*vd/h1;
+
+  IF ((aMin - 1E-12 < af) AND_THEN (af < aMax + 1E-12) AND_THEN profile.CheckForSecondOrderWithTiming(ProfileControlSigns.Uddu, ReachedLimits.None, tf, af, -af, vMax, vMin))
+  THEN
+    profile.pf := profile.p[7];
+    time_none := TRUE;
+    RETURN;        
+  END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>

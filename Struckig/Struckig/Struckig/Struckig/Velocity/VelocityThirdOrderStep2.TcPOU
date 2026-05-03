@@ -113,19 +113,22 @@ END_IF
 // UU Solution
 h1 := (jMax*tf - ad);
 
-profile.t[0] := -ad*ad/(2*jMax*h1) + (vd - a0*tf)/h1;
-profile.t[1] := -ad/jMax + tf;
-profile.t[2] := 0;
-profile.t[3] := 0;
-profile.t[4] := 0;
-profile.t[5] := 0;
-profile.t[6] := tf - (profile.t[0] + profile.t[1]);
-
-IF (profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF ABS(h1) > Constants.Epsilon AND_THEN ABS(2*jMax*h1) > Constants.Epsilon
 THEN
-  profile.pf := profile.p[7];
-  time_acc0 := TRUE;
-  RETURN;
+  profile.t[0] := -ad*ad/(2*jMax*h1) + (vd - a0*tf)/h1;
+  profile.t[1] := -ad/jMax + tf;
+  profile.t[2] := 0;
+  profile.t[3] := 0;
+  profile.t[4] := 0;
+  profile.t[5] := 0;
+  profile.t[6] := tf - (profile.t[0] + profile.t[1]);
+
+  IF (profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
+  THEN
+    profile.pf := profile.p[7];
+    time_acc0 := TRUE;
+    RETURN;
+  END_IF
 END_IF
 
 // UU Solution - 2 step
