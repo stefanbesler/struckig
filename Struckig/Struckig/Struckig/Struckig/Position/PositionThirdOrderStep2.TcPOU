@@ -741,19 +741,21 @@ IF (ABS(a0) < Constants.DoubleEpsilon AND_THEN ABS(af) < Constants.DoubleEpsilon
 THEN
   h1 := SQRT(h1);
   jf := 4*(4*pd - 2*tf*(v0 + vf) - h1)/tf_p3;
-  
-  Profile.t[0] := (tf*(v0 + 3*vf) - 4*pd)/(4*vd);
-  Profile.t[1] := 0;
-  Profile.t[2] := tf*0.5;
-  Profile.t[3] := 0;
-  Profile.t[4] := 0;
-  Profile.t[5] := 0;
-  Profile.t[6] := Profile.t[4];
-
-  time_none := Profile.CheckWithTiming2(ProfileControlSigns.UDDU, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
-  IF time_none
+  IF ABS(4*vd) > Constants.DoubleEpsilon
   THEN
-    RETURN;
+    Profile.t[0] := (tf*(v0 + 3*vf) - 4*pd)/(4*vd);
+    Profile.t[1] := 0;
+    Profile.t[2] := tf*0.5;
+    Profile.t[3] := 0;
+    Profile.t[4] := 0;
+    Profile.t[5] := 0;
+    Profile.t[6] := Profile.t[4];
+
+    time_none := Profile.CheckWithTiming2(ProfileControlSigns.UDDU, ReachedLimits.None, tf, jf, vMax, vMin, aMax, aMin, jMax);
+    IF time_none
+    THEN
+      RETURN;
+    END_IF
   END_IF
 END_IF
 
@@ -945,7 +947,7 @@ END_FOR
   h1 := 3*jMax*(ad_ad + 2*jMax*(a0*tf - vd));
   h2 := ad_ad + 2*jMax*(a0*tf - vd);
   h0 := 4*Power2(2*(a0_p3 - af_p3) - 6*a0_a0*(af - jMax*tf) + 6*jMax_jMax*(-pd + tf*v0) + 3*a0*(2*af_af - 2*jMax*af*tf + jMax_jMax*tf_tf) + 6*ad*jMax*vd) - 18*h2*h2*h2;
-  IF h0 >= 0 AND_THEN h1 <> 0
+  IF h0 >= 0 AND_THEN ABS(h1) > Constants.DoubleEpsilon
   THEN
     h0 := SQRT(h0)/h1 * ABS(jMax)/jMax;
     
