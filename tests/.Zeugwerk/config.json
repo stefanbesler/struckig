@@ -6,14 +6,14 @@
       "name": "Struckig_unittest",
       "plcs": [
         {
-          "version": "0.17.3.1",
+          "version": "0.17.3.2",
           "distributor-name": "",
           "name": "Struckig_unittest",
           "type": "Application",
           "frameworks": {},
           "packages": [
             {
-              "version": "0.17.3.1",
+              "version": "0.17.3.2",
               "name": "Struckig",
               "branch": "main",
               "target": "TC3.1",

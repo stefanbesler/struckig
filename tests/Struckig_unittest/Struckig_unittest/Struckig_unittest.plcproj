@@ -16,7 +16,7 @@
     <Implicit_KindOfTask>{23a670f4-2417-4917-907e-f416baaaec8d}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{58f48993-e77e-4536-bff7-b0d34be7acb8}</Implicit_Jitter_Distribution>
     <LibraryReferences>{604fede9-7b95-4a71-aceb-a9436682d543}</LibraryReferences>
-    <ProjectVersion>0.17.3.1</ProjectVersion>
+    <ProjectVersion>0.17.3.2</ProjectVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PlcTask.TcTTO">
@@ -150,7 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Struckig">
-      <Resolution>Struckig, 0.17.3.1 (Stefan Besler)</Resolution>
+      <Resolution>Struckig, 0.17.3.2 (Stefan Besler)</Resolution>
     </PlaceholderResolution>
     <PlaceholderResolution Include="TcUnit_Zeugwerk">
       <Resolution>TcUnit_Zeugwerk, 1.3.2 (Zeugwerk GmbH)</Resolution>
