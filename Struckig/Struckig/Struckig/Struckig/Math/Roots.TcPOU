@@ -148,15 +148,20 @@ FOR iterations:=0 TO ParameterList.MaxIterations DO
   
     IF ABS(df) < Constants.Epsilon
     THEN
-      RETURN;
-    END_IF  
-  
-    dxold := dx;
-    dx := f / df;
-    temp := ShrinkInterval;
-    ShrinkInterval := ShrinkInterval - dx;
-    IF (temp = ShrinkInterval) THEN
-      RETURN;
+      dxold := dx;
+      dx := (h - l) / 2;
+      ShrinkInterval := l + dx;
+      IF (l = ShrinkInterval) THEN
+        RETURN;
+      END_IF
+    ELSE
+      dxold := dx;
+      dx := f / df;
+      temp := ShrinkInterval;
+      ShrinkInterval := ShrinkInterval - dx;
+      IF (temp = ShrinkInterval) THEN
+        RETURN;
+      END_IF
     END_IF
   END_IF
   
