@@ -1,0 +1,58 @@
+{
+  "config_version": 4,
+  "managed_libraries": {
+    "root": "%TWINCAT3DIR%\\Components\\Plc\\Managed Libraries\\"
+  },
+  "doc_sites": {
+    "ZCore": {
+      "root": "",
+      "root_template": "https://doc.zeugwerk.dev/{channel}/"
+    },
+    "ZEquipment": {
+      "root": "",
+      "root_template": "https://doc.zeugwerk.dev/{channel}/"
+    }
+  },
+  "feedback": {
+    "endpoint": "https://api.zeugwerk.dev/v1/feedback"
+  },
+  "licensing": {
+    "refresh_interval_hours": 24
+  },
+  "beckhoff_infosys": {
+    "enabled": true,
+    "cache_path": "",
+    "cache_ttl_hours": 168,
+    "crawl_delay_ms": 10,
+    "extra_eligible_namespaces": []
+  },
+  "confluence": {
+    "enabled": false,
+    "base_url": "https://your-site.atlassian.net/wiki",
+    "spaces": [],
+    "library_namespaces": {},
+    "cache_path": "",
+    "cache_ttl_hours": 168,
+    "crawl_delay_ms": 50
+  },
+  "parser": {
+    "backend": "TreeSitter"
+  },
+  "libraries": {
+    "transitive_references": true,
+    "max_depth": 8,
+    "max_libraries": 250,
+    "wrapper_hint_names": [
+      "ZPlatform",
+      "ZAux"
+    ],
+    "hydration_profile": "signatures"
+  },
+  "validation": {
+    "semantic_checks": true,
+    "disabled_checks": []
+  },
+  "workspace": {
+    "solutions": []
+  }
+}
