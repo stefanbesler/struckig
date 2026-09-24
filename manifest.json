@@ -204,6 +204,16 @@
     },
     {
       "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/Constants.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/Constants.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
       "source_relative_path": "reference/Struckig/ControlInterfaceType.md",
       "output": {
         ".html": {
@@ -278,6 +288,16 @@
       "output": {
         ".html": {
           "relative_path": "reference/Struckig/Otg1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "reference/Struckig/ParameterList.md",
+      "output": {
+        ".html": {
+          "relative_path": "reference/Struckig/ParameterList.html"
         }
       },
       "version": ""

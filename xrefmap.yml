@@ -13,6 +13,9 @@ references:
 - uid: Struckig.Clamp
   name: Clamp
   href: reference/Struckig/Clamp.html
+- uid: Struckig.Constants
+  name: Constants
+  href: reference/Struckig/Constants.html
 - uid: Struckig.ControlInterfaceType
   name: ControlInterfaceType
   href: reference/Struckig/ControlInterfaceType.html
@@ -37,6 +40,9 @@ references:
 - uid: Struckig.Otg1
   name: Otg1
   href: reference/Struckig/Otg1.html
+- uid: Struckig.ParameterList
+  name: ParameterList
+  href: reference/Struckig/ParameterList.html
 - uid: Struckig.ProfileBound
   name: ProfileBound
   href: reference/Struckig/ProfileBound.html
