@@ -722,7 +722,7 @@ VAR_INPUT
   vMax, vMin, aMax, aMin, jMax : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF ABS(jMax) < Constants.DoubleEpsilon OR_ELSE ABS(tf) < Constants.DoubleEpsilon
+        <ST><![CDATA[IF ABS(tf) < Constants.DoubleEpsilon
 THEN
   RETURN;
 END_IF
@@ -771,6 +771,11 @@ END_IF
 
 // Is that really needed?
 // Profiles with a3 != 0, Solution UDDU
+// Everything below needs a jerk, the two profiles above are the ones that work with jMax = 0
+IF ABS(jMax) < Constants.DoubleEpsilon
+THEN
+  RETURN;
+END_IF
 
 // First acc, then constant
 polynom[0] := -2*tf;
