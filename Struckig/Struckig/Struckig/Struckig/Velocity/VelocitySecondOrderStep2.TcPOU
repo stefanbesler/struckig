@@ -30,7 +30,7 @@ END_VAR]]></Declaration>
     <Method Name="Get" Id="{1da34274-94e2-41bd-b621-5012dcb0c1ef}">
       <Declaration><![CDATA[METHOD Get : BOOL
 VAR_INPUT
-  profile : ProfileDesc;
+  profile : REFERENCE TO ProfileDesc;
 END_VAR
 VAR
   af : LREAL;
