@@ -40,7 +40,9 @@ VAR_INST
   profile : REFERENCE TO ProfileDesc;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[profile REF= block.Pmin;
+        <ST><![CDATA[block.A.IsUsed := FALSE;
+block.B.IsUsed := FALSE;
+profile REF= block.Pmin;
 profile.SetBoundary(input);
 
 vf := SEL(pd > 0, _vMin, _vMax);

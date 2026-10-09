@@ -209,6 +209,8 @@ VAR_INST
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[validProfileCounter := -1;
+block.A.IsUsed := FALSE;
+block.B.IsUsed := FALSE;
 
 // Zero-limits special case
 IF _jMax = 0.0 OR_ELSE _aMax = 0.0 OR_ELSE _aMin = 0.0 

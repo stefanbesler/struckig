@@ -39,7 +39,9 @@ VAR
   af : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[p REF= block.Pmin;
+        <ST><![CDATA[block.A.IsUsed := FALSE;
+block.B.IsUsed := FALSE;
+p REF= block.Pmin;
 p.SetBoundary(input);
 
 af := SEL(vd > 0, _aMin, _aMax);
