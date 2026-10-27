@@ -86,6 +86,12 @@ Map `otg.NewPosition`, `otg.NewVelocity`, and optionally `otg.NewAcceleration` t
 |------|-------------|
 | `SmoothBrake` | In ruckig, reducing `MaxVelocity` below the current velocity triggers a brake ramp to `velocity = 0` before transitioning to the new limit. Enable this flag to bypass that behavior and switch to the new `MaxVelocity` immediately. |
 
+## Differences from Ruckig
+
+- **Acceleration plateau of `Acc0` profiles is pinned to the limit.** In third-order position Step 1 (`time_all_none_acc0_acc1` in `PositionThirdOrderStep1`), the first jerk phase of an `Acc0` profile is built so that the plateau is mathematically exactly `aMax`. Re-integrating it in floating point inside `ProfileDesc.CheckVel` could land a few ULPs above the limit, and at large accelerations the absolute tolerance `Constants.AccelerationEpsilon` (`1e-12`, same as Ruckig's `a_eps`) is only about one ULP. Valid time-optimal profiles were therefore rejected and Step 1 failed with `CalculateStep1Failed`.
+- Struckig now sets `a[1] := aMax` for `ReachedLimits.Acc0` in `CheckVel` (`setLimits:=TRUE`), in the same way Ruckig already pins `Acc1` and `Acc0Acc1`. This applies only to the `Acc0` check in the main root loop. The fallback two-step search is not pinned, because some of its `Acc0` profiles have a plateau below the limit. The tolerance itself is unchanged.
+- Ruckig Pro returns identical segment times and an exact plateau for the same inputs, while Ruckig Community still fails with `-110` (`ErrorExecutionTimeCalculation`). See [pantor/ruckig#269](https://github.com/pantor/ruckig/issues/269) for a related boundary-rounding case in root interval filtering.
+
 ## Development
 
 - CI uses [zkbuild](https://github.com/Zeugwerk/zkbuild-action)
