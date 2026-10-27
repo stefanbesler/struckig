@@ -703,7 +703,13 @@ DO
   
   IF setLimits
   THEN
-    IF limits = ReachedLimits.Acc1
+    IF limits = ReachedLimits.Acc0
+    THEN
+      IF i = 0
+      THEN
+        a[1] := aMax;
+      END_IF
+    ELSIF limits = ReachedLimits.Acc1
     THEN
       IF i = 2
       THEN
