@@ -237,6 +237,7 @@ VAR_INPUT
   limits : ReachedLimits;  
   aUp, aDown : LREAL;
   vMax, vMin : LREAL;
+  pinVel : BOOL; // v[1] is exactly on the velocity limit by construction
 END_VAR
 VAR
   i : INT;
@@ -304,6 +305,11 @@ FOR i:= 0 TO 6
 DO
   v[i+1] := v[i] + t[i] * a[i];
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * a[i] / 2);
+  
+  IF pinVel AND_THEN i = 0
+  THEN
+    v[1] := vMax;
+  END_IF
 END_FOR
 
 
@@ -423,7 +429,7 @@ VAR_INPUT
   vMax, vMin : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CheckForSecondOrderWithTiming := CheckForSecondOrder(controlSigns, limits, aUp, aDown, vMax, vMin);]]></ST>
+        <ST><![CDATA[CheckForSecondOrderWithTiming := CheckForSecondOrder(controlSigns, limits, aUp, aDown, vMax, vMin, pinVel:=FALSE);]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderWithTiming2" Id="{2570a4cc-90d1-47de-bf99-989113385597}">
@@ -455,6 +461,7 @@ VAR_INPUT
   jf : LREAL;
   aMax : LREAL;
   aMin : LREAL;  
+  pinAcc0 : BOOL; // a[1] is exactly on the acceleration limit by construction
 END_VAR
 VAR
   i : INT;
@@ -518,6 +525,11 @@ DO
   a[i+1] := a[i] + t[i] * j[i];
   v[i+1] := v[i] + t[i] * (a[i] + t[i] * j[i] / 2);
   p[i+1] := p[i] + t[i] * (v[i] + t[i] * (a[i] / 2 + t[i] * j[i] / 6));        
+  
+  IF pinAcc0 AND_THEN i = 0
+  THEN
+    a[1] := aMax;
+  END_IF
 END_FOR
 
       
@@ -547,7 +559,7 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(controlSigns, limits, jf, aMax, aMin);
+CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(controlSigns, limits, jf, aMax, aMin, pinAcc0:=FALSE);
 
 
 ]]></ST>
@@ -608,6 +620,9 @@ VAR_INPUT
   aMax : LREAL;
   aMin : LREAL;
   setLimits : BOOL;
+  pinAcc0 : BOOL; // a[1] is exactly on the acceleration limit aMax by construction
+  pinVel : BOOL; // v[3] is exactly on the velocity limit vMax by construction
+  pinAcc1 : BOOL; // a[5] is exactly on the acceleration limit (aMin for UDDU, aMax for UDUD) by construction
 END_VAR
 VAR
   i : INT;
@@ -725,6 +740,21 @@ DO
     END_IF
   END_IF
   
+  IF pinAcc0 AND_THEN i = 0
+  THEN
+    a[1] := aMax;
+  END_IF
+  
+  IF pinVel AND_THEN i = 2
+  THEN
+    v[3] := vMax;
+  END_IF
+  
+  IF pinAcc1 AND_THEN i = 4
+  THEN
+    a[5] := SEL(controlSigns = ProfileControlSigns.Uddu, aMax, aMin);
+  END_IF
+  
   IF (i > 1 AND_THEN a[i+1] * a[i] < -Constants.DoubleEpsilon) 
   THEN
     v_a_zero := v[i] - (a[i] * a[i]) / (2 * j[i]);
@@ -753,6 +783,29 @@ CheckVel := ABS(p[7] - pf) < Constants.PositionPrecision
     AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim; // this is not really needed, but we want to double check    ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="CheckVelPinned" Id="{1d10b2a2-aa5a-4be8-ab06-6e4b35b8fd2f}">
+      <Declaration><![CDATA[/// For position interface
+METHOD CheckVelPinned : BOOL
+VAR_INPUT
+  controlSigns : ProfileControlSigns;    
+  limits : ReachedLimits;
+  jf : LREAL;
+  vMax : LREAL;
+  vMin : LREAL;  
+  aMax : LREAL;
+  aMin : LREAL;
+  pinAcc0 : BOOL;
+  pinVel : BOOL;
+  pinAcc1 : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Values that are on a limit by construction of the profile are set exactly (rounding might push them past the limit).
+// If this moves the final state out of its precision (very long profiles), the integrated values are used instead.
+CheckVelPinned := CheckVel(controlSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE, pinAcc0:=pinAcc0, pinVel:=pinVel, pinAcc1:=pinAcc1)
+  OR_ELSE CheckVel(controlSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=FALSE);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="CheckWithTiming" Id="{a762f8df-7f20-4c45-819e-1ecbfa908ad5}">
       <Declaration><![CDATA[METHOD CheckWithTiming : BOOL
 VAR_INPUT
@@ -768,7 +821,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every Profile has a: tf - ... equation
-CheckWithTiming := CheckVel(controlSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE); // && (std::abs(t_sum[6] - tf) < Constants.TimePrecision)]]></ST>
+CheckWithTiming := CheckVel(controlSigns, limits, jf, vMax, vMin, aMax, aMin, setLimits:=FALSE, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=FALSE); // && (std::abs(t_sum[6] - tf) < Constants.TimePrecision)]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckWithTiming2" Id="{c707d6dc-e662-4300-aebc-c29e90e74532}">

@@ -294,7 +294,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF (Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin))
+IF (Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=TRUE) OR_ELSE Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=FALSE))
 THEN
   AddProfile(profile);
   IF return_after_found
@@ -333,7 +333,7 @@ THEN
   IF ABS(a0) > Constants.DoubleEpsilon
   THEN
     profile.t[3] := vd / a0;
-    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
+    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE)
     THEN
       time_all_single_step := TRUE;
       RETURN;
@@ -342,7 +342,7 @@ THEN
 
  ELSE IF ABS(vd) < Constants.DoubleEpsilon
  THEN
-    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin)
+    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE)
     THEN 
       time_all_single_step := TRUE;
       RETURN;
@@ -381,7 +381,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;  
   
-  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin))
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE))
   THEN
     AddProfile(profile);
     IF return_after_found
@@ -399,7 +399,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;    
   
-  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin)) THEN
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE)) THEN
     AddProfile(profile);  
   END_IF
 END_IF

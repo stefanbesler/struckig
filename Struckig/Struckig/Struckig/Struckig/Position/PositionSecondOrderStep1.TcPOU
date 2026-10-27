@@ -322,7 +322,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.Acc0, aMax, aMin, vMax, vMin)
+IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.Acc0, aMax, aMin, vMax, vMin, pinVel:=TRUE) OR_ELSE profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.Acc0, aMax, aMin, vMax, vMin, pinVel:=FALSE)
 THEN
   AddProfile(profile);
 END_IF]]></ST>
@@ -351,13 +351,13 @@ profile.t[6] := 0;
 IF ABS(v0) > Constants.DoubleEpsilon
 THEN
   profile.t[3] := pd / v0;
-  IF (profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin))
+  IF (profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin, pinVel:=FALSE))
   THEN
     time_all_single_step := TRUE;
   END_IF
 ELSIF ABS(pd) < Constants.DoubleEpsilon
 THEN
-  IF (profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin))
+  IF (profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, 0.0, 0.0, vMax, vMin, pinVel:=FALSE))
   THEN
     time_all_single_step := TRUE;
   END_IF
@@ -387,7 +387,7 @@ THEN
   profile.t[4] := 0;
   profile.t[5] := 0;
   profile.t[6] := 0;  
-  IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin)
+  IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin, pinVel:=FALSE)
   THEN
     AddProfile(profile);
     IF return_after_found
@@ -405,7 +405,7 @@ THEN
   profile.t[4] := 0;
   profile.t[5] := 0;
   profile.t[6] := 0;  
-  IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin)
+  IF profile.CheckForSecondOrder(ProfileControlSigns.Uddu, ReachedLimits.None, aMax, aMin, vMax, vMin, pinVel:=FALSE)
   THEN
     AddProfile(profile);
     IF return_after_found

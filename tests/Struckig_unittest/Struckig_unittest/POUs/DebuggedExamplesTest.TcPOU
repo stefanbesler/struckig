@@ -7,6 +7,11 @@
       <ST><![CDATA[Test_Trajectory_HasTargetVelocity_HasTargetAcceleration();
 Test_Trajectory_Acc0_AccelerationPlateauAtLimit();
 Test_Trajectory_Acc0_AccelerationPlateauAtLimit_HasMinDuration();
+Test_Trajectory_Acc0Acc1Vel_VelocityPlateauAtLimit();
+Test_Trajectory_Acc0Acc1Vel_AccelerationPlateausAtLimit_HasMinDuration();
+Test_Trajectory_VelocityInterface_Acc0_AccelerationPlateauAtLimit();
+Test_Trajectory_SecondOrder_Acc0_VelocityPlateauAtLimit();
+Test_Trajectory_TimeSync_Brake_ReusesMinimalProfile();
 
 
 ]]></ST>
@@ -118,6 +123,166 @@ ruckig();
 
 AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 must find the Acc0 profile');
 AssertEquals_LREAL(Expected := 10.0, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Acc0Acc1Vel_VelocityPlateauAtLimit" Id="{467eef6b-1af2-4cb9-a189-8d26d0379d86}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Acc0Acc1Vel_VelocityPlateauAtLimit
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 20000.0 ],
+    MinVelocity := [ -20000.0 ],
+    MaxAcceleration := [ 8000.0 ],
+    MinAcceleration := [ -8000.0 ],
+    MaxJerk := [ 160000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ -7579.2062160861233 ],
+    CurrentAcceleration := [ 3470.3044400995882 ],
+    TargetPosition := [ 95107.891634367508 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Acc0Acc1Vel_VelocityPlateauAtLimit');
+
+ruckig();
+
+// The velocity plateau v[3] rounds past MaxVelocity unless it is pinned to the limit
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 must find the Acc0Acc1Vel profile');
+AssertEquals_LREAL(Expected := 8.418385493207925, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 8000.0, Actual := ruckig._profiles[0].a[1], DELTA := 0.0, Message := 'First acceleration plateau not at limit');
+AssertEquals_LREAL(Expected := 20000.0, Actual := ruckig._profiles[0].v[3], DELTA := 0.0, Message := 'Velocity plateau not at limit');
+AssertEquals_LREAL(Expected := -8000.0, Actual := ruckig._profiles[0].a[5], DELTA := 0.0, Message := 'Second acceleration plateau not at limit');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Acc0Acc1Vel_AccelerationPlateausAtLimit_HasMinDuration" Id="{f11c0b21-8717-4407-a864-c194f5ae6fb4}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Acc0Acc1Vel_AccelerationPlateausAtLimit_HasMinDuration
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 0.52280705016359763,
+    MaxVelocity := [ 10000.0 ],
+    MinVelocity := [ -10000.0 ],
+    MaxAcceleration := [ 50000.0 ],
+    MinAcceleration := [ -50000.0 ],
+    MaxJerk := [ 5000000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 7601.3041262859115 ],
+    CurrentAcceleration := [ 20308.779305483265 ],
+    TargetPosition := [ -899.42149604790268 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ -11354.996570480182 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Acc0Acc1Vel_AccelerationPlateausAtLimit_HasMinDuration');
+
+ruckig();
+
+// Step2 profile, both acceleration plateaus round past the limits unless they are pinned
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 must find the Acc0Acc1Vel profile');
+AssertEquals_LREAL(Expected := 0.52280705016359763, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := -50000.0, Actual := ruckig._profiles[0].a[1], DELTA := 0.0, Message := 'First acceleration plateau not at limit');
+AssertEquals_LREAL(Expected := 50000.0, Actual := ruckig._profiles[0].a[5], DELTA := 0.0, Message := 'Second acceleration plateau not at limit');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_VelocityInterface_Acc0_AccelerationPlateauAtLimit" Id="{01147c24-da04-4188-abd1-14ec731bf37b}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_VelocityInterface_Acc0_AccelerationPlateauAtLimit
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    ControlInterface := ControlInterfaceType.Velocity,
+    MaxVelocity := [ 5000.0 ],
+    MinVelocity := [ -5000.0 ],
+    MaxAcceleration := [ 100000.0 ],
+    MinAcceleration := [ -100000.0 ],
+    MaxJerk := [ 10000000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ -2004.9705503892574 ],
+    CurrentAcceleration := [ -40342.055630859963 ],
+    TargetPosition := [ 33.637068796201952 ],
+    TargetVelocity := [ 491.86104908487664 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_VelocityInterface_Acc0_AccelerationPlateauAtLimit');
+
+ruckig();
+
+// The acceleration plateau a[1] rounds past MaxAcceleration unless it is pinned to the limit
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 must find the Acc0 profile');
+AssertEquals_LREAL(Expected := 0.039816262284089042, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 100000.0, Actual := ruckig._profiles[0].a[1], DELTA := 0.0, Message := 'Acceleration plateau not at limit');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_SecondOrder_Acc0_VelocityPlateauAtLimit" Id="{abce5fe7-ea05-4bb9-a48f-4248f763267a}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_SecondOrder_Acc0_VelocityPlateauAtLimit
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 20000.0 ],
+    MinVelocity := [ -20000.0 ],
+    MaxAcceleration := [ 10000.0 ],
+    MinAcceleration := [ -10000.0 ],
+    MaxJerk := [ Struckig.Constants.Infinity ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 17181.182985859396 ],
+    CurrentAcceleration := [ 2665.3424926174239 ],
+    TargetPosition := [ -47400.39401181406 ],
+    TargetVelocity := [ -918.32092447330888 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_SecondOrder_Acc0_VelocityPlateauAtLimit');
+
+ruckig();
+
+// The velocity plateau v[1] rounds past MinVelocity unless it is pinned to the limit
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 must find the second order Acc0 profile');
+AssertEquals_LREAL(Expected := 6.7363968120140862, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := -20000.0, Actual := ruckig._profiles[0].v[1], DELTA := 0.0, Message := 'Velocity plateau not at limit');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeSync_Brake_ReusesMinimalProfile" Id="{91e2399f-b5af-480a-a420-53f7539c5cec}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeSync_Brake_ReusesMinimalProfile
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 3) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 500.0, 500.0, 500.00000000000006 ],
+    MinVelocity := [ -500.0, -500.0, -500.00000000000006 ],
+    MaxAcceleration := [ 10000.0, 10000.0, 10000.0 ],
+    MinAcceleration := [ -10000.0, -10000.0, -10000.0 ],
+    MaxJerk := [ 10000.0, 10000.0, 10000.0 ],
+    CurrentPosition := [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity := [ 0.0, 0.0, 0.0 ],
+    CurrentAcceleration := [ -10000.0, -10000.0, -10000.0 ],
+    TargetPosition := [ -529.28902218825328, -529.28902218825419, -529.28902218825249 ],
+    TargetVelocity := [ 319.73181177710467, 319.73181177710467, 319.73181177710467 ],
+    TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeSync_Brake_ReusesMinimalProfile');
+
+ruckig();
+
+// All DoFs need a brake phase; the synchronized duration equals the minimal duration of the limiting DoF
+// and the other DoFs have to reuse their own minimal profiles (Step2 is degenerate at that duration)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Time synchronization failed');
+AssertEquals_LREAL(Expected := 14.814314010284143, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

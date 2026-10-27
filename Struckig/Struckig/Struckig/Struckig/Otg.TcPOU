@@ -636,14 +636,14 @@ DO
   
   // Check if the final time corresponds to an extremal profile calculated in step 1
   // Use 2*eps because of numerical robustness in duration discretization
-  IF (ABS(t_profile - _blocks[dof].Tmin) < Constants.Epsilon) THEN
+  IF (ABS(Duration - _blocks[dof].Tmin) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
       CONTINUE;
-  ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(t_profile - _blocks[dof].A.Right) < 2 * Constants.Epsilon16)
+  ELSIF (_blocks[dof].A.IsUsed AND_THEN ABS(Duration - _blocks[dof].A.Right) < 2 * Constants.Epsilon16)
   THEN
       p := _blocks[dof].A.Profile;
       CONTINUE;
-  ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(t_profile - _blocks[dof].B.Right) < 2 * Constants.Epsilon16)
+  ELSIF (_blocks[dof].B.IsUsed AND_THEN ABS(Duration - _blocks[dof].B.Right) < 2 * Constants.Epsilon16)
   THEN
       p := _blocks[dof].B.Profile;
       CONTINUE;
