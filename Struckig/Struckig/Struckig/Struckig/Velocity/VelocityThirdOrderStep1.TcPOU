@@ -86,23 +86,16 @@ THEN
   block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
   CalculateBlock := TRUE;
   RETURN;
-// Only happens due to numerical issues
-ELSIF (ValidProfileCount = 3) 
+ELSIF ValidProfileCount = 1 AND_THEN ParameterList.NumericalRobust
 THEN
-  // Find "identical" profiles
-  IF (ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[1].t_sum[6]) < 16*Constants.Epsilon OR_ELSE ValidProfiles[0].Direction <> ValidProfiles[1].Direction)
-  THEN
-    RemoveProfile(1);
-  ELSIF (ABS(ValidProfiles[1].t_sum[6] - ValidProfiles[2].t_sum[6]) < 16*Constants.Epsilon  OR_ELSE ValidProfiles[2].Direction <> ValidProfiles[2].Direction)
-  THEN
-    RemoveProfile(2);
-  ELSIF (ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[2].t_sum[6]) < 256*Constants.Epsilon OR_ELSE ValidProfiles[0].Direction <> ValidProfiles[2].Direction)
-  THEN
-    RemoveProfile(2);
-  ELSE
-    RETURN;
-  END_IF
+  idx_min := SEL(ValidProfiles[0].t_sum[6] < ValidProfiles[1].t_sum[6], 1, 0);
+  idx_else_1 := (idx_min + 1) MOD 2;
 
+  block.Pmin := ValidProfiles[idx_min];
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+  AddInterval(block.A, ValidProfiles[idx_min], ValidProfiles[idx_else_1]);
+  CalculateBlock := TRUE;
+  RETURN;
 ELSIF ((ValidProfileCount+1) MOD 2 = 0)
 THEN
   RETURN;

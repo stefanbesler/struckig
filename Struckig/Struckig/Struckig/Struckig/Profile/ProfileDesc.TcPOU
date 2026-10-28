@@ -535,6 +535,7 @@ END_FOR
       
 THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
+THIS^.Direction := SEL(aMax > 0, ProfileDirection.Down, ProfileDirection.Up);
 
 aUppLim := SEL((aMax > 0), aMin, aMax) + 5E-12;
 aLowLim := SEL((aMax > 0), aMax, aMin) - 5E-12;

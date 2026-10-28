@@ -200,7 +200,7 @@ IF (ABS(d) < Constants.DoubleEpsilon)
 THEN
   // First solution is x = 0
   roots[0] := 0.0;
-  rootCount := 1;
+  rootCount := 0;
   
   // Converting to a quadratic equation
   d := c;

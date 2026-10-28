@@ -12,6 +12,11 @@ Test_Trajectory_Acc0Acc1Vel_AccelerationPlateausAtLimit_HasMinDuration();
 Test_Trajectory_VelocityInterface_Acc0_AccelerationPlateauAtLimit();
 Test_Trajectory_SecondOrder_Acc0_VelocityPlateauAtLimit();
 Test_Trajectory_TimeSync_Brake_ReusesMinimalProfile();
+Test_Trajectory_Acc0Acc1Vel_Udud_HasMinDuration();
+Test_Trajectory_PhaseSync_Acc0_PinFallsBackToUnpinned();
+Test_Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized();
+Test_Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized();
+Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid();
 
 
 ]]></ST>
@@ -283,6 +288,155 @@ ruckig();
 // and the other DoFs have to reuse their own minimal profiles (Step2 is degenerate at that duration)
 AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Time synchronization failed');
 AssertEquals_LREAL(Expected := 14.814314010284143, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Acc0Acc1Vel_Udud_HasMinDuration" Id="{a9c3aa6d-ab74-4e41-bb2c-9aa59b42885a}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Acc0Acc1Vel_Udud_HasMinDuration
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 9.4593236196069377,
+    MaxVelocity := [ 100000.0 ],
+    MinVelocity := [ -100000.0 ],
+    MaxAcceleration := [ 50000.0 ],
+    MinAcceleration := [ -50000.0 ],
+    MaxJerk := [ 1000000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 93368.16564640493 ],
+    CurrentAcceleration := [ 47141.309576461375 ],
+    TargetPosition := [ -18526.470682342333 ],
+    TargetVelocity := [ -28954.455631402554 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Acc0Acc1Vel_Udud_HasMinDuration');
+
+ruckig();
+
+// Step2 only finds the UDUD Acc0Acc1Vel profile if both acceleration plateaus are pinned to the limits
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 must find the UDUD Acc0Acc1Vel profile');
+AssertEquals_LREAL(Expected := 9.4593236196069377, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_PhaseSync_Acc0_PinFallsBackToUnpinned" Id="{10623cee-7d03-4ae9-bfde-fdc052553edd}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_PhaseSync_Acc0_PinFallsBackToUnpinned
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 3) := (
+    Synchronization := SynchronizationType.Phase,
+    MaxVelocity := [ 2224.716710588059, 15573.016974116414, 15573.016974116414 ],
+    MinVelocity := [ -2224.716710588059, -15573.016974116414, -15573.016974116414 ],
+    MaxAcceleration := [ 125530.25331408829, 878711.77319861797, 878711.77319861797 ],
+    MinAcceleration := [ -125530.25331408829, -878711.77319861797, -878711.77319861797 ],
+    MaxJerk := [ 9465132.4607314169, 66255927.225119919, 66255927.225119919 ],
+    CurrentPosition := [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity := [ 519.11354696137778, 3633.7948287296445, 3633.7948287296445 ],
+    CurrentAcceleration := [ 64094.724059937485, 448663.06841956242, 448663.06841956242 ],
+    TargetPosition := [ -7.3163800204828533, -51.214660143379973, -51.214660143379973 ],
+    TargetVelocity := [ 0.0, 0.0, 0.0 ],
+    TargetAcceleration := [ 0.0, 0.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_PhaseSync_Acc0_PinFallsBackToUnpinned');
+
+ruckig();
+
+// Pinning a[1] moves the final acceleration out of its precision by 1 ulp, the unpinned check has to be used instead
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 must fall back to the unpinned Acc0 profile');
+AssertEquals_LREAL(Expected := 0.053144816187966765, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized" Id="{6c1b0840-8a02-45a3-9eff-94e59f2e6b94}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 2) := (
+    Synchronization := SynchronizationType.TimeIfNecessarySync,
+    MaxVelocity := [ 10.0, 10.0 ],
+    MaxAcceleration := [ 10.0, 10.0 ],
+    MaxJerk := [ 100.0, 100.0 ],
+    CurrentPosition := [ 0.0, 0.0 ],
+    CurrentVelocity := [ 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 0.0 ],
+    TargetPosition := [ 100.0, 1.0 ],
+    TargetVelocity := [ 0.0, 0.0 ],
+    TargetAcceleration := [ 0.0, 1.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized');
+
+ruckig();
+
+// DoF 1 does not end at rest (af <> 0), so it has to be synchronized
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
+AssertEquals_LREAL(Expected := 11.1, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 11.1, Actual := ruckig._profiles[1].t_sum[6], DELTA := 1E-8, Message := 'DoF 1 is not synchronized');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized" Id="{5559c2ef-8379-47a5-8c97-8b6074aeaa32}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 2) := (
+    Synchronization := SynchronizationType.TimeIfNecessarySync,
+    MaxVelocity := [ 10.0, 10.0 ],
+    MaxAcceleration := [ 10.0, 10.0 ],
+    MaxJerk := [ 100.0, 100.0 ],
+    CurrentPosition := [ 0.0, 0.0 ],
+    CurrentVelocity := [ 0.0, 0.0 ],
+    CurrentAcceleration := [ 0.0, 1.0 ],
+    TargetPosition := [ 100.0, 1.0 ],
+    TargetVelocity := [ 0.0, 0.0 ],
+    TargetAcceleration := [ 0.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized');
+
+ruckig();
+
+// DoF 1 ends at rest, so it keeps its own minimal profile even though it starts with a0 <> 0
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
+AssertEquals_LREAL(Expected := 11.1, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 0.73088048585717125, Actual := ruckig._profiles[1].t_sum[6], DELTA := 1E-8, Message := 'DoF 1 must not be synchronized');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid" Id="{cc955f52-4a5d-4cd2-80f6-e35dcfcf0db0}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    Discretization := DiscretizationType.Discrete,
+    MinDuration := 1.234,
+    MaxVelocity := [ 10.0 ],
+    MaxAcceleration := [ 10.0 ],
+    MaxJerk := [ 100.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 0.0 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition := [ 1.0 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Discrete_MinDuration_IsOnCycleGrid');
+
+ruckig();
+
+// The minimum duration has to be rounded up to the next multiple of the cycle time as well
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
+AssertEquals_LREAL(Expected := 1.24, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration not on cycle grid');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

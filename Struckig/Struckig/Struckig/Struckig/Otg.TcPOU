@@ -445,7 +445,7 @@ END_FOR
 
 discrete_duration := (Discretization = DiscretizationType.Discrete);
 
-IF (dofs = 0 AND_THEN MinDuration <> 0 AND_THEN discrete_duration <> 0)
+IF Dofs = 1 AND_THEN Enabled[0] AND_THEN MinDuration = 0 AND_THEN NOT discrete_duration
 THEN 
   _duration := _blocks[0].Tmin;
   _profiles[0] := _blocks[0].Pmin;
@@ -458,7 +458,7 @@ THEN
   has_zero_limits := FALSE;
   FOR i:=0 TO _dofsEnd
   DO
-    IF MaxAcceleration[dof] = 0.0 OR_ELSE _inp_min_acceleration[dof] = 0.0 OR_ELSE MaxJerk[dof] = 0.0
+    IF MaxAcceleration[i] = 0.0 OR_ELSE _inp_min_acceleration[i] = 0.0 OR_ELSE MaxJerk[i] = 0.0
     THEN
       has_zero_limits := TRUE;
       EXIT;
@@ -629,7 +629,7 @@ DO
   p REF= _profiles[dof];
   t_profile := Duration - p.Brake.Duration - p.Accel.Duration;
   
-  IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(CurrentAcceleration[dof]) < Constants.Epsilon) THEN
+  IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(TargetAcceleration[dof]) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
       CONTINUE;
   END_IF
@@ -1063,7 +1063,7 @@ possible_t_syncs[3 * Dofs] := SEL(Tmin = 0, Tmin, Constants.Infinity);
 any_interval := any_interval OR_ELSE Tmin > 0;
 IF discrete_duration
 THEN
-  FOR i:=0 TO 3*Dofs-1
+  FOR i:=0 TO 3*Dofs
   DO
     possible_t_sync REF= possible_t_syncs[i];
     IF possible_t_sync = Constants.Infinity
