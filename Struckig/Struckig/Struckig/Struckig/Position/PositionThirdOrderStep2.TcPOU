@@ -54,6 +54,8 @@ VAR
   dd_tz_intervals : ARRAY[0..6, 0..1] OF LREAL;
   tz, tz_max, tz_current, dd_tz_current, tz_min : LREAL; 
   deriv_newton, res, p_val, val_new : LREAL;    
+  t_unrefined : ARRAY[0..6] OF LREAL; // closed-form durations, restored if the refined profile is rejected
+  refined : BOOL;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
@@ -97,6 +99,209 @@ Get := time_acc0_acc1_vel(profile, vMax, vMin, aMax, aMin, jMax)
     OR_ELSE time_acc0(profile, vMin, vMax, aMin, aMax, -jMax)
     OR_ELSE time_acc1(profile, vMin, vMax, aMin, aMax, -jMax)
     OR_ELSE time_none(profile, vMin, vMax, aMin, aMax, -jMax);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ProfileResidual" Id="{e52dfe4a-9d5c-4eef-91d7-274699848c85}">
+      <Declaration><![CDATA[/// Final position and velocity errors of a profile, integrated like ProfileDesc.CheckVel with a velocity plateau
+/// (a[3] = 0) and optionally pinned acceleration plateaus, and their sensitivities to each phase duration
+METHOD PRIVATE ProfileResidual
+VAR_INPUT
+  jerk : LREAL;
+  uddu : BOOL;
+  pinAcc0 : BOOL; // a[1] is set to a1
+  a1 : LREAL;
+  pinAcc1 : BOOL; // a[5] is set to a5
+  a5 : LREAL;
+END_VAR
+VAR_IN_OUT CONSTANT
+  durations : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR_IN_OUT
+  resP, resV : LREAL;
+  dp, dv : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR
+  n : INT;
+  j, vEnd, aEnd : ARRAY[0..6] OF LREAL;
+  p, v, a, r : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[j[0] := jerk;
+j[1] := 0;
+j[2] := -jerk;
+j[3] := 0;
+j[4] := SEL(uddu, jerk, -jerk);
+j[5] := 0;
+j[6] := SEL(uddu, -jerk, jerk);
+
+p := 0;
+v := v0;
+a := a0;
+FOR n:=0 TO 6
+DO
+  p := p + durations[n] * (v + durations[n] * (a / 2 + durations[n] * j[n] / 6));
+  v := v + durations[n] * (a + durations[n] * j[n] / 2);
+  a := a + durations[n] * j[n];
+  
+  IF n = 0 AND_THEN pinAcc0
+  THEN
+    a := a1;
+  ELSIF n = 2
+  THEN
+    a := 0;
+  ELSIF n = 4 AND_THEN pinAcc1
+  THEN
+    a := a5;
+  END_IF
+  
+  vEnd[n] := v;
+  aEnd[n] := a;
+END_FOR
+
+// Lengthening phase n shifts the remaining profile of duration r
+r := 0;
+FOR n:=6 TO 0 BY -1
+DO
+  dp[n] := vEnd[n] + r * (aEnd[n] + r * j[n] / 2);
+  dv[n] := aEnd[n] + r * j[n];
+  r := r + durations[n];
+END_FOR
+
+resP := p - pd;
+resV := v - vf;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RefinePlateaus" Id="{c96cf4b8-9d85-419d-bedb-4e2d3d8269db}">
+      <Declaration><![CDATA[/// Newton iterations on the acceleration plateaus t[1] and t[5] (t[3] takes up the difference) for the final position and velocity
+/// of a profile reaching both acceleration limits and the velocity limit. A step is only taken if it reduces the residual.
+/// Returns TRUE if the durations were changed.
+METHOD PRIVATE RefinePlateaus : BOOL
+VAR_INPUT
+  jerk : LREAL;
+  uddu : BOOL;
+  a1, a5 : LREAL; // acceleration plateaus
+END_VAR
+VAR_IN_OUT
+  durations : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR
+  k : INT;
+  tNew, dp, dv, dpNew, dvNew : ARRAY[0..6] OF LREAL;
+  resP, resV, resPNew, resVNew, norm, normNew : LREAL;
+  dp1, dp5, dv1, dv5, det, x1, x5 : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ProfileResidual(jerk, uddu, TRUE, a1, TRUE, a5, durations, resP, resV, dp, dv);
+norm := ABS(resP) + ABS(resV);
+FOR k:=1 TO Constants.RefinementIterations
+DO
+  IF NOT (norm < Constants.Infinity) OR_ELSE norm = 0 // not finite or exact
+  THEN
+    EXIT;
+  END_IF
+  
+  dp1 := dp[1] - dp[3];
+  dp5 := dp[5] - dp[3];
+  dv1 := dv[1] - dv[3];
+  dv5 := dv[5] - dv[3];
+  det := dp1 * dv5 - dp5 * dv1;
+  IF NOT (ABS(det) < Constants.Infinity) OR_ELSE ABS(det) < Constants.DoubleEpsilon
+  THEN
+    EXIT;
+  END_IF
+  
+  x1 := -(resP * dv5 - resV * dp5) / det;
+  x5 := -(dp1 * resV - dv1 * resP) / det;
+  tNew := durations;
+  tNew[1] := tNew[1] + x1;
+  tNew[5] := tNew[5] + x5;
+  tNew[3] := tNew[3] - (x1 + x5);
+  
+  ProfileResidual(jerk, uddu, TRUE, a1, TRUE, a5, tNew, resPNew, resVNew, dpNew, dvNew);
+  normNew := ABS(resPNew) + ABS(resVNew);
+  IF NOT (normNew < norm)
+  THEN
+    EXIT;
+  END_IF
+  
+  RefinePlateaus := TRUE;
+  durations := tNew;
+  resP := resPNew;
+  resV := resVNew;
+  dp := dpNew;
+  dv := dvNew;
+  norm := normNew;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RefinePosition" Id="{09258c45-e76b-4d19-b9ba-d7157dedbf5c}">
+      <Declaration><![CDATA[/// Newton iterations on the free parameter x of a profile family (see SetRefinementFamily) for the final position.
+/// A step is only taken if it reduces the residual. Returns TRUE if the durations were overwritten.
+METHOD PRIVATE RefinePosition : BOOL
+VAR_INPUT
+  family : ProfileRefinementFamily;
+  x, jMax, aMax, aMin : LREAL;
+END_VAR
+VAR_IN_OUT
+  durations : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR
+  n, k : INT;
+  dt, tNew, dtNew, dp, dv : ARRAY[0..6] OF LREAL;
+  uddu, pinAcc0, pinAcc1 : BOOL;
+  a5, xCurrent, xNew, residual, residualNew, resV, slope, slopeNew : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[uddu := family = ProfileRefinementFamily.Acc1VelUddu OR_ELSE family = ProfileRefinementFamily.Acc0VelUddu
+  OR_ELSE family = ProfileRefinementFamily.VelRestToRest OR_ELSE family = ProfileRefinementFamily.VelUddu;
+pinAcc0 := family = ProfileRefinementFamily.Acc0VelUddu OR_ELSE family = ProfileRefinementFamily.Acc0VelUdud;
+pinAcc1 := family = ProfileRefinementFamily.Acc1VelUddu OR_ELSE family = ProfileRefinementFamily.Acc1VelUdud;
+a5 := SEL(family = ProfileRefinementFamily.Acc1VelUddu, aMax, aMin);
+
+xCurrent := x;
+IF NOT SetRefinementFamily(family, xCurrent, jMax, aMax, aMin, durations, dt)
+THEN
+  RETURN;
+END_IF
+RefinePosition := TRUE;
+
+ProfileResidual(jMax, uddu, pinAcc0, aMax, pinAcc1, a5, durations, residual, resV, dp, dv);
+slope := 0;
+FOR n:=0 TO 6
+DO
+  slope := slope + dt[n] * dp[n];
+END_FOR
+
+FOR k:=1 TO Constants.RefinementIterations
+DO
+  IF NOT (ABS(residual) < Constants.Infinity) OR_ELSE NOT (ABS(slope) < Constants.Infinity) OR_ELSE ABS(slope) < Constants.DoubleEpsilon OR_ELSE residual = 0
+  THEN
+    EXIT;
+  END_IF
+  
+  xNew := xCurrent - residual / slope;
+  IF NOT SetRefinementFamily(family, xNew, jMax, aMax, aMin, tNew, dtNew)
+  THEN
+    EXIT;
+  END_IF
+  
+  ProfileResidual(jMax, uddu, pinAcc0, aMax, pinAcc1, a5, tNew, residualNew, resV, dp, dv);
+  slopeNew := 0;
+  FOR n:=0 TO 6
+  DO
+    slopeNew := slopeNew + dtNew[n] * dp[n];
+  END_FOR
+  
+  IF NOT (ABS(residualNew) < ABS(residual))
+  THEN
+    EXIT;
+  END_IF
+  
+  xCurrent := xNew;
+  durations := tNew;
+  residual := residualNew;
+  slope := slopeNew;
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="Set" Id="{9a678141-8adf-4fac-8bc9-7fab52b65245}">
@@ -151,6 +356,111 @@ jMax_jMax := jMax * jMax;
 
 g1 := -pd + tf*v0;
 g2 := -2*pd + tf*(v0 + vf);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetRefinementFamily" Id="{d8dda7b0-acfc-47b6-8d26-024780bb9884}">
+      <Declaration><![CDATA[/// Durations of a profile family as a function of its free parameter x and their derivatives dt with respect to x
+METHOD PRIVATE SetRefinementFamily : BOOL
+VAR_INPUT
+  family : ProfileRefinementFamily;
+  x, jMax, aMax, aMin : LREAL;
+END_VAR
+VAR_IN_OUT
+  durations, dt : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR
+  h, dh : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE family
+OF
+  ProfileRefinementFamily.Acc1VelUddu:
+    h := -((a0_a0 + af_af)*0.5 + jMax*(-vd + 2*a0*x + jMax*x*x))/aMin;
+    dh := -2*jMax*(a0 + jMax*x)/aMin;
+    durations[0] := x;
+    durations[1] := 0;
+    durations[2] := a0/jMax + x;
+    durations[3] := tf - (h - aMin + a0 + af)/jMax - 2*x;
+    durations[4] := -aMin/jMax;
+    durations[5] := (h + aMin)/jMax;
+    durations[6] := durations[4] + af/jMax;
+    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -dh/jMax - 2; dt[4] := 0; dt[5] := dh/jMax; dt[6] := 0;
+    
+  ProfileRefinementFamily.Acc1VelUdud:
+    h := ((a0_a0 - af_af)*0.5 + jMax_jMax*x*x - jMax*(vd - 2*a0*x))/aMax;
+    dh := 2*jMax*(a0 + jMax*x)/aMax;
+    durations[0] := x;
+    durations[1] := 0;
+    durations[2] := x + a0/jMax;
+    durations[3] := tf + (h + ad - aMax)/jMax - 2*x;
+    durations[4] := aMax/jMax;
+    durations[5] := -(h + aMax)/jMax;
+    durations[6] := durations[4] - af/jMax;
+    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := dh/jMax - 2; dt[4] := 0; dt[5] := -dh/jMax; dt[6] := 0;
+    
+  ProfileRefinementFamily.Acc0VelUddu:
+    h := ((a0_a0 - af_af)*0.5 + jMax*(jMax*x*x + vd))/aMax;
+    dh := 2*jMax_jMax*x/aMax;
+    durations[0] := (-a0 + aMax)/jMax;
+    durations[1] := (h - aMax)/jMax;
+    durations[2] := aMax/jMax;
+    durations[3] := tf - (h + ad + aMax)/jMax - 2*x;
+    durations[4] := x;
+    durations[5] := 0;
+    durations[6] := af/jMax + x;
+    dt[0] := 0; dt[1] := dh/jMax; dt[2] := 0; dt[3] := -dh/jMax - 2; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    
+  ProfileRefinementFamily.Acc0VelUdud:
+    h := ((a0_a0 + af_af)*0.5 + jMax*(vd - jMax*x*x))/aMax;
+    dh := -2*jMax_jMax*x/aMax;
+    durations[0] := (-a0 + aMax)/jMax;
+    durations[1] := (h - aMax)/jMax;
+    durations[2] := aMax/jMax;
+    durations[3] := tf - (h - a0 - af + aMax)/jMax - 2*x;
+    durations[4] := x;
+    durations[5] := 0;
+    durations[6] := -(af/jMax) + x;
+    dt[0] := 0; dt[1] := dh/jMax; dt[2] := 0; dt[3] := -dh/jMax - 2; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    
+  ProfileRefinementFamily.VelRestToRest:
+    durations[0] := x;
+    durations[1] := 0;
+    durations[2] := x;
+    durations[3] := tf - 4*x;
+    durations[4] := x;
+    durations[5] := 0;
+    durations[6] := x;
+    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -4; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    
+  ProfileRefinementFamily.VelUddu, ProfileRefinementFamily.VelUdud:
+    IF family = ProfileRefinementFamily.VelUddu
+    THEN
+      h := (a0_a0 + af_af)/(2*jMax_jMax) + (x*(2*a0 + jMax*x) - vd)/jMax;
+    ELSE
+      h := (af_af - a0_a0)/(2*jMax_jMax) - ((2*a0 + jMax*x)*x - vd)/jMax;
+    END_IF
+    
+    IF NOT (h > 0)
+    THEN
+      RETURN;
+    END_IF
+    
+    h := SQRT(h);
+    dh := SEL(family = ProfileRefinementFamily.VelUddu, -1.0, 1.0) * (a0 + jMax*x)/(jMax*h);
+    durations[0] := x;
+    durations[1] := 0;
+    durations[2] := x + a0/jMax;
+    durations[3] := SEL(family = ProfileRefinementFamily.VelUddu, tf - 2*(x + h) + ad/jMax, tf - 2*(x + h) - (a0 + af)/jMax);
+    durations[4] := h;
+    durations[5] := 0;
+    durations[6] := SEL(family = ProfileRefinementFamily.VelUddu, h - af/jMax, h + af/jMax);
+    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -2 - 2*dh; dt[4] := dh; dt[5] := 0; dt[6] := dh;
+    
+ELSE
+  RETURN;
+END_CASE
+
+SetRefinementFamily := TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="time_acc0" Id="{fd50728d-a338-4ba0-890f-9981830b852f}">
@@ -340,7 +650,15 @@ IF ABS(jMax) > Constants.DoubleEpsilon AND_THEN ((2*(aMax - aMin) + ad)/jMax < t
     Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] + af/jMax);
     Profile.t[6] := Profile.t[4] + af/jMax;
     
+    t_unrefined := Profile.t;
+    refined := RefinePlateaus(jMax, TRUE, aMax, aMin, Profile.t);
     time_acc0_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=TRUE);
+    IF NOT time_acc0_acc1_vel AND_THEN refined
+    THEN
+      Profile.t := t_unrefined;
+      time_acc0_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=TRUE);
+    END_IF
+    
     IF time_acc0_acc1_vel
     THEN
       RETURN;
@@ -360,7 +678,14 @@ THEN
   Profile.t[5] := tf - (Profile.t[0] + Profile.t[1] + Profile.t[2] + Profile.t[3] + 2*Profile.t[4] - af/jMax);
   Profile.t[6] := Profile.t[4] - af/jMax;
   
+  t_unrefined := Profile.t;
+  refined := RefinePlateaus(jMax, FALSE, aMax, aMax, Profile.t);
   time_acc0_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=TRUE);
+  IF NOT time_acc0_acc1_vel AND_THEN refined
+  THEN
+    Profile.t := t_unrefined;
+    time_acc0_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc0Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=TRUE);
+  END_IF
 END_IF
 ]]></ST>
       </Implementation>
@@ -424,7 +749,15 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := af/jMax + t;
 
+  t_unrefined := Profile.t;
+  refined := RefinePosition(ProfileRefinementFamily.Acc0VelUddu, t, jMax, aMax, aMin, Profile.t);
   time_acc0_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=FALSE);
+  IF NOT time_acc0_vel AND_THEN refined
+  THEN
+    Profile.t := t_unrefined;
+    time_acc0_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=FALSE);
+  END_IF
+  
   IF time_acc0_vel
   THEN
     RETURN;
@@ -470,7 +803,15 @@ DO
   Profile.t[5] := 0;
   Profile.t[6] := -(af/jMax) + t;
 
+  t_unrefined := Profile.t;
+  refined := RefinePosition(ProfileRefinementFamily.Acc0VelUdud, t, jMax, aMax, aMin, Profile.t);
   time_acc0_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=FALSE);
+  IF NOT time_acc0_vel AND_THEN refined
+  THEN
+    Profile.t := t_unrefined;
+    time_acc0_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc0Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=TRUE, pinVel:=FALSE, pinAcc1:=FALSE);
+  END_IF
+  
   IF time_acc0_vel
   THEN
     RETURN;
@@ -670,7 +1011,15 @@ DO
   Profile.t[5] := (h1 + aMin)/jMax;
   Profile.t[6] := Profile.t[4] + af/jMax;
 
+  t_unrefined := Profile.t;
+  refined := RefinePosition(ProfileRefinementFamily.Acc1VelUddu, t, jMax, aMax, aMin, Profile.t);
   time_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=TRUE);
+  IF NOT time_acc1_vel AND_THEN refined
+  THEN
+    Profile.t := t_unrefined;
+    time_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Uddu, ReachedLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=TRUE);
+  END_IF
+  
   IF time_acc1_vel
   THEN
     RETURN;
@@ -712,7 +1061,15 @@ DO
   Profile.t[5] := -(h1 + aMax)/jMax;
   Profile.t[6] := Profile.t[4] - af/jMax;
 
+  t_unrefined := Profile.t;
+  refined := RefinePosition(ProfileRefinementFamily.Acc1VelUdud, t, jMax, aMax, aMin, Profile.t);
   time_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=TRUE);
+  IF NOT time_acc1_vel AND_THEN refined
+  THEN
+    Profile.t := t_unrefined;
+    time_acc1_vel := Profile.CheckVelPinned(ProfileControlSigns.Udud, ReachedLimits.Acc1Vel, jMax, vMax, vMin, aMax, aMin, pinAcc0:=FALSE, pinVel:=FALSE, pinAcc1:=TRUE);
+  END_IF
+  
   IF time_acc1_vel
   THEN
     RETURN;
@@ -1445,7 +1802,15 @@ THEN
     profile.t[5] := 0;
     profile.t[6] := t;
     
+    t_unrefined := Profile.t;
+    refined := RefinePosition(ProfileRefinementFamily.VelRestToRest, t, jMax, aMax, aMin, Profile.t);
     time_vel := profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    IF NOT time_vel AND_THEN refined
+    THEN
+      Profile.t := t_unrefined;
+      time_vel := profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    END_IF
+    
     IF time_vel THEN
       RETURN;
     END_IF
@@ -1495,7 +1860,7 @@ ELSE
       END_IF
     
       val_new := Roots.PolyEval(ADR(polynom), 5, tz);
-      IF (ABS(val_new) < 64 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance)
+      IF (ABS(val_new) < 1024 * ABS(Roots.PolyEval(ADR(dderiv), 3, tz)) * Constants.Tolerance)
       THEN
         root[rootCount+1] := tz;
         rootCount := rootCount + 1;
@@ -1567,7 +1932,15 @@ ELSE
         Profile.t[5] := 0;
         Profile.t[6] := h1 + af/jMax;
     
+        t_unrefined := Profile.t;
+        refined := RefinePosition(ProfileRefinementFamily.VelUddu, t, jMax, aMax, aMin, Profile.t);
         time_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
+        IF NOT time_vel AND_THEN refined
+        THEN
+          Profile.t := t_unrefined;
+          time_vel := Profile.CheckWithTiming(ProfileControlSigns.Uddu, ReachedLimits.vel, tf, jMax, vMax, vMin, aMax, aMin);
+        END_IF
+        
         IF time_vel
         THEN
           RETURN;
@@ -1648,7 +2021,7 @@ ELSE
     END_IF
     
     p_val := Roots.PolyEval(ADR(polynom), 6, tz);
-    IF (ABS(p_val) < 64 * ABS(Roots.PolyEval(ADR(dderiv), 4, tz)) * Constants.Tolerance)
+    IF (ABS(p_val) < 1024 * ABS(Roots.PolyEval(ADR(dderiv), 4, tz)) * Constants.Tolerance)
     THEN
       root[rootCount+1] := tz;
       rootCount := rootCount + 1;
@@ -1721,7 +2094,15 @@ ELSE
     Profile.t[5] := 0;
     Profile.t[6] := h1 - af/jMax;
   
+    t_unrefined := Profile.t;
+    refined := RefinePosition(ProfileRefinementFamily.VelUdud, t, jMax, aMax, aMin, Profile.t);
     time_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    IF NOT time_vel AND_THEN refined
+    THEN
+      Profile.t := t_unrefined;
+      time_vel := Profile.CheckWithTiming(ProfileControlSigns.Udud, ReachedLimits.Vel, tf, jMax, vMax, vMin, aMax, aMin);
+    END_IF
+    
     IF time_vel
     THEN
       RETURN;

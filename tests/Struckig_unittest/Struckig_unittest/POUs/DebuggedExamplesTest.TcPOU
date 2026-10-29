@@ -20,6 +20,19 @@ Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid();
 Test_Trajectory_TimeSync_TimeAcc1();
 Test_Trajectory_TimeSync_AccelerationBrake();
 Test_Trajectory_TimeSync_VelocityBrake();
+Test_Trajectory_RelativePositionPrecision_Magnitude();
+Test_Trajectory_RelativePositionPrecision_Formula();
+Test_Trajectory_Step2_RelativePositionPrecision_Formula();
+Test_Trajectory_Step2_RelativePositionPrecision_Magnitude();
+Test_Trajectory_RelativeAccelerationPrecision();
+Test_Trajectory_VelocityInterface_PinTargetAcceleration();
+Test_Trajectory_CubicDiscriminant_RelativeTolerance();
+Test_Trajectory_Step2_NewtonRefinement();
+Test_Trajectory_Step2_NearDoubleRoot();
+Test_Trajectory_PhaseSync_RelativeCollinearity();
+Test_Trajectory_PositionScale();
+Test_Trajectory_PositionTimeScale();
+Test_Trajectory_InvalidScale();
 
 
 ]]></ST>
@@ -532,6 +545,413 @@ ruckig();
 // VelocityBrake must use +aMin/(2*jMax) for the hold to vMin (github.com/stefanbesler/struckig/issues/33)
 AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1/sync failed');
 AssertEquals_LREAL(Expected := 84.7080125096693, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_RelativePositionPrecision_Magnitude" Id="{0ca03d36-21c5-4537-8929-1a86f606b74b}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_RelativePositionPrecision_Magnitude
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 293467.66336807125 ],
+    MinVelocity := [ -293467.66336807125 ],
+    MaxAcceleration := [ 2719.2328756147272 ],
+    MinAcceleration := [ -2719.2328756147272 ],
+    MaxJerk := [ 4022.6206858596734 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ -214482.8275215661 ],
+    CurrentAcceleration := [ 1852.5425594449409 ],
+    TargetPosition := [ 54019.857563808328 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_RelativePositionPrecision_Magnitude');
+
+ruckig();
+
+// End-state position tolerance must scale with profile magnitude (P_PREC_MAG)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 failed');
+AssertEquals_LREAL(Expected := 191.20274195774476, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_RelativePositionPrecision_Formula" Id="{cae8be5d-8649-4019-aa7a-4c32a73ccc34}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_RelativePositionPrecision_Formula
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 299576.38988902041 ],
+    MinVelocity := [ -299576.38988902041 ],
+    MaxAcceleration := [ 433.18391215477396 ],
+    MinAcceleration := [ -433.18391215477396 ],
+    MaxJerk := [ 19085.807820782553 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ -123660.66061710927 ],
+    CurrentAcceleration := [ -129.69520880551866 ],
+    TargetPosition := [ 71689.489589211866 ],
+    TargetVelocity := [ -160421.48560101067 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_RelativePositionPrecision_Formula');
+
+ruckig();
+
+// End-state position tolerance must cover formula cancellation (P_PREC_FORMULA)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 failed');
+AssertEquals_LREAL(Expected := 1317.6285805692528, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Step2_RelativePositionPrecision_Formula" Id="{671b826d-ef5d-46d4-b16f-8f24052949df}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Step2_RelativePositionPrecision_Formula
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 536.95463254622007,
+    MaxVelocity := [ 60866.046594942178 ],
+    MinVelocity := [ -60866.046594942178 ],
+    MaxAcceleration := [ 543.87983174768408 ],
+    MinAcceleration := [ -543.87983174768408 ],
+    MaxJerk := [ 3918.293189474497 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 1205.4559906314983 ],
+    CurrentAcceleration := [ 52.360088040670298 ],
+    TargetPosition := [ -46208.767609148454 ],
+    TargetVelocity := [ 33598.91282818756 ],
+    TargetAcceleration := [ 21.231722623777827 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Step2_RelativePositionPrecision_Formula');
+
+ruckig();
+
+// Step2 stretched profiles need relative position precision (S2 P_PREC_FORMULA)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 failed');
+AssertEquals_LREAL(Expected := 536.95463254622007, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Step2_RelativePositionPrecision_Magnitude" Id="{7084152f-755c-4c0d-a643-4199185d25bf}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Step2_RelativePositionPrecision_Magnitude
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 364.85859286175526,
+    MaxVelocity := [ 260166.60444404796 ],
+    MinVelocity := [ -260166.60444404796 ],
+    MaxAcceleration := [ 783.77797763022329 ],
+    MinAcceleration := [ -783.77797763022329 ],
+    MaxJerk := [ 35253.155475062995 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 0.0 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition := [ -85436.169641985995 ],
+    TargetVelocity := [ 117117.66803579907 ],
+    TargetAcceleration := [ 42.001643025965336 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Step2_RelativePositionPrecision_Magnitude');
+
+ruckig();
+
+// Step2 long profiles need magnitude-relative position precision (S2 P_PREC_MAG)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 failed');
+AssertEquals_LREAL(Expected := 364.85859286175526, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_RelativeAccelerationPrecision" Id="{f76a80ec-38e3-4ab7-b2a1-268b7c77c8c7}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_RelativeAccelerationPrecision
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 24746.811082450873 ],
+    MinVelocity := [ -24746.811082450873 ],
+    MaxAcceleration := [ 307592.68186982954 ],
+    MinAcceleration := [ -307592.68186982954 ],
+    MaxJerk := [ 5043559.4908813639 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 17186.744540309639 ],
+    CurrentAcceleration := [ 116250.3738887006 ],
+    TargetPosition := [ 314.10652407888807 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 220866.64973326767 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_RelativeAccelerationPrecision');
+
+ruckig();
+
+// Acceleration / velocity end-state precision must scale with magnitude (VA_PREC)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 failed');
+AssertEquals_LREAL(Expected := 0.25836172452087186, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_VelocityInterface_PinTargetAcceleration" Id="{f68f80c1-ad1b-4e14-b02a-6c48664856a8}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_VelocityInterface_PinTargetAcceleration
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    ControlInterface := ControlInterfaceType.Velocity,
+    MaxVelocity := [ 1000.0 ],
+    MinVelocity := [ -1000.0 ],
+    MaxAcceleration := [ 8000.0 ],
+    MinAcceleration := [ -8000.0 ],
+    MaxJerk := [ 40000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 287.30358894793284 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition := [ -220.62666031279429 ],
+    TargetVelocity := [ -260.43535662909727 ],
+    TargetAcceleration := [ 8000.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_VelocityInterface_PinTargetAcceleration');
+
+ruckig();
+
+// Velocity-interface time_none with af = +-aMax needs pinAf with unpinned fallback (LIMIT_ULP)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Velocity Step1 failed');
+AssertEquals_LREAL(Expected := 0.56711564194093256, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_CubicDiscriminant_RelativeTolerance" Id="{9aab16b3-ab0a-49a7-8ea8-c59839b0c11b}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_CubicDiscriminant_RelativeTolerance
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 0.014566528312469861,
+    MaxVelocity := [ 185.29374769871745 ],
+    MinVelocity := [ -185.29374769871745 ],
+    MaxAcceleration := [ 237695.80052931519 ],
+    MinAcceleration := [ -237695.80052931519 ],
+    MaxJerk := [ 24710980.976518258 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 0.0 ],
+    CurrentAcceleration := [ 0.0 ],
+    TargetPosition := [ -1.5528963679130117 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_CubicDiscriminant_RelativeTolerance');
+
+ruckig();
+
+// Roots.SolveCub needs a relative discriminant tolerance (UNRESCUED-cubic)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 failed');
+AssertEquals_LREAL(Expected := 0.014566528312469861, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Step2_NewtonRefinement" Id="{81b39da4-e87c-44ce-a3fc-fbe69bc30023}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Step2_NewtonRefinement
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 718.18238234078649,
+    MaxVelocity := [ 195.31792156440608 ],
+    MinVelocity := [ -195.31792156440608 ],
+    MaxAcceleration := [ 269233.0037763787 ],
+    MinAcceleration := [ -269233.0037763787 ],
+    MaxJerk := [ 454330.63905371656 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ 0.0 ],
+    CurrentAcceleration := [ 234326.31621944974 ],
+    TargetPosition := [ -0.60419999988769024 ],
+    TargetVelocity := [ -144.7081062430872 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Step2_NewtonRefinement');
+
+ruckig();
+
+// Step2 time_vel needs Newton refinement with unrefined fallback (UNRESCUED-Newton)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 failed');
+AssertEquals_LREAL(Expected := 718.18238234078649, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_Step2_NearDoubleRoot" Id="{68a41015-5aba-4787-b6af-8e824fd4f254}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_Step2_NearDoubleRoot
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 1) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MinDuration := 1145.7487407751955,
+    MaxVelocity := [ 100.0 ],
+    MinVelocity := [ -100.0 ],
+    MaxAcceleration := [ 100000.0 ],
+    MinAcceleration := [ -100000.0 ],
+    MaxJerk := [ 100000.0 ],
+    CurrentPosition := [ 0.0 ],
+    CurrentVelocity := [ -72.122632969916708 ],
+    CurrentAcceleration := [ -90643.458920100064 ],
+    TargetPosition := [ -0.57162163674365818 ],
+    TargetVelocity := [ 0.0 ],
+    TargetAcceleration := [ 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_Step2_NearDoubleRoot');
+
+ruckig();
+
+// time_vel near-double-root acceptance uses factor 1024 (UNRESCUED-tangent)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step2 failed');
+AssertEquals_LREAL(Expected := 1145.7487407751955, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_PhaseSync_RelativeCollinearity" Id="{4ab1e59c-bba2-4035-974c-41c97b5ab60c}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_PhaseSync_RelativeCollinearity
+VAR_INST
+  ruckig : Struckig.Otg(0.01, 3) := (
+    Synchronization := SynchronizationType.Phase,
+    MaxVelocity := [ 10000.0, 30000.0, 70000.0 ],
+    MinVelocity := [ -10000.0, -30000.0, -70000.0 ],
+    MaxAcceleration := [ 6000.0, 18000.0, 42000.0 ],
+    MinAcceleration := [ -6000.0, -18000.0, -42000.0 ],
+    MaxJerk := [ 300000.0, 900000.0, 2100000.0 ],
+    CurrentPosition := [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity := [ -6977.5640156520003, -20932.692046955999, -48842.948109564 ],
+    CurrentAcceleration := [ 0.0, 0.0, 0.0 ],
+    TargetPosition := [ 3950.5409362085361, 11851.622808625609, 27653.786553459751 ],
+    TargetVelocity := [ 2669.6947631748849, 8009.0842895246551, 18687.863342224195 ],
+    TargetAcceleration := [ 106.52129826194442, 319.56389478583327, 745.64908783361102 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_PhaseSync_RelativeCollinearity');
+
+ruckig();
+
+// Relative collinearity (DiffersFromScaled) must allow phase sync (NOPHASE notcoll)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Phase sync failed');
+AssertEquals_LREAL(Expected := 3.138947828753187, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_PositionScale" Id="{17919540-5fad-40b2-b32d-14cb7b6734ba}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_PositionScale
+VAR_INST
+  ruckig : Struckig.Otg(0.001, 3) := (
+    PositionScale := 2.0,
+    MaxVelocity := [ 500.0, 316182.98247789982, 142354.08972914584 ],
+    MaxAcceleration := [ 1000.0, 176499.25357620502, 477.32146154678702 ],
+    MaxJerk := [ 100000.0, 477474.17473059369, 33330.662992663019 ],
+    CurrentPosition := [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity := [ -190.49847932249952, -89217.066640352044, 127911.55353507209 ],
+    CurrentAcceleration := [ -100.43622876874669, -142435.81979686895, 422.60978681595469 ],
+    TargetPosition := [ -84.3803565885393, 3816.9149896772119, -79483.27353109252 ],
+    TargetVelocity := [ 0.0, -38785.43684535566, 0.0 ],
+    TargetAcceleration := [ -98.111767175202544, 0.0, 0.0 ]
+  );
+  p, v, a, j : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_PositionScale');
+
+ruckig();
+
+// Without scaling this case fails in synchronization, the absolute tolerances only hold in the scaled length unit
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Calculation failed');
+AssertEquals_LREAL(Expected := 647.90192065547831, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+// Inputs keep their user units
+AssertEquals_LREAL(Expected := -84.3803565885393, Actual := ruckig.TargetPosition[0], DELTA := 0, Message := 'TargetPosition not restored');
+AssertEquals_LREAL(Expected := 477474.17473059369, Actual := ruckig.MaxJerk[1], DELTA := 0, Message := 'MaxJerk not restored');
+
+// Profiles are converted back to user units
+ruckig.AtTime(ruckig.Duration, ADR(p), ADR(v), ADR(a), ADR(j), 0);
+AssertEquals_LREAL(Expected := -84.3803565885393, Actual := p[0], DELTA := 1E-6, Message := 'Final position 0 incorrect');
+AssertEquals_LREAL(Expected := 3816.9149896772119, Actual := p[1], DELTA := 1E-6, Message := 'Final position 1 incorrect');
+AssertEquals_LREAL(Expected := -79483.27353109252, Actual := p[2], DELTA := 1E-6, Message := 'Final position 2 incorrect');
+AssertEquals_LREAL(Expected := -38785.43684535566, Actual := v[1], DELTA := 1E-6, Message := 'Final velocity 1 incorrect');
+AssertEquals_LREAL(Expected := -98.111767175202544, Actual := a[0], DELTA := 1E-8, Message := 'Final acceleration 0 incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_PositionTimeScale" Id="{1ab8fdd6-20c2-47d6-8b64-9182e69fce32}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_PositionTimeScale
+VAR_INST
+  ruckig : Struckig.Otg(0.001, 3) := (
+    PositionScale := 2.0,
+    TimeScale := 4.0,
+    MaxVelocity := [ 500.0, 316182.98247789982, 142354.08972914584 ],
+    MaxAcceleration := [ 1000.0, 176499.25357620502, 477.32146154678702 ],
+    MaxJerk := [ 100000.0, 477474.17473059369, 33330.662992663019 ],
+    CurrentPosition := [ 0.0, 0.0, 0.0 ],
+    CurrentVelocity := [ -190.49847932249952, -89217.066640352044, 127911.55353507209 ],
+    CurrentAcceleration := [ -100.43622876874669, -142435.81979686895, 422.60978681595469 ],
+    TargetPosition := [ -84.3803565885393, 3816.9149896772119, -79483.27353109252 ],
+    TargetVelocity := [ 0.0, -38785.43684535566, 0.0 ],
+    TargetAcceleration := [ -98.111767175202544, 0.0, 0.0 ]
+  );
+  p, v, a, j : ARRAY[0..Struckig.ParameterList.MaxDoFs] OF LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_PositionTimeScale');
+
+ruckig();
+
+// Power of two scales are exact, the duration equals the one with position scale only
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Calculation failed');
+AssertEquals_LREAL(Expected := 647.90192065547831, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+AssertEquals_LREAL(Expected := 0.001, Actual := ruckig.CycleTime, DELTA := 0, Message := 'CycleTime not restored');
+
+ruckig.AtTime(ruckig.Duration, ADR(p), ADR(v), ADR(a), ADR(j), 0);
+AssertEquals_LREAL(Expected := -84.3803565885393, Actual := p[0], DELTA := 1E-6, Message := 'Final position 0 incorrect');
+AssertEquals_LREAL(Expected := 3816.9149896772119, Actual := p[1], DELTA := 1E-6, Message := 'Final position 1 incorrect');
+AssertEquals_LREAL(Expected := -79483.27353109252, Actual := p[2], DELTA := 1E-6, Message := 'Final position 2 incorrect');
+AssertEquals_LREAL(Expected := -38785.43684535566, Actual := v[1], DELTA := 1E-6, Message := 'Final velocity 1 incorrect');
+AssertEquals_LREAL(Expected := -98.111767175202544, Actual := a[0], DELTA := 1E-8, Message := 'Final acceleration 0 incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_InvalidScale" Id="{cacdac3a-0670-4ef4-93fa-0cb495ffab2d}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_InvalidScale
+VAR_INST
+  ruckig : Struckig.Otg(0.001, 1) := (
+    TimeScale := 0.0,
+    MaxVelocity := [ 1.0 ],
+    MaxAcceleration := [ 1.0 ],
+    MaxJerk := [ 1.0 ],
+    TargetPosition := [ 1.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_InvalidScale');
+
+ruckig();
+
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.InvalidInput, Actual := ruckig.ErrorCode(), Message := 'Invalid scale accepted');
+AssertEquals_LREAL(Expected := 1.0, Actual := ruckig.MaxJerk[0], DELTA := 0, Message := 'MaxJerk modified');
 
 TEST_FINISHED();]]></ST>
       </Implementation>

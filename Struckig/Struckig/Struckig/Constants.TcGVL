@@ -38,6 +38,9 @@ VAR_GLOBAL CONSTANT
   PositionPrecision : LREAL := 1E-8;
   VelocityPrecision : LREAL := 1E-8;
   AccelerationPrecision : LREAL := 1E-10;
+  RelativePrecision : LREAL := 8 * 2.2204460492503131E-016; // final state precision relative to the largest magnitude in the profile
+  RelativeEpsilon : LREAL := 8 * 2.2204460492503131E-016; // tolerance on limits and collinearity relative to their magnitude
+  RefinementIterations : INT := 4; // Newton iterations to refine closed-form solutions of Step 2
   TimePrecision : LREAL := 1E-12;  
   
   Tmax : LREAL := 1E12;

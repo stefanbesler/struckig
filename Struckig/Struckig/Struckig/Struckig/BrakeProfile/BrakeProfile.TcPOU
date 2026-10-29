@@ -180,6 +180,38 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="Rescale" Id="{1986aa31-e729-4d5b-9682-cc55a5f949e9}">
+      <Declaration><![CDATA[/// Converts a brake profile calculated in the internal units of Otg.PositionScale and Otg.TimeScale back to user units
+METHOD Rescale
+VAR_INPUT
+  positionScale, timeScale : LREAL;
+END_VAR
+VAR
+  i : INT;
+  vScale, aScale, jScale : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The segments of an unused brake profile are not reset by the brake calculation and must not be scaled repeatedly
+IF Duration <= 0
+THEN
+  RETURN;
+END_IF
+
+vScale := positionScale * timeScale;
+aScale := vScale * timeScale;
+jScale := aScale * timeScale;
+
+Duration := Duration / timeScale;
+FOR i:=0 TO 2
+DO
+  t[i] := t[i] / timeScale;
+  j[i] := j[i] * jScale;
+  a[i] := a[i] * aScale;
+  v[i] := v[i] * vScale;
+  p[i] := p[i] * positionScale;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SecondOrderPositionBrakeTrajectory" Id="{5a7eb56a-bf46-49f0-bf23-96b722fbed89}">
       <Declaration><![CDATA[/// Calculate brake trajectory for third-order position interface
 METHOD SecondOrderPositionBrakeTrajectory
