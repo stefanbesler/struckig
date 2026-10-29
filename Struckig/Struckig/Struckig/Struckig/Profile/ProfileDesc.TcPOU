@@ -943,11 +943,11 @@ END_IF]]></ST>
       <Declaration><![CDATA[/// Tolerance on a kinematic limit, relative to the magnitude of the limit
 METHOD LimitEpsilon : LREAL
 VAR_INPUT
-  limit : LREAL;
+  limitValue : LREAL;
   epsilon : LREAL; // absolute tolerance
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[LimitEpsilon := MAX(epsilon, Constants.RelativeEpsilon * ABS(limit));]]></ST>
+        <ST><![CDATA[LimitEpsilon := MAX(epsilon, Constants.RelativeEpsilon * ABS(limitValue));]]></ST>
       </Implementation>
     </Method>
     <Method Name="PositionPrecision" Id="{84fd4c86-f513-4a0b-a083-373904142ff0}">
