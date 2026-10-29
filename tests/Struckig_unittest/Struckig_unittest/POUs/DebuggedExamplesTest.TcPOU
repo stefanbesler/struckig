@@ -17,6 +17,7 @@ Test_Trajectory_PhaseSync_Acc0_PinFallsBackToUnpinned();
 Test_Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized();
 Test_Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized();
 Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid();
+Test_Trajectory_TimeSync_TimeAcc1();
 
 
 ]]></ST>
@@ -437,6 +438,36 @@ ruckig();
 // The minimum duration has to be rounded up to the next multiple of the cycle time as well
 AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
 AssertEquals_LREAL(Expected := 1.24, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration not on cycle grid');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeSync_TimeAcc1" Id="{9a6e4c02-ed48-4bc5-bfc0-5a52dda44a90}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeSync_TimeAcc1
+VAR_INST
+  ruckig : Struckig.Otg(0.004, 6) := (
+    Synchronization := SynchronizationType.TimeSync,
+    MaxVelocity := [ 109.04170683154058, 108.86480634572787, 153.23017892499328, 226.77053254659418, 206.9785828564248, 391.17446829735695 ],
+    MinVelocity := [ -109.04170683154058, -108.86480634572787, -153.23017892499328, -226.77053254659418, -206.9785828564248, -391.17446829735695 ],
+    MaxAcceleration := [ 376.19600911147705, 395.5008985550344, 483.4851589903551, 746.8907003206125, 828.6760620957766, 1210.8476025606826 ],
+    MinAcceleration := [ -376.19600911147705, -395.5008985550344, -483.4851589903551, -746.8907003206125, -828.6760620957766, -1210.8476025606826 ],
+    MaxJerk := [ 2417.4039961650665, 2288.2360797670517, 2833.2226206174214, 4752.340286627514, 5261.455078383142, 8166.402939368142 ],
+    CurrentPosition := [ -46.54627685538074, 87.31372597672538, -140.369308686601, -144.36597441045933, -25.28185697460168, 155.00953132995778 ],
+    CurrentVelocity := [ -30.596716740475888, 5.01763126527046, 124.36665152045236, 145.23844609381283, -29.11192561440698, 50.15201992529583 ],
+    CurrentAcceleration := [ -52.53888500988597, 305.1395055507843, -397.5804100306413, -430.4422382722626, 250.8409531742708, 877.2810568232339 ],
+    TargetPosition := [ -46.70250856396347, 86.96083246609281, -140.9095665304447, -144.41005290033044, -26.008352452478924, 154.68071677034473 ],
+    TargetVelocity := [ 74.40374323386843, -74.6771286656155, -113.03527939316928, -177.56191262642804, 44.27328812341112, -222.7858257855852 ],
+    TargetAcceleration := [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeSync_TimeAcc1');
+
+ruckig();
+
+// time_acc1 must take sqrt(h0)/jMax before folding h0 into h1 (github.com/stefanbesler/struckig/issues/32)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
+AssertEquals_LREAL(Expected := 0.6763389192994883, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
