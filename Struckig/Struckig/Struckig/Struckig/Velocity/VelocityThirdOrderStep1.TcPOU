@@ -260,7 +260,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[THIS^.a0 := a0;
 THIS^.vd := vf - v0;
-THIS^.af := af;;
+THIS^.af := af;
 THIS^.aMax := aMax;
 THIS^.aMin := aMin;
 THIS^.jMax := jMax;

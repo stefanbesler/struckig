@@ -123,7 +123,7 @@ END_VAR
 VAR
   n : INT;
   j, vEnd, aEnd : ARRAY[0..6] OF LREAL;
-  p, v, a, r : LREAL;
+  p, v, a, remaining : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[j[0] := jerk;
@@ -158,13 +158,13 @@ DO
   aEnd[n] := a;
 END_FOR
 
-// Lengthening phase n shifts the remaining profile of duration r
-r := 0;
+// Lengthening phase n shifts the remaining profile of duration remaining
+remaining := 0;
 FOR n:=6 TO 0 BY -1
 DO
-  dp[n] := vEnd[n] + r * (aEnd[n] + r * j[n] / 2);
-  dv[n] := aEnd[n] + r * j[n];
-  r := r + durations[n];
+  dp[n] := vEnd[n] + remaining * (aEnd[n] + remaining * j[n] / 2);
+  dv[n] := aEnd[n] + remaining * j[n];
+  remaining := remaining + durations[n];
 END_FOR
 
 resP := p - pd;
@@ -247,7 +247,7 @@ VAR_IN_OUT
 END_VAR
 VAR
   n, k : INT;
-  dt, tNew, dtNew, dp, dv : ARRAY[0..6] OF LREAL;
+  dDurations, tNew, dDurationsNew, dp, dv : ARRAY[0..6] OF LREAL;
   uddu, pinAcc0, pinAcc1 : BOOL;
   a5, xCurrent, xNew, residual, residualNew, resV, slope, slopeNew : LREAL;
 END_VAR]]></Declaration>
@@ -259,7 +259,7 @@ pinAcc1 := family = ProfileRefinementFamily.Acc1VelUddu OR_ELSE family = Profile
 a5 := SEL(family = ProfileRefinementFamily.Acc1VelUddu, aMax, aMin);
 
 xCurrent := x;
-IF NOT SetRefinementFamily(family, xCurrent, jMax, aMax, aMin, durations, dt)
+IF NOT SetRefinementFamily(family, xCurrent, jMax, aMax, aMin, durations, dDurations)
 THEN
   RETURN;
 END_IF
@@ -269,7 +269,7 @@ ProfileResidual(jMax, uddu, pinAcc0, aMax, pinAcc1, a5, durations, residual, res
 slope := 0;
 FOR n:=0 TO 6
 DO
-  slope := slope + dt[n] * dp[n];
+  slope := slope + dDurations[n] * dp[n];
 END_FOR
 
 FOR k:=1 TO Constants.RefinementIterations
@@ -280,7 +280,7 @@ DO
   END_IF
   
   xNew := xCurrent - residual / slope;
-  IF NOT SetRefinementFamily(family, xNew, jMax, aMax, aMin, tNew, dtNew)
+  IF NOT SetRefinementFamily(family, xNew, jMax, aMax, aMin, tNew, dDurationsNew)
   THEN
     EXIT;
   END_IF
@@ -289,7 +289,7 @@ DO
   slopeNew := 0;
   FOR n:=0 TO 6
   DO
-    slopeNew := slopeNew + dtNew[n] * dp[n];
+    slopeNew := slopeNew + dDurationsNew[n] * dp[n];
   END_FOR
   
   IF NOT (ABS(residualNew) < ABS(residual))
@@ -359,14 +359,14 @@ g2 := -2*pd + tf*(v0 + vf);]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetRefinementFamily" Id="{d8dda7b0-acfc-47b6-8d26-024780bb9884}">
-      <Declaration><![CDATA[/// Durations of a profile family as a function of its free parameter x and their derivatives dt with respect to x
+      <Declaration><![CDATA[/// Durations of a profile family as a function of its free parameter x and their derivatives dDurations with respect to x
 METHOD PRIVATE SetRefinementFamily : BOOL
 VAR_INPUT
   family : ProfileRefinementFamily;
   x, jMax, aMax, aMin : LREAL;
 END_VAR
 VAR_IN_OUT
-  durations, dt : ARRAY[0..6] OF LREAL;
+  durations, dDurations : ARRAY[0..6] OF LREAL;
 END_VAR
 VAR
   h, dh : LREAL;
@@ -384,7 +384,7 @@ OF
     durations[4] := -aMin/jMax;
     durations[5] := (h + aMin)/jMax;
     durations[6] := durations[4] + af/jMax;
-    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -dh/jMax - 2; dt[4] := 0; dt[5] := dh/jMax; dt[6] := 0;
+    dDurations[0] := 1; dDurations[1] := 0; dDurations[2] := 1; dDurations[3] := -dh/jMax - 2; dDurations[4] := 0; dDurations[5] := dh/jMax; dDurations[6] := 0;
     
   ProfileRefinementFamily.Acc1VelUdud:
     h := ((a0_a0 - af_af)*0.5 + jMax_jMax*x*x - jMax*(vd - 2*a0*x))/aMax;
@@ -396,7 +396,7 @@ OF
     durations[4] := aMax/jMax;
     durations[5] := -(h + aMax)/jMax;
     durations[6] := durations[4] - af/jMax;
-    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := dh/jMax - 2; dt[4] := 0; dt[5] := -dh/jMax; dt[6] := 0;
+    dDurations[0] := 1; dDurations[1] := 0; dDurations[2] := 1; dDurations[3] := dh/jMax - 2; dDurations[4] := 0; dDurations[5] := -dh/jMax; dDurations[6] := 0;
     
   ProfileRefinementFamily.Acc0VelUddu:
     h := ((a0_a0 - af_af)*0.5 + jMax*(jMax*x*x + vd))/aMax;
@@ -408,7 +408,7 @@ OF
     durations[4] := x;
     durations[5] := 0;
     durations[6] := af/jMax + x;
-    dt[0] := 0; dt[1] := dh/jMax; dt[2] := 0; dt[3] := -dh/jMax - 2; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    dDurations[0] := 0; dDurations[1] := dh/jMax; dDurations[2] := 0; dDurations[3] := -dh/jMax - 2; dDurations[4] := 1; dDurations[5] := 0; dDurations[6] := 1;
     
   ProfileRefinementFamily.Acc0VelUdud:
     h := ((a0_a0 + af_af)*0.5 + jMax*(vd - jMax*x*x))/aMax;
@@ -420,7 +420,7 @@ OF
     durations[4] := x;
     durations[5] := 0;
     durations[6] := -(af/jMax) + x;
-    dt[0] := 0; dt[1] := dh/jMax; dt[2] := 0; dt[3] := -dh/jMax - 2; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    dDurations[0] := 0; dDurations[1] := dh/jMax; dDurations[2] := 0; dDurations[3] := -dh/jMax - 2; dDurations[4] := 1; dDurations[5] := 0; dDurations[6] := 1;
     
   ProfileRefinementFamily.VelRestToRest:
     durations[0] := x;
@@ -430,7 +430,7 @@ OF
     durations[4] := x;
     durations[5] := 0;
     durations[6] := x;
-    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -4; dt[4] := 1; dt[5] := 0; dt[6] := 1;
+    dDurations[0] := 1; dDurations[1] := 0; dDurations[2] := 1; dDurations[3] := -4; dDurations[4] := 1; dDurations[5] := 0; dDurations[6] := 1;
     
   ProfileRefinementFamily.VelUddu, ProfileRefinementFamily.VelUdud:
     IF family = ProfileRefinementFamily.VelUddu
@@ -454,7 +454,7 @@ OF
     durations[4] := h;
     durations[5] := 0;
     durations[6] := SEL(family = ProfileRefinementFamily.VelUddu, h - af/jMax, h + af/jMax);
-    dt[0] := 1; dt[1] := 0; dt[2] := 1; dt[3] := -2 - 2*dh; dt[4] := dh; dt[5] := 0; dt[6] := dh;
+    dDurations[0] := 1; dDurations[1] := 0; dDurations[2] := 1; dDurations[3] := -2 - 2*dh; dDurations[4] := dh; dDurations[5] := 0; dDurations[6] := dh;
     
 ELSE
   RETURN;
