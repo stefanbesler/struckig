@@ -56,9 +56,9 @@ THEN
 ELSIF (v_at_a_max < vMin AND_THEN jMax > 0) OR_ELSE (v_at_a_max > vMin AND_THEN jMax < 0)
 THEN
   t_to_v_min := -(v_at_a_max - vMin)/aMax;
-  t_to_v_max := -aMax/(2*jMax) - (v_at_a_max + vMax)/aMax;
+  t_to_v_max := -aMax/(2*jMax) - (v_at_a_max - vMax)/aMax;
   t[0] := t_to_a_max + Constants.BrakeEpsilon;
-  t[1] := MAX(MIN(t_to_v_min, v_at_a_max - Constants.BrakeEpsilon), 0.0);
+  t[1] := MAX(MIN(t_to_v_min, t_to_v_max - Constants.BrakeEpsilon), 0.0);
 ELSE
   t[0] := t_to_a_max + Constants.BrakeEpsilon;
 END_IF]]></ST>
@@ -360,7 +360,7 @@ IF (t_to_a_min < t_min_to_v_max)
 THEN
   v_at_a_min := VelocityAtTime(v0, a0, -jMax, t_to_a_min);
   t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
-  t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
+  t_to_v_min_with_constant := 0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
   t[0] := MAX(t_to_a_min - Constants.BrakeEpsilon, 0);
   t[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
 ELSE

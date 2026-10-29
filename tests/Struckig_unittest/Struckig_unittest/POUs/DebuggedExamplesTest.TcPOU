@@ -18,6 +18,8 @@ Test_Trajectory_TimeIfNecessary_TargetAcceleration_IsSynchronized();
 Test_Trajectory_TimeIfNecessary_CurrentAcceleration_IsNotSynchronized();
 Test_Trajectory_Discrete_MinDuration_IsOnCycleGrid();
 Test_Trajectory_TimeSync_TimeAcc1();
+Test_Trajectory_TimeSync_AccelerationBrake();
+Test_Trajectory_TimeSync_VelocityBrake();
 
 
 ]]></ST>
@@ -468,6 +470,68 @@ ruckig();
 // time_acc1 must take sqrt(h0)/jMax before folding h0 into h1 (github.com/stefanbesler/struckig/issues/32)
 AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Synchronization failed');
 AssertEquals_LREAL(Expected := 0.6763389192994883, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeSync_AccelerationBrake" Id="{6cb58725-7ec2-4811-b45b-7b126ca73634}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeSync_AccelerationBrake
+VAR_INST
+  ruckig : Struckig.Otg(0.005, 3) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := FALSE,
+    MaxVelocity := [ 13.56720197657651, 9.063168621609638, 0.5807671253524577 ],
+    MinVelocity := [ -13.56720197657651, -9.063168621609638, -0.5807671253524577 ],
+    MaxAcceleration := [ 2.1892345518967344, 13.087822564585059, 0.2341336523630918 ],
+    MinAcceleration := [ -2.1892345518967344, -13.087822564585059, -0.2341336523630918 ],
+    MaxJerk := [ 6.823852450072217, 3.6852481509414456, 10.986945331805956 ],
+    CurrentPosition := [ -7.602384259920511, -5.2300839949488545, -5.840899483672116 ],
+    CurrentVelocity := [ -0.6861621967385553, -0.4926237617541147, 1.4602680791094587 ],
+    CurrentAcceleration := [ -0.21433345806929793, 0.08809838429781114, -1.2888684298680095 ],
+    TargetPosition := [ 5.505787333702209, -3.808913331379838, -1.0199212514181806 ],
+    TargetVelocity := [ -0.86134852418706, 1.0718819033018936, 0.0 ],
+    TargetAcceleration := [ -0.7440774094871814, -0.19866862360846937, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeSync_AccelerationBrake');
+
+ruckig();
+
+// AccelerationBrake must clamp t[1] with t_to_v_max, not with the velocity value (github.com/stefanbesler/struckig/issues/33)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1 failed');
+AssertEquals_LREAL(Expected := 7.023010814512423, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
+
+TEST_FINISHED();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Test_Trajectory_TimeSync_VelocityBrake" Id="{874768bf-88fd-4331-a216-e5765cd118ea}">
+      <Declaration><![CDATA[METHOD Test_Trajectory_TimeSync_VelocityBrake
+VAR_INST
+  ruckig : Struckig.Otg(0.005, 3) := (
+    Synchronization := SynchronizationType.TimeSync,
+    SmoothBrake := FALSE,
+    MaxVelocity := [ 0.14598280441249703, 0.43136807249043274, 2.509318795983889 ],
+    MinVelocity := [ -0.14598280441249703, -0.43136807249043274, -2.509318795983889 ],
+    MaxAcceleration := [ 2.98486976042777, 3.8715265012693534, 2.7012658246677623 ],
+    MinAcceleration := [ -2.98486976042777, -3.8715265012693534, -2.7012658246677623 ],
+    MaxJerk := [ 14.622292489657772, 1.8647570608128698, 15.143185126721153 ],
+    CurrentPosition := [ -6.015392387444454, -3.1287211381140327, -4.05776911217613 ],
+    CurrentVelocity := [ -1.584509353506103, -0.5077337513472588, 0.0 ],
+    CurrentAcceleration := [ -0.6588016647520019, -0.8728849154612167, 0.0 ],
+    TargetPosition := [ 5.569111934646726, 2.5252878569863455, -1.5133707303487896 ],
+    TargetVelocity := [ 0.0, 0.1390007681436667, 0.8307079982237786 ],
+    TargetAcceleration := [ 0.0, -0.6583156371275756, 0.0 ]
+  );
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[TEST('Trajectory_TimeSync_VelocityBrake');
+
+ruckig();
+
+// VelocityBrake must use +aMin/(2*jMax) for the hold to vMin (github.com/stefanbesler/struckig/issues/33)
+AssertEquals_INT(Expected := Struckig.TrajectoryErrorCode.Undefined, Actual := ruckig.ErrorCode(), Message := 'Step1/sync failed');
+AssertEquals_LREAL(Expected := 84.7080125096693, Actual := ruckig.Duration, DELTA := 1E-8, Message := 'Duration incorrect');
 
 TEST_FINISHED();]]></ST>
       </Implementation>
