@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/d218939ea219f3597d9e299d0e53f09e09a876ab/docs/reference/Struckig/BrakeProfile.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/5d845343b0d26928c25b567f4a68ea959d64c1d7/docs/reference/Struckig/BrakeProfile.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -157,6 +157,17 @@ PositionBrakeTrajectory
 <p>Calculate brake trajectory for third-order position interface</p>
 <h4 class="section">Inputs</h4><dl class="parameters">
 <a name="v0"></a><dt><code>v0</code> LREAL</dt><a name="a0"></a><dt><code>a0</code> LREAL</dt><a name="vMax"></a><dt><code>vMax</code> LREAL</dt><a name="vMin"></a><dt><code>vMin</code> LREAL</dt><a name="aMax"></a><dt><code>aMax</code> LREAL</dt><a name="aMin"></a><dt><code>aMin</code> LREAL</dt><a name="jMax"></a><dt><code>jMax</code> LREAL</dt><a name="SmoothBrake"></a><dt><code>SmoothBrake</code> BOOL</dt></dl>
+<h3 id="Struckig_BrakeProfile_Rescale" data-uid="Struckig.BrakeProfile.Rescale">
+Rescale
+</h3><a name="Rescale"></a>
+<div class="codewrapper">
+    <pre><code class="lang-st hljs">METHOD Rescale (
+ [input] positionScale : LREAL,
+ [input] timeScale : LREAL)
+</code></pre></div>
+<p>Converts a brake profile calculated in the internal units of Otg.PositionScale and Otg.TimeScale back to user units</p>
+<h4 class="section">Inputs</h4><dl class="parameters">
+<a name="positionScale"></a><dt><code>positionScale</code> LREAL</dt><a name="timeScale"></a><dt><code>timeScale</code> LREAL</dt></dl>
 <h3 id="Struckig_BrakeProfile_SecondOrderPositionBrakeTrajectory" data-uid="Struckig.BrakeProfile.SecondOrderPositionBrakeTrajectory">
 SecondOrderPositionBrakeTrajectory
 </h3><a name="SecondOrderPositionBrakeTrajectory"></a>
@@ -263,7 +274,7 @@ VelocityBrakeTrajectory
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/d218939ea219f3597d9e299d0e53f09e09a876ab/docs/reference/Struckig/BrakeProfile.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/5d845343b0d26928c25b567f4a68ea959d64c1d7/docs/reference/Struckig/BrakeProfile.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>

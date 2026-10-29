@@ -16,7 +16,7 @@
       
       
       
-      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/d218939ea219f3597d9e299d0e53f09e09a876ab/docs/reference/Struckig/Otg1.md/#L1">
+      <meta name="docfx:docurl" content="https://github.com/stefanbesler/struckig/blob/5d845343b0d26928c25b567f4a68ea959d64c1d7/docs/reference/Struckig/Otg1.md/#L1">
       <meta name="loc:inThisArticle" content="In this article">
       <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
       <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
@@ -112,6 +112,8 @@
  [input] MinDuration : LREAL,
  [input] EnableAutoPropagate : BOOL,
  [input] SmoothBrake : BOOL,
+ [input] PositionScale : LREAL,
+ [input] TimeScale : LREAL,
  [output] NewPosition : LREAL,
  [output] NewVelocity : LREAL,
  [output] NewAcceleration : LREAL,
@@ -150,6 +152,8 @@ Axis.Setpoint := otg1.NewPosition;
 </dd><a name="MinDuration"></a><dt><code>MinDuration</code> LREAL <code>:= 0</code></dt><dd><p><p>Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none</p>
 </dd><a name="EnableAutoPropagate"></a><dt><code>EnableAutoPropagate</code> BOOL</dt><dd><p><p>If set to true, PassOutputToInput is automatically called internally after calling the function block's body</p>
 </dd><a name="SmoothBrake"></a><dt><code>SmoothBrake</code> BOOL <code>:= ParameterList.SmoothBrake</code></dt><dd><p><p>See Otg.SmoothBrake</p>
+</dd><a name="PositionScale"></a><dt><code>PositionScale</code> LREAL <code>:= 1.0</code></dt><dd><p><p>See Otg.PositionScale</p>
+</dd><a name="TimeScale"></a><dt><code>TimeScale</code> LREAL <code>:= 1.0</code></dt><dd><p><p>See Otg.TimeScale</p>
 </dd></dl>
 <h4 class="section">Outputs</h4><dl class="parameters">
 <a name="NewPosition"></a><dt><code>NewPosition</code> LREAL</dt><a name="NewVelocity"></a><dt><code>NewVelocity</code> LREAL</dt><a name="NewAcceleration"></a><dt><code>NewAcceleration</code> LREAL</dt><a name="NewJerk"></a><dt><code>NewJerk</code> LREAL</dt><a name="NewCalculation"></a><dt><code>NewCalculation</code> BOOL</dt><dd><p><p>Was a new trajectory calculation performed in the last cycle?</p>
@@ -341,7 +345,7 @@ END_IF
 </article>
 
         <div class="contribution d-print-none">
-          <a href="https://github.com/stefanbesler/struckig/blob/d218939ea219f3597d9e299d0e53f09e09a876ab/docs/reference/Struckig/Otg1.md/#L1" class="edit-link">Edit this page</a>
+          <a href="https://github.com/stefanbesler/struckig/blob/5d845343b0d26928c25b567f4a68ea959d64c1d7/docs/reference/Struckig/Otg1.md/#L1" class="edit-link">Edit this page</a>
         </div>
 
         <div class="next-article d-print-none border-top" id="nextArticle"></div>
