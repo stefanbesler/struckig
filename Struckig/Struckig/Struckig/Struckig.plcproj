@@ -32,6 +32,7 @@
     <Folder Include="Struckig\Math" />
     <Folder Include="Struckig\Velocity" />
     <Folder Include="Struckig\Position" />
+    <Folder Include="Struckig\Position\_DataTypes" />
     <Folder Include="Struckig\Profile\_DataTypes" />
     <Folder Include="Struckig\Profile" />
   </ItemGroup>
@@ -111,6 +112,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Position\PositionSecondOrderStep2.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Struckig\Position\_DataTypes\ProfileRefinementFamily.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Struckig\Profile\ProfileDesc.TcPOU">

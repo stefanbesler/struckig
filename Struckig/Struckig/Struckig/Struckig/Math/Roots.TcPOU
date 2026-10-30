@@ -188,6 +188,9 @@ END_VAR
 VAR_IN_OUT
   rootCount : INT;
   roots : ARRAY[0..6] OF LREAL;
+END_VAR
+VAR
+  yyTol : LREAL;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[rootCount := -1;
@@ -200,7 +203,7 @@ IF (ABS(d) < Constants.DoubleEpsilon)
 THEN
   // First solution is x = 0
   roots[0] := 0.0;
-  rootCount := 1;
+  rootCount := 0;
   
   // Converting to a quadratic equation
   d := c;
@@ -259,7 +262,9 @@ ELSE
   halfq := (2 * bb * b - 9 * a * b * c + 27 * a * a * d) / 54 * invaa * inva;
   yy := p * p * p / 27 + halfq * halfq;  
     
-  IF (yy > Constants.DoubleEpsilon) THEN
+  // Discriminant tolerance relative to the magnitude of its terms
+  yyTol := Constants.DoubleEpsilon * (ABS(p * p * p / 27) + halfq * halfq);
+  IF (yy > yyTol) THEN
     // Sqrt is positive: one real solution}
     y := SQRT(yy);
     uuu := -halfq + y;
@@ -274,7 +279,7 @@ ELSE
       rootCount := rootCount + 1;    
 		END_IF
 
-  ELSIF (yy < -Constants.DoubleEpsilon) THEN
+  ELSIF (yy < -yyTol) THEN
     // Sqrt is negative: three real solutions
     x := -halfq;
     y := SQRT(-yy);

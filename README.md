@@ -85,14 +85,16 @@ Map `otg.NewPosition`, `otg.NewVelocity`, and optionally `otg.NewAcceleration` t
 | Flag | Description |
 |------|-------------|
 | `SmoothBrake` | In ruckig, reducing `MaxVelocity` below the current velocity triggers a brake ramp to `velocity = 0` before transitioning to the new limit. Enable this flag to bypass that behavior and switch to the new `MaxVelocity` immediately. |
+| `PositionScale`, `TimeScale` | Internal length and time units of the calculation, like `position_scale` and `time_scale` of Ruckig Pro. They bring large magnitudes, high jerk limits or long trajectories into the numerical range of the absolute tolerances without changing the resulting trajectory. Both default to `1`. |
 
 ## Differences from Ruckig
 
-- **Acceleration plateau of `Acc0` profiles is pinned to the limit.** In third-order position Step 1 (`time_all_none_acc0_acc1` in `PositionThirdOrderStep1`), the first jerk phase of an `Acc0` profile is built so that the plateau is mathematically exactly `aMax`. Re-integrating it in floating point inside `ProfileDesc.CheckVel` could land a few ULPs above the limit, and at large accelerations the absolute tolerance `Constants.AccelerationEpsilon` (`1e-12`, same as Ruckig's `a_eps`) is only about one ULP. Valid time-optimal profiles were therefore rejected and Step 1 failed with `CalculateStep1Failed`.
-- Struckig now sets `a[1] := aMax` for `ReachedLimits.Acc0` in `CheckVel` (`setLimits:=TRUE`), in the same way Ruckig already pins `Acc1` and `Acc0Acc1`. This applies only to the `Acc0` check in the main root loop. The fallback two-step search is not pinned, because some of its `Acc0` profiles have a plateau below the limit. The tolerance itself is unchanged.
-- Ruckig Pro returns identical segment times and an exact plateau for the same inputs, while Ruckig Community still fails with `-110` (`ErrorExecutionTimeCalculation`). See [pantor/ruckig#269](https://github.com/pantor/ruckig/issues/269) for a related boundary-rounding case in root interval filtering.
-- **Further values that are on a limit by construction are pinned.** The same rounding issue affects the velocity plateau `v[3]` and the acceleration plateaus `a[1]`/`a[5]` of the `Vel`, `Acc0Vel`, `Acc1Vel` and `Acc0Acc1Vel` profiles in position Step 1 (`time_all_vel`), the `Acc0`/`Acc1` plateaus of the Step 2 profiles whose segment times force them onto the limit (`time_acc0`, `time_acc0_acc1`, `time_acc0_acc1_vel` UDDU, `time_acc0_vel`, `time_acc1` second solutions, `time_acc1_vel`), `a[1]` of the `Acc0` profile of the velocity interface and `v[1]` of the second-order `Acc0` profile. These checks now use `ProfileDesc.CheckVelPinned` (or the `pinAcc0`/`pinVel` inputs of `CheckForVelocity`/`CheckForSecondOrder`), which set the value exactly and fall back to the unpinned check if pinning moves the final state out of its precision (very long profiles). In randomized tests with large limits this removes more than 90% of the Step 1 and about 70% of the Step 2 failures without introducing new ones, and the durations of sampled cases match Ruckig Pro.
-- **Reusing the Step 1 profiles during time synchronization compares full durations.** `Otg` compared the profile time without brake and acceleration pre-phases (`t_profile`) against `Block.Tmin` and the interval bounds, which include these pre-phases. With a brake phase the minimal profile was therefore never reused, and Step 2 at exactly the minimal duration could fail or produce a longer trajectory. The comparison now uses `Duration`.
+- Values that lie on a limit by construction (velocity and acceleration plateaus) are pinned exactly to the limit.
+- Step 1 profiles are reused during time synchronization based on their full duration, including brake phases.
+- End-state precision and limit checks are relative to the magnitude of the profile and the limit.
+- Position Step 2 refines its closed-form solutions with Newton iterations.
+- Near-zero cubic discriminants and near-double roots are classified with relative tolerances.
+- Phase synchronization uses a relative collinearity check.
 
 ## Development
 

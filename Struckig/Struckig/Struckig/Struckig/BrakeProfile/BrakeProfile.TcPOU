@@ -56,9 +56,9 @@ THEN
 ELSIF (v_at_a_max < vMin AND_THEN jMax > 0) OR_ELSE (v_at_a_max > vMin AND_THEN jMax < 0)
 THEN
   t_to_v_min := -(v_at_a_max - vMin)/aMax;
-  t_to_v_max := -aMax/(2*jMax) - (v_at_a_max + vMax)/aMax;
+  t_to_v_max := -aMax/(2*jMax) - (v_at_a_max - vMax)/aMax;
   t[0] := t_to_a_max + Constants.BrakeEpsilon;
-  t[1] := MAX(MIN(t_to_v_min, v_at_a_max - Constants.BrakeEpsilon), 0.0);
+  t[1] := MAX(MIN(t_to_v_min, t_to_v_max - Constants.BrakeEpsilon), 0.0);
 ELSE
   t[0] := t_to_a_max + Constants.BrakeEpsilon;
 END_IF]]></ST>
@@ -178,6 +178,38 @@ THEN
   VelocityBrake(v0, a0, vMin, vMax, aMin, aMax, -jMax);      
 END_IF
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Rescale" Id="{1986aa31-e729-4d5b-9682-cc55a5f949e9}">
+      <Declaration><![CDATA[/// Converts a brake profile calculated in the internal units of Otg.PositionScale and Otg.TimeScale back to user units
+METHOD Rescale
+VAR_INPUT
+  positionScale, timeScale : LREAL;
+END_VAR
+VAR
+  i : INT;
+  vScale, aScale, jScale : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// The segments of an unused brake profile are not reset by the brake calculation and must not be scaled repeatedly
+IF Duration <= 0
+THEN
+  RETURN;
+END_IF
+
+vScale := positionScale * timeScale;
+aScale := vScale * timeScale;
+jScale := aScale * timeScale;
+
+Duration := Duration / timeScale;
+FOR i:=0 TO 2
+DO
+  t[i] := t[i] / timeScale;
+  j[i] := j[i] * jScale;
+  a[i] := a[i] * aScale;
+  v[i] := v[i] * vScale;
+  p[i] := p[i] * positionScale;
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="SecondOrderPositionBrakeTrajectory" Id="{5a7eb56a-bf46-49f0-bf23-96b722fbed89}">
@@ -360,7 +392,7 @@ IF (t_to_a_min < t_min_to_v_max)
 THEN
   v_at_a_min := VelocityAtTime(v0, a0, -jMax, t_to_a_min);
   t_to_v_max_with_constant := -(v_at_a_min - vMax)/aMin;
-  t_to_v_min_with_constant := -0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
+  t_to_v_min_with_constant := 0.5*aMin/jMax - (v_at_a_min - vMin)/aMin;
   t[0] := MAX(t_to_a_min - Constants.BrakeEpsilon, 0);
   t[1] := MAX(MIN(t_to_v_max_with_constant, t_to_v_min_with_constant), 0.0);
 ELSE

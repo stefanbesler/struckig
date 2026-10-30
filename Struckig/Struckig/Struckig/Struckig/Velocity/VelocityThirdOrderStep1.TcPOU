@@ -86,23 +86,16 @@ THEN
   block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;  
   CalculateBlock := TRUE;
   RETURN;
-// Only happens due to numerical issues
-ELSIF (ValidProfileCount = 3) 
+ELSIF ValidProfileCount = 1 AND_THEN ParameterList.NumericalRobust
 THEN
-  // Find "identical" profiles
-  IF (ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[1].t_sum[6]) < 16*Constants.Epsilon OR_ELSE ValidProfiles[0].Direction <> ValidProfiles[1].Direction)
-  THEN
-    RemoveProfile(1);
-  ELSIF (ABS(ValidProfiles[1].t_sum[6] - ValidProfiles[2].t_sum[6]) < 16*Constants.Epsilon  OR_ELSE ValidProfiles[2].Direction <> ValidProfiles[2].Direction)
-  THEN
-    RemoveProfile(2);
-  ELSIF (ABS(ValidProfiles[0].t_sum[6] - ValidProfiles[2].t_sum[6]) < 256*Constants.Epsilon OR_ELSE ValidProfiles[0].Direction <> ValidProfiles[2].Direction)
-  THEN
-    RemoveProfile(2);
-  ELSE
-    RETURN;
-  END_IF
+  idx_min := SEL(ValidProfiles[0].t_sum[6] < ValidProfiles[1].t_sum[6], 1, 0);
+  idx_else_1 := (idx_min + 1) MOD 2;
 
+  block.Pmin := ValidProfiles[idx_min];
+  block.Tmin := block.Pmin.t_sum[6] + block.Pmin.Brake.Duration + block.Pmin.Accel.Duration;
+  AddInterval(block.A, ValidProfiles[idx_min], ValidProfiles[idx_else_1]);
+  CalculateBlock := TRUE;
+  RETURN;
 ELSIF ((ValidProfileCount+1) MOD 2 = 0)
 THEN
   RETURN;
@@ -267,7 +260,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[THIS^.a0 := a0;
 THIS^.vd := vf - v0;
-THIS^.af := af;;
+THIS^.af := af;
 THIS^.aMax := aMax;
 THIS^.aMin := aMin;
 THIS^.jMax := jMax;
@@ -294,7 +287,7 @@ profile.t[4] := 0;
 profile.t[5] := 0;
 profile.t[6] := 0;
 
-IF (Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=TRUE) OR_ELSE Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=FALSE))
+IF (Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=TRUE, pinAf:=TRUE) OR_ELSE Profile.CheckForVelocity(ProfileControlSigns.Uddu, ReachedLimits.Acc0, jMax, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE))
 THEN
   AddProfile(profile);
   IF return_after_found
@@ -333,7 +326,7 @@ THEN
   IF ABS(a0) > Constants.DoubleEpsilon
   THEN
     profile.t[3] := vd / a0;
-    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE)
+    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE)
     THEN
       time_all_single_step := TRUE;
       RETURN;
@@ -342,7 +335,7 @@ THEN
 
  ELSE IF ABS(vd) < Constants.DoubleEpsilon
  THEN
-    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE)
+    IF profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, 0.0, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE)
     THEN 
       time_all_single_step := TRUE;
       RETURN;
@@ -381,7 +374,8 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;  
   
-  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE))
+  // a[3] equals af by construction, pin it so that af = aMax is not rejected by rounding
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE, pinAf:=TRUE) OR_ELSE profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE))
   THEN
     AddProfile(profile);
     IF return_after_found
@@ -399,7 +393,7 @@ THEN
   profile.t[5] := 0;
   profile.t[6] := 0;    
   
-  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE)) THEN
+  IF (profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE, pinAf:=TRUE) OR_ELSE profile.CheckForVelocity(ProfileControlSigns.uddu, ReachedLimits.None, jMax, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE)) THEN
     AddProfile(profile);  
   END_IF
 END_IF

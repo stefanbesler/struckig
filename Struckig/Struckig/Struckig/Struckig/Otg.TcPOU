@@ -60,6 +60,8 @@ VAR_INPUT
   MinDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   EnableAutoPropagate : BOOL; //< If set to true, PassOutputToInput is automatically called internally after calling the function block's body
   SmoothBrake : BOOL := ParameterList.SmoothBrake; //< Initialized from ParameterList; override per instance if needed
+  PositionScale : LREAL := 1.0; //< Internal length unit of the calculation, positions p' = p / c, velocities v' = v / c, accelerations a' = a / c and jerks j' = j / c. Does not change the resulting trajectory
+  TimeScale : LREAL := 1.0; //< Internal time unit of the calculation, velocities v' = v / c, accelerations a' = a / c^2, jerks j' = j / c^3 and durations t' = t * c. Does not change the resulting trajectory
 END_VAR
 VAR_OUTPUT
   NewPosition, NewVelocity, NewAcceleration, NewJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
@@ -106,6 +108,13 @@ VAR
   _minVelocity, _minAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL; //< Optional kindematic constraints
   _minDuration : LREAL := 0; //< Optional minimum duration of a trajectory. This is only considered if the Synchronization type is not none
   _smoothBrake : BOOL;
+  _positionScale, _timeScale : LREAL := 1.0;
+  _scaled : BOOL;
+  _unscaledCurrentPosition, _unscaledCurrentVelocity, _unscaledCurrentAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _unscaledTargetPosition, _unscaledTargetVelocity, _unscaledTargetAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _unscaledMaxVelocity, _unscaledMaxAcceleration, _unscaledMaxJerk : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _unscaledMinVelocity, _unscaledMinAcceleration : ARRAY[0..ParameterList.MaxDoFs] OF LREAL;
+  _unscaledMinDuration, _unscaledCycleTime : LREAL;
   _dt : LREAL; //< Time step between updates (cycle time) in [s]
   _errorId : INT;
   _errorMessage : STRING(255);
@@ -118,7 +127,26 @@ IF NOT _inputInitialized OR_ELSE HasChanged()
 THEN
   _dofsEnd := Dofs - 1; // for looping
 
+  // Invalid scales are not applied, ValidateInputOrAbort rejects them
+  _scaled := (PositionScale <> 1.0 OR_ELSE TimeScale <> 1.0)
+    AND_THEN PositionScale > 0.0 AND_THEN NOT IsInfinity(PositionScale)
+    AND_THEN TimeScale > 0.0 AND_THEN NOT IsInfinity(TimeScale);
+  IF _scaled
+  THEN
+    ScaleInput();
+  END_IF
+
   Calculate();
+
+  IF _scaled
+  THEN
+    RestoreInput();
+    IF State <> TrajectoryState.Error
+    THEN
+      RescaleProfiles();
+    END_IF
+  END_IF
+
   IF State = TrajectoryState.Error THEN
     RETURN;
   END_IF
@@ -142,6 +170,8 @@ THEN
   _minAcceleration := MinAcceleration;
   _minDuration := MinDuration;
   _smoothBrake := SmoothBrake;
+  _positionScale := PositionScale;
+  _timeScale := TimeScale;
   _perDofControlInterface := PerDofControlInterface;
   _perDofSynchronization := PerDofSynchronization;
   _dt := CycleTime;
@@ -309,6 +339,7 @@ VAR_INST
   discrete_duration, found_synchronization, found_time_synchronization : BOOL;
   t_profile : LREAL;
   noneSynchronizationCount, phaseSychronizations, phaseOrNoneSychronizationCount : INT;
+  phase_limits : ReachedLimits;
   has_zero_limits : BOOL;
   _smooth_profile : ProfileDesc;
   _smooth_block : Block;
@@ -445,7 +476,7 @@ END_FOR
 
 discrete_duration := (Discretization = DiscretizationType.Discrete);
 
-IF (dofs = 0 AND_THEN MinDuration <> 0 AND_THEN discrete_duration <> 0)
+IF Dofs = 1 AND_THEN Enabled[0] AND_THEN MinDuration = 0 AND_THEN NOT discrete_duration
 THEN 
   _duration := _blocks[0].Tmin;
   _profiles[0] := _blocks[0].Pmin;
@@ -458,7 +489,7 @@ THEN
   has_zero_limits := FALSE;
   FOR i:=0 TO _dofsEnd
   DO
-    IF MaxAcceleration[dof] = 0.0 OR_ELSE _inp_min_acceleration[dof] = 0.0 OR_ELSE MaxJerk[dof] = 0.0
+    IF MaxAcceleration[i] = 0.0 OR_ELSE _inp_min_acceleration[i] = 0.0 OR_ELSE MaxJerk[i] = 0.0
     THEN
       has_zero_limits := TRUE;
       EXIT;
@@ -522,6 +553,15 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
   p_limiting REF= _profiles[limiting_dof];
   IF IsInputCollinear(p_limiting.Direction, limiting_dof, _new_phase_control) THEN
     found_time_synchronization := TRUE;
+    
+    // A velocity plateau of the limiting profile has zero acceleration exactly, the same holds for the copied profiles
+    IF p_limiting.Limits = ReachedLimits.Acc0Acc1Vel OR_ELSE p_limiting.Limits = ReachedLimits.Acc0Vel OR_ELSE p_limiting.Limits = ReachedLimits.Acc1Vel OR_ELSE p_limiting.Limits = ReachedLimits.Vel
+    THEN
+      phase_limits := ReachedLimits.Vel;
+    ELSE
+      phase_limits := ReachedLimits.None;
+    END_IF
+    
     FOR dof:=0 TO _dofsEnd DO
       IF NOT Enabled[dof] OR_ELSE dof = limiting_dof OR_ELSE _inp_per_dof_synchronization[dof] <> SynchronizationType.Phase THEN
         CONTINUE;
@@ -542,7 +582,7 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
             
               IF NOT IsInfinity(MaxJerk[dof])
               THEN
-                IF NOT p.CheckWithTiming2(ProfileControlSigns.Uddu, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                IF NOT p.CheckWithTiming2(ProfileControlSigns.Uddu, phase_limits, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
                 THEN
                   found_time_synchronization := FALSE;                        
                 END_IF
@@ -562,7 +602,7 @@ IF limiting_dof >= 0 AND_THEN phaseSychronizations >= 0 THEN
             ProfileControlSigns.Udud:
               IF NOT IsInfinity(MaxJerk[dof])
               THEN            
-                IF NOT p.CheckWithTiming2(ProfileControlSigns.Udud, ReachedLimits.None, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
+                IF NOT p.CheckWithTiming2(ProfileControlSigns.Udud, phase_limits, t_profile, _new_phase_control[dof], MaxVelocity[dof], _inp_min_velocity[dof], MaxAcceleration[dof], _inp_min_acceleration[dof], MaxJerk[dof])
                 THEN            
                   found_time_synchronization := FALSE;
                 END_IF
@@ -629,7 +669,7 @@ DO
   p REF= _profiles[dof];
   t_profile := Duration - p.Brake.Duration - p.Accel.Duration;
   
-  IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(CurrentAcceleration[dof]) < Constants.Epsilon) THEN
+  IF (_inp_per_dof_synchronization[dof] = SynchronizationType.TimeIfNecessarySync AND_THEN ABS(TargetVelocity[dof]) < Constants.Epsilon AND_THEN ABS(TargetAcceleration[dof]) < Constants.Epsilon) THEN
       p := _blocks[dof].Pmin;
       CONTINUE;
   END_IF
@@ -693,6 +733,16 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[THIS^();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="DiffersFromScaled" Id="{ce6636d1-4582-425b-b183-9c2f5f750e92}">
+      <Declaration><![CDATA[/// Collinearity test of a single value, the tolerance grows with the magnitude of the compared values
+METHOD PRIVATE DiffersFromScaled : BOOL
+VAR_INPUT
+  x, xScaled : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[DiffersFromScaled := ABS(x - xScaled) > MAX(Constants.Epsilon, Constants.RelativeEpsilon * MAX(ABS(x), ABS(xScaled)));]]></ST>
       </Implementation>
     </Method>
     <Property Name="Duration" Id="{22144de6-ee66-4178-90aa-defacda9f48a}">
@@ -817,7 +867,9 @@ IF NOT (_controlInterface = ControlInterface AND_THEN
    _synchronization = Synchronization AND_THEN
    _discretization = Discretization AND_THEN
    _minDuration = MinDuration AND_THEN
-   _smoothBrake = SmoothBrake)   
+   _smoothBrake = SmoothBrake AND_THEN
+   _positionScale = PositionScale AND_THEN
+   _timeScale = TimeScale)   
 THEN
   HasChanged := TRUE;
   RETURN;
@@ -932,11 +984,11 @@ DO
 	END_IF
   
   current_scale := scale_vector[dof];
-  IF (_inp_per_dof_control_interface[dof] = ControlInterfaceType.Position AND_THEN ABS(pd[dof] - pd_scale * current_scale) > Constants.Epsilon)
-    OR_ELSE ABS(CurrentVelocity[dof] - v0_scale * current_scale) > Constants.Epsilon
-    OR_ELSE ABS(CurrentAcceleration[dof] - a0_scale * current_scale) > Constants.Epsilon
-    OR_ELSE ABS(TargetVelocity[dof] - vf_scale * current_scale) > Constants.Epsilon
-    OR_ELSE ABS(TargetAcceleration[dof] - af_scale * current_scale) > Constants.Epsilon
+  IF (_inp_per_dof_control_interface[dof] = ControlInterfaceType.Position AND_THEN DiffersFromScaled(pd[dof], pd_scale * current_scale))
+    OR_ELSE DiffersFromScaled(CurrentVelocity[dof], v0_scale * current_scale)
+    OR_ELSE DiffersFromScaled(CurrentAcceleration[dof], a0_scale * current_scale)
+    OR_ELSE DiffersFromScaled(TargetVelocity[dof], vf_scale * current_scale)
+    OR_ELSE DiffersFromScaled(TargetAcceleration[dof], af_scale * current_scale)
   THEN
     RETURN;
 	END_IF
@@ -987,6 +1039,92 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[_inputInitialized := FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RescaleProfiles" Id="{c7fc4efe-fa5e-4b89-a445-602223f6be31}">
+      <Declaration><![CDATA[/// Converts the calculated profiles from the internal units of PositionScale and TimeScale back to user units
+METHOD PRIVATE RescaleProfiles
+VAR
+  dof : INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR dof:=0 TO _dofsEnd
+DO
+  IF Enabled[dof]
+  THEN
+    _profiles[dof].Rescale(PositionScale, TimeScale);
+  ELSE
+    _profiles[dof].p[7] := CurrentPosition[dof];
+    _profiles[dof].v[7] := CurrentVelocity[dof];
+    _profiles[dof].a[7] := CurrentAcceleration[dof];
+  END_IF
+END_FOR
+
+_duration := _duration / TimeScale;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="RestoreInput" Id="{cb1d03e8-5a92-4e76-8c50-61300f882f2b}">
+      <Declaration><![CDATA[/// Restores the inputs that were converted by ScaleInput
+METHOD PRIVATE RestoreInput]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CurrentPosition := _unscaledCurrentPosition;
+CurrentVelocity := _unscaledCurrentVelocity;
+CurrentAcceleration := _unscaledCurrentAcceleration;
+TargetPosition := _unscaledTargetPosition;
+TargetVelocity := _unscaledTargetVelocity;
+TargetAcceleration := _unscaledTargetAcceleration;
+MaxVelocity := _unscaledMaxVelocity;
+MaxAcceleration := _unscaledMaxAcceleration;
+MaxJerk := _unscaledMaxJerk;
+MinVelocity := _unscaledMinVelocity;
+MinAcceleration := _unscaledMinAcceleration;
+MinDuration := _unscaledMinDuration;
+CycleTime := _unscaledCycleTime;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ScaleInput" Id="{d1c60d71-ac5d-4aa2-95b4-48387ab47477}">
+      <Declaration><![CDATA[/// Converts the inputs to the internal units of PositionScale and TimeScale, RestoreInput reverts this exactly
+METHOD PRIVATE ScaleInput
+VAR
+  dof : INT;
+  vScale, aScale, jScale : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_unscaledCurrentPosition := CurrentPosition;
+_unscaledCurrentVelocity := CurrentVelocity;
+_unscaledCurrentAcceleration := CurrentAcceleration;
+_unscaledTargetPosition := TargetPosition;
+_unscaledTargetVelocity := TargetVelocity;
+_unscaledTargetAcceleration := TargetAcceleration;
+_unscaledMaxVelocity := MaxVelocity;
+_unscaledMaxAcceleration := MaxAcceleration;
+_unscaledMaxJerk := MaxJerk;
+_unscaledMinVelocity := MinVelocity;
+_unscaledMinAcceleration := MinAcceleration;
+_unscaledMinDuration := MinDuration;
+_unscaledCycleTime := CycleTime;
+
+vScale := PositionScale * TimeScale;
+aScale := vScale * TimeScale;
+jScale := aScale * TimeScale;
+
+FOR dof:=0 TO _dofsEnd
+DO
+  CurrentPosition[dof] := CurrentPosition[dof] / PositionScale;
+  TargetPosition[dof] := TargetPosition[dof] / PositionScale;
+  CurrentVelocity[dof] := CurrentVelocity[dof] / vScale;
+  TargetVelocity[dof] := TargetVelocity[dof] / vScale;
+  MaxVelocity[dof] := MaxVelocity[dof] / vScale;
+  MinVelocity[dof] := MinVelocity[dof] / vScale;
+  CurrentAcceleration[dof] := CurrentAcceleration[dof] / aScale;
+  TargetAcceleration[dof] := TargetAcceleration[dof] / aScale;
+  MaxAcceleration[dof] := MaxAcceleration[dof] / aScale;
+  MinAcceleration[dof] := MinAcceleration[dof] / aScale;
+  MaxJerk[dof] := MaxJerk[dof] / jScale;
+END_FOR
+
+MinDuration := MinDuration * TimeScale;
+CycleTime := CycleTime * TimeScale;]]></ST>
       </Implementation>
     </Method>
     <Method Name="SetBusy" Id="{1b2700a2-8d80-4602-985b-0427ca0aa7fc}">
@@ -1063,7 +1201,7 @@ possible_t_syncs[3 * Dofs] := SEL(Tmin = 0, Tmin, Constants.Infinity);
 any_interval := any_interval OR_ELSE Tmin > 0;
 IF discrete_duration
 THEN
-  FOR i:=0 TO 3*Dofs-1
+  FOR i:=0 TO 3*Dofs
   DO
     possible_t_sync REF= possible_t_syncs[i];
     IF possible_t_sync = Constants.Infinity
@@ -1186,6 +1324,12 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF Dofs = 0
 THEN
+  RETURN;
+END_IF
+
+IF NOT (PositionScale > 0.0) OR_ELSE IsInfinity(PositionScale) OR_ELSE NOT (TimeScale > 0.0) OR_ELSE IsInfinity(TimeScale)
+THEN
+  AbortErrorId(TrajectoryErrorCode.InvalidInput, 'position and time scale should be finite and larger than zero');
   RETURN;
 END_IF
 

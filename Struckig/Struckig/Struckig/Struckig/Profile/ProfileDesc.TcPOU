@@ -34,6 +34,28 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="AccelerationPrecision" Id="{61431c14-367e-4b2e-bec3-4b387c1add92}">
+      <Declaration><![CDATA[/// Final acceleration precision, relative to the largest acceleration magnitude in the profile
+METHOD AccelerationPrecision : LREAL
+VAR
+  i : INT;
+  m : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m := ABS(af);
+FOR i:=0 TO 7
+DO
+  m := MAX(m, ABS(a[i]));
+END_FOR
+
+FOR i:=0 TO 6
+DO
+  m := MAX(m, ABS(t[i] * j[i]));
+END_FOR
+
+AccelerationPrecision := MAX(Constants.AccelerationPrecision, Constants.RelativePrecision * m);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="Bound" Id="{1a9ba528-afaf-4159-b889-acb983a16fac}">
       <Declaration><![CDATA[METHOD Bound : ProfileBound
 VAR_INPUT
@@ -192,7 +214,7 @@ THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-CheckForFirstOrder := ABS(p[7] - pf) < Constants.PositionPrecision;]]></ST>
+CheckForFirstOrder := ABS(p[7] - pf) < PositionPrecision();]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForFirstOrderWithTiming" Id="{f2aee95d-8ed3-4a11-8ddd-b5d6faaeadf9}">
@@ -224,8 +246,8 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForFirstOrderWithTiming2 :=
-  (vMin - Constants.VelocityEpsilon < vUp)
-  AND_THEN (vUp < vMax + Constants.VelocityEpsilon)
+  (vMin - LimitEpsilon(vMin, Constants.VelocityEpsilon) < vUp)
+  AND_THEN (vUp < vMax + LimitEpsilon(vMax, Constants.VelocityEpsilon))
   AND_THEN CheckForFirstOrderWithTiming(controlSigns, limits, vUp);]]></ST>
       </Implementation>
     </Method>
@@ -298,8 +320,10 @@ ELSE
 END_IF
 
 direction := SEL(vMax > 0, ProfileDirection.Down, ProfileDirection.Up);
-vUppLim := SEL(direction = ProfileDirection.Up, vMin, vMax) + Constants.VelocityEpsilon;
-vLowLim := SEL(direction = ProfileDirection.Up, vMax, vMin) - Constants.VelocityEpsilon;
+vUppLim := SEL(direction = ProfileDirection.Up, vMin, vMax);
+vUppLim := vUppLim + LimitEpsilon(vUppLim, Constants.VelocityEpsilon);
+vLowLim := SEL(direction = ProfileDirection.Up, vMax, vMin);
+vLowLim := vLowLim - LimitEpsilon(vLowLim, Constants.VelocityEpsilon);
 
 FOR i:= 0 TO 6 
 DO
@@ -317,7 +341,7 @@ THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-CheckForSecondOrder := ABS(p[7] - pf) < Constants.PositionPrecision AND_THEN ABS(v[7] - vf) < Constants.VelocityPrecision
+CheckForSecondOrder := ABS(p[7] - pf) < PositionPrecision() AND_THEN ABS(v[7] - vf) < VelocityPrecision()
     AND_THEN v[2] <= vUppLim AND_THEN v[3] <= vUppLim AND_THEN v[4] <= vUppLim AND_THEN v[5] <= vUppLim AND_THEN v[6] <= vUppLim
     AND_THEN v[2] >= vLowLim AND_THEN v[3] >= vLowLim AND_THEN v[4] >= vLowLim AND_THEN v[5] >= vLowLim AND_THEN v[6] >= vLowLim;]]></ST>
       </Implementation>
@@ -385,7 +409,7 @@ THIS^.Limits := limits;
 THIS^.Direction := SEL(aUp > 0, ProfileDirection.Down, ProfileDirection.Up);
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-CheckForSecondOrderVelocity := ABS(v[6] - vf) < Constants.VelocityPrecision;]]></ST>
+CheckForSecondOrderVelocity := ABS(v[6] - vf) < VelocityPrecision();]]></ST>
       </Implementation>
     </Method>
     <Method Name="CheckForSecondOrderVelocityWithTiming" Id="{268274ba-8baf-4ee0-a4bb-6de0fd1ae36e}">
@@ -413,8 +437,8 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderVelocityWithTiming2 :=
- (aMin - Constants.AccelerationEpsilon < aUp)
- AND_THEN (aUp < aMax + Constants.AccelerationEpsilon)
+ (aMin - LimitEpsilon(aMin, Constants.AccelerationEpsilon) < aUp)
+ AND_THEN (aUp < aMax + LimitEpsilon(aMax, Constants.AccelerationEpsilon))
  AND_THEN CheckForSecondOrderVelocityWithTiming(controlSigns, limits, aUp); // AND_THEN (ABS(t[6] - tf) < t_precision);]]></ST>
       </Implementation>
     </Method>
@@ -445,10 +469,10 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CheckForSecondOrderWithTiming2 := 
-    (aMin - Constants.AccelerationEpsilon < aUp)
-    AND_THEN (aUp < aMax + Constants.AccelerationEpsilon)
-    AND_THEN (aMin - Constants.AccelerationEpsilon < aDown)
-    AND_THEN (aDown < aMax + Constants.AccelerationEpsilon)
+    (aMin - LimitEpsilon(aMin, Constants.AccelerationEpsilon) < aUp)
+    AND_THEN (aUp < aMax + LimitEpsilon(aMax, Constants.AccelerationEpsilon))
+    AND_THEN (aMin - LimitEpsilon(aMin, Constants.AccelerationEpsilon) < aDown)
+    AND_THEN (aDown < aMax + LimitEpsilon(aMax, Constants.AccelerationEpsilon))
     AND_THEN CheckForSecondOrderWithTiming(controlSigns, limits,tf, aUp, aDown, vMax, vMin);]]></ST>
       </Implementation>
     </Method>
@@ -462,6 +486,7 @@ VAR_INPUT
   aMax : LREAL;
   aMin : LREAL;  
   pinAcc0 : BOOL; // a[1] is exactly on the acceleration limit by construction
+  pinAf : BOOL; // a[3] is exactly the target acceleration by construction
 END_VAR
 VAR
   i : INT;
@@ -530,18 +555,26 @@ DO
   THEN
     a[1] := aMax;
   END_IF
+  
+  IF pinAf AND_THEN i = 2
+  THEN
+    a[3] := af;
+  END_IF
 END_FOR
 
       
 THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
+THIS^.Direction := SEL(aMax > 0, ProfileDirection.Down, ProfileDirection.Up);
 
-aUppLim := SEL((aMax > 0), aMin, aMax) + 5E-12;
-aLowLim := SEL((aMax > 0), aMax, aMin) - 5E-12;
+aUppLim := SEL((aMax > 0), aMin, aMax);
+aUppLim := aUppLim + LimitEpsilon(aUppLim, 5E-12);
+aLowLim := SEL((aMax > 0), aMax, aMin);
+aLowLim := aLowLim - LimitEpsilon(aLowLim, 5E-12);
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-CheckForVelocity := ABS(v[7] - vf) < Constants.VelocityPrecision
-    AND_THEN ABS(a[7] - af) < Constants.AccelerationPrecision // This is not really needed, but we want to double check
+CheckForVelocity := ABS(v[7] - vf) < VelocityPrecision()
+    AND_THEN ABS(a[7] - af) < AccelerationPrecision() // This is not really needed, but we want to double check
     AND_THEN a[1] >= aLowLim AND_THEN a[3] >= aLowLim AND_THEN a[5] >= aLowLim
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim;]]></ST>
       </Implementation>
@@ -559,7 +592,7 @@ VAR_INPUT
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[// Time doesn't need to be checked as every profile has a: tf - ... equation
-CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckForVelocity(controlSigns, limits, jf, aMax, aMin, pinAcc0:=FALSE);
+CheckForVelocityWithTiming := (ABS(jf) < ABS(jMax) + LimitEpsilon(jMax, Constants.JerkEpsilon)) AND_THEN CheckForVelocity(controlSigns, limits, jf, aMax, aMin, pinAcc0:=FALSE, pinAf:=FALSE);
 
 
 ]]></ST>
@@ -699,8 +732,10 @@ vUppLim := SEL(vMax > 0, vMin, vMax) + 1E-12;
 vLowLim := SEL(vMax > 0, vMax, vMin) - 1E-12;
 
 direction := SEL(vMax > 0, ProfileDirection.Down, ProfileDirection.Up);
-vUppLim := SEL(direction = ProfileDirection.Up, vMin, vMax) + Constants.VelocityEpsilon;
-vLowLim := SEL(direction = ProfileDirection.Up, vMax, vMin) - Constants.VelocityEpsilon;
+vUppLim := SEL(direction = ProfileDirection.Up, vMin, vMax);
+vUppLim := vUppLim + LimitEpsilon(vUppLim, Constants.VelocityEpsilon);
+vLowLim := SEL(direction = ProfileDirection.Up, vMax, vMin);
+vLowLim := vLowLim - LimitEpsilon(vLowLim, Constants.VelocityEpsilon);
         
 FOR i:= 0 TO 6 
 DO
@@ -769,13 +804,15 @@ END_FOR
 THIS^.ControlSigns := controlSigns;
 THIS^.Limits := limits;
 
-aUppLim := SEL(direction = ProfileDirection.Up, aMin, aMax) + Constants.AccelerationEpsilon;
-aLowLim := SEL(direction = ProfileDirection.Up, aMax, aMin) - Constants.AccelerationEpsilon;
+aUppLim := SEL(direction = ProfileDirection.Up, aMin, aMax);
+aUppLim := aUppLim + LimitEpsilon(aUppLim, Constants.AccelerationEpsilon);
+aLowLim := SEL(direction = ProfileDirection.Up, aMax, aMin);
+aLowLim := aLowLim - LimitEpsilon(aLowLim, Constants.AccelerationEpsilon);
 
 // Velocity limit can be broken in the beginning if both initial velocity and acceleration are too high
-CheckVel := ABS(p[7] - pf) < Constants.PositionPrecision
-    AND_THEN ABS(v[7] - vf) < Constants.VelocityPrecision
-    AND_THEN ABS(a[7] - af) < Constants.AccelerationPrecision // This is not really needed, but we want to double check
+CheckVel := ABS(p[7] - pf) < PositionPrecision()
+    AND_THEN ABS(v[7] - vf) < VelocityPrecision()
+    AND_THEN ABS(a[7] - af) < AccelerationPrecision() // This is not really needed, but we want to double check
     // AND_THEN ABS(v[3]) <= vMaxAbs AND_THEN ABS(v[4]) <= vMaxAbs AND_THEN ABS(v[5]) <= vMaxAbs AND_THEN ABS(v[6]) <= vMaxAbs
     AND_THEN a[1] >= aLowLim AND_THEN a[3] >= aLowLim AND_THEN a[5] >= aLowLim
     AND_THEN a[1] <= aUppLim AND_THEN a[3] <= aUppLim AND_THEN a[5] <= aUppLim
@@ -839,7 +876,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CheckWithTiming2 := (ABS(jf) < ABS(jMax) + Constants.JerkEpsilon) AND_THEN CheckWithTiming(controlSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
+        <ST><![CDATA[CheckWithTiming2 := (ABS(jf) < ABS(jMax) + LimitEpsilon(jMax, Constants.JerkEpsilon)) AND_THEN CheckWithTiming(controlSigns, limits, tf, jf, vMax, vMin, aMax, aMin);]]></ST>
       </Implementation>
     </Method>
     <Method Name="FirstStateAtPosition" Id="{0159e4a6-0809-4a0c-b389-030aa446ea6f}">
@@ -902,6 +939,76 @@ THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="LimitEpsilon" Id="{38770c73-828b-43a3-8bcc-1b6515138e89}">
+      <Declaration><![CDATA[/// Tolerance on a kinematic limit, relative to the magnitude of the limit
+METHOD LimitEpsilon : LREAL
+VAR_INPUT
+  limitValue : LREAL;
+  epsilon : LREAL; // absolute tolerance
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[LimitEpsilon := MAX(epsilon, Constants.RelativeEpsilon * ABS(limitValue));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="PositionPrecision" Id="{84fd4c86-f513-4a0b-a083-373904142ff0}">
+      <Declaration><![CDATA[/// Final position precision, relative to the largest position magnitude in the profile
+METHOD PositionPrecision : LREAL
+VAR
+  i : INT;
+  m : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m := ABS(pf);
+FOR i:=0 TO 7
+DO
+  m := MAX(m, ABS(p[i]));
+END_FOR
+
+FOR i:=0 TO 6
+DO
+  m := MAX(m, ABS(t[i] * v[i]));
+END_FOR
+
+PositionPrecision := MAX(Constants.PositionPrecision, Constants.RelativePrecision * m);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Rescale" Id="{f62ba87f-1a0b-4e19-82f3-42455924b199}">
+      <Declaration><![CDATA[/// Converts a profile calculated in the internal units of Otg.PositionScale and Otg.TimeScale back to user units
+METHOD Rescale
+VAR_INPUT
+  positionScale, timeScale : LREAL;
+END_VAR
+VAR
+  i : INT;
+  vScale, aScale, jScale : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[vScale := positionScale * timeScale;
+aScale := vScale * timeScale;
+jScale := aScale * timeScale;
+
+FOR i:=0 TO 6
+DO
+  t[i] := t[i] / timeScale;
+  t_sum[i] := t_sum[i] / timeScale;
+  j[i] := j[i] * jScale;
+END_FOR
+
+FOR i:=0 TO 7
+DO
+  p[i] := p[i] * positionScale;
+  v[i] := v[i] * vScale;
+  a[i] := a[i] * aScale;
+END_FOR
+
+pf := pf * positionScale;
+vf := vf * vScale;
+af := af * aScale;
+
+Brake.Rescale(positionScale, timeScale);
+Accel.Rescale(positionScale, timeScale);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SetBoundary" Id="{fdfe1c1e-08a5-45e1-a4af-4f8d0e84c34a}">
       <Declaration><![CDATA[/// Set boundary values for the position interface
 METHOD SetBoundary
@@ -949,6 +1056,28 @@ v[0] := v0_new;
 p[0] := p0_new;
 af := af_new;
 vf := vf_new;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="VelocityPrecision" Id="{529e6af3-a8ea-4a53-87e6-1d86436f8912}">
+      <Declaration><![CDATA[/// Final velocity precision, relative to the largest velocity magnitude in the profile
+METHOD VelocityPrecision : LREAL
+VAR
+  i : INT;
+  m : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m := ABS(vf);
+FOR i:=0 TO 7
+DO
+  m := MAX(m, ABS(v[i]));
+END_FOR
+
+FOR i:=0 TO 6
+DO
+  m := MAX(m, ABS(t[i] * a[i]));
+END_FOR
+
+VelocityPrecision := MAX(Constants.VelocityPrecision, Constants.RelativePrecision * m);]]></ST>
       </Implementation>
     </Method>
   </POU>
