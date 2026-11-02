@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="Struckig">
-      <Resolution>Struckig, 0.19.4.0 (Stefan Besler)</Resolution>
+      <Resolution>Struckig, 0.19.4.2 (Stefan Besler)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ProjectExtensions>
